@@ -82,6 +82,7 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 	};
 
 	useEffect(() => {
+		if (file.extension !== "md") return;
 		loadContent();
 	}, []);
 
