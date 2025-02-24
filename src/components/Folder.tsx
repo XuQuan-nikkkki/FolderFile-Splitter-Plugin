@@ -8,6 +8,7 @@ import AppleStyleNotesPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import { moveCursorToEnd, selectText } from "src/utils";
 import { FolderListModal } from "./FolderListModal";
+import { SettingsChangeEventName } from "src/assets/constants";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -45,16 +46,25 @@ const Folder = ({
 		}))
 	);
 
-	const folderName = isRoot ? plugin.app.vault.getName() : folder.name;
-	const folderNameRef = useRef<HTMLDivElement>(null);
-	const [isEditing, setIsEditing] = useState(false);
-	const [name, setName] = useState(folderName);
-
 	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
 	const expandFolderByClickingOnElement =
 		plugin.settings.expandFolderByClickingOn;
 	const includeSubfolderFilesCount =
 		plugin.settings.includeSubfolderFilesCount;
+
+	const defaultFilesCount = getFilesCountInFolder(
+		folder,
+		includeSubfolderFilesCount
+	);
+
+	const folderName = isRoot ? plugin.app.vault.getName() : folder.name;
+	const folderNameRef = useRef<HTMLDivElement>(null);
+	const [isEditing, setIsEditing] = useState(false);
+	const [name, setName] = useState(folderName);
+	const [filesCount, setFilesCount] = useState(defaultFilesCount);
+	const [expandFolderByClickingOn, setExpandFolderByClickingOn] = useState(
+		expandFolderByClickingOnElement
+	);
 
 	const onToggleExpandState = (): void => {
 		if (isRoot) return;
@@ -107,6 +117,33 @@ const Folder = ({
 			document.removeEventListener("mousedown", onClickOutside);
 		};
 	}, [isEditing, name]);
+
+	useEffect(() => {
+		window.addEventListener(
+			SettingsChangeEventName,
+			onHandleSettingsChange
+		);
+		return () => {
+			window.removeEventListener(
+				SettingsChangeEventName,
+				onHandleSettingsChange
+			);
+		};
+	}, []);
+
+	const onHandleSettingsChange = (event: CustomEvent) => {
+		const { changeKey, changeValue } = event.detail;
+		switch (changeKey) {
+			case "expandFolderByClickingOn":
+				setExpandFolderByClickingOn(changeValue);
+				break;
+			case "includeSubfolderFilesCount":
+				setFilesCount(getFilesCountInFolder(folder, changeValue));
+				break;
+			default:
+				break;
+		}
+	};
 
 	const selectFolderNameText = () => {
 		const element = folderNameRef.current;
@@ -177,10 +214,6 @@ const Folder = ({
 		menu.showAtPosition({ x: e.clientX, y: e.clientY });
 	};
 
-	const filesCount = getFilesCountInFolder(
-		folder,
-		includeSubfolderFilesCount
-	);
 	const isFocused = folder.path == focusedFolder?.path;
 	const isExpanded = isRoot || expandedFolderPaths.includes(folder.path);
 
@@ -203,7 +236,7 @@ const Folder = ({
 			<div
 				className="asn-folder-pane-left-sectionn"
 				onClick={(e) => {
-					if (expandFolderByClickingOnElement == "folder") {
+					if (expandFolderByClickingOn == "folder") {
 						e.stopPropagation();
 						if (focusedFolder?.path !== folder.path) {
 							setFocusedFolder(folder);
@@ -216,7 +249,7 @@ const Folder = ({
 				<span
 					className="asn-folder-arrow-icon-wrapper"
 					onClick={(e) => {
-						if (expandFolderByClickingOnElement == "icon") {
+						if (expandFolderByClickingOn == "icon") {
 							e.stopPropagation();
 							onToggleExpandState();
 						}

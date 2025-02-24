@@ -20,3 +20,4 @@ export type VaultChangeEvent = CustomEvent<{
 }>;
 
 export const ASN_PLUGIN_SETTINGS = "AppleStyleNotesPluging-Settings";
+export const SettingsChangeEventName = "ASN-SettingsChangeEvent";

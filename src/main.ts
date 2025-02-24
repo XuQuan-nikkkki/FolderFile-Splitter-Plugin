@@ -3,7 +3,11 @@ import { Plugin, TAbstractFile } from "obsidian";
 import { FileTreeView } from "./FileTreeView";
 import { SettingTab } from "./SettingTab";
 import { AppleStyleNotesPluginSettings } from "./settings";
-import { VaultChangeEventName, VaultChangeType } from "./assets/constants";
+import {
+	SettingsChangeEventName,
+	VaultChangeEventName,
+	VaultChangeType,
+} from "./assets/constants";
 import { getSettingsFromLocalStorage } from "./utils";
 
 export default class AppleStyleNotesPlugin extends Plugin {
@@ -68,6 +72,21 @@ export default class AppleStyleNotesPlugin extends Plugin {
 
 	onRename: (file: TAbstractFile) => void = (file) => {
 		this.triggerVaultChangeEvent(file, "rename");
+	};
+
+	triggerSettingsChangeEvent = <
+		K extends keyof AppleStyleNotesPluginSettings
+	>(
+		changeKey: K,
+		changeValue: AppleStyleNotesPluginSettings[K]
+	) => {
+		const event = new CustomEvent(SettingsChangeEventName, {
+			detail: {
+				changeKey,
+				changeValue,
+			},
+		});
+		window.dispatchEvent(event);
 	};
 
 	onunload() {

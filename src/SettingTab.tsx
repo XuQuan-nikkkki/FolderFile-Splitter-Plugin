@@ -33,6 +33,10 @@ export class SettingTab extends PluginSettingTab {
 				cb.onChange(async (val: expandFolderByClickingOnElement) => {
 					this.plugin.settings.expandFolderByClickingOn = val;
 					await this.saveSettings();
+					this.plugin.triggerSettingsChangeEvent(
+						"expandFolderByClickingOn",
+						val
+					);
 				});
 			});
 
@@ -46,7 +50,10 @@ export class SettingTab extends PluginSettingTab {
 				cb.onChange(async (val) => {
 					this.plugin.settings.includeSubfolderFilesCount = val;
 					await this.saveSettings();
-					console.log(this.plugin.settings.includeSubfolderFilesCount)
+					this.plugin.triggerSettingsChangeEvent(
+						"includeSubfolderFilesCount",
+						val
+					);
 				});
 			});
 	}
