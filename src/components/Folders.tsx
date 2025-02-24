@@ -6,7 +6,11 @@ import { TFolder } from "obsidian";
 import AppleStyleNotesPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import Folder from "./Folder";
-import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
+import {
+	SettingsChangeEventName,
+	VaultChangeEvent,
+	VaultChangeEventName,
+} from "src/assets/constants";
 import { isFolder } from "src/utils";
 
 type Props = {
@@ -40,6 +44,9 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 
 	const topLevelFolders = getTopLevelFolders();
 	const [topFolders, setTopFolders] = useState<TFolder[]>([]);
+	const [showHierarchyLines, setShowHierarchyLines] = useState(
+		plugin.settings.showFolderHierarchyLines
+	);
 
 	useEffect(() => {
 		restoreLastFocusedFolder();
@@ -49,10 +56,18 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 
 	useEffect(() => {
 		window.addEventListener(VaultChangeEventName, onHandleVaultChange);
+		window.addEventListener(
+			SettingsChangeEventName,
+			onHandleSettingsChange
+		);
 		return () => {
 			window.removeEventListener(
 				VaultChangeEventName,
 				onHandleVaultChange
+			);
+			window.removeEventListener(
+				SettingsChangeEventName,
+				onHandleSettingsChange
 			);
 		};
 	}, []);
@@ -91,6 +106,13 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		}
 	};
 
+	const onHandleSettingsChange = (event: CustomEvent) => {
+		const { changeKey, changeValue } = event.detail;
+		if (changeKey === "showFolderHierarchyLines") {
+			setShowHierarchyLines(changeValue);
+		}
+	};
+
 	const renderFolders = (folders: TFolder[]) => {
 		const sortedFolders = sortFolders(
 			folders,
@@ -106,7 +128,10 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 				/>
 				{expandedFolderPaths.includes(folder.path) &&
 					hasFolderChildren(folder) && (
-						<div className="asn-sub-folders-section">
+						<div className="asn-sub-folders-section asn-folder-wrapper">
+							{showHierarchyLines && (
+								<div className="asn-hierarchy-line"></div>
+							)}
 							{renderFolders(getFoldersByParent(folder))}
 						</div>
 					)}
@@ -118,7 +143,10 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		if (!rootFolder) return null;
 
 		return (
-			<div>
+			<div className="asn-folder-wrapper">
+				{showHierarchyLines && (
+					<div className="asn-hierarchy-line"></div>
+				)}
 				<Folder
 					folder={rootFolder}
 					useFileTreeStore={useFileTreeStore}

@@ -27,6 +27,7 @@ If your plugin does not need CSS, delete this file.
 	--asn-file-created-time-color: #515151;
 	--asn-editing-mode-color: #000000;
 	--asn-editing-background-color: #ffffff;
+	--asn-folder-hierarchy-line-color: #e1dede;
 }
 
 .theme-dark {
@@ -42,6 +43,7 @@ If your plugin does not need CSS, delete this file.
 	--asn-file-created-time-color: #dddede;
 	--asn-editing-mode-color: #ffffff;
 	--asn-editing-background-color: #000000;
+	--asn-folder-hierarchy-line-color: #474341;
 }
 
 .asn-plugin-view {
@@ -177,8 +179,12 @@ If your plugin does not need CSS, delete this file.
 	text-overflow: ellipsis;
 }
 
+.asn-folder-wrapper {
+	position: relative;
+}
+
 .asn-sub-folders-section {
-	margin-left: 6px;
+	margin-left: 14px;
 }
 
 .asn-none-files-tips {
@@ -187,6 +193,15 @@ If your plugin does not need CSS, delete this file.
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+.asn-hierarchy-line {
+	width: 1px;
+	border-left: 1px solid var(--asn-folder-hierarchy-line-color);
+	position: absolute;
+	left: -2px;
+	top: 0;
+	bottom: 0px;
 }
 
 .asn-none-files-tips .asn-empty-folder-icon {

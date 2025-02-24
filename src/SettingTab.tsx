@@ -22,6 +22,23 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
+		.setName("Show Folder Hierarchy Lines")
+		.setDesc(
+			"When enabled, a line will be displayed next to folders in the same hierarchy level under an expanded parent folder, visually indicating their nesting relationship."
+		).addToggle((cb) => {
+			cb.setValue(this.plugin.settings.showFolderHierarchyLines);
+			cb.onChange(async (val) => {
+				this.plugin.settings.showFolderHierarchyLines = val;
+				await this.saveSettings();
+				this.plugin.triggerSettingsChangeEvent(
+					"showFolderHierarchyLines",
+					val
+				);
+			}
+		);
+		});
+
+		new Setting(containerEl)
 			.setName("Expand Folder on Click")
 			.setDesc(
 				"Choose whether to expand a folder by clicking on the toggle icon (▶/▼) or the folder name."
