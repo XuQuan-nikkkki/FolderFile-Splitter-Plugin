@@ -5,7 +5,7 @@ import { useShallow } from "zustand/react/shallow";
 
 import { AscendingSortIcon, DescendingSortIcon } from "src/assets/icons";
 import { FileSortRule, FileTreeStore } from "src/store";
-import AppleStyleNotesPlugin from "src/main";
+import FolderFileSplitterPlugin from "src/main";
 
 type FileSortRuleItem = {
 	text: string;
@@ -39,7 +39,7 @@ const FileSortByCreatedTimeRules: FileSortRuleGroup = [
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-	plugin: AppleStyleNotesPlugin;
+	plugin: FolderFileSplitterPlugin;
 };
 const SortFiles = ({ useFileTreeStore, plugin }: Props) => {
 	const {
@@ -93,7 +93,7 @@ const SortFiles = ({ useFileTreeStore, plugin }: Props) => {
 		<DescendingSortIcon />
 	);
 	return (
-		<div className="asn-actions-icon-wrapper" onClick={onChangeSortRule}>
+		<div className="ffs-actions-icon-wrapper" onClick={onChangeSortRule}>
 			{icon}
 		</div>
 	);

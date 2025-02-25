@@ -28,7 +28,7 @@ const ToggleFolders = ({ useFileTreeStore }: Props) => {
 	};
 
 	return (
-		<div className="asn-actions-icon-wrapper" onClick={onToggleAllFolders}>
+		<div className="ffs-actions-icon-wrapper" onClick={onToggleAllFolders}>
 			{isExpanded ? <CollapseIcon /> : <ExpandIcon />}
 		</div>
 	);

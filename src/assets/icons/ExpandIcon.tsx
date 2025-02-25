@@ -8,7 +8,7 @@ const ExpandIcon = () => {
 			strokeWidth="2"
 			strokeLinecap="round"
 			strokeLinejoin="round"
-			className="asn-folder-actions-icon asn-expand-icon"
+			className="ffs-folder-actions-icon ffs-expand-icon"
 		>
 			<path d="m7 15 5 5 5-5" />
 			<path d="m7 9 5-5 5 5" />

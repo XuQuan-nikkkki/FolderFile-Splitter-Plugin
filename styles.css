@@ -9,74 +9,74 @@ If your plugin does not need CSS, delete this file.
 
 .theme-light,
 .theme-dark {
-	--asn-folder-pane-min-width: 140px;
-	--asn-files-pane-min-width: 200px;
-	--asn-folder-border-radius: 4px;
+	--ffs-folder-pane-min-width: 140px;
+	--ffs-files-pane-min-width: 200px;
+	--ffs-folder-border-radius: 4px;
 }
 
 .theme-light {
-	--asn-pane-divider-color: #d3d4d6;
-	--asn-folder-hover-background-color: #e5e5e5;
-	--asn-files-count-color: #a6a6a7;
-	--asn-folder-toggle-icon-color: #585a5d;
-	--asn-folder-focused-color: #fdf8eb;
-	--asn-focused-folder-background-color: #ecc44c;
-	--asn-actions-background-color: #e5e5e5;
-	--asn-actions-icon-color: #898989;
-	--asn-file-content-preview-color: #999999;
-	--asn-file-created-time-color: #515151;
-	--asn-editing-mode-color: #000000;
-	--asn-editing-background-color: #ffffff;
-	--asn-folder-hierarchy-line-color: #e1dede;
+	--ffs-pane-divider-color: #d3d4d6;
+	--ffs-folder-hover-background-color: #e5e5e5;
+	--ffs-files-count-color: #a6a6a7;
+	--ffs-folder-toggle-icon-color: #585a5d;
+	--ffs-folder-focused-color: #fdf8eb;
+	--ffs-focused-folder-background-color: #ecc44c;
+	--ffs-actions-background-color: #e5e5e5;
+	--ffs-actions-icon-color: #898989;
+	--ffs-file-content-preview-color: #999999;
+	--ffs-file-created-time-color: #515151;
+	--ffs-editing-mode-color: #000000;
+	--ffs-editing-background-color: #ffffff;
+	--ffs-folder-hierarchy-line-color: #e1dede;
 }
 
 .theme-dark {
-	--asn-pane-divider-color: #000000;
-	--asn-folder-hover-background-color: #2e2d2c;
-	--asn-files-count-color: #89898a;
-	--asn-folder-toggle-icon-color: #bfc2c2;
-	--asn-folder-focused-color: #ffffff;
-	--asn-focused-folder-background-color: #debe5b;
-	--asn-actions-background-color: #2e2d2c;
-	--asn-actions-icon-color: #a59982;
-	--asn-file-content-preview-color: #9b9d9f;
-	--asn-file-created-time-color: #dddede;
-	--asn-editing-mode-color: #ffffff;
-	--asn-editing-background-color: #000000;
-	--asn-folder-hierarchy-line-color: #474341;
+	--ffs-pane-divider-color: #000000;
+	--ffs-folder-hover-background-color: #2e2d2c;
+	--ffs-files-count-color: #89898a;
+	--ffs-folder-toggle-icon-color: #bfc2c2;
+	--ffs-folder-focused-color: #ffffff;
+	--ffs-focused-folder-background-color: #debe5b;
+	--ffs-actions-background-color: #2e2d2c;
+	--ffs-actions-icon-color: #a59982;
+	--ffs-file-content-preview-color: #9b9d9f;
+	--ffs-file-created-time-color: #dddede;
+	--ffs-editing-mode-color: #ffffff;
+	--ffs-editing-background-color: #000000;
+	--ffs-folder-hierarchy-line-color: #474341;
 }
 
-.asn-plugin-view {
+.ffs-plugin-view {
 	height: 100%;
 	min-width: calc(
-		var(--asn-folder-pane-min-width) + var(--asn-files-pane-min-width)
+		var(--ffs-folder-pane-min-width) + var(--ffs-files-pane-min-width)
 	);
 }
 
-.asn-plugin-container {
+.ffs-plugin-container {
 	display: flex;
 	height: 100%;
 	overflow-y: hidden;
 }
 
-.asn-folder-pane {
-	min-width: var(--asn-folder-pane-min-width);
+.ffs-folder-pane {
+	min-width: var(--ffs-folder-pane-min-width);
 	margin-right: 8px;
 	overflow-y: auto;
 }
 
-.asn-files-pane {
-	min-width: var(--asn-files-pane-min-width);
+.ffs-files-pane {
+	min-width: var(--ffs-files-pane-min-width);
 	flex: 1;
 	overflow-y: auto;
 }
 
-.asn-pane-divider {
-	border: 1px solid var(--asn-pane-divider-color);
+.ffs-pane-divider {
+	border: 1px solid var(--ffs-pane-divider-color);
 	cursor: ew-resize;
 }
 
-.asn-folder {
+.ffs-folder {
 	height: 30px;
 	font-size: 13px;
 
@@ -87,24 +87,24 @@ If your plugin does not need CSS, delete this file.
 	padding-right: 6px;
 }
 
-.asn-folder:hover {
-	background-color: var(--asn-folder-hover-background-color);
-	border-radius: var(--asn-folder-border-radius);
+.ffs-folder:hover {
+	background-color: var(--ffs-folder-hover-background-color);
+	border-radius: var(--ffs-folder-border-radius);
 }
 
-.asn-root-folder {
+.ffs-root-folder {
 	font-size: 14px;
 	font-weight: 450;
 }
 
-.asn-folder-pane-left-sectionn {
+.ffs-folder-pane-left-sectionn {
 	display: flex;
 	align-items: center;
 	flex: 1;
 	overflow: hidden;
 }
 
-.asn-folder-arrow-icon-wrapper {
+.ffs-folder-arrow-icon-wrapper {
 	width: 14px;
 	display: flex;
 	align-items: center;
@@ -112,82 +112,82 @@ If your plugin does not need CSS, delete this file.
 	padding: 2px;
 }
 
-.asn-folder-icon {
+.ffs-folder-icon {
 	width: 14px;
 	height: 12px;
 	fill: #d19600;
 	margin-right: 8px;
 }
 
-.asn-root-folder .asn-folder-icon {
+.ffs-root-folder .ffs-folder-icon {
 	width: 16px;
 	height: 14px;
 }
 
-.asn-root-folder .asn-folder-arrow-icon-wrapper {
+.ffs-root-folder .ffs-folder-arrow-icon-wrapper {
 	width: 4px;
 }
 
-.asn-root-folder .asn-root-folder-icon {
+.ffs-root-folder .ffs-root-folder-icon {
 	width: 16px;
 	height: 14px;
 }
 
-.asn-arrow-down-icon,
-.asn-arrow-right-icon {
+.ffs-arrow-down-icon,
+.ffs-arrow-right-icon {
 	width: 8px;
 	height: 8px;
 	fill: #5a5d63;
 }
 
-.asn-files-count {
-	color: var(--asn-files-count-color);
+.ffs-files-count {
+	color: var(--ffs-files-count-color);
 	font-size: 12px;
 	margin-left: 4px;
 }
 
-.asn-folder-pane .asn-focused-folder {
-	background-color: var(--asn-focused-folder-background-color);
-	border-radius: var(--asn-folder-border-radius);
+.ffs-folder-pane .ffs-focused-folder {
+	background-color: var(--ffs-focused-folder-background-color);
+	border-radius: var(--ffs-folder-border-radius);
 }
 
-.asn-folder-pane .asn-folder-name-edit-mode {
-	background-color: var(--asn-editing-background-color) !important;
-	color: var(--asn-editing-mode-color) !important;
+.ffs-folder-pane .ffs-folder-name-edit-mode {
+	background-color: var(--ffs-editing-background-color) !important;
+	color: var(--ffs-editing-mode-color) !important;
 }
 
-.asn-files-pane .asn-file-name-edit-mode {
-	background-color: var(--asn-editing-background-color) !important;
-	color: var(--asn-editing-mode-color) !important;
+.ffs-files-pane .ffs-file-name-edit-mode {
+	background-color: var(--ffs-editing-background-color) !important;
+	color: var(--ffs-editing-mode-color) !important;
 }
 
-.asn-focused-folder,
-.asn-focused-folder .asn-files-count {
-	color: var(--asn-folder-focused-color);
+.ffs-focused-folder,
+.ffs-focused-folder .ffs-files-count {
+	color: var(--ffs-folder-focused-color);
 	font-weight: 450;
 }
 
-.asn-focused-folder .asn-arrow-down-icon,
-.asn-focused-folder .asn-folder-icon {
-	fill: var(--asn-folder-focused-color);
+.ffs-focused-folder .ffs-arrow-down-icon,
+.ffs-focused-folder .ffs-folder-icon {
+	fill: var(--ffs-folder-focused-color);
 }
 
-.asn-folder-name {
+.ffs-folder-name {
 	flex: 1;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
 
-.asn-folder-wrapper {
+.ffs-folder-wrapper {
 	position: relative;
 }
 
-.asn-sub-folders-section {
+.ffs-sub-folders-section {
 	margin-left: 14px;
 }
 
-.asn-none-files-tips {
+.ffs-none-files-tips {
 	width: 100%;
 	height: 100%;
 	display: flex;
@@ -195,41 +195,41 @@ If your plugin does not need CSS, delete this file.
 	align-items: center;
 }
 
-.asn-hierarchy-line {
+.ffs-hierarchy-line {
 	width: 1px;
-	border-left: 1px solid var(--asn-folder-hierarchy-line-color);
+	border-left: 1px solid var(--ffs-folder-hierarchy-line-color);
 	position: absolute;
 	left: -2px;
 	top: 0;
 	bottom: 0px;
 }
 
-.asn-none-files-tips .asn-empty-folder-icon {
+.ffs-none-files-tips .ffs-empty-folder-icon {
 	width: 60px;
 	height: 60px;
 	fill: #bdbdbd;
 }
 
-.asn-file {
+.ffs-file {
 	height: 56px;
 	font-size: 12px;
 	margin-left: 12px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	border-radius: var(--asn-folder-border-radius);
+	border-radius: var(--ffs-folder-border-radius);
 	padding: 0 12px;
 }
 
-.asn-file:not(:last-child) {
+.ffs-file:not(:last-child) {
 	border-bottom: 1px solid #e6e6e6;
 }
 
-.asn-file:hover {
+.ffs-file:hover {
 	background-color: #dcdcdc;
 }
 
-.asn-file .asn-file-name {
+.ffs-file .ffs-file-name {
 	font-size: 13px;
 	font-weight: 600;
 	overflow: hidden;
@@ -237,54 +237,54 @@ If your plugin does not need CSS, delete this file.
 	white-space: nowrap;
 }
 
-.asn-file .asn-file-created-time {
+.ffs-file .ffs-file-created-time {
 	letter-spacing: -0.5px;
 	width: 60px;
-	color: var(--asn-file-created-time-color);
+	color: var(--ffs-file-created-time-color);
 	font-weight: 480;
 }
 
-.asn-file-details {
+.ffs-file-details {
 	display: flex;
 	margin-top: 4px;
 }
 
-.asn-files-pane .asn-focused-file {
-	background-color: var(--asn-focused-folder-background-color);
+.ffs-files-pane .ffs-focused-file {
+	background-color: var(--ffs-focused-folder-background-color);
 }
 
-.asn-file-content-preview {
+.ffs-file-content-preview {
 	flex: 1;
 	margin-left: 12px;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	font-size: 12px;
-	color: var(--asn-file-content-preview-color);
+	color: var(--ffs-file-content-preview-color);
 }
 
-.asn-actions {
+.ffs-actions {
 	margin: 0px auto 4px;
 	padding: 8px 16px 4px;
-	border-radius: var(--asn-folder-border-radius);
-	background-color: var(--asn-actions-background-color);
+	border-radius: var(--ffs-folder-border-radius);
+	background-color: var(--ffs-actions-background-color);
 	display: flex;
 }
 
-.asn-file-actions {
+.ffs-file-actions {
 	margin-left: 12px;
 }
 
-.asn-folder-actions-icon {
+.ffs-folder-actions-icon {
 	width: 18px;
 	height: 18px;
-	stroke: var(--asn-actions-icon-color);
+	stroke: var(--ffs-actions-icon-color);
 }
 
-.asn-folder-actions-icon:hover {
+.ffs-folder-actions-icon:hover {
 	transform: scale(1.1);
 }
 
-.asn-actions-icon-wrapper:not(:last-child) {
+.ffs-actions-icon-wrapper:not(:last-child) {
 	margin-right: 12px;
 }

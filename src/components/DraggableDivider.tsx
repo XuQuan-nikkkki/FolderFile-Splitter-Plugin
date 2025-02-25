@@ -27,7 +27,7 @@ const DraggableDivider = ({ initialWidth, onChangeWidth }: Props) => {
 
 	return (
 		<div
-			className="asn-pane-divider"
+			className="ffs-pane-divider"
 			ref={dividerRef}
 			onMouseDown={handleMouseDown}
 		/>

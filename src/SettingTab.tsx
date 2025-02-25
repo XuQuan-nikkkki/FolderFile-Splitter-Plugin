@@ -1,12 +1,12 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
-import AppleStyleNotesPlugin from "./main";
+import FolderFileSplitterPlugin from "./main";
 import { expandFolderByClickingOnElement } from "./settings";
 import { saveSettingsToLocalStorage } from "./utils";
 
 export class SettingTab extends PluginSettingTab {
-	plugin: AppleStyleNotesPlugin;
+	plugin: FolderFileSplitterPlugin;
 
-	constructor(app: App, plugin: AppleStyleNotesPlugin) {
+	constructor(app: App, plugin: FolderFileSplitterPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}

@@ -1,14 +1,14 @@
 import { create } from "zustand";
 import { TFile, TFolder } from "obsidian";
 
-import AppleStyleNotesPlugin from "./main";
+import FolderFileSplitterPlugin from "./main";
 import { isFile, isFolder } from "./utils";
 import {
-	ASN_EXPANDED_FOLDER_PATHS_KEY,
-	ASN_FILE_SORT_RULE_KEY,
-	ASN_FOCUSED_FILE_PATH_KEY,
-	ASN_FOCUSED_FOLDER_PATH_KEY,
-	ASN_FOLDER_SORT_RULE_KEY,
+	FFS_EXPANDED_FOLDER_PATHS_KEY,
+	FFS_FILE_SORT_RULE_KEY,
+	FFS_FOCUSED_FILE_PATH_KEY,
+	FFS_FOCUSED_FOLDER_PATH_KEY,
+	FFS_FOLDER_SORT_RULE_KEY,
 } from "./assets/constants";
 
 export type FolderSortRule =
@@ -76,7 +76,7 @@ export type FileTreeStore = {
 	sortFiles: (files: TFile[], rule: FileSortRule) => TFile[];
 };
 
-export const createFileTreeStore = (plugin: AppleStyleNotesPlugin) =>
+export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 	create((set, get: () => FileTreeStore) => ({
 		folders: plugin.app.vault.getAllFolders() || [],
 		rootFolder: plugin.app.vault.getRoot() || null,
@@ -132,7 +132,7 @@ export const createFileTreeStore = (plugin: AppleStyleNotesPlugin) =>
 			}),
 		setFocusedFolderAndSaveInLocalStorage: (folder: TFolder) => {
 			get().setFocusedFolder(folder);
-			localStorage.setItem(ASN_FOCUSED_FOLDER_PATH_KEY, folder.path);
+			localStorage.setItem(FFS_FOCUSED_FOLDER_PATH_KEY, folder.path);
 		},
 		_createFolder: async (path: string): Promise<TFolder> => {
 			const newFolder = await plugin.app.vault.createFolder(path);
@@ -213,11 +213,11 @@ export const createFileTreeStore = (plugin: AppleStyleNotesPlugin) =>
 			set({
 				folderSortRule: rule,
 			});
-			localStorage.setItem(ASN_FOLDER_SORT_RULE_KEY, rule);
+			localStorage.setItem(FFS_FOLDER_SORT_RULE_KEY, rule);
 		},
 		restoreFolderSortRule: () => {
 			const lastFolderSortRule = localStorage.getItem(
-				ASN_FOLDER_SORT_RULE_KEY
+				FFS_FOLDER_SORT_RULE_KEY
 			);
 			if (lastFolderSortRule) {
 				set({
@@ -230,13 +230,13 @@ export const createFileTreeStore = (plugin: AppleStyleNotesPlugin) =>
 				expandedFolderPaths: folderPaths,
 			});
 			localStorage.setItem(
-				ASN_EXPANDED_FOLDER_PATHS_KEY,
+				FFS_EXPANDED_FOLDER_PATHS_KEY,
 				JSON.stringify(folderPaths)
 			);
 		},
 		restoreExpandedFolderPaths: () => {
 			const lastExpandedFolderPaths = localStorage.getItem(
-				ASN_EXPANDED_FOLDER_PATHS_KEY
+				FFS_EXPANDED_FOLDER_PATHS_KEY
 			);
 			if (lastExpandedFolderPaths) {
 				try {
@@ -251,7 +251,7 @@ export const createFileTreeStore = (plugin: AppleStyleNotesPlugin) =>
 		},
 		restoreLastFocusedFolder: () => {
 			const lastFocusedFolderPath = localStorage.getItem(
-				ASN_FOCUSED_FOLDER_PATH_KEY
+				FFS_FOCUSED_FOLDER_PATH_KEY
 			);
 			const { rootFolder, setFocusedFolder, findFolderByPath } = get();
 			if (lastFocusedFolderPath && lastFocusedFolderPath !== "/") {
@@ -288,7 +288,7 @@ export const createFileTreeStore = (plugin: AppleStyleNotesPlugin) =>
 			const { setFocusedFile, openFile } = get();
 			setFocusedFile(file);
 			openFile(file);
-			localStorage.setItem(ASN_FOCUSED_FILE_PATH_KEY, file.path);
+			localStorage.setItem(FFS_FOCUSED_FILE_PATH_KEY, file.path);
 		},
 		readFile: async (file: TFile): Promise<string> => {
 			return await plugin.app.vault.read(file);
@@ -343,7 +343,7 @@ export const createFileTreeStore = (plugin: AppleStyleNotesPlugin) =>
 		},
 		restoreLastFocusedFile: () => {
 			const lastFocusedFilePath = localStorage.getItem(
-				ASN_FOCUSED_FILE_PATH_KEY
+				FFS_FOCUSED_FILE_PATH_KEY
 			);
 			const { findFileByPath, selectFile } = get();
 			if (lastFocusedFilePath) {
@@ -375,11 +375,11 @@ export const createFileTreeStore = (plugin: AppleStyleNotesPlugin) =>
 			set({
 				fileSortRule: rule,
 			});
-			localStorage.setItem(ASN_FILE_SORT_RULE_KEY, rule);
+			localStorage.setItem(FFS_FILE_SORT_RULE_KEY, rule);
 		},
 		restoreFileSortRule: () => {
 			const lastFileSortRule = localStorage.getItem(
-				ASN_FILE_SORT_RULE_KEY
+				FFS_FILE_SORT_RULE_KEY
 			);
 			if (lastFileSortRule) {
 				set({

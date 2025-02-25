@@ -4,7 +4,7 @@ import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
 import { ArrowDownIcon, ArrowRightIcon, FolderIcon } from "src/assets/icons";
-import AppleStyleNotesPlugin from "src/main";
+import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import { moveCursorToEnd, selectText } from "src/utils";
 import { FolderListModal } from "./FolderListModal";
@@ -12,7 +12,7 @@ import { SettingsChangeEventName } from "src/assets/constants";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-	plugin: AppleStyleNotesPlugin;
+	plugin: FolderFileSplitterPlugin;
 	folder: TFolder;
 	isRoot?: boolean;
 };
@@ -222,16 +222,16 @@ const Folder = ({
 	const isFocused = folder.path == focusedFolder?.path;
 	const isExpanded = isRoot || expandedFolderPaths.includes(folder.path);
 
-	const folderClassNames = ["asn-folder"];
+	const folderClassNames = ["ffs-folder"];
 	if (isFocused) {
-		folderClassNames.push("asn-focused-folder");
+		folderClassNames.push("ffs-focused-folder");
 	}
 	if (isRoot) {
-		folderClassNames.push("asn-root-folder");
+		folderClassNames.push("ffs-root-folder");
 	}
 
 	const folderNameClassName =
-		"asn-folder-name" + (isEditing ? " asn-folder-name-edit-mode" : "");
+		"ffs-folder-name" + (isEditing ? " ffs-folder-name-edit-mode" : "");
 	return (
 		<div
 			className={folderClassNames.join(" ")}
@@ -239,7 +239,7 @@ const Folder = ({
 			onContextMenu={onShowContextMenu}
 		>
 			<div
-				className="asn-folder-pane-left-sectionn"
+				className="ffs-folder-pane-left-sectionn"
 				onClick={(e) => {
 					if (expandFolderByClickingOn == "folder") {
 						e.stopPropagation();
@@ -252,7 +252,7 @@ const Folder = ({
 				}}
 			>
 				<span
-					className="asn-folder-arrow-icon-wrapper"
+					className="ffs-folder-arrow-icon-wrapper"
 					onClick={(e) => {
 						if (expandFolderByClickingOn == "icon") {
 							e.stopPropagation();
@@ -275,7 +275,7 @@ const Folder = ({
 					{name}
 				</div>
 			</div>
-			<span className="asn-files-count">{filesCount}</span>
+			<span className="ffs-files-count">{filesCount}</span>
 		</div>
 	);
 };

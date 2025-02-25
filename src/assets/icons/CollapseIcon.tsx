@@ -8,7 +8,7 @@ const CollapseIcon = () => {
 			strokeWidth="2"
 			strokeLinecap="round"
 			strokeLinejoin="round"
-			className="asn-folder-actions-icon asn-collapse-icon"
+			className="ffs-folder-actions-icon ffs-collapse-icon"
 		>
 			<path d="m7 20 5-5 5 5" />
 			<path d="m7 4 5 5 5-5" />

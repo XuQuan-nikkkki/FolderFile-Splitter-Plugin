@@ -23,10 +23,7 @@ const CreateFile = ({ useFileTreeStore }: Props) => {
 	};
 
 	return (
-		<div
-			className="asn-actions-icon-wrapper"
-			onClick={onCreateNewFile}
-		>
+		<div className="ffs-actions-icon-wrapper" onClick={onCreateNewFile}>
 			<AddFileIcon />
 		</div>
 	);

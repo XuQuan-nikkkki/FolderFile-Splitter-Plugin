@@ -1,10 +1,10 @@
 当然可以，下面是你的 `README` 文件的中文翻译：
 
-# Apple Style Notes 插件
+# FolderFile Splitter 插件
 
 [English](./README.md) | [中文](./README.zh.md)
 
-**Apple Style Notes** 是一款 Obsidian 插件。它通过将文件夹和文件列表分开展示，从而提供了一种全新的文件管理方式。插件的界面交互受苹果设计理念的启发，旨在提供一种更简洁、更直观的方式来浏览和整理笔记。
+**FolderFile Splitter** 是一款 Obsidian 插件。它通过将文件夹和文件列表分开展示，从而提供了一种全新的文件管理方式。插件的界面交互受 Apple Notes 设计理念的启发，旨在提供一种更简洁、更直观的方式来浏览和整理笔记。
 
 ## 功能
 
@@ -19,7 +19,7 @@
 
 1. **下载插件**
 
--   进入本仓库的 [Releases](https://github.com/XuQuan-nikkkki/apple-style-notes-plugin/releases) 页面。
+-   进入本仓库的 [Releases](https://github.com/XuQuan-nikkkki/FolderFile-Splitter-Plugin/releases) 页面。
 -   下载最新的 `.zip` 压缩包。
 
 2. **解压并放入插件文件夹**
@@ -53,4 +53,4 @@
 
 ## 反馈与问题
 
-如果你遇到任何 bug 或有功能建议，欢迎你在这个 [GitHub 仓库](https://github.com/XuQuan-nikkkki/apple-style-notes-plugin)中提交问题。你的反馈对于改进 Apple Style Notes 插件非常重要！
+如果你遇到任何 bug 或有功能建议，欢迎你在这个 [GitHub 仓库](https://github.com/XuQuan-nikkkki/FolderFile-Splitter-Plugin)中提交问题。你的反馈对于改进 FolderFile Splitter 插件非常重要！

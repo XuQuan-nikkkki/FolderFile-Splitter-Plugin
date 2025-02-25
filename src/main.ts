@@ -2,7 +2,7 @@ import { Plugin, TAbstractFile } from "obsidian";
 
 import { FileTreeView } from "./FileTreeView";
 import { SettingTab } from "./SettingTab";
-import { AppleStyleNotesPluginSettings } from "./settings";
+import { FolderFileSplitterPluginSettings } from "./settings";
 import {
 	SettingsChangeEventName,
 	VaultChangeEventName,
@@ -10,15 +10,15 @@ import {
 } from "./assets/constants";
 import { getSettingsFromLocalStorage } from "./utils";
 
-export default class AppleStyleNotesPlugin extends Plugin {
-	settings: AppleStyleNotesPluginSettings;
+export default class FolderFileSplitterPlugin extends Plugin {
+	settings: FolderFileSplitterPluginSettings;
 
-	VIEW_TYPE = "asn-plugin-file-tree-view";
-	VIEW_DISPLAY_TEXT = "Apple Style Notes Plugin File Tree";
+	VIEW_TYPE = "ffs-plugin-file-tree-view";
+	VIEW_DISPLAY_TEXT = "FolderFile Splitter Plugin File Tree";
 	ICON = "dock";
 
 	async onload() {
-		console.log("Apple Styled Notes Plugin onload");
+		console.log("FolderFile Splitter Plugin onload");
 
 		this.addSettingTab(new SettingTab(this.app, this));
 
@@ -75,10 +75,10 @@ export default class AppleStyleNotesPlugin extends Plugin {
 	};
 
 	triggerSettingsChangeEvent = <
-		K extends keyof AppleStyleNotesPluginSettings
+		K extends keyof FolderFileSplitterPluginSettings
 	>(
 		changeKey: K,
-		changeValue: AppleStyleNotesPluginSettings[K]
+		changeValue: FolderFileSplitterPluginSettings[K]
 	) => {
 		const event = new CustomEvent(SettingsChangeEventName, {
 			detail: {

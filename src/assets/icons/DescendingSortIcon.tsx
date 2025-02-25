@@ -8,7 +8,7 @@ const DescendingSortIcon = () => {
 			strokeWidth="2"
 			strokeLinecap="round"
 			strokeLinejoin="round"
-			className="asn-folder-actions-icon asn-reverse-sort-icon"
+			className="ffs-folder-actions-icon ffs-reverse-sort-icon"
 		>
 			<path d="m3 16 4 4 4-4" />
 			<path d="M7 20V4" />

@@ -4,14 +4,14 @@ import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
 import { FileTreeStore } from "src/store";
-import AppleStyleNotesPlugin from "src/main";
+import FolderFileSplitterPlugin from "src/main";
 import { moveCursorToEnd, selectText } from "src/utils";
 import { FolderListModal } from "./FolderListModal";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
 	file: TFile;
-	plugin: AppleStyleNotesPlugin;
+	plugin: FolderFileSplitterPlugin;
 	deleteFile: () => void;
 };
 const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
@@ -169,9 +169,9 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 	};
 
 	const isFocused = focusedFile?.path === file.path;
-	const className = "asn-file" + (isFocused ? " asn-focused-file" : "");
+	const className = "ffs-file" + (isFocused ? " ffs-focused-file" : "");
 	const fileNameClassName =
-		"asn-file-name" + (isEditing ? " asn-file-name-edit-mode" : "");
+		"ffs-file-name" + (isEditing ? " ffs-file-name-edit-mode" : "");
 	return (
 		<div
 			className={className}
@@ -187,11 +187,11 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 			>
 				{name}
 			</div>
-			<div className="asn-file-details">
-				<span className="asn-file-created-time">
+			<div className="ffs-file-details">
+				<span className="ffs-file-created-time">
 					{new Date(file.stat.ctime).toLocaleString().split(" ")[0]}
 				</span>
-				<span className="asn-file-content-preview">
+				<span className="ffs-file-content-preview">
 					{contentPreview}
 				</span>
 			</div>

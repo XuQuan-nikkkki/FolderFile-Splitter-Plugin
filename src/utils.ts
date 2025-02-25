@@ -1,6 +1,6 @@
 import { TAbstractFile, TFile, TFolder } from "obsidian";
-import { AppleStyleNotesPluginSettings, DEFAULT_SETTINGS } from "./settings";
-import { ASN_PLUGIN_SETTINGS } from "./assets/constants";
+import { FolderFileSplitterPluginSettings, DEFAULT_SETTINGS } from "./settings";
+import { FFS_PLUGIN_SETTINGS } from "./assets/constants";
 
 type FolderChild = TFile | TFolder | TAbstractFile;
 export const isFile = (item: FolderChild): item is TFile => {
@@ -30,10 +30,10 @@ export const selectText = (element: HTMLElement) => {
 };
 
 export const saveSettingsToLocalStorage = (
-	settings: AppleStyleNotesPluginSettings
+	settings: FolderFileSplitterPluginSettings
 ) => {
 	try {
-		localStorage.setItem(ASN_PLUGIN_SETTINGS, JSON.stringify(settings));
+		localStorage.setItem(FFS_PLUGIN_SETTINGS, JSON.stringify(settings));
 	} catch (e) {
 		console.error(e);
 	}
@@ -42,7 +42,7 @@ export const saveSettingsToLocalStorage = (
 export const getSettingsFromLocalStorage = () => {
 	let settings = DEFAULT_SETTINGS;
 	try {
-		const settingsText = localStorage.getItem(ASN_PLUGIN_SETTINGS);
+		const settingsText = localStorage.getItem(FFS_PLUGIN_SETTINGS);
 		if (settingsText) {
 			settings = JSON.parse(settingsText);
 		}

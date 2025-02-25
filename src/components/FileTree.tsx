@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 
-import AppleStyleNotesPlugin from "src/main";
+import FolderFileSplitterPlugin from "src/main";
 import { createFileTreeStore } from "src/store";
-import { ASN_FOLDER_PANE_WIDTH_KEY } from "src/assets/constants";
+import { FFS_FOLDER_PANE_WIDTH_KEY } from "src/assets/constants";
 import DraggableDivider from "./DraggableDivider";
 import Files from "./Files";
 import Folders from "./Folders";
@@ -13,7 +13,7 @@ import CreateFile from "./FileActions/CreateFile";
 import SortFiles from "./FileActions/SortFiles";
 
 type Props = {
-	plugin: AppleStyleNotesPlugin;
+	plugin: FolderFileSplitterPlugin;
 };
 const FileTree = ({ plugin }: Props) => {
 	const useFileTreeStore = useMemo(
@@ -27,13 +27,13 @@ const FileTree = ({ plugin }: Props) => {
 
 	const onChangeFolderPaneWidth = (width: number) => {
 		setFolderPaneWidth(width);
-		localStorage.setItem(ASN_FOLDER_PANE_WIDTH_KEY, String(width));
+		localStorage.setItem(FFS_FOLDER_PANE_WIDTH_KEY, String(width));
 	};
 
 	return (
-		<div className="asn-plugin-container">
-			<div className="asn-folder-pane" style={{ width: folderPaneWidth }}>
-				<div className="asn-actions asn-folder-actions">
+		<div className="ffs-plugin-container">
+			<div className="ffs-folder-pane" style={{ width: folderPaneWidth }}>
+				<div className="ffs-actions ffs-folder-actions">
 					<CreateFolder useFileTreeStore={useFileTreeStore} />
 					<SortFolders
 						useFileTreeStore={useFileTreeStore}
@@ -47,8 +47,8 @@ const FileTree = ({ plugin }: Props) => {
 				initialWidth={folderPaneWidth}
 				onChangeWidth={onChangeFolderPaneWidth}
 			/>
-			<div className="asn-files-pane">
-				<div className="asn-actions asn-file-actions">
+			<div className="ffs-files-pane">
+				<div className="ffs-actions ffs-file-actions">
 					<CreateFile useFileTreeStore={useFileTreeStore} />
 					<SortFiles
 						useFileTreeStore={useFileTreeStore}

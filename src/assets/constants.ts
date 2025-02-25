@@ -1,23 +1,24 @@
 import { TAbstractFile } from "obsidian";
 
-export const ASN_FOCUSED_FOLDER_PATH_KEY =
-	"AppleStyleNotesPlugin-FocusedFolderPath";
-export const ASN_EXPANDED_FOLDER_PATHS_KEY =
-	"AppleStyleNotesPlugin-ExpandedFolderPaths";
-export const ASN_FOCUSED_FILE_PATH_KEY =
-	"AppleStyleNotesPlugin-FocusedFilePath";
-export const ASN_FOLDER_SORT_RULE_KEY = "AppleStyleNotesPlugin-FolderSortRule";
-export const ASN_FILE_SORT_RULE_KEY = "AppleStyleNotesPlugin-FileSortRule";
+export const FFS_FOCUSED_FOLDER_PATH_KEY =
+	"FolderFileSplitterPlugin-FocusedFolderPath";
+export const FFS_EXPANDED_FOLDER_PATHS_KEY =
+	"FolderFileSplitterPlugin-ExpandedFolderPaths";
+export const FFS_FOCUSED_FILE_PATH_KEY =
+	"FolderFileSplitterPlugin-FocusedFilePath";
+export const FFS_FOLDER_SORT_RULE_KEY =
+	"FolderFileSplitterPlugin-FolderSortRule";
+export const FFS_FILE_SORT_RULE_KEY = "FolderFileSplitterPlugin-FileSortRule";
 
-export const ASN_FOLDER_PANE_WIDTH_KEY =
-	"AppleStyleNotesPlugin-FolderPaneWidth";
+export const FFS_FOLDER_PANE_WIDTH_KEY =
+	"FolderFileSplitterPlugin-FolderPaneWidth";
 
-export const VaultChangeEventName = "ASN-VaultChangeEvent";
+export const VaultChangeEventName = "FFS-VaultChangeEvent";
 export type VaultChangeType = "create" | "modify" | "delete" | "rename";
 export type VaultChangeEvent = CustomEvent<{
 	file: TAbstractFile;
 	changeType: VaultChangeType;
 }>;
 
-export const ASN_PLUGIN_SETTINGS = "AppleStyleNotesPluging-Settings";
-export const SettingsChangeEventName = "ASN-SettingsChangeEvent";
+export const FFS_PLUGIN_SETTINGS = "FolderFileSplitterPlugin-Settings";
+export const SettingsChangeEventName = "FFS-SettingsChangeEvent";

@@ -3,7 +3,7 @@ import { useShallow } from "zustand/react/shallow";
 import { StoreApi, UseBoundStore } from "zustand";
 import { TFolder } from "obsidian";
 
-import AppleStyleNotesPlugin from "src/main";
+import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import Folder from "./Folder";
 import {
@@ -15,7 +15,7 @@ import { isFolder } from "src/utils";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-	plugin: AppleStyleNotesPlugin;
+	plugin: FolderFileSplitterPlugin;
 };
 const Folders = ({ useFileTreeStore, plugin }: Props) => {
 	const {
@@ -128,9 +128,9 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 				/>
 				{expandedFolderPaths.includes(folder.path) &&
 					hasFolderChildren(folder) && (
-						<div className="asn-sub-folders-section asn-folder-wrapper">
+						<div className="ffs-sub-folders-section ffs-folder-wrapper">
 							{showHierarchyLines && (
-								<div className="asn-hierarchy-line"></div>
+								<div className="ffs-hierarchy-line"></div>
 							)}
 							{renderFolders(getFoldersByParent(folder))}
 						</div>
@@ -143,9 +143,9 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		if (!rootFolder) return null;
 
 		return (
-			<div className="asn-folder-wrapper">
+			<div className="ffs-folder-wrapper">
 				{showHierarchyLines && (
-					<div className="asn-hierarchy-line"></div>
+					<div className="ffs-hierarchy-line"></div>
 				)}
 				<Folder
 					folder={rootFolder}

@@ -6,14 +6,14 @@ import { FileTreeStore } from "src/store";
 import { EmptyFolderIcon } from "src/assets/icons";
 
 import File from "./File";
-import AppleStyleNotesPlugin from "src/main";
+import FolderFileSplitterPlugin from "src/main";
 import { TFile } from "obsidian";
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFile } from "src/utils";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-	plugin: AppleStyleNotesPlugin;
+	plugin: FolderFileSplitterPlugin;
 };
 const Files = ({ useFileTreeStore, plugin }: Props) => {
 	const {
@@ -94,7 +94,7 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 
 	const renderNoneFilesTips = () => {
 		return (
-			<div className="asn-none-files-tips">
+			<div className="ffs-none-files-tips">
 				<EmptyFolderIcon />
 			</div>
 		);

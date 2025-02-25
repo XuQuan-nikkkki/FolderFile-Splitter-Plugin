@@ -1,12 +1,12 @@
 import { SuggestModal, TAbstractFile, TFolder } from "obsidian";
-import AppleStyleNotesPlugin from "src/main";
+import FolderFileSplitterPlugin from "src/main";
 
 export class FolderListModal extends SuggestModal<TFolder> {
 	folders: TFolder[];
 	item: TAbstractFile;
 
 	constructor(
-		plugin: AppleStyleNotesPlugin,
+		plugin: FolderFileSplitterPlugin,
 		folders: TFolder[],
 		item: TAbstractFile
 	) {

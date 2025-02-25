@@ -1,14 +1,14 @@
 import { Root, createRoot } from "react-dom/client";
 import { ItemView, WorkspaceLeaf } from "obsidian";
 
-import AppleStyleNotesPlugin from "./main";
+import FolderFileSplitterPlugin from "./main";
 import FileTree from "./components/FileTree";
 
 export class FileTreeView extends ItemView {
 	root: Root;
-	plugin: AppleStyleNotesPlugin;
+	plugin: FolderFileSplitterPlugin;
 
-	constructor(leaf: WorkspaceLeaf, plugin: AppleStyleNotesPlugin) {
+	constructor(leaf: WorkspaceLeaf, plugin: FolderFileSplitterPlugin) {
 		super(leaf);
 		this.plugin = plugin;
 	}
@@ -22,7 +22,7 @@ export class FileTreeView extends ItemView {
 	}
 
 	getIcon(): string {
-		return this.plugin?.ICON
+		return this.plugin?.ICON;
 	}
 
 	destroy() {
@@ -38,7 +38,7 @@ export class FileTreeView extends ItemView {
 		this.destroy();
 		this.root = createRoot(this.contentEl);
 		this.root.render(
-			<div className="asn-plugin-view">
+			<div className="ffs-plugin-view">
 				<FileTree plugin={this.plugin} />
 			</div>
 		);

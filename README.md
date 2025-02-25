@@ -1,8 +1,8 @@
-# Apple Style Notes Plugin
+# FolderFile Splitter Plugin
 
 [English](./README.md) | [中文](./README-CN.md)
 
-**Apple Style Notes** is an Obsidian plugin that brings a fresh approach to file management by splitting folders and files into distinct, visually separated lists. Inspired by Apple's elegant design principles, this plugin offers a cleaner, more intuitive way to browse and organize your notes.
+**FolderFile Splitter** is an Obsidian plugin that brings a fresh approach to file management by splitting folders and files into distinct, visually separated lists. Inspired by Apple's elegant design principles, this plugin offers a cleaner, more intuitive way to browse and organize your notes.
 
 ## Features
 
@@ -17,7 +17,7 @@
 
 1. **Download the Plugin**
 
-    - Go to the [Releases](https://github.com/XuQuan-nikkkki/apple-style-notes-plugin/releases) section of this repository.
+    - Go to the [Releases](https://github.com/XuQuan-nikkkki/FolderFile-Splitter-Plugin/releases) section of this repository.
     - Download the latest `.zip` file.
 
 2. **Extract and Place in the Plugins Folder**
@@ -49,4 +49,4 @@ To uninstall the plugin, simply disable or delete it from the Obsidian plugin se
 
 ## Feedback & Issues
 
-If you encounter any bugs or have feature suggestions, please open an issue on this [GitHub repository](https://github.com/XuQuan-nikkkki/apple-style-notes-plugin). Your feedback is invaluable in helping us improve Apple Style Notes!
+If you encounter any bugs or have feature suggestions, please open an issue on this [GitHub repository](https://github.com/XuQuan-nikkkki/FolderFile-Splitter-Plugin). Your feedback is invaluable in helping us improve FolderFile Splitter!
