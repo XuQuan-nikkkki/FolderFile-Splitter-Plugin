@@ -121,6 +121,7 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 		menu.addItem((item) => {
 			item.setTitle("Open in new tab");
 			item.onClick(() => {
+				plugin.app.workspace.openLinkText(file.path, file.path, true);
 				selectFile(file);
 			});
 		});
