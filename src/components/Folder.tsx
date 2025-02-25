@@ -51,6 +51,7 @@ const Folder = ({
 		plugin.settings.expandFolderByClickingOn;
 	const includeSubfolderFilesCount =
 		plugin.settings.includeSubfolderFilesCount;
+	const defaultShowFolderIcon = plugin.settings.showFolderIcon;
 
 	const defaultFilesCount = getFilesCountInFolder(
 		folder,
@@ -65,6 +66,7 @@ const Folder = ({
 	const [expandFolderByClickingOn, setExpandFolderByClickingOn] = useState(
 		expandFolderByClickingOnElement
 	);
+	const [showFolderIcon, setShowFolderIcon] = useState(defaultShowFolderIcon);
 
 	const onToggleExpandState = (): void => {
 		if (isRoot) return;
@@ -139,6 +141,9 @@ const Folder = ({
 				break;
 			case "includeSubfolderFilesCount":
 				setFilesCount(getFilesCountInFolder(folder, changeValue));
+				break;
+			case "showFolderIcon":
+				setShowFolderIcon(changeValue);
 				break;
 			default:
 				break;
@@ -259,7 +264,7 @@ const Folder = ({
 						!isRoot &&
 						(isExpanded ? <ArrowDownIcon /> : <ArrowRightIcon />)}
 				</span>
-				<FolderIcon />
+				{showFolderIcon && <FolderIcon />}
 				<div
 					ref={folderNameRef}
 					className={folderNameClassName}

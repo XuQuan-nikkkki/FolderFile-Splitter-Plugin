@@ -22,21 +22,38 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-		.setName("Show Folder Hierarchy Lines")
-		.setDesc(
-			"When enabled, a line will be displayed next to folders in the same hierarchy level under an expanded parent folder, visually indicating their nesting relationship."
-		).addToggle((cb) => {
-			cb.setValue(this.plugin.settings.showFolderHierarchyLines);
-			cb.onChange(async (val) => {
-				this.plugin.settings.showFolderHierarchyLines = val;
-				await this.saveSettings();
-				this.plugin.triggerSettingsChangeEvent(
-					"showFolderHierarchyLines",
-					val
-				);
-			}
-		);
-		});
+			.setName("Show Folder Hierarchy Lines")
+			.setDesc(
+				"When enabled, a line will be displayed next to folders in the same hierarchy level under an expanded parent folder, visually indicating their nesting relationship."
+			)
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.showFolderHierarchyLines);
+				cb.onChange(async (val) => {
+					this.plugin.settings.showFolderHierarchyLines = val;
+					await this.saveSettings();
+					this.plugin.triggerSettingsChangeEvent(
+						"showFolderHierarchyLines",
+						val
+					);
+				});
+			});
+
+		new Setting(containerEl)
+			.setName("Show Folder Icon")
+			.setDesc(
+				"Enable this option to display icon next to folder, enhancing visual distinction between folders and files."
+			)
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.showFolderIcon);
+				cb.onChange(async (val) => {
+					this.plugin.settings.showFolderIcon = val;
+					await this.saveSettings();
+					this.plugin.triggerSettingsChangeEvent(
+						"showFolderIcon",
+						val
+					);
+				});
+			});
 
 		new Setting(containerEl)
 			.setName("Expand Folder on Click")
