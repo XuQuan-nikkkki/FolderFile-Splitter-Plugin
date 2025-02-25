@@ -22,7 +22,7 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
-			.setName("Show Folder Hierarchy Lines")
+			.setName("Show folder hierarchy lines")
 			.setDesc(
 				"When enabled, a line will be displayed next to folders in the same hierarchy level under an expanded parent folder, visually indicating their nesting relationship."
 			)
@@ -39,7 +39,7 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Show Folder Icon")
+			.setName("Show folder icon")
 			.setDesc(
 				"Enable this option to display icon next to folder, enhancing visual distinction between folders and files."
 			)
@@ -56,7 +56,7 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Expand Folder on Click")
+			.setName("Expand folder on click")
 			.setDesc(
 				"Choose whether to expand a folder by clicking on the toggle icon (▶/▼) or the folder name."
 			)
@@ -75,7 +75,7 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Include Subfolder Files Count")
+			.setName("Include subfolder files count")
 			.setDesc(
 				"When enabled, the file count will include files inside subfolders. Otherwise, only direct child files are counted."
 			)

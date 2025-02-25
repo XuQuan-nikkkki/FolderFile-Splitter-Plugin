@@ -31,7 +31,7 @@ export default class FolderFileSplitterPlugin extends Plugin {
 
 		this.addCommand({
 			id: "open-file-tree-view",
-			name: "Open File Tree View",
+			name: "Open file tree view",
 			callback: async () => await this.openFileTreeLeaf(true),
 		});
 
