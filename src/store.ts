@@ -105,7 +105,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 						return total + 1;
 					}
 					if (includeSubfolderFilesCount && isFolder(child)) {
-						return total + getFilesCount(child as TFolder);
+						return total + getFilesCount(child);
 					}
 					return total;
 				}, 0);
