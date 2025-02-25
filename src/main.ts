@@ -2,13 +2,12 @@ import { Plugin, TAbstractFile } from "obsidian";
 
 import { FileTreeView } from "./FileTreeView";
 import { SettingTab } from "./SettingTab";
-import { FolderFileSplitterPluginSettings } from "./settings";
+import { DEFAULT_SETTINGS, FolderFileSplitterPluginSettings } from "./settings";
 import {
 	SettingsChangeEventName,
 	VaultChangeEventName,
 	VaultChangeType,
 } from "./assets/constants";
-import { getSettingsFromLocalStorage } from "./utils";
 
 export default class FolderFileSplitterPlugin extends Plugin {
 	settings: FolderFileSplitterPluginSettings;
@@ -111,8 +110,7 @@ export default class FolderFileSplitterPlugin extends Plugin {
 	};
 
 	async loadSettings() {
-		const settings = getSettingsFromLocalStorage();
-		this.settings = Object.assign({}, settings, await this.loadData());
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 	}
 
 	async saveSettings() {

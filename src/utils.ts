@@ -28,26 +28,3 @@ export const selectText = (element: HTMLElement) => {
 	selection?.removeAllRanges();
 	selection?.addRange(range);
 };
-
-export const saveSettingsToLocalStorage = (
-	settings: FolderFileSplitterPluginSettings
-) => {
-	try {
-		localStorage.setItem(FFS_PLUGIN_SETTINGS, JSON.stringify(settings));
-	} catch (e) {
-		console.error(e);
-	}
-};
-
-export const getSettingsFromLocalStorage = () => {
-	let settings = DEFAULT_SETTINGS;
-	try {
-		const settingsText = localStorage.getItem(FFS_PLUGIN_SETTINGS);
-		if (settingsText) {
-			settings = JSON.parse(settingsText);
-		}
-	} catch (e) {
-		console.error(e);
-	}
-	return settings;
-};

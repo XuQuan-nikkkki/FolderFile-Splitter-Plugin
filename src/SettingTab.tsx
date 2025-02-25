@@ -1,7 +1,6 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import FolderFileSplitterPlugin from "./main";
 import { expandFolderByClickingOnElement } from "./settings";
-import { saveSettingsToLocalStorage } from "./utils";
 
 export class SettingTab extends PluginSettingTab {
 	plugin: FolderFileSplitterPlugin;
@@ -9,11 +8,6 @@ export class SettingTab extends PluginSettingTab {
 	constructor(app: App, plugin: FolderFileSplitterPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
-	}
-
-	async saveSettings() {
-		await this.plugin.saveSettings();
-		saveSettingsToLocalStorage(this.plugin.settings);
 	}
 
 	display(): void {
@@ -30,7 +24,7 @@ export class SettingTab extends PluginSettingTab {
 				cb.setValue(this.plugin.settings.showFolderHierarchyLines);
 				cb.onChange(async (val) => {
 					this.plugin.settings.showFolderHierarchyLines = val;
-					await this.saveSettings();
+					await this.plugin.saveSettings();
 					this.plugin.triggerSettingsChangeEvent(
 						"showFolderHierarchyLines",
 						val
@@ -47,7 +41,7 @@ export class SettingTab extends PluginSettingTab {
 				cb.setValue(this.plugin.settings.showFolderIcon);
 				cb.onChange(async (val) => {
 					this.plugin.settings.showFolderIcon = val;
-					await this.saveSettings();
+					await this.plugin.saveSettings();
 					this.plugin.triggerSettingsChangeEvent(
 						"showFolderIcon",
 						val
@@ -66,7 +60,7 @@ export class SettingTab extends PluginSettingTab {
 				cb.setValue(this.plugin.settings.expandFolderByClickingOn);
 				cb.onChange(async (val: expandFolderByClickingOnElement) => {
 					this.plugin.settings.expandFolderByClickingOn = val;
-					await this.saveSettings();
+					await this.plugin.saveSettings();
 					this.plugin.triggerSettingsChangeEvent(
 						"expandFolderByClickingOn",
 						val
@@ -83,7 +77,7 @@ export class SettingTab extends PluginSettingTab {
 				cb.setValue(this.plugin.settings.includeSubfolderFilesCount);
 				cb.onChange(async (val) => {
 					this.plugin.settings.includeSubfolderFilesCount = val;
-					await this.saveSettings();
+					await this.plugin.saveSettings();
 					this.plugin.triggerSettingsChangeEvent(
 						"includeSubfolderFilesCount",
 						val
