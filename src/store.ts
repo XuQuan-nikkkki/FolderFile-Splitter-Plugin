@@ -273,12 +273,9 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				focusedFile: file,
 			}),
 		openFile: (file: TFile): void => {
-			const abstractFile = plugin.app.vault.getAbstractFileByPath(
-				file.path
-			);
 			const leaf = plugin.app.workspace.getLeaf();
 			plugin.app.workspace.setActiveLeaf(leaf, { focus: true });
-			leaf.openFile(abstractFile as TFile, { eState: { focus: true } });
+			leaf.openFile(file, { eState: { focus: true } });
 		},
 		selectFile: (file: TFile): void => {
 			const { setFocusedFile, openFile } = get();
