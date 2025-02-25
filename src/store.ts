@@ -36,7 +36,6 @@ export type FileTreeStore = {
 	expandedFolderPaths: string[];
 
 	// Folders related
-	findFolderByPath: (name: string) => TFolder | undefined;
 	getTopLevelFolders: () => TFolder[];
 	getFilesCountInFolder: (
 		folder: TFolder,
@@ -91,9 +90,6 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			return get().folders.filter(
 				(folder) => folder.parent?.parent === null
 			);
-		},
-		findFolderByPath: (path: string): TFolder | undefined => {
-			return get().folders.find((folder) => folder.path == path);
 		},
 		hasFolderChildren: (folder: TFolder): boolean => {
 			return folder.children.some((child) => isFolder(child));
@@ -253,9 +249,9 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			const lastFocusedFolderPath = localStorage.getItem(
 				FFS_FOCUSED_FOLDER_PATH_KEY
 			);
-			const { rootFolder, setFocusedFolder, findFolderByPath } = get();
+			const { rootFolder, setFocusedFolder} = get();
 			if (lastFocusedFolderPath && lastFocusedFolderPath !== "/") {
-				const folder = findFolderByPath(lastFocusedFolderPath);
+				const folder = plugin.app.vault.getFolderByPath(lastFocusedFolderPath);
 				if (folder) {
 					setFocusedFolder(folder);
 				}
