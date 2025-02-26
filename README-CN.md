@@ -1,5 +1,3 @@
-当然可以，下面是你的 `README` 文件的中文翻译：
-
 # FolderFile Splitter 插件
 
 [English](./README.md) | [中文](./README.zh.md)
@@ -56,3 +54,10 @@
 ## 反馈与问题
 
 如果你遇到任何 bug 或有功能建议，欢迎你在这个 [GitHub 仓库](https://github.com/XuQuan-nikkkki/FolderFile-Splitter-Plugin)中提交问题。你的反馈对于改进 FolderFile Splitter 插件非常重要！
+
+## 支持插件开发
+如果你喜欢这个插件，或者觉得它对你有帮助，可以通过以下方式支持我：
+
+<img src="./src/assets/images/赞赏码.png" alt="赞赏码" width="260px" />
+
+你的支持是我持续更新和优化插件的动力！非常感谢！💖
