@@ -5,6 +5,7 @@ export interface FolderFileSplitterPluginSettings {
 	includeSubfolderFilesCount: boolean;
 	showFolderHierarchyLines: boolean;
 	showFolderIcon: boolean;
+	showFileDetail: boolean;
 }
 
 export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
@@ -12,4 +13,5 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	includeSubfolderFilesCount: false,
 	showFolderHierarchyLines: false,
 	showFolderIcon: true,
+	showFileDetail: true,
 };

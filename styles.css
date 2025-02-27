@@ -211,14 +211,13 @@ If your plugin does not need CSS, delete this file.
 }
 
 .ffs-file {
-	height: 56px;
 	font-size: 12px;
 	margin-left: 12px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	border-radius: var(--ffs-folder-border-radius);
-	padding: 0 12px;
+	padding: 12px;
 }
 
 .ffs-file:not(:last-child) {

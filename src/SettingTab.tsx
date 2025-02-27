@@ -16,6 +16,23 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
+			.setName("Show file detail")
+			.setDesc(
+				"When enabled, file details such as creation time and a content preview will be displayed below the file name."
+			)
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.showFileDetail);
+				cb.onChange(async (val) => {
+					this.plugin.settings.showFileDetail = val;
+					await this.plugin.saveSettings();
+					this.plugin.triggerSettingsChangeEvent(
+						"showFileDetail",
+						val
+					);
+				});
+			});
+
+		new Setting(containerEl)
 			.setName("Show folder hierarchy lines")
 			.setDesc(
 				"When enabled, a line will be displayed next to folders in the same hierarchy level under an expanded parent folder, visually indicating their nesting relationship."

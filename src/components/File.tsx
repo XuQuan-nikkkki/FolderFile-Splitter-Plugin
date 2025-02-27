@@ -7,6 +7,7 @@ import { FileTreeStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
 import { moveCursorToEnd, selectText } from "src/utils";
 import { FolderListModal } from "./FolderListModal";
+import { SettingsChangeEventName } from "src/assets/constants";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -37,6 +38,9 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 	const [contentPreview, setContentPreview] = useState<string>("");
 	const [isEditing, setIsEditing] = useState(false);
 	const [name, setName] = useState(file.basename);
+	const [showDetail, setShowDetail] = useState(
+		plugin.settings.showFileDetail
+	);
 
 	const loadContent = async () => {
 		const content = await readFile(file);
@@ -87,11 +91,26 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 	}, []);
 
 	useEffect(() => {
-		document.addEventListener("mousedown", onClickOutside);
+		window.addEventListener("mousedown", onClickOutside);
+		window.addEventListener(
+			SettingsChangeEventName,
+			onHandleSettingsChange
+		);
 		return () => {
-			document.removeEventListener("mousedown", onClickOutside);
+			window.removeEventListener("mousedown", onClickOutside);
+			window.removeEventListener(
+				SettingsChangeEventName,
+				onHandleSettingsChange
+			);
 		};
 	}, [isEditing, name]);
+
+	const onHandleSettingsChange = (event: CustomEvent) => {
+		const { changeKey, changeValue } = event.detail;
+		if (changeKey === "showFileDetail") {
+			setShowDetail(changeValue);
+		}
+	};
 
 	const selectFileNameText = () => {
 		const element = fileNameRef.current;
@@ -187,14 +206,20 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 			>
 				{name}
 			</div>
-			<div className="ffs-file-details">
-				<span className="ffs-file-created-time">
-					{new Date(file.stat.ctime).toLocaleString().split(" ")[0]}
-				</span>
-				<span className="ffs-file-content-preview">
-					{contentPreview}
-				</span>
-			</div>
+			{showDetail && (
+				<div className="ffs-file-details">
+					<span className="ffs-file-created-time">
+						{
+							new Date(file.stat.ctime)
+								.toLocaleString()
+								.split(" ")[0]
+						}
+					</span>
+					<span className="ffs-file-content-preview">
+						{contentPreview}
+					</span>
+				</div>
+			)}
 		</div>
 	);
 };
