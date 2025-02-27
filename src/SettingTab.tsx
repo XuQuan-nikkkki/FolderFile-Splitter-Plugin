@@ -16,6 +16,23 @@ export class SettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		new Setting(containerEl)
+			.setName("Open plugin view on startup")
+			.setDesc(
+				"When enabled, the plugin view will be opened automatically when Obsidian starts."
+			)
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.openPluginViewOnStartup);
+				cb.onChange(async (val) => {
+					this.plugin.settings.openPluginViewOnStartup = val;
+					await this.plugin.saveSettings();
+					this.plugin.triggerSettingsChangeEvent(
+						"openPluginViewOnStartup",
+						val
+					);
+				});
+			});
+
+		new Setting(containerEl)
 			.setName("Show file detail")
 			.setDesc(
 				"When enabled, file details such as creation time and a content preview will be displayed below the file name."

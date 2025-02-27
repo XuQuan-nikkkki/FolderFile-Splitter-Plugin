@@ -6,6 +6,7 @@ export interface FolderFileSplitterPluginSettings {
 	showFolderHierarchyLines: boolean;
 	showFolderIcon: boolean;
 	showFileDetail: boolean;
+	openPluginViewOnStartup: boolean;
 }
 
 export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
@@ -14,4 +15,5 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	showFolderHierarchyLines: false,
 	showFolderIcon: true,
 	showFileDetail: true,
+	openPluginViewOnStartup: true,
 };
