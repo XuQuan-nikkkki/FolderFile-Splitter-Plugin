@@ -8,6 +8,8 @@ import AscendingSortIcon from "./AscendingSortIcon";
 import DescendingSortIcon from "./DescendingSortIcon";
 import ExpandIcon from "./ExpandIcon";
 import CollapseIcon from "./CollapseIcon";
+import PanelRightOpenIcon from "./PanelRightOpenIcon";
+import PanelRightCloseIcon from "./PanelRightCloseIcon";
 
 export {
 	ArrowDownIcon,
@@ -19,5 +21,7 @@ export {
 	AscendingSortIcon,
 	DescendingSortIcon,
 	ExpandIcon,
-	CollapseIcon
+	CollapseIcon,
+	PanelRightOpenIcon,
+	PanelRightCloseIcon,
 };

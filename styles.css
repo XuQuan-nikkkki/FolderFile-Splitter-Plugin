@@ -61,7 +61,6 @@ If your plugin does not need CSS, delete this file.
 
 .ffs-folder-pane {
 	min-width: var(--ffs-folder-pane-min-width);
-	margin-right: 8px;
 	overflow-y: auto;
 }
 
@@ -74,6 +73,8 @@ If your plugin does not need CSS, delete this file.
 .ffs-pane-divider {
 	border: 1px solid var(--ffs-pane-divider-color);
 	cursor: ew-resize;
+	margin-left: 12px;
+	margin-right: 12px;
 }
 
 .ffs-folder {
@@ -268,10 +269,11 @@ If your plugin does not need CSS, delete this file.
 	border-radius: var(--ffs-folder-border-radius);
 	background-color: var(--ffs-actions-background-color);
 	display: flex;
+	justify-content: space-between;
 }
 
-.ffs-file-actions {
-	margin-left: 12px;
+.ffs-actions-left-section {
+	display: flex;
 }
 
 .ffs-folder-actions-icon {

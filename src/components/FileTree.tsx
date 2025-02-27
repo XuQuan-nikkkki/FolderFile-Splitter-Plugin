@@ -11,6 +11,8 @@ import ToggleFolders from "./FolderActions/ToggleFolders";
 import SortFolders from "./FolderActions/SortFolders";
 import CreateFile from "./FileActions/CreateFile";
 import SortFiles from "./FileActions/SortFiles";
+import CollapseFoldersPane from "./FolderActions/CollapseFoldersPane";
+import OpenFilesPane from "./FileActions/OpenFilesPane";
 
 type Props = {
 	plugin: FolderFileSplitterPlugin;
@@ -24,6 +26,7 @@ const FileTree = ({ plugin }: Props) => {
 	const [folderPaneWidth, setFolderPaneWidth] = useState<number | undefined>(
 		220
 	);
+	const [isFoldersCollapsed, setIsFoldersCollapsed] = useState(false);
 
 	const onChangeFolderPaneWidth = (width: number) => {
 		setFolderPaneWidth(width);
@@ -32,28 +35,62 @@ const FileTree = ({ plugin }: Props) => {
 
 	return (
 		<div className="ffs-plugin-container">
-			<div className="ffs-folder-pane" style={{ width: folderPaneWidth }}>
-				<div className="ffs-actions ffs-folder-actions">
-					<CreateFolder useFileTreeStore={useFileTreeStore} />
-					<SortFolders
-						useFileTreeStore={useFileTreeStore}
-						plugin={plugin}
+			{!isFoldersCollapsed && (
+				<>
+					<div
+						className="ffs-folder-pane"
+						style={{ width: folderPaneWidth }}
+					>
+						<div className="ffs-actions">
+							<div className="ffs-actions-left-section">
+								<CreateFolder
+									useFileTreeStore={useFileTreeStore}
+								/>
+								<SortFolders
+									useFileTreeStore={useFileTreeStore}
+									plugin={plugin}
+								/>
+								<ToggleFolders
+									useFileTreeStore={useFileTreeStore}
+								/>
+							</div>
+							<div className="ffs-actions-right-section">
+								<CollapseFoldersPane
+									onCollapseFoldersPane={() =>
+										setIsFoldersCollapsed(true)
+									}
+								/>
+							</div>
+						</div>
+						<Folders
+							plugin={plugin}
+							useFileTreeStore={useFileTreeStore}
+						/>
+					</div>
+					<DraggableDivider
+						initialWidth={folderPaneWidth}
+						onChangeWidth={onChangeFolderPaneWidth}
 					/>
-					<ToggleFolders useFileTreeStore={useFileTreeStore} />
-				</div>
-				<Folders plugin={plugin} useFileTreeStore={useFileTreeStore} />
-			</div>
-			<DraggableDivider
-				initialWidth={folderPaneWidth}
-				onChangeWidth={onChangeFolderPaneWidth}
-			/>
+				</>
+			)}
 			<div className="ffs-files-pane">
-				<div className="ffs-actions ffs-file-actions">
-					<CreateFile useFileTreeStore={useFileTreeStore} />
-					<SortFiles
-						useFileTreeStore={useFileTreeStore}
-						plugin={plugin}
-					/>
+				<div className="ffs-actions">
+					<div className="ffs-actions-left-section">
+						<CreateFile useFileTreeStore={useFileTreeStore} />
+						<SortFiles
+							useFileTreeStore={useFileTreeStore}
+							plugin={plugin}
+						/>
+					</div>
+					<div className="ffs-actions-right-section">
+						{isFoldersCollapsed && (
+							<OpenFilesPane
+								onOpenFilesPane={() =>
+									setIsFoldersCollapsed(false)
+								}
+							/>
+						)}
+					</div>
 				</div>
 				<Files useFileTreeStore={useFileTreeStore} plugin={plugin} />
 			</div>
