@@ -21,6 +21,10 @@ export default class FolderFileSplitterPlugin extends Plugin {
 
 		this.addSettingTab(new SettingTab(this.app, this));
 
+		this.addRibbonIcon(this.ICON, this.VIEW_DISPLAY_TEXT, async () => {
+			await this.openFileTreeLeaf(true);
+		});
+
 		this.registerView(
 			this.VIEW_TYPE,
 			(leaf) => new FileTreeView(leaf, this)
@@ -34,9 +38,11 @@ export default class FolderFileSplitterPlugin extends Plugin {
 			callback: async () => await this.openFileTreeLeaf(true),
 		});
 
-		this.app.workspace.onLayoutReady(async () => {
-			await this.openFileTreeLeaf(true);
-		});
+		if (this.settings.openPluginViewOnStartup) {
+			this.app.workspace.onLayoutReady(async () => {
+				await this.openFileTreeLeaf(true);
+			});
+		}
 
 		this.app.vault.on("create", this.onCreate);
 		this.app.vault.on("modify", this.onModify);
@@ -110,7 +116,11 @@ export default class FolderFileSplitterPlugin extends Plugin {
 	};
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign(
+			{},
+			DEFAULT_SETTINGS,
+			await this.loadData()
+		);
 	}
 
 	async saveSettings() {
