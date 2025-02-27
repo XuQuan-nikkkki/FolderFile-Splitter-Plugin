@@ -89,6 +89,7 @@ export default class FolderFileSplitterPlugin extends Plugin {
 	};
 
 	onunload() {
+		this.detachFileTreeLeafs();
 		this.app.vault.off("create", this.onCreate);
 		this.app.vault.off("modify", this.onModify);
 		this.app.vault.off("delete", this.onDelete);
@@ -116,4 +117,12 @@ export default class FolderFileSplitterPlugin extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
+
+	detachFileTreeLeafs = () => {
+		const leafs = this.app.workspace.getLeavesOfType(this.VIEW_TYPE);
+		for (const leaf of leafs) {
+			(leaf.view as FileTreeView).destroy();
+			leaf.detach();
+		}
+	};
 }
