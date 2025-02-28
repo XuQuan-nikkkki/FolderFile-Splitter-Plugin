@@ -1,13 +1,13 @@
 import { Menu, TFile } from "obsidian";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
 import { FileTreeStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
-import { moveCursorToEnd, selectText } from "src/utils";
 import { FolderListModal } from "./FolderListModal";
 import { useShowFileDetail } from "src/hooks/useSettingsHandler";
+import useRenderEditableName from "src/hooks/useRenderEditableName";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -34,13 +34,25 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 		}))
 	);
 
-	const fileNameRef = useRef<HTMLDivElement>(null);
 	const [contentPreview, setContentPreview] = useState<string>("");
-	const [isEditing, setIsEditing] = useState(false);
-	const [name, setName] = useState(file.basename);
 	const { showFileDetail } = useShowFileDetail(
 		plugin.settings.showFileDetail
 	);
+
+	const onSaveName = async (name: string) => {
+		const newPath = file.path.replace(file.basename, name);
+		await plugin.app.vault.rename(file, newPath);
+	};
+
+	const getClassNames = (isEditing: boolean) => {
+		return "ffs-file-name" + (isEditing ? " ffs-file-name-edit-mode" : "");
+	};
+
+	const {
+		renderEditableName,
+		selectFileNameText,
+		onBeginEdit,
+	} = useRenderEditableName(file.basename, onSaveName, getClassNames);
 
 	const loadContent = async () => {
 		const content = await readFile(file);
@@ -50,72 +62,10 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 		setContentPreview(cleanContent);
 	};
 
-	const onSaveNewName = async () => {
-		try {
-			const newPath = file.path.replace(file.basename, name);
-			await plugin.app.vault.rename(file, newPath);
-			setIsEditing(false);
-		} catch (error) {
-			console.error("Save failed：", error);
-			alert("Content save failed, please try again!！");
-		}
-	};
-
-	const onClickOutside = (event: MouseEvent) => {
-		if (
-			fileNameRef?.current &&
-			!fileNameRef.current.contains(event.target)
-		) {
-			if (isEditing) {
-				onSaveNewName();
-			}
-		}
-	};
-
-	const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
-		if (event.key === "Enter") {
-			event.preventDefault();
-			onSaveNewName();
-			fileNameRef?.current?.blur();
-		} else if (event.key === "Escape") {
-			event.preventDefault();
-			setIsEditing(false);
-			setName(file.basename);
-			fileNameRef.current?.blur();
-		}
-	};
-
 	useEffect(() => {
 		if (file.extension !== "md") return;
 		loadContent();
 	}, []);
-
-	useEffect(() => {
-		window.addEventListener("mousedown", onClickOutside);
-		return () => {
-			window.removeEventListener("mousedown", onClickOutside);
-		};
-	}, [isEditing, name]);
-
-	const selectFileNameText = () => {
-		const element = fileNameRef.current;
-		if (element) {
-			selectText(element);
-		}
-	};
-
-	const onMoveCursorToEnd = () => {
-		const element = fileNameRef.current;
-		if (element) {
-			moveCursorToEnd(element);
-		}
-	};
-
-	const onInputNewName = (e: React.FormEvent<HTMLDivElement>) => {
-		const target = e.target as HTMLDivElement;
-		setName(target.textContent || "");
-		onMoveCursorToEnd();
-	};
 
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
@@ -154,8 +104,7 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 		menu.addItem((item) => {
 			item.setTitle("Rename");
 			item.onClick(() => {
-				setIsEditing(true);
-				setName(file.basename);
+				onBeginEdit();
 				setTimeout(() => {
 					selectFileNameText();
 				}, 100);
@@ -174,8 +123,7 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 
 	const isFocused = focusedFile?.path === file.path;
 	const className = "ffs-file" + (isFocused ? " ffs-focused-file" : "");
-	const fileNameClassName =
-		"ffs-file-name" + (isEditing ? " ffs-file-name-edit-mode" : "");
+
 	return (
 		<div
 			className={className}
@@ -183,15 +131,7 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 			onContextMenu={onShowContextMenu}
 		>
 			<div className="ffs-file-content">
-				<div
-					className={fileNameClassName}
-					ref={fileNameRef}
-					contentEditable={isEditing}
-					onKeyDown={onKeyDown}
-					onInput={onInputNewName}
-				>
-					{name}
-				</div>
+				{renderEditableName()}
 				{showFileDetail && (
 					<div className="ffs-file-details">
 						<span className="ffs-file-created-time">
