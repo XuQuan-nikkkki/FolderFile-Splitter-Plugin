@@ -8,7 +8,11 @@ import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import { moveCursorToEnd, selectText } from "src/utils";
 import { FolderListModal } from "./FolderListModal";
-import { SettingsChangeEventName } from "src/assets/constants";
+import {
+	useShowFolderIcon,
+	useExpandFolderByClickingOnElement,
+	useIncludeSubfolderFilesCount,
+} from "src/hooks/useSettingsHandler";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -32,7 +36,7 @@ const Folder = ({
 		createNewFolder,
 		createFile,
 		folders,
-		focusedFile
+		focusedFile,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			getFilesCountInFolder: store.getFilesCountInFolder,
@@ -44,31 +48,24 @@ const Folder = ({
 			createNewFolder: store.createNewFolder,
 			createFile: store.createFile,
 			folders: store.folders,
-			focusedFile: store.focusedFile
+			focusedFile: store.focusedFile,
 		}))
 	);
 
 	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
-	const expandFolderByClickingOnElement =
-		plugin.settings.expandFolderByClickingOn;
-	const includeSubfolderFilesCount =
-		plugin.settings.includeSubfolderFilesCount;
-	const defaultShowFolderIcon = plugin.settings.showFolderIcon;
-
-	const defaultFilesCount = getFilesCountInFolder(
-		folder,
-		includeSubfolderFilesCount
-	);
-
 	const folderName = isRoot ? plugin.app.vault.getName() : folder.name;
 	const folderNameRef = useRef<HTMLDivElement>(null);
 	const [isEditing, setIsEditing] = useState(false);
 	const [name, setName] = useState(folderName);
-	const [filesCount, setFilesCount] = useState(defaultFilesCount);
-	const [expandFolderByClickingOn, setExpandFolderByClickingOn] = useState(
-		expandFolderByClickingOnElement
+
+	const { settings } = plugin;
+	const { showFolderIcon } = useShowFolderIcon(settings.showFolderIcon);
+	const { expandFolderByClickingOn } = useExpandFolderByClickingOnElement(
+		settings.expandFolderByClickingOn
 	);
-	const [showFolderIcon, setShowFolderIcon] = useState(defaultShowFolderIcon);
+	const { includeSubfolderFilesCount } = useIncludeSubfolderFilesCount(
+		settings.includeSubfolderFilesCount
+	);
 
 	const onToggleExpandState = (): void => {
 		if (isRoot) return;
@@ -121,36 +118,6 @@ const Folder = ({
 			document.removeEventListener("mousedown", onClickOutside);
 		};
 	}, [isEditing, name]);
-
-	useEffect(() => {
-		window.addEventListener(
-			SettingsChangeEventName,
-			onHandleSettingsChange
-		);
-		return () => {
-			window.removeEventListener(
-				SettingsChangeEventName,
-				onHandleSettingsChange
-			);
-		};
-	}, []);
-
-	const onHandleSettingsChange = (event: CustomEvent) => {
-		const { changeKey, changeValue } = event.detail;
-		switch (changeKey) {
-			case "expandFolderByClickingOn":
-				setExpandFolderByClickingOn(changeValue);
-				break;
-			case "includeSubfolderFilesCount":
-				setFilesCount(getFilesCountInFolder(folder, changeValue));
-				break;
-			case "showFolderIcon":
-				setShowFolderIcon(changeValue);
-				break;
-			default:
-				break;
-		}
-	};
 
 	const selectFolderNameText = () => {
 		const element = folderNameRef.current;
@@ -221,11 +188,22 @@ const Folder = ({
 		menu.showAtPosition({ x: e.clientX, y: e.clientY });
 	};
 
+	const renderFilesCount = () => {
+		const filesCount = getFilesCountInFolder(
+			folder,
+			includeSubfolderFilesCount
+		);
+		return <span className="ffs-files-count">{filesCount}</span>;
+	};
+
 	const isFocused = folder.path == focusedFolder?.path;
 	const isExpanded = isRoot || expandedFolderPaths.includes(folder.path);
 
 	const folderClassNames = ["ffs-folder"];
-	if (isFocused && (!focusedFile || focusedFile.parent?.path !== folder.path)) {
+	if (
+		isFocused &&
+		(!focusedFile || focusedFile.parent?.path !== folder.path)
+	) {
 		folderClassNames.push("ffs-focused-folder");
 	} else if (isFocused) {
 		folderClassNames.push("ffs-focused-folder-with-focused-file");
@@ -279,7 +257,7 @@ const Folder = ({
 					{name}
 				</div>
 			</div>
-			<span className="ffs-files-count">{filesCount}</span>
+			{renderFilesCount()}
 		</div>
 	);
 };

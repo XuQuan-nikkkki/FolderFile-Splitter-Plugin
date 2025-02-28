@@ -1,7 +1,7 @@
-export type expandFolderByClickingOnElement = "icon" | "folder";
+export type ExpandFolderByClickingOnElement = "icon" | "folder";
 
 export interface FolderFileSplitterPluginSettings {
-	expandFolderByClickingOn: expandFolderByClickingOnElement;
+	expandFolderByClickingOn: ExpandFolderByClickingOnElement;
 	includeSubfolderFilesCount: boolean;
 	showFolderHierarchyLines: boolean;
 	showFolderIcon: boolean;

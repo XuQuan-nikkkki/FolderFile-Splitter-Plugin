@@ -7,7 +7,7 @@ import { FileTreeStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
 import { moveCursorToEnd, selectText } from "src/utils";
 import { FolderListModal } from "./FolderListModal";
-import { SettingsChangeEventName } from "src/assets/constants";
+import { useShowFileDetail } from "src/hooks/useSettingsHandler";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -38,7 +38,7 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 	const [contentPreview, setContentPreview] = useState<string>("");
 	const [isEditing, setIsEditing] = useState(false);
 	const [name, setName] = useState(file.basename);
-	const [showDetail, setShowDetail] = useState(
+	const { showFileDetail } = useShowFileDetail(
 		plugin.settings.showFileDetail
 	);
 
@@ -92,25 +92,10 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 
 	useEffect(() => {
 		window.addEventListener("mousedown", onClickOutside);
-		window.addEventListener(
-			SettingsChangeEventName,
-			onHandleSettingsChange
-		);
 		return () => {
 			window.removeEventListener("mousedown", onClickOutside);
-			window.removeEventListener(
-				SettingsChangeEventName,
-				onHandleSettingsChange
-			);
 		};
 	}, [isEditing, name]);
-
-	const onHandleSettingsChange = (event: CustomEvent) => {
-		const { changeKey, changeValue } = event.detail;
-		if (changeKey === "showFileDetail") {
-			setShowDetail(changeValue);
-		}
-	};
 
 	const selectFileNameText = () => {
 		const element = fileNameRef.current;
@@ -207,7 +192,7 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 				>
 					{name}
 				</div>
-				{showDetail && (
+				{showFileDetail && (
 					<div className="ffs-file-details">
 						<span className="ffs-file-created-time">
 							{
