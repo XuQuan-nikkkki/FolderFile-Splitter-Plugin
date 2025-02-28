@@ -113,30 +113,35 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		}
 	};
 
+	const maybeRenderHierarchyLine = () => {
+		if (!showHierarchyLines) return null;
+		return <div className="ffs-hierarchy-line"></div>;
+	};
+
 	const renderFolders = (folders: TFolder[]) => {
 		const sortedFolders = sortFolders(
 			folders,
 			folderSortRule,
 			plugin.settings.includeSubfolderFilesCount
 		);
-		return sortedFolders.map((folder) => (
-			<div key={folder.name}>
-				<Folder
-					folder={folder}
-					useFileTreeStore={useFileTreeStore}
-					plugin={plugin}
-				/>
-				{expandedFolderPaths.includes(folder.path) &&
-					hasFolderChildren(folder) && (
+		return sortedFolders.map((folder) => {
+			const isExpanded = expandedFolderPaths.includes(folder.path);
+			return (
+				<div key={folder.name}>
+					<Folder
+						folder={folder}
+						useFileTreeStore={useFileTreeStore}
+						plugin={plugin}
+					/>
+					{isExpanded && hasFolderChildren(folder) && (
 						<div className="ffs-sub-folders-section ffs-folder-wrapper">
-							{showHierarchyLines && (
-								<div className="ffs-hierarchy-line"></div>
-							)}
+							{maybeRenderHierarchyLine()}
 							{renderFolders(getFoldersByParent(folder))}
 						</div>
 					)}
-			</div>
-		));
+				</div>
+			);
+		});
 	};
 
 	const renderRootFolder = () => {
@@ -144,9 +149,7 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 
 		return (
 			<div className="ffs-folder-wrapper">
-				{showHierarchyLines && (
-					<div className="ffs-hierarchy-line"></div>
-				)}
+				{maybeRenderHierarchyLine()}
 				<Folder
 					folder={rootFolder}
 					useFileTreeStore={useFileTreeStore}

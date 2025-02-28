@@ -30,17 +30,25 @@ const FileTree = ({ plugin }: Props) => {
 		localStorage.setItem(FFS_FOLDER_PANE_WIDTH_KEY, String(width));
 	};
 
+	const renderFolderActions = () => (
+		<div className="ffs-actions ffs-folder-actions">
+			<CreateFolder useFileTreeStore={useFileTreeStore} />
+			<SortFolders useFileTreeStore={useFileTreeStore} plugin={plugin} />
+			<ToggleFolders useFileTreeStore={useFileTreeStore} />
+		</div>
+	);
+
+	const renderFileActions = () => (
+		<div className="ffs-actions ffs-file-actions">
+			<CreateFile useFileTreeStore={useFileTreeStore} />
+			<SortFiles useFileTreeStore={useFileTreeStore} plugin={plugin} />
+		</div>
+	);
+
 	return (
 		<div className="ffs-plugin-container">
 			<div className="ffs-folder-pane" style={{ width: folderPaneWidth }}>
-				<div className="ffs-actions ffs-folder-actions">
-					<CreateFolder useFileTreeStore={useFileTreeStore} />
-					<SortFolders
-						useFileTreeStore={useFileTreeStore}
-						plugin={plugin}
-					/>
-					<ToggleFolders useFileTreeStore={useFileTreeStore} />
-				</div>
+				{renderFolderActions()}
 				<Folders plugin={plugin} useFileTreeStore={useFileTreeStore} />
 			</div>
 			<DraggableDivider
@@ -48,13 +56,7 @@ const FileTree = ({ plugin }: Props) => {
 				onChangeWidth={onChangeFolderPaneWidth}
 			/>
 			<div className="ffs-files-pane">
-				<div className="ffs-actions ffs-file-actions">
-					<CreateFile useFileTreeStore={useFileTreeStore} />
-					<SortFiles
-						useFileTreeStore={useFileTreeStore}
-						plugin={plugin}
-					/>
-				</div>
+				{renderFileActions()}
 				<Files useFileTreeStore={useFileTreeStore} plugin={plugin} />
 			</div>
 		</div>
