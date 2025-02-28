@@ -3,6 +3,10 @@ const ArrowDownIcon = () => (
 		viewBox="0 0 84.8212890625 52.0029296875"
 		version="1.1"
 		xmlns="http://www.w3.org/2000/svg"
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
 		className="ffs-icon ffs-arrow-down-icon"
 	>
 		<g transform="matrix(1 0 0 1 -12.444326171874991 61.2314453125)">

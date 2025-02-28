@@ -197,29 +197,31 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 			onClick={() => selectFile(file)}
 			onContextMenu={onShowContextMenu}
 		>
-			<div
-				className={fileNameClassName}
-				ref={fileNameRef}
-				contentEditable={isEditing}
-				onKeyDown={onKeyDown}
-				onInput={onInputNewName}
-			>
-				{name}
-			</div>
-			{showDetail && (
-				<div className="ffs-file-details">
-					<span className="ffs-file-created-time">
-						{
-							new Date(file.stat.ctime)
-								.toLocaleString()
-								.split(" ")[0]
-						}
-					</span>
-					<span className="ffs-file-content-preview">
-						{contentPreview}
-					</span>
+			<div className="ffs-file-content">
+				<div
+					className={fileNameClassName}
+					ref={fileNameRef}
+					contentEditable={isEditing}
+					onKeyDown={onKeyDown}
+					onInput={onInputNewName}
+				>
+					{name}
 				</div>
-			)}
+				{showDetail && (
+					<div className="ffs-file-details">
+						<span className="ffs-file-created-time">
+							{
+								new Date(file.stat.ctime)
+									.toLocaleString()
+									.split(" ")[0]
+							}
+						</span>
+						<span className="ffs-file-content-preview">
+							{contentPreview}
+						</span>
+					</div>
+				)}
+			</div>
 		</div>
 	);
 };
