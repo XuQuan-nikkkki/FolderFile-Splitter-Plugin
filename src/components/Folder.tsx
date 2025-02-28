@@ -83,8 +83,8 @@ const Folder = ({
 			await plugin.app.vault.rename(folder, newPath);
 			setIsEditing(false);
 		} catch (error) {
-			console.error("保存失败：", error);
-			alert("内容保存失败，请重试！");
+			console.error("Save failed：", error);
+			alert("Content save failed, please try again!");
 		}
 	};
 
