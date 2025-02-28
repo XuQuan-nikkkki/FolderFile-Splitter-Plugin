@@ -1,6 +1,6 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import FolderFileSplitterPlugin from "./main";
-import { expandFolderByClickingOnElement } from "./settings";
+import { ExpandFolderByClickingOnElement } from "./settings";
 
 export class SettingTab extends PluginSettingTab {
 	plugin: FolderFileSplitterPlugin;
@@ -92,7 +92,7 @@ export class SettingTab extends PluginSettingTab {
 				cb.addOption("icon", "Toggle Icon");
 				cb.addOption("folder", "Folder Name");
 				cb.setValue(this.plugin.settings.expandFolderByClickingOn);
-				cb.onChange(async (val: expandFolderByClickingOnElement) => {
+				cb.onChange(async (val: ExpandFolderByClickingOnElement) => {
 					this.plugin.settings.expandFolderByClickingOn = val;
 					await this.plugin.saveSettings();
 					this.plugin.triggerSettingsChangeEvent(
