@@ -135,6 +135,23 @@ const Folder = ({
 		menu.showAtPosition({ x: e.clientX, y: e.clientY });
 	};
 
+	const onClickFolder = (e: React.MouseEvent<HTMLDivElement>): void => {
+		if (expandFolderByClickingOn !== "folder") return;
+
+		e.stopPropagation();
+		if (focusedFolder?.path !== folder.path) {
+			setFocusedFolder(folder);
+		} else {
+			onToggleExpandState();
+		}
+	};
+
+	const onClickExpandIcon = (e: React.MouseEvent<HTMLDivElement>): void => {
+		if (expandFolderByClickingOn !== "icon") return;
+		e.stopPropagation();
+		onToggleExpandState();
+	};
+
 	const renderFilesCount = () => {
 		const filesCount = getFilesCountInFolder(
 			folder,
@@ -143,53 +160,40 @@ const Folder = ({
 		return <span className="ffs-files-count">{filesCount}</span>;
 	};
 
-	const isFocused = folder.path == focusedFolder?.path;
-	const isExpanded = isRoot || expandedFolderPaths.includes(folder.path);
+	const getFolderClassName = (): string => {
+		const isFocused = folder.path == focusedFolder?.path;
 
-	const folderClassNames = ["ffs-folder"];
-	if (
-		isFocused &&
-		(!focusedFile || focusedFile.parent?.path !== folder.path)
-	) {
-		folderClassNames.push("ffs-focused-folder");
-	} else if (isFocused) {
-		folderClassNames.push("ffs-focused-folder-with-focused-file");
-	}
-	if (isRoot) {
-		folderClassNames.push("ffs-root-folder");
-	}
+		const isFocusedFileInFolder = focusedFile?.parent?.path === folder.path;
+		const folderClassNames = ["ffs-folder", isRoot && "ffs-root-folder"];
+		if (isFocused && (!focusedFile || !isFocusedFileInFolder)) {
+			folderClassNames.push("ffs-focused-folder");
+		} else if (isFocused) {
+			folderClassNames.push("ffs-focused-folder-with-focused-file");
+		}
+		return folderClassNames.filter(Boolean).join(" ");
+	};
+
+	const maybeRenderExpandIcon = () => {
+		const isExpanded = isRoot || expandedFolderPaths.includes(folder.path);
+		if (!hasFolderChildren(folder) || isRoot) return null;
+		return isExpanded ? <ArrowDownIcon /> : <ArrowRightIcon />;
+	};
 
 	return (
 		<div
-			className={folderClassNames.join(" ")}
+			className={getFolderClassName()}
 			onClick={() => setFocusedFolder(folder)}
 			onContextMenu={onShowContextMenu}
 		>
 			<div
 				className="ffs-folder-pane-left-sectionn"
-				onClick={(e) => {
-					if (expandFolderByClickingOn == "folder") {
-						e.stopPropagation();
-						if (focusedFolder?.path !== folder.path) {
-							setFocusedFolder(folder);
-						} else {
-							onToggleExpandState();
-						}
-					}
-				}}
+				onClick={onClickFolder}
 			>
 				<span
 					className="ffs-folder-arrow-icon-wrapper"
-					onClick={(e) => {
-						if (expandFolderByClickingOn == "icon") {
-							e.stopPropagation();
-							onToggleExpandState();
-						}
-					}}
+					onClick={onClickExpandIcon}
 				>
-					{hasFolderChildren(folder) &&
-						!isRoot &&
-						(isExpanded ? <ArrowDownIcon /> : <ArrowRightIcon />)}
+					{maybeRenderExpandIcon()}
 				</span>
 				{showFolderIcon && <FolderIcon />}
 				{renderEditableName()}

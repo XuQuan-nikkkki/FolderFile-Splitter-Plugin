@@ -48,13 +48,11 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 		return "ffs-file-name" + (isEditing ? " ffs-file-name-edit-mode" : "");
 	};
 
-	const {
-		renderEditableName,
-		selectFileNameText,
-		onBeginEdit,
-	} = useRenderEditableName(file.basename, onSaveName, getClassNames);
+	const { renderEditableName, selectFileNameText, onBeginEdit } =
+		useRenderEditableName(file.basename, onSaveName, getClassNames);
 
-	const loadContent = async () => {
+	const maybeLoadContent = async () => {
+		if (file.extension !== "md") return;
 		const content = await readFile(file);
 		const cleanContent = content
 			.replace(/^---\n[\s\S]*?\n---\n/, "")
@@ -63,8 +61,7 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 	};
 
 	useEffect(() => {
-		if (file.extension !== "md") return;
-		loadContent();
+		maybeLoadContent();
 	}, []);
 
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -121,31 +118,36 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 		menu.showAtPosition({ x: e.clientX, y: e.clientY });
 	};
 
-	const isFocused = focusedFile?.path === file.path;
-	const className = "ffs-file" + (isFocused ? " ffs-focused-file" : "");
+	const maybeRenderFileDetail = () => {
+		if (!showFileDetail) return null;
+
+		const fileCreatedDate = new Date(file.stat.ctime)
+			.toLocaleString()
+			.split(" ")[0];
+		return (
+			<div className="ffs-file-details">
+				<span className="ffs-file-created-time">{fileCreatedDate}</span>
+				<span className="ffs-file-content-preview">
+					{contentPreview}
+				</span>
+			</div>
+		);
+	};
+
+	const getFileClassName = () => {
+		const isFocused = focusedFile?.path === file.path;
+		return "ffs-file" + (isFocused ? " ffs-focused-file" : "");
+	};
 
 	return (
 		<div
-			className={className}
+			className={getFileClassName()}
 			onClick={() => selectFile(file)}
 			onContextMenu={onShowContextMenu}
 		>
 			<div className="ffs-file-content">
 				{renderEditableName()}
-				{showFileDetail && (
-					<div className="ffs-file-details">
-						<span className="ffs-file-created-time">
-							{
-								new Date(file.stat.ctime)
-									.toLocaleString()
-									.split(" ")[0]
-							}
-						</span>
-						<span className="ffs-file-content-preview">
-							{contentPreview}
-						</span>
-					</div>
-				)}
+				{maybeRenderFileDetail()}
 			</div>
 		</div>
 	);
