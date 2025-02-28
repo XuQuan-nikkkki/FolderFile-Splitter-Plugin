@@ -1,18 +1,17 @@
 import { Menu, TFolder } from "obsidian";
-import { useEffect, useRef, useState } from "react";
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
 import { ArrowDownIcon, ArrowRightIcon, FolderIcon } from "src/assets/icons";
 import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
-import { moveCursorToEnd, selectText } from "src/utils";
 import { FolderListModal } from "./FolderListModal";
 import {
 	useShowFolderIcon,
 	useExpandFolderByClickingOnElement,
 	useIncludeSubfolderFilesCount,
 } from "src/hooks/useSettingsHandler";
+import useRenderEditableName from "src/hooks/useRenderEditableName";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -54,9 +53,6 @@ const Folder = ({
 
 	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
 	const folderName = isRoot ? plugin.app.vault.getName() : folder.name;
-	const folderNameRef = useRef<HTMLDivElement>(null);
-	const [isEditing, setIsEditing] = useState(false);
-	const [name, setName] = useState(folderName);
 
 	const { settings } = plugin;
 	const { showFolderIcon } = useShowFolderIcon(settings.showFolderIcon);
@@ -67,6 +63,20 @@ const Folder = ({
 		settings.includeSubfolderFilesCount
 	);
 
+	const getFolderNameClassNames = (isEditing: boolean): string => {
+		return (
+			"ffs-folder-name" + (isEditing ? " ffs-folder-name-edit-mode" : "")
+		);
+	};
+
+	const onSaveName = async (name: string) => {
+		const newPath = folder.path.replace(folder.name, name);
+		await plugin.app.vault.rename(folder, newPath);
+	};
+
+	const { renderEditableName, selectFileNameText, onBeginEdit } =
+		useRenderEditableName(folderName, onSaveName, getFolderNameClassNames);
+
 	const onToggleExpandState = (): void => {
 		if (isRoot) return;
 		if (hasFolderChildren(folder)) {
@@ -75,68 +85,6 @@ const Folder = ({
 				: [...expandedFolderPaths, folder.path];
 			changeExpandedFolderPaths(folderPaths);
 		}
-	};
-
-	const onSaveNewName = async () => {
-		try {
-			const newPath = folder.path.replace(folder.name, name);
-			await plugin.app.vault.rename(folder, newPath);
-			setIsEditing(false);
-		} catch (error) {
-			console.error("Save failed：", error);
-			alert("Content save failed, please try again!");
-		}
-	};
-
-	const onClickOutside = (event: MouseEvent) => {
-		if (
-			folderNameRef?.current &&
-			!folderNameRef.current.contains(event.target)
-		) {
-			if (isEditing) {
-				onSaveNewName();
-			}
-		}
-	};
-
-	const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
-		if (event.key === "Enter") {
-			event.preventDefault();
-			onSaveNewName();
-			folderNameRef?.current?.blur();
-		} else if (event.key === "Escape") {
-			event.preventDefault();
-			setIsEditing(false);
-			setName(folderName);
-			folderNameRef.current?.blur();
-		}
-	};
-
-	useEffect(() => {
-		document.addEventListener("mousedown", onClickOutside);
-		return () => {
-			document.removeEventListener("mousedown", onClickOutside);
-		};
-	}, [isEditing, name]);
-
-	const selectFolderNameText = () => {
-		const element = folderNameRef.current;
-		if (element) {
-			selectText(element);
-		}
-	};
-
-	const onMoveCursorToEnd = () => {
-		const element = folderNameRef.current;
-		if (element) {
-			moveCursorToEnd(element);
-		}
-	};
-
-	const onInputNewName = (e: React.FormEvent<HTMLDivElement>) => {
-		const target = e.target as HTMLDivElement;
-		setName(target.textContent || "");
-		onMoveCursorToEnd();
 	};
 
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -171,10 +119,9 @@ const Folder = ({
 		menu.addItem((item) => {
 			item.setTitle("Rename folder");
 			item.onClick(() => {
-				setIsEditing(true);
-				setName(folderName);
+				onBeginEdit();
 				setTimeout(() => {
-					selectFolderNameText();
+					selectFileNameText();
 				}, 100);
 			});
 		});
@@ -212,8 +159,6 @@ const Folder = ({
 		folderClassNames.push("ffs-root-folder");
 	}
 
-	const folderNameClassName =
-		"ffs-folder-name" + (isEditing ? " ffs-folder-name-edit-mode" : "");
 	return (
 		<div
 			className={folderClassNames.join(" ")}
@@ -247,15 +192,7 @@ const Folder = ({
 						(isExpanded ? <ArrowDownIcon /> : <ArrowRightIcon />)}
 				</span>
 				{showFolderIcon && <FolderIcon />}
-				<div
-					ref={folderNameRef}
-					className={folderNameClassName}
-					contentEditable={isEditing}
-					onKeyDown={onKeyDown}
-					onInput={onInputNewName}
-				>
-					{name}
-				</div>
+				{renderEditableName()}
 			</div>
 			{renderFilesCount()}
 		</div>
