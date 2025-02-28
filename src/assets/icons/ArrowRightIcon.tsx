@@ -3,6 +3,10 @@ const ArrowRightIcon = () => (
 		viewBox="0 0 60.2601318359375 84.8134765625"
 		version="1.1"
 		xmlns="http://www.w3.org/2000/svg"
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
 		className="ffs-icon ffs-arrow-right-icon"
 	>
 		<g transform="matrix(1 0 0 1 -6.194965820312518 77.63671875)">

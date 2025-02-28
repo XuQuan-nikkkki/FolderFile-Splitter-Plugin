@@ -28,22 +28,34 @@ If your plugin does not need CSS, delete this file.
 	--ffs-editing-mode-color: #000000;
 	--ffs-editing-background-color: #ffffff;
 	--ffs-folder-hierarchy-line-color: #e1dede;
+	--ffs-file-hover-background-color: #e5e5e5;
+	--ffs-file-name-color: #000000;
+	--ffs-folder-name-color: #000000;
+	--ffs-focused-folder-with-focused-file-background-color: #d9dce0;
+	--ffs-focused-file-content-preview-color: #707070;
+	--ffs-file-border-color: #E6E6E6;
 }
 
 .theme-dark {
 	--ffs-pane-divider-color: #000000;
 	--ffs-folder-hover-background-color: #2e2d2c;
 	--ffs-files-count-color: #89898a;
-	--ffs-folder-toggle-icon-color: #bfc2c2;
+	--ffs-folder-toggle-icon-color: #a3a5aa;
 	--ffs-folder-focused-color: #ffffff;
-	--ffs-focused-folder-background-color: #debe5b;
+	--ffs-focused-folder-background-color: #9e862d;
 	--ffs-actions-background-color: #2e2d2c;
 	--ffs-actions-icon-color: #a59982;
 	--ffs-file-content-preview-color: #9b9d9f;
-	--ffs-file-created-time-color: #dddede;
+	--ffs-file-created-time-color: #ffffff;
 	--ffs-editing-mode-color: #ffffff;
 	--ffs-editing-background-color: #000000;
 	--ffs-folder-hierarchy-line-color: #474341;
+	--ffs-file-hover-background-color: #2f2d2c;
+	--ffs-file-name-color: #ffffff;
+	--ffs-folder-name-color: #ffffff;
+	--ffs-focused-folder-with-focused-file-background-color: #42484d;
+	--ffs-focused-file-content-preview-color: #d1c59d;
+	--ffs-file-border-color: #3a3d42;
 }
 
 .ffs-plugin-view {
@@ -85,6 +97,7 @@ If your plugin does not need CSS, delete this file.
 	justify-content: space-between;
 	padding-left: 6px;
 	padding-right: 6px;
+	color: var(--ffs-folder-name-color);
 }
 
 .ffs-folder:hover {
@@ -137,7 +150,7 @@ If your plugin does not need CSS, delete this file.
 .ffs-arrow-right-icon {
 	width: 8px;
 	height: 8px;
-	fill: #5a5d63;
+	fill: var(--ffs-folder-toggle-icon-color);
 }
 
 .ffs-files-count {
@@ -148,6 +161,13 @@ If your plugin does not need CSS, delete this file.
 
 .ffs-folder-pane .ffs-focused-folder {
 	background-color: var(--ffs-focused-folder-background-color);
+	border-radius: var(--ffs-folder-border-radius);
+}
+
+.ffs-focused-folder-with-focused-file {
+	background-color: var(
+		--ffs-focused-folder-with-focused-file-background-color
+	);
 	border-radius: var(--ffs-folder-border-radius);
 }
 
@@ -168,6 +188,7 @@ If your plugin does not need CSS, delete this file.
 }
 
 .ffs-focused-folder .ffs-arrow-down-icon,
+.ffs-focused-folder .ffs-arrow-right-icon,
 .ffs-focused-folder .ffs-folder-icon {
 	fill: var(--ffs-folder-focused-color);
 }
@@ -211,21 +232,28 @@ If your plugin does not need CSS, delete this file.
 }
 
 .ffs-file {
-	font-size: 12px;
+	border-radius: var(--ffs-folder-border-radius);
+	padding: 0px 12px;
 	margin-left: 12px;
+}
+
+.ffs-file-content {
+	font-size: 12px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	border-radius: var(--ffs-folder-border-radius);
-	padding: 12px;
+	padding: 12px 0px;
 }
 
-.ffs-file:not(:last-child) {
-	border-bottom: 1px solid #e6e6e6;
+.ffs-file:not(:last-child):not(.ffs-focused-file):has(
+		+ .ffs-file:not(.ffs-focused-file)
+	)
+	.ffs-file-content {
+	border-bottom: 1px solid var(--ffs-file-border-color);
 }
 
 .ffs-file:hover {
-	background-color: #dcdcdc;
+	background-color: var(--ffs-file-hover-background-color);
 }
 
 .ffs-file .ffs-file-name {
@@ -234,6 +262,7 @@ If your plugin does not need CSS, delete this file.
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+	color: var(--ffs-file-name-color);
 }
 
 .ffs-file .ffs-file-created-time {
@@ -260,6 +289,10 @@ If your plugin does not need CSS, delete this file.
 	text-overflow: ellipsis;
 	font-size: 12px;
 	color: var(--ffs-file-content-preview-color);
+}
+
+.ffs-focused-file .ffs-file-content-preview {
+	color: var(--ffs-focused-file-content-preview-color);
 }
 
 .ffs-actions {

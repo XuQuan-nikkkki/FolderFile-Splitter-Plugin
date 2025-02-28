@@ -32,6 +32,7 @@ const Folder = ({
 		createNewFolder,
 		createFile,
 		folders,
+		focusedFile
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			getFilesCountInFolder: store.getFilesCountInFolder,
@@ -43,6 +44,7 @@ const Folder = ({
 			createNewFolder: store.createNewFolder,
 			createFile: store.createFile,
 			folders: store.folders,
+			focusedFile: store.focusedFile
 		}))
 	);
 
@@ -223,8 +225,10 @@ const Folder = ({
 	const isExpanded = isRoot || expandedFolderPaths.includes(folder.path);
 
 	const folderClassNames = ["ffs-folder"];
-	if (isFocused) {
+	if (isFocused && (!focusedFile || focusedFile.parent?.path !== folder.path)) {
 		folderClassNames.push("ffs-focused-folder");
+	} else if (isFocused) {
+		folderClassNames.push("ffs-focused-folder-with-focused-file");
 	}
 	if (isRoot) {
 		folderClassNames.push("ffs-root-folder");
