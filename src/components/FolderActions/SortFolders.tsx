@@ -1,11 +1,9 @@
-import { useEffect } from "react";
-import { Menu } from "obsidian";
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
-import { AscendingSortIcon, DescendingSortIcon } from "src/assets/icons";
 import { FileTreeStore, FolderSortRule } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
+import SortAction from "../SortAction";
 
 type FolderSortRuleItem = {
 	text: string;
@@ -46,43 +44,16 @@ const SortFolders = ({ useFileTreeStore, plugin }: Props) => {
 		}))
 	);
 
-	useEffect(() => {
-		restoreFolderSortRule();
-	}, []);
-
-	const onChangeSortRule = (e: React.MouseEvent<HTMLDivElement>) => {
-		const menu = new Menu();
-		const ruleGroups: FolderSortRuleGroup[] = [
-			FolderSortByNameRules,
-			FolderSortByFilesCountRules,
-		];
-		ruleGroups.forEach((rules) => {
-			rules.forEach(({ text, rule }) => {
-				menu.addItem((newItem) => {
-					newItem
-						.setTitle(text)
-						.setChecked(rule === folderSortRule)
-						.onClick(() => {
-							changeFolderSortRule(rule);
-						});
-				});
-			});
-			menu.addSeparator();
-		});
-		plugin.app.workspace.trigger("sort-folders-menu", menu);
-		menu.showAtPosition({ x: e.pageX, y: e.pageY });
-		return false;
-	};
-
-	const icon = isFoldersInAscendingOrder() ? (
-		<AscendingSortIcon />
-	) : (
-		<DescendingSortIcon />
-	);
 	return (
-		<div className="ffs-actions-icon-wrapper" onClick={onChangeSortRule}>
-			{icon}
-		</div>
+		<SortAction
+			plugin={plugin}
+			restoreSortRule={restoreFolderSortRule}
+			ruleGroups={[FolderSortByNameRules, FolderSortByFilesCountRules]}
+			menuName="sort-folders-menu"
+			changeSortRule={changeFolderSortRule}
+			isInAscendingOrder={isFoldersInAscendingOrder}
+			currentSortRule={folderSortRule}
+		/>
 	);
 };
 
