@@ -110,7 +110,7 @@ If your plugin does not need CSS, delete this file.
 	font-weight: 450;
 }
 
-.ffs-folder-pane-left-sectionn {
+.ffs-folder-pane-left-section {
 	display: flex;
 	align-items: center;
 	flex: 1;

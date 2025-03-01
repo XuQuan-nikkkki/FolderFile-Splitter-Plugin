@@ -84,7 +84,7 @@ const Folder = ({
 				}
 				if (focusedFolder?.path !== item.path) {
 					setFocusedFolder(item);
-				}	
+				}
 			}
 		},
 		collect: (monitor) => ({
@@ -241,7 +241,7 @@ const Folder = ({
 			}}
 		>
 			<div
-				className="ffs-folder-pane-left-sectionn"
+				className="ffs-folder-pane-left-section"
 				onClick={onClickFolder}
 			>
 				<span
