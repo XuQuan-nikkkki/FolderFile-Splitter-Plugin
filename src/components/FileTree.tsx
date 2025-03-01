@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import { DndProvider } from "react-dnd";
 
 import FolderFileSplitterPlugin from "src/main";
 import { createFileTreeStore } from "src/store";
@@ -11,6 +13,7 @@ import ToggleFolders from "./FolderActions/ToggleFolders";
 import SortFolders from "./FolderActions/SortFolders";
 import CreateFile from "./FileActions/CreateFile";
 import SortFiles from "./FileActions/SortFiles";
+import CustomDragLayer from "./CustomDragLayer";
 
 type Props = {
 	plugin: FolderFileSplitterPlugin;
@@ -46,20 +49,32 @@ const FileTree = ({ plugin }: Props) => {
 	);
 
 	return (
-		<div className="ffs-plugin-container">
-			<div className="ffs-folder-pane" style={{ width: folderPaneWidth }}>
-				{renderFolderActions()}
-				<Folders plugin={plugin} useFileTreeStore={useFileTreeStore} />
+		<DndProvider backend={HTML5Backend}>
+			<CustomDragLayer />
+			<div className="ffs-plugin-container">
+				<div
+					className="ffs-folder-pane"
+					style={{ width: folderPaneWidth }}
+				>
+					{renderFolderActions()}
+					<Folders
+						plugin={plugin}
+						useFileTreeStore={useFileTreeStore}
+					/>
+				</div>
+				<DraggableDivider
+					initialWidth={folderPaneWidth}
+					onChangeWidth={onChangeFolderPaneWidth}
+				/>
+				<div className="ffs-files-pane">
+					{renderFileActions()}
+					<Files
+						useFileTreeStore={useFileTreeStore}
+						plugin={plugin}
+					/>
+				</div>
 			</div>
-			<DraggableDivider
-				initialWidth={folderPaneWidth}
-				onChangeWidth={onChangeFolderPaneWidth}
-			/>
-			<div className="ffs-files-pane">
-				{renderFileActions()}
-				<Files useFileTreeStore={useFileTreeStore} plugin={plugin} />
-			</div>
-		</div>
+		</DndProvider>
 	);
 };
 

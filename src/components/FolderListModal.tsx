@@ -1,5 +1,6 @@
 import { SuggestModal, TAbstractFile, TFolder } from "obsidian";
 import FolderFileSplitterPlugin from "src/main";
+import { moveFileOrFolder } from "src/utils";
 
 export class FolderListModal extends SuggestModal<TFolder> {
 	folders: TFolder[];
@@ -34,7 +35,6 @@ export class FolderListModal extends SuggestModal<TFolder> {
 	}
 
 	onChooseSuggestion(folder: TFolder, evt: MouseEvent | KeyboardEvent) {
-		const newPath = folder.path + "/" + this.item.name;
-		this.app.fileManager.renameFile(this.item, newPath);
+		moveFileOrFolder(this.app.fileManager, this.item, folder);
 	}
 }

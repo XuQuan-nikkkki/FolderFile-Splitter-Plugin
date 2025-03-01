@@ -2,6 +2,8 @@ import { Menu, TFile } from "obsidian";
 import { useEffect, useState } from "react";
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
+import { useDrag } from "react-dnd";
+import { getEmptyImage } from "react-dnd-html5-backend";
 
 import { FileTreeStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
@@ -34,6 +36,15 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 		}))
 	);
 
+	const [{ isDragging }, drag, preview] = useDrag(() => ({
+		type: "FILE",
+		item: file,
+		collect: (monitor) => ({
+			isDragging: !!monitor.isDragging(),
+			opacity: monitor.isDragging() ? 0.5 : 1,
+		}),
+	}));
+
 	const [contentPreview, setContentPreview] = useState<string>("");
 	const { showFileDetail } = useShowFileDetail(
 		plugin.settings.showFileDetail
@@ -63,6 +74,10 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 	useEffect(() => {
 		maybeLoadContent();
 	}, []);
+
+	useEffect(() => {
+		preview(getEmptyImage(), { captureDraggingState: true });
+	}, [preview]);
 
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
@@ -141,9 +156,13 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 
 	return (
 		<div
+			ref={drag}
 			className={getFileClassName()}
 			onClick={() => selectFile(file)}
 			onContextMenu={onShowContextMenu}
+			style={{
+				opacity: isDragging ? 0.5 : 1,
+			}}
 		>
 			<div className="ffs-file-content">
 				{renderEditableName()}

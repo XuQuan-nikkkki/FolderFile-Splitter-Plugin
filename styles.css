@@ -20,7 +20,7 @@ If your plugin does not need CSS, delete this file.
 	--ffs-files-count-color: #a6a6a7;
 	--ffs-folder-toggle-icon-color: #585a5d;
 	--ffs-folder-focused-color: #fdf8eb;
-	--ffs-focused-folder-background-color: #ecc44c;
+	--ffs-focused-background-color: #ecc44c;
 	--ffs-actions-background-color: #e5e5e5;
 	--ffs-actions-icon-color: #898989;
 	--ffs-file-content-preview-color: #999999;
@@ -33,7 +33,7 @@ If your plugin does not need CSS, delete this file.
 	--ffs-folder-name-color: #000000;
 	--ffs-focused-folder-with-focused-file-background-color: #d9dce0;
 	--ffs-focused-file-content-preview-color: #707070;
-	--ffs-file-border-color: #E6E6E6;
+	--ffs-file-border-color: #e6e6e6;
 }
 
 .theme-dark {
@@ -42,7 +42,7 @@ If your plugin does not need CSS, delete this file.
 	--ffs-files-count-color: #89898a;
 	--ffs-folder-toggle-icon-color: #a3a5aa;
 	--ffs-folder-focused-color: #ffffff;
-	--ffs-focused-folder-background-color: #9e862d;
+	--ffs-focused-background-color: #9e862d;
 	--ffs-actions-background-color: #2e2d2c;
 	--ffs-actions-icon-color: #a59982;
 	--ffs-file-content-preview-color: #9b9d9f;
@@ -159,8 +159,9 @@ If your plugin does not need CSS, delete this file.
 	margin-left: 4px;
 }
 
-.ffs-folder-pane .ffs-focused-folder {
-	background-color: var(--ffs-focused-folder-background-color);
+.ffs-folder-pane .ffs-focused-folder,
+.ffs-folder-pane .ffs-drop-target-folder {
+	background-color: var(--ffs-focused-background-color);
 	border-radius: var(--ffs-folder-border-radius);
 }
 
@@ -278,7 +279,7 @@ If your plugin does not need CSS, delete this file.
 }
 
 .ffs-files-pane .ffs-focused-file {
-	background-color: var(--ffs-focused-folder-background-color);
+	background-color: var(--ffs-focused-background-color);
 }
 
 .ffs-file-content-preview {
