@@ -61,37 +61,40 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		};
 	}, []);
 
+	const onDeleteFolderFromList = (folder: TFolder) => {
+		setTopFolders((prevFolders) =>
+			prevFolders.filter((prevFolder) => prevFolder.path !== folder.path)
+		);
+	};
+
+	const onUpdateFolderInList = (folder: TFolder) => {
+		setTopFolders((prevFolders) =>
+			prevFolders.map((prevFolder) =>
+				prevFolder.path === folder.path ? folder : prevFolder
+			)
+		);
+	};
+
 	const onHandleVaultChange = (event: VaultChangeEvent) => {
-		const { file, changeType } = event.detail;
-		if (!isFolder(file)) return;
+		const { file: folder, changeType } = event.detail;
+		if (!isFolder(folder)) return;
 		restoreExpandedFolderPaths();
 
 		switch (changeType) {
 			case "create":
-				if (file.parent?.isRoot()) {
-					setTopFolders((prevFolders) => [...prevFolders, file]);
+				if (folder.parent?.isRoot()) {
+					setTopFolders((prevFolders) => [...prevFolders, folder]);
 				}
 				break;
 			case "delete":
-				setTopFolders((prevFolders) =>
-					prevFolders.filter(
-						(prevFolder) => prevFolder.path !== file.path
-					)
-				);
+				onDeleteFolderFromList(folder);
 				break;
 			case "rename":
-				setTopFolders((prevFolders) =>
-					prevFolders.map((prevFolder) =>
-						prevFolder.path === file.path ? file : prevFolder
-					)
-				);
+				onUpdateFolderInList(folder);
 				break;
 			case "modify":
-				setTopFolders((prevFolders) =>
-					prevFolders.map((prevFolder) =>
-						prevFolder.path === file.path ? file : prevFolder
-					)
-				);
+				onUpdateFolderInList(folder);
+				break;
 		}
 	};
 

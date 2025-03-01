@@ -51,6 +51,20 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 		};
 	}, [focusedFolder]);
 
+	const onDeleteFileFromList = (file: TFile) => {
+		setFiles((prevFiles) =>
+			prevFiles.filter((prevFile) => prevFile.path !== file.path)
+		);
+	};
+
+	const onUpdateFileInList = (file: TFile) => {
+		setFiles((prevFiles) =>
+			prevFiles.map((prevFile) =>
+				prevFile.path === file.path ? file : prevFile
+			)
+		);
+	};
+
 	const onHandleVaultChange = (event: VaultChangeEvent) => {
 		const { file, changeType } = event.detail;
 		if (!isFile(file)) return;
@@ -62,32 +76,18 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 				}
 				break;
 			case "delete":
-				setFiles((prevFiles) =>
-					prevFiles.filter((prevFile) => prevFile.path !== file.path)
-				);
+				onDeleteFileFromList(file);
 				break;
 			case "rename":
 				if (!focusedFolder) return;
 				if (file.parent?.path == focusedFolder.path) {
-					setFiles((prevFiles) =>
-						prevFiles.map((prevFile) =>
-							prevFile.path === file.path ? file : prevFile
-						)
-					);
+					onUpdateFileInList(file);
 				} else {
-					setFiles((prevFiles) =>
-						prevFiles.filter(
-							(prevFile) => prevFile.path !== file.path
-						)
-					);
+					onDeleteFileFromList(file);
 				}
 				break;
 			case "modify":
-				setFiles((prevFiles) =>
-					prevFiles.map((prevFile) =>
-						prevFile.path === file.path ? file : prevFile
-					)
-				);
+				onUpdateFileInList(file);
 				break;
 		}
 	};
