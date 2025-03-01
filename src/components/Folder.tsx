@@ -71,6 +71,7 @@ const Folder = ({
 	const [{ isOver }, drop] = useDrop(() => ({
 		accept: ["FILE", "FOLDER"],
 		drop: async (item: TFolder | TFile) => {
+			if (item.path === folder.path) return;
 			await moveFileOrFolder(plugin.app.fileManager, item, folder);
 			if (item instanceof TFile) {
 				if (focusedFolder?.path !== folder.path) {
