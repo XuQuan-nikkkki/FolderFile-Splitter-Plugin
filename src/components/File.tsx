@@ -1,5 +1,5 @@
 import { Menu, TFile } from "obsidian";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import { useDrag } from "react-dnd";
@@ -10,6 +10,7 @@ import FolderFileSplitterPlugin from "src/main";
 import { FolderListModal } from "./FolderListModal";
 import { useShowFileDetail } from "src/hooks/useSettingsHandler";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
+import FileDetail from "./FileDetail";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -18,23 +19,16 @@ type Props = {
 	deleteFile: () => void;
 };
 const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
-	const {
-		focusedFile,
-		readFile,
-		selectFile,
-		createFile,
-		duplicateFile,
-		folders,
-	} = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
-			focusedFile: store.focusedFile,
-			readFile: store.readFile,
-			selectFile: store.selectFile,
-			createFile: store.createFile,
-			duplicateFile: store.duplicateFile,
-			folders: store.folders,
-		}))
-	);
+	const { focusedFile, selectFile, createFile, duplicateFile, folders } =
+		useFileTreeStore(
+			useShallow((store: FileTreeStore) => ({
+				focusedFile: store.focusedFile,
+				selectFile: store.selectFile,
+				createFile: store.createFile,
+				duplicateFile: store.duplicateFile,
+				folders: store.folders,
+			}))
+		);
 
 	const [{ isDragging }, drag, preview] = useDrag(() => ({
 		type: "FILE",
@@ -45,7 +39,6 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 		}),
 	}));
 
-	const [contentPreview, setContentPreview] = useState<string>("");
 	const { showFileDetail } = useShowFileDetail(
 		plugin.settings.showFileDetail
 	);
@@ -61,19 +54,6 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 
 	const { renderEditableName, selectFileNameText, onBeginEdit } =
 		useRenderEditableName(file.basename, onSaveName, getClassNames);
-
-	const maybeLoadContent = async () => {
-		if (file.extension !== "md") return;
-		const content = await readFile(file);
-		const cleanContent = content
-			.replace(/^---\n[\s\S]*?\n---\n/, "")
-			.trim();
-		setContentPreview(cleanContent);
-	};
-
-	useEffect(() => {
-		maybeLoadContent();
-	}, []);
 
 	useEffect(() => {
 		preview(getEmptyImage(), { captureDraggingState: true });
@@ -135,18 +115,7 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 
 	const maybeRenderFileDetail = () => {
 		if (!showFileDetail) return null;
-
-		const fileCreatedDate = new Date(file.stat.ctime)
-			.toLocaleString()
-			.split(" ")[0];
-		return (
-			<div className="ffs-file-details">
-				<span className="ffs-file-created-time">{fileCreatedDate}</span>
-				<span className="ffs-file-content-preview">
-					{contentPreview}
-				</span>
-			</div>
-		);
+		return <FileDetail useFileTreeStore={useFileTreeStore} file={file} />;
 	};
 
 	const getFileClassName = () => {
