@@ -6,12 +6,9 @@ import { TFolder } from "obsidian";
 import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import Folder from "./Folder";
-import {
-	SettingsChangeEventName,
-	VaultChangeEvent,
-	VaultChangeEventName,
-} from "src/assets/constants";
+import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFolder } from "src/utils";
+import { useShowHierarchyLines } from "src/hooks/useSettingsHandler";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -44,7 +41,7 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 
 	const topLevelFolders = getTopLevelFolders();
 	const [topFolders, setTopFolders] = useState<TFolder[]>([]);
-	const [showHierarchyLines, setShowHierarchyLines] = useState(
+	const { showHierarchyLines } = useShowHierarchyLines(
 		plugin.settings.showFolderHierarchyLines
 	);
 
@@ -56,18 +53,10 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 
 	useEffect(() => {
 		window.addEventListener(VaultChangeEventName, onHandleVaultChange);
-		window.addEventListener(
-			SettingsChangeEventName,
-			onHandleSettingsChange
-		);
 		return () => {
 			window.removeEventListener(
 				VaultChangeEventName,
 				onHandleVaultChange
-			);
-			window.removeEventListener(
-				SettingsChangeEventName,
-				onHandleSettingsChange
 			);
 		};
 	}, []);
@@ -103,13 +92,6 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 						prevFolder.path === file.path ? file : prevFolder
 					)
 				);
-		}
-	};
-
-	const onHandleSettingsChange = (event: CustomEvent) => {
-		const { changeKey, changeValue } = event.detail;
-		if (changeKey === "showFolderHierarchyLines") {
-			setShowHierarchyLines(changeValue);
 		}
 	};
 
