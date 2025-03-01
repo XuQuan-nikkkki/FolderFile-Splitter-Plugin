@@ -1,6 +1,7 @@
-import { Menu, TFolder } from "obsidian";
+import { Menu, TFile, TFolder } from "obsidian";
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
+import { useDrop } from "react-dnd";
 
 import { ArrowDownIcon, ArrowRightIcon, FolderIcon } from "src/assets/icons";
 import FolderFileSplitterPlugin from "src/main";
@@ -12,6 +13,7 @@ import {
 	useIncludeSubfolderFilesCount,
 } from "src/hooks/useSettingsHandler";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
+import { moveFileOrFolder } from "src/utils";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -36,6 +38,7 @@ const Folder = ({
 		createFile,
 		folders,
 		focusedFile,
+		selectFile,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			getFilesCountInFolder: store.getFilesCountInFolder,
@@ -48,8 +51,28 @@ const Folder = ({
 			createFile: store.createFile,
 			folders: store.folders,
 			focusedFile: store.focusedFile,
+			selectFile: store.selectFile,
 		}))
 	);
+
+	const [{ isOver }, drop] = useDrop(() => ({
+		accept: "FILE",
+		drop: (item) => {
+			if (item instanceof TFile) {
+				moveFileOrFolder(plugin.app.fileManager, item, folder).then(
+					() => {
+						if (focusedFolder?.path !== folder.path) {
+							setFocusedFolder(folder);
+						}
+						selectFile(item);
+					}
+				);
+			}
+		},
+		collect: (monitor) => ({
+			isOver: !!monitor.isOver(),
+		}),
+	}));
 
 	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
 	const folderName = isRoot ? plugin.app.vault.getName() : folder.name;
@@ -164,7 +187,11 @@ const Folder = ({
 		const isFocused = folder.path == focusedFolder?.path;
 
 		const isFocusedFileInFolder = focusedFile?.parent?.path === folder.path;
-		const folderClassNames = ["ffs-folder", isRoot && "ffs-root-folder"];
+		const folderClassNames = [
+			"ffs-folder",
+			isRoot && "ffs-root-folder",
+			isOver && "ffs-drop-target-folder",
+		];
 		if (isFocused && (!focusedFile || !isFocusedFileInFolder)) {
 			folderClassNames.push("ffs-focused-folder");
 		} else if (isFocused) {
@@ -181,6 +208,7 @@ const Folder = ({
 
 	return (
 		<div
+			ref={drop}
 			className={getFolderClassName()}
 			onClick={() => setFocusedFolder(folder)}
 			onContextMenu={onShowContextMenu}
