@@ -1,9 +1,6 @@
 import { Menu, TFile } from "obsidian";
-import { useEffect } from "react";
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
-import { useDrag } from "react-dnd";
-import { getEmptyImage } from "react-dnd-html5-backend";
 
 import { FileTreeStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
@@ -11,6 +8,7 @@ import { FolderListModal } from "./FolderListModal";
 import { useShowFileDetail } from "src/hooks/useSettingsHandler";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import FileDetail from "./FileDetail";
+import useDraggable from "src/hooks/useDraggable";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -30,14 +28,10 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 			}))
 		);
 
-	const [{ isDragging }, drag, preview] = useDrag(() => ({
+	const { drag, draggingStyle } = useDraggable({
 		type: "FILE",
 		item: file,
-		collect: (monitor) => ({
-			isDragging: !!monitor.isDragging(),
-			opacity: monitor.isDragging() ? 0.5 : 1,
-		}),
-	}));
+	});
 
 	const { showFileDetail } = useShowFileDetail(
 		plugin.settings.showFileDetail
@@ -54,10 +48,6 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 
 	const { renderEditableName, selectFileNameText, onBeginEdit } =
 		useRenderEditableName(file.basename, onSaveName, getClassNames);
-
-	useEffect(() => {
-		preview(getEmptyImage(), { captureDraggingState: true });
-	}, [preview]);
 
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
@@ -129,9 +119,7 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 			className={getFileClassName()}
 			onClick={() => selectFile(file)}
 			onContextMenu={onShowContextMenu}
-			style={{
-				opacity: isDragging ? 0.5 : 1,
-			}}
+			style={draggingStyle}
 		>
 			<div className="ffs-file-content">
 				{renderEditableName()}

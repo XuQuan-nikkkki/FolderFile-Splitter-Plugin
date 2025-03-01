@@ -1,7 +1,8 @@
 import { Menu, TFile, TFolder } from "obsidian";
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
-import { useDrag, useDrop } from "react-dnd";
+import { useDrop } from "react-dnd";
+import { ReactNode, useRef } from "react";
 
 import { ArrowDownIcon, ArrowRightIcon, FolderIcon } from "src/assets/icons";
 import FolderFileSplitterPlugin from "src/main";
@@ -14,8 +15,7 @@ import {
 } from "src/hooks/useSettingsHandler";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { moveFileOrFolder } from "src/utils";
-import { ReactNode, useEffect, useRef } from "react";
-import { getEmptyImage } from "react-dnd-html5-backend";
+import useDraggable from "src/hooks/useDraggable";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -59,14 +59,10 @@ const Folder = ({
 
 	const folderRef = useRef<HTMLDivElement>(null);
 
-	const [{ isDragging }, drag, preview] = useDrag(() => ({
+	const { drag, draggingStyle } = useDraggable({
 		type: "FOLDER",
 		item: folder,
-		collect: (monitor) => ({
-			isDragging: !!monitor.isDragging(),
-			opacity: monitor.isDragging() ? 0.5 : 1,
-		}),
-	}));
+	});
 
 	const [{ isOver }, drop] = useDrop(() => ({
 		accept: ["FILE", "FOLDER"],
@@ -105,10 +101,6 @@ const Folder = ({
 	const { includeSubfolderFilesCount } = useIncludeSubfolderFilesCount(
 		settings.includeSubfolderFilesCount
 	);
-
-	useEffect(() => {
-		preview(getEmptyImage(), { captureDraggingState: true });
-	}, [preview]);
 
 	const getFolderNameClassNames = (isEditing: boolean): string => {
 		return (
@@ -248,9 +240,7 @@ const Folder = ({
 			className={getFolderClassName()}
 			onClick={() => setFocusedFolder(folder)}
 			onContextMenu={onShowContextMenu}
-			style={{
-				opacity: isDragging ? 0.5 : 1,
-			}}
+			style={draggingStyle}
 		>
 			<div
 				className="ffs-folder-pane-left-section"
