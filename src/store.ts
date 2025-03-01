@@ -63,7 +63,7 @@ export type FileTreeStore = {
 	// Files related
 	findFileByPath: (path: string) => TFile | null;
 	isFilesInAscendingOrder: () => boolean;
-	setFocusedFile: (file: TFile) => void;
+	setFocusedFile: (file: TFile | null) => void;
 	openFile: (file: TFile) => void;
 	selectFile: (file: TFile) => void;
 	readFile: (file: TFile) => Promise<string>;
@@ -127,8 +127,12 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				focusedFolder: folder,
 			}),
 		setFocusedFolderAndSaveInLocalStorage: (folder: TFolder) => {
-			get().setFocusedFolder(folder);
+			const { setFocusedFolder, focusedFile, setFocusedFile } = get();
+			setFocusedFolder(folder);
 			localStorage.setItem(FFS_FOCUSED_FOLDER_PATH_KEY, folder.path);
+			if (focusedFile?.parent?.path !== folder.path) {
+				setFocusedFile(null);
+			}
 		},
 		_createFolder: async (path: string): Promise<TFolder> => {
 			const newFolder = await plugin.app.vault.createFolder(path);
@@ -249,9 +253,11 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			const lastFocusedFolderPath = localStorage.getItem(
 				FFS_FOCUSED_FOLDER_PATH_KEY
 			);
-			const { rootFolder, setFocusedFolder} = get();
+			const { rootFolder, setFocusedFolder } = get();
 			if (lastFocusedFolderPath && lastFocusedFolderPath !== "/") {
-				const folder = plugin.app.vault.getFolderByPath(lastFocusedFolderPath);
+				const folder = plugin.app.vault.getFolderByPath(
+					lastFocusedFolderPath
+				);
 				if (folder) {
 					setFocusedFolder(folder);
 				}
