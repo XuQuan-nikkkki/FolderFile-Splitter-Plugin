@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { StoreApi, UseBoundStore } from "zustand";
 import { TFolder } from "obsidian";
@@ -6,9 +6,8 @@ import { TFolder } from "obsidian";
 import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import Folder from "./Folder";
-import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
-import { isFolder } from "src/utils";
 import { useShowHierarchyLines } from "src/hooks/useSettingsHandler";
+import { useChangeFolder } from "src/hooks/useVaultChangeHandler";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -18,7 +17,6 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 	const {
 		rootFolder,
 		folderSortRule,
-		getTopLevelFolders,
 		hasFolderChildren,
 		getFoldersByParent,
 		sortFolders,
@@ -30,7 +28,6 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 			rootFolder: store.rootFolder,
 			folderSortRule: store.folderSortRule,
 			hasFolderChildren: store.hasFolderChildren,
-			getTopLevelFolders: store.getTopLevelFolders,
 			getFoldersByParent: store.getFoldersByParent,
 			sortFolders: store.sortFolders,
 			expandedFolderPaths: store.expandedFolderPaths,
@@ -39,64 +36,15 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		}))
 	);
 
-	const topLevelFolders = getTopLevelFolders();
-	const [topFolders, setTopFolders] = useState<TFolder[]>([]);
 	const { showHierarchyLines } = useShowHierarchyLines(
 		plugin.settings.showFolderHierarchyLines
 	);
+	const { topFolders } = useChangeFolder({ useFileTreeStore });
 
 	useEffect(() => {
 		restoreLastFocusedFolder();
 		restoreExpandedFolderPaths();
-		setTopFolders(topLevelFolders);
 	}, []);
-
-	useEffect(() => {
-		window.addEventListener(VaultChangeEventName, onHandleVaultChange);
-		return () => {
-			window.removeEventListener(
-				VaultChangeEventName,
-				onHandleVaultChange
-			);
-		};
-	}, []);
-
-	const onDeleteFolderFromList = (folder: TFolder) => {
-		setTopFolders((prevFolders) =>
-			prevFolders.filter((prevFolder) => prevFolder.path !== folder.path)
-		);
-	};
-
-	const onUpdateFolderInList = (folder: TFolder) => {
-		setTopFolders((prevFolders) =>
-			prevFolders.map((prevFolder) =>
-				prevFolder.path === folder.path ? folder : prevFolder
-			)
-		);
-	};
-
-	const onHandleVaultChange = (event: VaultChangeEvent) => {
-		const { file: folder, changeType } = event.detail;
-		if (!isFolder(folder)) return;
-		restoreExpandedFolderPaths();
-
-		switch (changeType) {
-			case "create":
-				if (folder.parent?.isRoot()) {
-					setTopFolders((prevFolders) => [...prevFolders, folder]);
-				}
-				break;
-			case "delete":
-				onDeleteFolderFromList(folder);
-				break;
-			case "rename":
-				onUpdateFolderInList(folder);
-				break;
-			case "modify":
-				onUpdateFolderInList(folder);
-				break;
-		}
-	};
 
 	const maybeRenderHierarchyLine = () => {
 		if (!showHierarchyLines) return null;
