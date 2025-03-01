@@ -14,7 +14,7 @@ import {
 } from "src/hooks/useSettingsHandler";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { moveFileOrFolder } from "src/utils";
-import { useEffect, useRef } from "react";
+import { ReactNode, useEffect, useRef } from "react";
 import { getEmptyImage } from "react-dnd-html5-backend";
 
 type Props = {
@@ -226,8 +226,20 @@ const Folder = ({
 
 	const maybeRenderExpandIcon = () => {
 		const isExpanded = isRoot || expandedFolderPaths.includes(folder.path);
-		if (!hasFolderChildren(folder) || isRoot) return null;
-		return isExpanded ? <ArrowDownIcon /> : <ArrowRightIcon />;
+		let content: ReactNode;
+		if (!hasFolderChildren(folder) || isRoot) {
+			content = null;
+		} else {
+			content = isExpanded ? <ArrowDownIcon /> : <ArrowRightIcon />;
+		}
+		return (
+			<span
+				className="ffs-folder-arrow-icon-wrapper"
+				onClick={onClickExpandIcon}
+			>
+				{content}
+			</span>
+		);
 	};
 
 	return (
@@ -244,12 +256,7 @@ const Folder = ({
 				className="ffs-folder-pane-left-section"
 				onClick={onClickFolder}
 			>
-				<span
-					className="ffs-folder-arrow-icon-wrapper"
-					onClick={onClickExpandIcon}
-				>
-					{maybeRenderExpandIcon()}
-				</span>
+				{maybeRenderExpandIcon()}
 				{showFolderIcon && <FolderIcon />}
 				{renderEditableName()}
 			</div>
