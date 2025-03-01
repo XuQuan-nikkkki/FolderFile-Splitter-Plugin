@@ -1,7 +1,7 @@
 import { Menu, TFile, TFolder } from "obsidian";
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
-import { useDrop } from "react-dnd";
+import { useDrag, useDrop } from "react-dnd";
 
 import { ArrowDownIcon, ArrowRightIcon, FolderIcon } from "src/assets/icons";
 import FolderFileSplitterPlugin from "src/main";
@@ -14,6 +14,8 @@ import {
 } from "src/hooks/useSettingsHandler";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { moveFileOrFolder } from "src/utils";
+import { useEffect, useRef } from "react";
+import { getEmptyImage } from "react-dnd-html5-backend";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -55,24 +57,41 @@ const Folder = ({
 		}))
 	);
 
+	const folderRef = useRef<HTMLDivElement>(null);
+
+	const [{ isDragging }, drag, preview] = useDrag(() => ({
+		type: "FOLDER",
+		item: folder,
+		collect: (monitor) => ({
+			isDragging: !!monitor.isDragging(),
+			opacity: monitor.isDragging() ? 0.5 : 1,
+		}),
+	}));
+
 	const [{ isOver }, drop] = useDrop(() => ({
-		accept: "FILE",
-		drop: (item) => {
+		accept: ["FILE", "FOLDER"],
+		drop: async (item: TFolder | TFile) => {
+			await moveFileOrFolder(plugin.app.fileManager, item, folder);
 			if (item instanceof TFile) {
-				moveFileOrFolder(plugin.app.fileManager, item, folder).then(
-					() => {
-						if (focusedFolder?.path !== folder.path) {
-							setFocusedFolder(folder);
-						}
-						selectFile(item);
-					}
-				);
+				if (focusedFolder?.path !== folder.path) {
+					setFocusedFolder(folder);
+				}
+				selectFile(item);
+			} else if (item instanceof TFolder) {
+				if (!isRoot && !expandedFolderPaths.includes(folder.path)) {
+					onToggleExpandState();
+				}
+				if (focusedFolder?.path !== item.path) {
+					setFocusedFolder(item);
+				}	
 			}
 		},
 		collect: (monitor) => ({
 			isOver: !!monitor.isOver(),
 		}),
 	}));
+
+	drag(drop(folderRef));
 
 	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
 	const folderName = isRoot ? plugin.app.vault.getName() : folder.name;
@@ -85,6 +104,10 @@ const Folder = ({
 	const { includeSubfolderFilesCount } = useIncludeSubfolderFilesCount(
 		settings.includeSubfolderFilesCount
 	);
+
+	useEffect(() => {
+		preview(getEmptyImage(), { captureDraggingState: true });
+	}, [preview]);
 
 	const getFolderNameClassNames = (isEditing: boolean): string => {
 		return (
@@ -208,10 +231,13 @@ const Folder = ({
 
 	return (
 		<div
-			ref={drop}
+			ref={folderRef}
 			className={getFolderClassName()}
 			onClick={() => setFocusedFolder(folder)}
 			onContextMenu={onShowContextMenu}
+			style={{
+				opacity: isDragging ? 0.5 : 1,
+			}}
 		>
 			<div
 				className="ffs-folder-pane-left-sectionn"
