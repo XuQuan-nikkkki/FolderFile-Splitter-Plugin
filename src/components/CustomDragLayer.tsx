@@ -20,7 +20,8 @@ const CustomDragLayer = () => {
 				left: currentOffset.x,
 				top: currentOffset.y,
 				transform: "translate(-40px, -70px)",
-				fontSize: "20px",
+				fontSize: 20,
+				zIndex: 100,
 			}}
 		>
 			{item instanceof TFile ? "📄" : "📁"}
