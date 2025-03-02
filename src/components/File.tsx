@@ -31,7 +31,7 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 
 	const { drag, draggingStyle } = useDraggable({
 		type: FFS_DRAG_FILE_TYPE,
-		item: file,
+		item: { file },
 	});
 
 	const { showFileDetail } = useShowFileDetail(

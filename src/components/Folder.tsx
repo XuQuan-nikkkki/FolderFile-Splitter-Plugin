@@ -15,7 +15,11 @@ import {
 } from "src/hooks/useSettingsHandler";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { moveFileOrFolder } from "src/utils";
-import useDraggable from "src/hooks/useDraggable";
+import useDraggable, {
+	DraggableItem,
+	isDraggableFile,
+	isDraggableFolder,
+} from "src/hooks/useDraggable";
 import { FFS_DRAG_FILE_TYPE, FFS_DRAG_FOLDER_TYPE } from "src/assets/constants";
 
 type Props = {
@@ -62,26 +66,38 @@ const Folder = ({
 
 	const { drag, draggingStyle } = useDraggable({
 		type: FFS_DRAG_FOLDER_TYPE,
-		item: folder,
+		item: {
+			folder,
+		},
 	});
+
+	const onDropFile = async (item: TFile) => {
+		if (item.path === folder.path) return;
+		await moveFileOrFolder(plugin.app.fileManager, item, folder);
+		if (focusedFolder?.path !== folder.path) {
+			setFocusedFolder(folder);
+		}
+		selectFile(item);
+	};
+
+	const onDropFolder = async (item: TFolder) => {
+		if (item.path === folder.path) return;
+		await moveFileOrFolder(plugin.app.fileManager, item, folder);
+		if (!isRoot && !expandedFolderPaths.includes(folder.path)) {
+			onToggleExpandState();
+		}
+		if (focusedFolder?.path !== item.path) {
+			setFocusedFolder(item);
+		}
+	};
 
 	const [{ isOver }, drop] = useDrop(() => ({
 		accept: [FFS_DRAG_FILE_TYPE, FFS_DRAG_FOLDER_TYPE],
-		drop: async (item: TFolder | TFile) => {
-			if (item.path === folder.path) return;
-			await moveFileOrFolder(plugin.app.fileManager, item, folder);
-			if (item instanceof TFile) {
-				if (focusedFolder?.path !== folder.path) {
-					setFocusedFolder(folder);
-				}
-				selectFile(item);
-			} else if (item instanceof TFolder) {
-				if (!isRoot && !expandedFolderPaths.includes(folder.path)) {
-					onToggleExpandState();
-				}
-				if (focusedFolder?.path !== item.path) {
-					setFocusedFolder(item);
-				}
+		drop: async (item: DraggableItem) => {
+			if (isDraggableFolder(item)) {
+				await onDropFolder(item.folder);
+			} else if (isDraggableFile(item)) {
+				await onDropFile(item.file);
 			}
 		},
 		collect: (monitor) => ({
