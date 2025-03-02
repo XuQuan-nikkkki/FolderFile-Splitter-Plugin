@@ -22,3 +22,6 @@ export type VaultChangeEvent = CustomEvent<{
 
 export const FFS_PLUGIN_SETTINGS = "FolderFileSplitterPlugin-Settings";
 export const SettingsChangeEventName = "FFS-SettingsChangeEvent";
+
+export const FFS_DRAG_FILE_TYPE = "FFS-FILE";
+export const FFS_DRAG_FOLDER_TYPE = "FFS-FOLDER";

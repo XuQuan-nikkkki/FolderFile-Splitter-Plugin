@@ -16,6 +16,7 @@ import {
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { moveFileOrFolder } from "src/utils";
 import useDraggable from "src/hooks/useDraggable";
+import { FFS_DRAG_FILE_TYPE, FFS_DRAG_FOLDER_TYPE } from "src/assets/constants";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -60,12 +61,12 @@ const Folder = ({
 	const folderRef = useRef<HTMLDivElement>(null);
 
 	const { drag, draggingStyle } = useDraggable({
-		type: "FOLDER",
+		type: FFS_DRAG_FOLDER_TYPE,
 		item: folder,
 	});
 
 	const [{ isOver }, drop] = useDrop(() => ({
-		accept: ["FILE", "FOLDER"],
+		accept: [FFS_DRAG_FILE_TYPE, FFS_DRAG_FOLDER_TYPE],
 		drop: async (item: TFolder | TFile) => {
 			if (item.path === folder.path) return;
 			await moveFileOrFolder(plugin.app.fileManager, item, folder);
