@@ -9,6 +9,7 @@ import { useShowFileDetail } from "src/hooks/useSettingsHandler";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import FileDetail from "./FileDetail";
 import useDraggable from "src/hooks/useDraggable";
+import { FFS_DRAG_FILE_TYPE } from "src/assets/constants";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -29,7 +30,7 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 		);
 
 	const { drag, draggingStyle } = useDraggable({
-		type: "FILE",
+		type: FFS_DRAG_FILE_TYPE,
 		item: file,
 	});
 
