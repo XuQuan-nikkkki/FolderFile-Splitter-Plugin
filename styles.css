@@ -278,7 +278,8 @@ If your plugin does not need CSS, delete this file.
 	margin-top: 4px;
 }
 
-.ffs-files-pane .ffs-focused-file {
+.ffs-files-pane .ffs-focused-file,
+.ffs-files-pane .ffs-selected-file {
 	background-color: var(--ffs-focused-background-color);
 }
 

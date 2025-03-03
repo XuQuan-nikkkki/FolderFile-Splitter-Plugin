@@ -10,14 +10,26 @@ import useRenderEditableName from "src/hooks/useRenderEditableName";
 import FileDetail from "./FileDetail";
 import useDraggable from "src/hooks/useDraggable";
 import { FFS_DRAG_FILE_TYPE } from "src/assets/constants";
+import { useEffect } from "react";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
 	file: TFile;
+	fileList: TFile[]
 	plugin: FolderFileSplitterPlugin;
 	deleteFile: () => void;
+	selectedFiles: TFile[];
+	setSelectedFiles: (files: TFile[]) => void;
 };
-const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
+const File = ({
+	file,
+	fileList,
+	useFileTreeStore,
+	plugin,
+	deleteFile,
+	selectedFiles,
+	setSelectedFiles,
+}: Props) => {
 	const { focusedFile, selectFile, createFile, duplicateFile, folders } =
 		useFileTreeStore(
 			useShallow((store: FileTreeStore) => ({
@@ -28,6 +40,14 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 				folders: store.folders,
 			}))
 		);
+
+	useEffect(() => {
+		if (focusedFile) {
+			setSelectedFiles([focusedFile])
+		} else {
+			setSelectedFiles([])
+		}
+	}, [focusedFile])
 
 	const { drag, draggingStyle } = useDraggable({
 		type: FFS_DRAG_FILE_TYPE,
@@ -109,16 +129,46 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 		return <FileDetail useFileTreeStore={useFileTreeStore} file={file} />;
 	};
 
+	const isFileSelected = () => 
+		selectedFiles.some((f) => f.path === file.path) 
+
 	const getFileClassName = () => {
 		const isFocused = focusedFile?.path === file.path;
-		return "ffs-file" + (isFocused ? " ffs-focused-file" : "");
+		return [
+			"ffs-file",
+			isFocused && "ffs-focused-file",
+			isFileSelected() && "ffs-selected-file"
+		].filter(Boolean).join(" ")
+	};
+
+	const onClickFile = (e: React.MouseEvent<HTMLDivElement>) => {
+		if (e.shiftKey && selectedFiles.length > 0) {
+			const lastSelectedFile = selectedFiles[selectedFiles.length - 1];
+			const lastIndex = fileList.findIndex(f => f.path === lastSelectedFile.path);
+			const currentIndex = fileList.findIndex(f => f.path === file.path);
+	
+			const [start, end] = lastIndex < currentIndex ? [lastIndex, currentIndex] : [currentIndex, lastIndex];
+	
+			setSelectedFiles(fileList.slice(start, end + 1));
+		} else if (e.altKey || e.metaKey) {
+			if (isFileSelected()) {
+				setSelectedFiles(
+					selectedFiles.filter((f) => f.path !== file.path)
+				);
+			} else {
+				setSelectedFiles([...selectedFiles, file]);
+			}
+		} else {
+			setSelectedFiles([file]);
+			selectFile(file);
+		}
 	};
 
 	return (
 		<div
 			ref={drag}
 			className={getFileClassName()}
-			onClick={() => selectFile(file)}
+			onClick={onClickFile}
 			onContextMenu={onShowContextMenu}
 			style={draggingStyle}
 		>

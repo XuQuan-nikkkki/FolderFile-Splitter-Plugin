@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { StoreApi, UseBoundStore } from "zustand";
 
@@ -8,6 +8,7 @@ import { EmptyFolderIcon } from "src/assets/icons";
 import File from "./File";
 import FolderFileSplitterPlugin from "src/main";
 import { useChangeFile } from "src/hooks/useVaultChangeHandler";
+import { TFile } from "obsidian";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -23,6 +24,7 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 			}))
 		);
 	const { files, onDeleteFileFromList } = useChangeFile({ useFileTreeStore });
+	const [selectedFiles, setSelectedFiles] = useState<TFile[]>([]);
 
 	useEffect(() => {
 		restoreLastFocusedFile();
@@ -47,6 +49,9 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 					file={file}
 					plugin={plugin}
 					deleteFile={() => onDeleteFileFromList(file)}
+					fileList={sortedFiles}
+					selectedFiles={selectedFiles}
+					setSelectedFiles={setSelectedFiles}
 				/>
 			))}
 		</>
