@@ -78,9 +78,7 @@ const Folder = ({
 		const file = item[0]
 		if (file.path === folder.path) return;
 		await moveFileOrFolder(plugin.app.fileManager, file, folder);
-		if (focusedFolder?.path !== folder.path) {
-			setFocusedFolder(folder);
-		}
+		setFocusedFolder(folder);
 		selectFile(file);
 	};
 
