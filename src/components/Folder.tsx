@@ -16,11 +16,14 @@ import {
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { moveFileOrFolder } from "src/utils";
 import useDraggable, {
+	DraggableFiles,
+	DraggableFolder,
 	DraggableItem,
-	isDraggableFile,
-	isDraggableFolder,
 } from "src/hooks/useDraggable";
-import { FFS_DRAG_FILE_TYPE, FFS_DRAG_FOLDER_TYPE } from "src/assets/constants";
+import {
+	FFS_DRAG_FILES_TYPE,
+	FFS_DRAG_FOLDER_TYPE,
+} from "src/assets/constants";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -71,13 +74,14 @@ const Folder = ({
 		},
 	});
 
-	const onDropFile = async (item: TFile) => {
-		if (item.path === folder.path) return;
-		await moveFileOrFolder(plugin.app.fileManager, item, folder);
+	const onDropFiles = async (item: TFile[]) => {
+		const file = item[0]
+		if (file.path === folder.path) return;
+		await moveFileOrFolder(plugin.app.fileManager, file, folder);
 		if (focusedFolder?.path !== folder.path) {
 			setFocusedFolder(folder);
 		}
-		selectFile(item);
+		selectFile(file);
 	};
 
 	const onDropFolder = async (item: TFolder) => {
@@ -92,12 +96,13 @@ const Folder = ({
 	};
 
 	const [{ isOver }, drop] = useDrop(() => ({
-		accept: [FFS_DRAG_FILE_TYPE, FFS_DRAG_FOLDER_TYPE],
-		drop: async (item: DraggableItem) => {
-			if (isDraggableFolder(item)) {
-				await onDropFolder(item.folder);
-			} else if (isDraggableFile(item)) {
-				await onDropFile(item.file);
+		accept: [FFS_DRAG_FILES_TYPE, FFS_DRAG_FOLDER_TYPE],
+		drop: async (item: DraggableItem, monitor) => {
+			const itemType = monitor.getItemType();
+			if (itemType === FFS_DRAG_FOLDER_TYPE) {
+				await onDropFolder((item as DraggableFolder).folder);
+			} else if (itemType === FFS_DRAG_FILES_TYPE) {
+				await onDropFiles((item as DraggableFiles).files);
 			}
 		},
 		collect: (monitor) => ({
