@@ -10,7 +10,7 @@ import { useShowFileDetail } from "src/hooks/useSettingsHandler";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import FileDetail from "./FileDetail";
 import useDraggable from "src/hooks/useDraggable";
-import { FFS_DRAG_FILE_TYPE } from "src/assets/constants";
+import { FFS_DRAG_FILES_TYPE } from "src/assets/constants";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -50,8 +50,8 @@ const File = ({
 	}, [focusedFile]);
 
 	const { drag, draggingStyle } = useDraggable({
-		type: FFS_DRAG_FILE_TYPE,
-		item: { file },
+		type: FFS_DRAG_FILES_TYPE,
+		item: { files: [file] },
 	});
 
 	const { showFileDetail } = useShowFileDetail(
