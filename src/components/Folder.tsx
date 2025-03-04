@@ -17,12 +17,12 @@ import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { moveFileOrFolder } from "src/utils";
 import useDraggable, {
 	DraggableFiles,
-	DraggableFolder,
+	DraggableFolders,
 	DraggableItem,
 } from "src/hooks/useDraggable";
 import {
 	FFS_DRAG_FILES_TYPE,
-	FFS_DRAG_FOLDER_TYPE,
+	FFS_DRAG_FOLDERS_TYPE,
 } from "src/assets/constants";
 
 type Props = {
@@ -66,9 +66,9 @@ const Folder = ({
 	const folderRef = useRef<HTMLDivElement>(null);
 
 	const { drag, draggingStyle } = useDraggable({
-		type: FFS_DRAG_FOLDER_TYPE,
+		type: FFS_DRAG_FOLDERS_TYPE,
 		item: {
-			folder,
+			folders: [folder],
 		},
 	});
 
@@ -84,23 +84,24 @@ const Folder = ({
 		setFocusedFolder(folder);
 	};
 
-	const onDropFolder = async (item: TFolder) => {
-		if (item.path === folder.path) return;
-		await moveFileOrFolder(plugin.app.fileManager, item, folder);
+	const onDropFolders = async (item: TFolder[]) => {
+		const droppedFolder = item[0]
+		if (droppedFolder.path === folder.path) return;
+		await moveFileOrFolder(plugin.app.fileManager, droppedFolder, folder);
 		if (!isRoot && !expandedFolderPaths.includes(folder.path)) {
 			onToggleExpandState();
 		}
-		if (focusedFolder?.path !== item.path) {
-			setFocusedFolder(item);
+		if (focusedFolder?.path !== droppedFolder.path) {
+			setFocusedFolder(droppedFolder);
 		}
 	};
 
 	const [{ isOver }, drop] = useDrop(() => ({
-		accept: [FFS_DRAG_FILES_TYPE, FFS_DRAG_FOLDER_TYPE],
+		accept: [FFS_DRAG_FILES_TYPE, FFS_DRAG_FOLDERS_TYPE],
 		drop: async (item: DraggableItem, monitor) => {
 			const itemType = monitor.getItemType();
-			if (itemType === FFS_DRAG_FOLDER_TYPE) {
-				await onDropFolder((item as DraggableFolder).folder);
+			if (itemType === FFS_DRAG_FOLDERS_TYPE) {
+				await onDropFolders((item as DraggableFolders).folders);
 			} else if (itemType === FFS_DRAG_FILES_TYPE) {
 				await onDropFiles((item as DraggableFiles).files);
 			}

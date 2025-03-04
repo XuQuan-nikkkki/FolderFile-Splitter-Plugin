@@ -1,7 +1,7 @@
 import { useDragLayer } from "react-dnd";
 import {
 	FFS_DRAG_FILES_TYPE,
-	FFS_DRAG_FOLDER_TYPE,
+	FFS_DRAG_FOLDERS_TYPE,
 } from "src/assets/constants";
 
 const CustomDragLayer = () => {
@@ -17,7 +17,7 @@ const CustomDragLayer = () => {
 	}
 
 	const renderDraggingIcon = () => {
-		if (itemType === FFS_DRAG_FOLDER_TYPE) {
+		if (itemType === FFS_DRAG_FOLDERS_TYPE) {
 			return "📁";
 		} else if (itemType === FFS_DRAG_FILES_TYPE) {
 			return "📄";
