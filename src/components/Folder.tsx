@@ -2,9 +2,9 @@ import { Menu, TFile, TFolder } from "obsidian";
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import { useDrop } from "react-dnd";
-import { ReactNode, useRef } from "react";
+import { useRef } from "react";
 
-import { ArrowDownIcon, ArrowRightIcon, FolderIcon } from "src/assets/icons";
+import { FolderIcon } from "src/assets/icons";
 import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import { FolderListModal } from "./FolderListModal";
@@ -24,6 +24,7 @@ import {
 } from "src/assets/constants";
 import useRenderFolderName from "../hooks/useRenderFolderName";
 import FilesCount from "./FilesCount";
+import FolderExpandIcon from "./FolderExpandIcon";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -191,12 +192,6 @@ const Folder = ({
 		}
 	};
 
-	const onClickExpandIcon = (e: React.MouseEvent<HTMLDivElement>): void => {
-		if (expandFolderByClickingOn !== "icon") return;
-		e.stopPropagation();
-		onToggleExpandState();
-	};
-
 	const getFolderClassName = (): string => {
 		const isFocused = folder.path == focusedFolder?.path;
 
@@ -214,24 +209,6 @@ const Folder = ({
 		return folderClassNames.filter(Boolean).join(" ");
 	};
 
-	const maybeRenderExpandIcon = () => {
-		const isExpanded = isRoot || expandedFolderPaths.includes(folder.path);
-		let content: ReactNode;
-		if (!hasFolderChildren(folder) || isRoot) {
-			content = null;
-		} else {
-			content = isExpanded ? <ArrowDownIcon /> : <ArrowRightIcon />;
-		}
-		return (
-			<span
-				className="ffs-folder-arrow-icon-wrapper"
-				onClick={onClickExpandIcon}
-			>
-				{content}
-			</span>
-		);
-	};
-
 	return (
 		<div
 			ref={folderRef}
@@ -244,7 +221,12 @@ const Folder = ({
 				className="ffs-folder-pane-left-section"
 				onClick={onClickFolder}
 			>
-				{maybeRenderExpandIcon()}
+				<FolderExpandIcon
+					folder={folder}
+					useFileTreeStore={useFileTreeStore}
+					plugin={plugin}
+					isRoot={isRoot}
+				/>
 				{showFolderIcon && <FolderIcon />}
 				{renderFolderName()}
 			</div>
