@@ -11,7 +11,6 @@ import { FolderListModal } from "./FolderListModal";
 import {
 	useShowFolderIcon,
 	useExpandFolderByClickingOnElement,
-	useIncludeSubfolderFilesCount,
 } from "src/hooks/useSettingsHandler";
 import { moveFileOrFolder } from "src/utils";
 import useDraggable, {
@@ -24,6 +23,7 @@ import {
 	FFS_DRAG_FOLDERS_TYPE,
 } from "src/assets/constants";
 import useRenderFolderName from "../hooks/useRenderFolderName";
+import FilesCount from "./FilesCount";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -38,7 +38,6 @@ const Folder = ({
 	isRoot = false,
 }: Props) => {
 	const {
-		getFilesCountInFolder,
 		hasFolderChildren,
 		focusedFolder,
 		setFocusedFolder,
@@ -50,7 +49,6 @@ const Folder = ({
 		focusedFile,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
-			getFilesCountInFolder: store.getFilesCountInFolder,
 			hasFolderChildren: store.hasFolderChildren,
 			focusedFolder: store.focusedFolder,
 			setFocusedFolder: store.setFocusedFolderAndSaveInLocalStorage,
@@ -119,9 +117,6 @@ const Folder = ({
 	const { showFolderIcon } = useShowFolderIcon(settings.showFolderIcon);
 	const { expandFolderByClickingOn } = useExpandFolderByClickingOnElement(
 		settings.expandFolderByClickingOn
-	);
-	const { includeSubfolderFilesCount } = useIncludeSubfolderFilesCount(
-		settings.includeSubfolderFilesCount
 	);
 
 	const { renderFolderName, selectFileNameText, onBeginEdit } =
@@ -202,14 +197,6 @@ const Folder = ({
 		onToggleExpandState();
 	};
 
-	const renderFilesCount = () => {
-		const filesCount = getFilesCountInFolder(
-			folder,
-			includeSubfolderFilesCount
-		);
-		return <span className="ffs-files-count">{filesCount}</span>;
-	};
-
 	const getFolderClassName = (): string => {
 		const isFocused = folder.path == focusedFolder?.path;
 
@@ -261,7 +248,11 @@ const Folder = ({
 				{showFolderIcon && <FolderIcon />}
 				{renderFolderName()}
 			</div>
-			{renderFilesCount()}
+			<FilesCount
+				folder={folder}
+				useFileTreeStore={useFileTreeStore}
+				plugin={plugin}
+			/>
 		</div>
 	);
 };
