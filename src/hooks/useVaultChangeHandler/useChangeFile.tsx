@@ -77,7 +77,7 @@ const useChangeFile = ({ useFileTreeStore }: Props) => {
 
 	return {
 		files,
-    onDeleteFileFromList
+		onDeleteFileFromList,
 	};
 };
 

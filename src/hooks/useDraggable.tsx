@@ -8,6 +8,10 @@ import {
 	FFS_DRAG_FOLDER_TYPE,
 } from "src/assets/constants";
 
+export const getDraggingStyles = (isDragging: boolean): CSSProperties => {
+	return { opacity: isDragging ? 0.5 : 1 };
+};
+
 export type DraggableFiles = {
 	files: TFile[];
 };
@@ -19,17 +23,23 @@ export type DraggableItem = DraggableFiles | DraggableFolder;
 
 type Props = {
 	type: typeof FFS_DRAG_FILES_TYPE | typeof FFS_DRAG_FOLDER_TYPE;
-	item: DraggableItem;
+	item: DraggableItem | (() => DraggableItem);
+	end?: () => void;
+	deps?: unknown[];
 };
-const useDraggable = ({ type, item }: Props) => {
-	const [{ isDragging }, drag, preview] = useDrag(() => ({
-		type,
-		item,
-		collect: (monitor) => ({
-			isDragging: !!monitor.isDragging(),
-			opacity: monitor.isDragging() ? 0.5 : 1,
+const useDraggable = ({ type, item, end, deps }: Props) => {
+	const [{ isDragging }, drag, preview] = useDrag(
+		() => ({
+			type,
+			item,
+			collect: (monitor) => ({
+				isDragging: !!monitor.isDragging(),
+				opacity: monitor.isDragging() ? 0.5 : 1,
+			}),
+			end,
 		}),
-	}));
+		[deps]
+	);
 
 	useEffect(() => {
 		preview(getEmptyImage(), { captureDraggingState: true });
@@ -42,6 +52,7 @@ const useDraggable = ({ type, item }: Props) => {
 	return {
 		drag,
 		draggingStyle,
+		isDragging,
 	};
 };
 

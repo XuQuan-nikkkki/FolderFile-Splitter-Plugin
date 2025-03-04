@@ -48,7 +48,6 @@ const Folder = ({
 		createFile,
 		folders,
 		focusedFile,
-		selectFile,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			getFilesCountInFolder: store.getFilesCountInFolder,
@@ -61,7 +60,6 @@ const Folder = ({
 			createFile: store.createFile,
 			folders: store.folders,
 			focusedFile: store.focusedFile,
-			selectFile: store.selectFile,
 		}))
 	);
 
@@ -74,12 +72,16 @@ const Folder = ({
 		},
 	});
 
-	const onDropFiles = async (item: TFile[]) => {
-		const file = item[0]
-		if (file.path === folder.path) return;
-		await moveFileOrFolder(plugin.app.fileManager, file, folder);
+	const onDropFiles = async (files: TFile[]) => {
+		const filesToMove = files.filter((file) => file.path !== folder.path);
+		if (!filesToMove.length) return;
+		await Promise.all(
+			filesToMove.map(
+				async (file) =>
+					await moveFileOrFolder(plugin.app.fileManager, file, folder)
+			)
+		);
 		setFocusedFolder(folder);
-		selectFile(file);
 	};
 
 	const onDropFolder = async (item: TFolder) => {
