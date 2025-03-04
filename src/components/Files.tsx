@@ -26,6 +26,7 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 		);
 	const { files, onDeleteFileFromList } = useChangeFile({ useFileTreeStore });
 	const [selectedFiles, setSelectedFiles] = useState<TFile[]>([]);
+	const [draggingFiles, setDraggingFiles] = useState<TFile[]>([]);
 
 	const filesRef = useRef<HTMLDivElement>(null);
 
@@ -68,6 +69,8 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 					fileList={sortedFiles}
 					selectedFiles={selectedFiles}
 					setSelectedFiles={setSelectedFiles}
+					draggingFiles={draggingFiles}
+					setDraggingFiles={setDraggingFiles}
 				/>
 			))}
 		</div>
