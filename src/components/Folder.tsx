@@ -13,7 +13,6 @@ import {
 	useExpandFolderByClickingOnElement,
 	useIncludeSubfolderFilesCount,
 } from "src/hooks/useSettingsHandler";
-import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { moveFileOrFolder } from "src/utils";
 import useDraggable, {
 	DraggableFiles,
@@ -24,6 +23,7 @@ import {
 	FFS_DRAG_FILES_TYPE,
 	FFS_DRAG_FOLDERS_TYPE,
 } from "src/assets/constants";
+import useRenderFolderName from "../hooks/useRenderFolderName";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -85,7 +85,7 @@ const Folder = ({
 	};
 
 	const onDropFolders = async (item: TFolder[]) => {
-		const droppedFolder = item[0]
+		const droppedFolder = item[0];
 		if (droppedFolder.path === folder.path) return;
 		await moveFileOrFolder(plugin.app.fileManager, droppedFolder, folder);
 		if (!isRoot && !expandedFolderPaths.includes(folder.path)) {
@@ -114,7 +114,6 @@ const Folder = ({
 	drag(drop(folderRef));
 
 	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
-	const folderName = isRoot ? plugin.app.vault.getName() : folder.name;
 
 	const { settings } = plugin;
 	const { showFolderIcon } = useShowFolderIcon(settings.showFolderIcon);
@@ -125,19 +124,8 @@ const Folder = ({
 		settings.includeSubfolderFilesCount
 	);
 
-	const getFolderNameClassNames = (isEditing: boolean): string => {
-		return (
-			"ffs-folder-name" + (isEditing ? " ffs-folder-name-edit-mode" : "")
-		);
-	};
-
-	const onSaveName = async (name: string) => {
-		const newPath = folder.path.replace(folder.name, name);
-		await plugin.app.vault.rename(folder, newPath);
-	};
-
-	const { renderEditableName, selectFileNameText, onBeginEdit } =
-		useRenderEditableName(folderName, onSaveName, getFolderNameClassNames);
+	const { renderFolderName, selectFileNameText, onBeginEdit } =
+		useRenderFolderName(folder, plugin, isRoot);
 
 	const onToggleExpandState = (): void => {
 		if (isRoot) return;
@@ -271,7 +259,7 @@ const Folder = ({
 			>
 				{maybeRenderExpandIcon()}
 				{showFolderIcon && <FolderIcon />}
-				{renderEditableName()}
+				{renderFolderName()}
 			</div>
 			{renderFilesCount()}
 		</div>
