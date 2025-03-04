@@ -20,9 +20,16 @@ const useChangeFolder = ({ useFileTreeStore }: Props) => {
 
 	const [topFolders, setTopFolders] = useState<TFolder[]>([]);
 
-	useEffect(() => {
+	const onUpdateTopFolders = () => {
 		const topLevelFolders = getTopLevelFolders();
 		setTopFolders(topLevelFolders);
+	};
+
+	useEffect(() => {
+		onUpdateTopFolders()
+	}, []);
+
+	useEffect(() => {
 		window.addEventListener(VaultChangeEventName, onHandleVaultChange);
 		return () => {
 			window.removeEventListener(
@@ -30,19 +37,11 @@ const useChangeFolder = ({ useFileTreeStore }: Props) => {
 				onHandleVaultChange
 			);
 		};
-	}, []);
+	}, [topFolders]);
 
 	const onDeleteFolderFromList = (folder: TFolder) => {
 		setTopFolders((prevFolders) =>
 			prevFolders.filter((prevFolder) => prevFolder.path !== folder.path)
-		);
-	};
-
-	const onUpdateFolderInList = (folder: TFolder) => {
-		setTopFolders((prevFolders) =>
-			prevFolders.map((prevFolder) =>
-				prevFolder.path === folder.path ? folder : prevFolder
-			)
 		);
 	};
 
@@ -61,10 +60,10 @@ const useChangeFolder = ({ useFileTreeStore }: Props) => {
 				onDeleteFolderFromList(folder);
 				break;
 			case "rename":
-				onUpdateFolderInList(folder);
+				onUpdateTopFolders();
 				break;
 			case "modify":
-				onUpdateFolderInList(folder);
+				onUpdateTopFolders();
 				break;
 		}
 	};
