@@ -1,16 +1,28 @@
-import { TFile } from "obsidian";
 import { useDragLayer } from "react-dnd";
+import {
+	FFS_DRAG_FILES_TYPE,
+	FFS_DRAG_FOLDER_TYPE,
+} from "src/assets/constants";
 
 const CustomDragLayer = () => {
-	const { isDragging, item, currentOffset } = useDragLayer((monitor) => ({
+	const { isDragging, currentOffset, itemType } = useDragLayer((monitor) => ({
 		isDragging: monitor.isDragging(),
 		item: monitor.getItem(),
+		itemType: monitor.getItemType(),
 		currentOffset: monitor.getClientOffset(),
 	}));
 
 	if (!isDragging || !currentOffset) {
 		return null;
 	}
+
+	const renderDraggingIcon = () => {
+		if (itemType === FFS_DRAG_FOLDER_TYPE) {
+			return "📁";
+		} else if (itemType === FFS_DRAG_FILES_TYPE) {
+			return "📄";
+		}
+	};
 
 	return (
 		<div
@@ -24,7 +36,7 @@ const CustomDragLayer = () => {
 				zIndex: 100,
 			}}
 		>
-			{item instanceof TFile ? "📄" : "📁"}
+			{renderDraggingIcon()}
 		</div>
 	);
 };
