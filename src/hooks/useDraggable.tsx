@@ -4,8 +4,8 @@ import { useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 
 import {
-	FFS_DRAG_FILES_TYPE as FFS_DRAG_FILES_TYPE,
-	FFS_DRAG_FOLDER_TYPE,
+	FFS_DRAG_FILES_TYPE,
+	FFS_DRAG_FOLDERS_TYPE,
 } from "src/assets/constants";
 
 export const getDraggingStyles = (isDragging: boolean): CSSProperties => {
@@ -15,14 +15,14 @@ export const getDraggingStyles = (isDragging: boolean): CSSProperties => {
 export type DraggableFiles = {
 	files: TFile[];
 };
-export type DraggableFolder = {
-	folder: TFolder;
+export type DraggableFolders = {
+	folders: TFolder[];
 };
 
-export type DraggableItem = DraggableFiles | DraggableFolder;
+export type DraggableItem = DraggableFiles | DraggableFolders;
 
 type Props = {
-	type: typeof FFS_DRAG_FILES_TYPE | typeof FFS_DRAG_FOLDER_TYPE;
+	type: typeof FFS_DRAG_FILES_TYPE | typeof FFS_DRAG_FOLDERS_TYPE;
 	item: DraggableItem | (() => DraggableItem);
 	end?: () => void;
 	deps?: unknown[];

@@ -24,4 +24,4 @@ export const FFS_PLUGIN_SETTINGS = "FolderFileSplitterPlugin-Settings";
 export const SettingsChangeEventName = "FFS-SettingsChangeEvent";
 
 export const FFS_DRAG_FILES_TYPE = "FFS-FILES";
-export const FFS_DRAG_FOLDER_TYPE = "FFS-FOLDER";
+export const FFS_DRAG_FOLDERS_TYPE = "FFS-FOLDERS";
