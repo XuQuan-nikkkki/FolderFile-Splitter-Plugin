@@ -267,8 +267,6 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			await get().saveData({
 				[FFS_EXPANDED_FOLDER_PATHS_KEY]: JSON.stringify(folderPaths),
 			});
-			const data = await plugin.loadData();
-			console.log(data);
 		},
 		restoreExpandedFolderPaths: async () => {
 			const lastExpandedFolderPaths = await get().getData<string>(

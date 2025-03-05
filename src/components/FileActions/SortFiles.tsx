@@ -11,8 +11,8 @@ type FileSortRuleItem = {
 };
 type FileSortRuleGroup = FileSortRuleItem[];
 const FileSortByNameRules: FileSortRuleGroup = [
-	{ text: "Folder name(A to Z)", rule: "FileNameAscending" },
-	{ text: "Folder name(Z to A)", rule: "FileNameDescending" },
+	{ text: "File name(A to Z)", rule: "FileNameAscending" },
+	{ text: "File name(Z to A)", rule: "FileNameDescending" },
 ];
 const FileSortByModifiedTimeRules: FileSortRuleGroup = [
 	{
