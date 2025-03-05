@@ -45,13 +45,8 @@ const useDraggable = ({ type, item, end, deps }: Props) => {
 		preview(getEmptyImage(), { captureDraggingState: true });
 	}, [preview]);
 
-	const draggingStyle: CSSProperties = {
-		opacity: isDragging ? 0.5 : 1,
-	};
-
 	return {
 		drag,
-		draggingStyle,
 		isDragging,
 	};
 };

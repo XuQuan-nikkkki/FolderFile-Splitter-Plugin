@@ -160,9 +160,11 @@ If your plugin does not need CSS, delete this file.
 }
 
 .ffs-folder-pane .ffs-focused-folder,
-.ffs-folder-pane .ffs-drop-target-folder {
+.ffs-folder-pane .ffs-drop-target-folder,
+.ffs-folder-pane .ffs-selected-folder {
 	background-color: var(--ffs-focused-background-color);
 	border-radius: var(--ffs-folder-border-radius);
+	color: var(--ffs-folder-focused-color);
 }
 
 .ffs-focused-folder-with-focused-file {
@@ -184,13 +186,13 @@ If your plugin does not need CSS, delete this file.
 
 .ffs-focused-folder,
 .ffs-focused-folder .ffs-files-count {
-	color: var(--ffs-folder-focused-color);
 	font-weight: 450;
 }
 
 .ffs-focused-folder .ffs-arrow-down-icon,
 .ffs-focused-folder .ffs-arrow-right-icon,
-.ffs-focused-folder .ffs-folder-icon {
+.ffs-focused-folder .ffs-folder-icon,
+.ffs-selected-folder .ffs-folder-icon {
 	fill: var(--ffs-folder-focused-color);
 }
 

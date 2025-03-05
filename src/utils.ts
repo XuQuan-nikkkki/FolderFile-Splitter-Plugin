@@ -17,3 +17,8 @@ export const moveFileOrFolder = (
 	const newPath = newFolder.path + "/" + file.name;
 	return fileManager.renameFile(file, newPath);
 };
+
+export const isAbstractFileIncluded = (
+	files: TAbstractFile[],
+	file: TAbstractFile
+): boolean => files.some((f) => f.path === file.path);

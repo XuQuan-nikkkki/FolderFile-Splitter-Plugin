@@ -10,6 +10,7 @@ import useRenderEditableName from "src/hooks/useRenderEditableName";
 import FileDetail from "./FileDetail";
 import useDraggable, { getDraggingStyles } from "src/hooks/useDraggable";
 import { FFS_DRAG_FILES_TYPE } from "src/assets/constants";
+import { isAbstractFileIncluded } from "src/utils";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -139,10 +140,7 @@ const File = ({
 		return <FileDetail useFileTreeStore={useFileTreeStore} file={file} />;
 	};
 
-	const _isFileIncluded = (files: TFile[], fi: TFile) =>
-		files.some((f) => f.path === fi.path);
-
-	const _isFileSelected = (fi: TFile) => _isFileIncluded(selectedFiles, fi);
+	const _isFileSelected = (fi: TFile) => isAbstractFileIncluded(selectedFiles, fi);
 
 	const isFileSelected = () => _isFileSelected(file);
 
@@ -195,7 +193,7 @@ const File = ({
 	};
 
 	const getIsDragging = () =>
-		isDragging || draggingFiles.some((f) => f.path === file.path);
+		isDragging || isAbstractFileIncluded(draggingFiles, file);
 
 	const getFileClassName = () => {
 		const isFocused = focusedFile?.path === file.path;
