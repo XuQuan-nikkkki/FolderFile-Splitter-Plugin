@@ -8,6 +8,7 @@ import { FileTreeStore } from "src/store";
 import Folder from "./Folder";
 import { useShowHierarchyLines } from "src/hooks/useSettingsHandler";
 import { useChangeFolder } from "src/hooks/useVaultChangeHandler";
+import PinIcon from "src/assets/icons/PinIcon";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -31,6 +32,7 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 			sortFolders: store.sortFolders,
 			expandedFolderPaths: store.expandedFolderPaths,
 			focusedFolder: store.focusedFolder,
+			pinnedFolders: store.pinnedFolderPaths,
 		}))
 	);
 
@@ -66,6 +68,7 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 
 	const renderFolder = (folder: TFolder, isRoot?: boolean) => (
 		<Folder
+			key={folder.path}
 			folder={folder}
 			useFileTreeStore={useFileTreeStore}
 			plugin={plugin}
@@ -110,8 +113,28 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		);
 	};
 
+	const renderPinnedFolders = () => {
+		const pinnedFolderPaths = useFileTreeStore.getState().pinnedFolderPaths;
+		if (!pinnedFolderPaths.length) return null;
+		return (
+			<div className="ffs-pinned-folders-section">
+				<span className="ffs-pinned-title">
+					<PinIcon />
+					Pin
+				</span>
+				<div className="ffs-pinned-folders">
+					{pinnedFolderPaths.map((path) => {
+						const folder = plugin.app.vault.getFolderByPath(path);
+						return folder ? renderFolder(folder) : null;
+					})}
+				</div>
+			</div>
+		);
+	};
+
 	return (
 		<div ref={foldersRef}>
+			{renderPinnedFolders()}
 			{renderRootFolder()}
 			{renderFolders(topFolders)}
 		</div>

@@ -57,6 +57,9 @@ const Folder = ({
 		createFile,
 		folders,
 		focusedFile,
+		pinFolder,
+		unpinFolder,
+		isFolderPinned,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			hasFolderChildren: store.hasFolderChildren,
@@ -68,6 +71,9 @@ const Folder = ({
 			createFile: store.createFile,
 			folders: store.folders,
 			focusedFile: store.focusedFile,
+			pinFolder: store.pinFolder,
+			unpinFolder: store.unpinFolder,
+			isFolderPinned: store.isFolderPinned,
 		}))
 	);
 
@@ -157,6 +163,19 @@ const Folder = ({
 		e.stopPropagation();
 
 		const menu = new Menu();
+		menu.addItem((item) => {
+			const isPinned = isFolderPinned(folder);
+			const title = isPinned ? "Unpin folder" : "Pin folder";
+			item.setTitle(title);
+			item.onClick(() => {
+				if (isPinned) {
+					unpinFolder(folder);
+				} else {
+					pinFolder(folder);
+				}
+			});
+		});
+		menu.addSeparator();
 		menu.addItem((item) => {
 			item.setTitle("New note");
 			item.onClick(() => {
