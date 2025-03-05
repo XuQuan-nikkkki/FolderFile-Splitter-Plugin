@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { StoreApi, UseBoundStore } from "zustand";
 import { TFolder } from "obsidian";
@@ -23,6 +23,8 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		expandedFolderPaths,
 		restoreExpandedFolderPaths,
 		restoreLastFocusedFolder,
+		setFocusedFolder,
+		focusedFolder,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			rootFolder: store.rootFolder,
@@ -33,6 +35,8 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 			expandedFolderPaths: store.expandedFolderPaths,
 			restoreExpandedFolderPaths: store.restoreExpandedFolderPaths,
 			restoreLastFocusedFolder: store.restoreLastFocusedFolder,
+			setFocusedFolder: store.setFocusedFolder,
+			focusedFolder: store.focusedFolder,
 		}))
 	);
 
@@ -40,16 +44,49 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		plugin.settings.showFolderHierarchyLines
 	);
 	const { topFolders } = useChangeFolder({ useFileTreeStore });
+	const [selectedFolders, setSelectedFolders] = useState<TFolder[]>([]);
+	const [draggingFolders, setDraggingFolders] = useState<TFolder[]>([]);
+
+	const foldersRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		restoreLastFocusedFolder();
 		restoreExpandedFolderPaths();
 	}, []);
 
+	const onClickOutside = (e: MouseEvent) => {
+		if (
+			foldersRef?.current &&
+			!foldersRef.current.contains(e.target as Node)
+		) {
+			setSelectedFolders(focusedFolder ? [focusedFolder] : []);
+		}
+	};
+
+	useEffect(() => {
+		window.addEventListener("mousedown", onClickOutside);
+		return () => {
+			window.removeEventListener("mousedown", onClickOutside);
+		};
+	}, [focusedFolder]);
+
 	const maybeRenderHierarchyLine = () => {
 		if (!showHierarchyLines) return null;
 		return <div className="ffs-hierarchy-line"></div>;
 	};
+
+	const renderFolder = (folder: TFolder, isRoot?: boolean) => (
+		<Folder
+			folder={folder}
+			useFileTreeStore={useFileTreeStore}
+			plugin={plugin}
+			selectedFolders={selectedFolders}
+			setSelectedFolders={setSelectedFolders}
+			draggingFolders={draggingFolders}
+			setDraggingFolders={setDraggingFolders}
+			isRoot={isRoot}
+		/>
+	);
 
 	const renderFolders = (folders: TFolder[]) => {
 		const sortedFolders = sortFolders(
@@ -61,11 +98,7 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 			const isExpanded = expandedFolderPaths.includes(folder.path);
 			return (
 				<div key={folder.name}>
-					<Folder
-						folder={folder}
-						useFileTreeStore={useFileTreeStore}
-						plugin={plugin}
-					/>
+					{renderFolder(folder)}
 					{isExpanded && hasFolderChildren(folder) && (
 						<div className="ffs-sub-folders-section ffs-folder-wrapper">
 							{maybeRenderHierarchyLine()}
@@ -83,21 +116,16 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		return (
 			<div className="ffs-folder-wrapper">
 				{maybeRenderHierarchyLine()}
-				<Folder
-					folder={rootFolder}
-					useFileTreeStore={useFileTreeStore}
-					plugin={plugin}
-					isRoot
-				/>
+				{renderFolder(rootFolder, true)}
 			</div>
 		);
 	};
 
 	return (
-		<Fragment>
+		<div ref={foldersRef}>
 			{renderRootFolder()}
 			{renderFolders(topFolders)}
-		</Fragment>
+		</div>
 	);
 };
 
