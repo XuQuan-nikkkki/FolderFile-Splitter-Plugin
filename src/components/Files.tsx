@@ -15,24 +15,18 @@ type Props = {
 	plugin: FolderFileSplitterPlugin;
 };
 const Files = ({ useFileTreeStore, plugin }: Props) => {
-	const { restoreLastFocusedFile, sortFiles, fileSortRule, focusedFile } =
-		useFileTreeStore(
-			useShallow((store: FileTreeStore) => ({
-				restoreLastFocusedFile: store.restoreLastFocusedFile,
-				sortFiles: store.sortFiles,
-				fileSortRule: store.fileSortRule,
-				focusedFile: store.focusedFile,
-			}))
-		);
+	const { sortFiles, fileSortRule, focusedFile } = useFileTreeStore(
+		useShallow((store: FileTreeStore) => ({
+			sortFiles: store.sortFiles,
+			fileSortRule: store.fileSortRule,
+			focusedFile: store.focusedFile,
+		}))
+	);
 	const { files, onDeleteFileFromList } = useChangeFile({ useFileTreeStore });
 	const [selectedFiles, setSelectedFiles] = useState<TFile[]>([]);
 	const [draggingFiles, setDraggingFiles] = useState<TFile[]>([]);
 
 	const filesRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		restoreLastFocusedFile();
-	}, []);
 
 	const onClickOutside = (e: MouseEvent) => {
 		if (filesRef?.current && !filesRef.current.contains(e.target as Node)) {

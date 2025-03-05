@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Menu } from "obsidian";
 
 import { AscendingSortIcon, DescendingSortIcon } from "src/assets/icons";
@@ -12,7 +11,6 @@ type SortRuleGroup = SortRule[];
 
 type Props = {
 	plugin: FolderFileSplitterPlugin;
-	restoreSortRule: () => void;
 	ruleGroups: SortRuleGroup[];
 	menuName: string;
 	changeSortRule: (rule: string) => void;
@@ -21,17 +19,12 @@ type Props = {
 };
 const SortAction = ({
 	plugin,
-	restoreSortRule,
 	ruleGroups,
 	menuName,
 	changeSortRule,
 	isInAscendingOrder,
 	currentSortRule,
 }: Props) => {
-	useEffect(() => {
-		restoreSortRule();
-	}, []);
-
 	const onChangeSortRule = (e: React.MouseEvent<HTMLDivElement>) => {
 		const menu = new Menu();
 		ruleGroups.forEach((rules) => {

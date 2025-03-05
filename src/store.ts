@@ -35,6 +35,10 @@ export type FileTreeStore = {
 	fileSortRule: FileSortRule;
 	expandedFolderPaths: string[];
 
+	getData: <T>(key: string) => Promise<T | undefined>;
+	saveData: (data: Record<string, unknown>) => Promise<void>;
+	restoreData: () => Promise<void>;
+
 	// Folders related
 	getTopLevelFolders: () => TFolder[];
 	getFilesCountInFolder: (
@@ -45,33 +49,33 @@ export type FileTreeStore = {
 	getDirectFilesInFolder: (folder: TFolder) => TFile[];
 	hasFolderChildren: (folder: TFolder) => boolean;
 	isFoldersInAscendingOrder: () => boolean;
-	setFocusedFolder: (folder: TFolder | null) => void;
+	_setFocusedFolder: (folder: TFolder | null) => void;
 	_createFolder: (path: string) => Promise<TFolder>;
 	createNewFolder: (parentFolder: TFolder) => Promise<TFolder | undefined>;
-	setFocusedFolderAndSaveInLocalStorage: (folder: TFolder) => void;
+	setFocusedFolder: (folder: TFolder) => Promise<void>;
 	sortFolders: (
 		folders: TFolder[],
 		rule: FolderSortRule,
 		includeSubfolderFilesCount: boolean
 	) => TFolder[];
-	changeFolderSortRule: (rule: FolderSortRule) => void;
-	restoreFolderSortRule: () => void;
-	changeExpandedFolderPaths: (folderNames: string[]) => void;
-	restoreExpandedFolderPaths: () => void;
-	restoreLastFocusedFolder: () => void;
+	changeFolderSortRule: (rule: FolderSortRule) => Promise<void>;
+	restoreFolderSortRule: () => Promise<void>;
+	changeExpandedFolderPaths: (folderNames: string[]) => Promise<void>;
+	restoreExpandedFolderPaths: () => Promise<void>;
+	restoreLastFocusedFolder: () => Promise<void>;
 
 	// Files related
 	findFileByPath: (path: string) => TFile | null;
 	isFilesInAscendingOrder: () => boolean;
 	setFocusedFile: (file: TFile | null) => void;
 	openFile: (file: TFile) => void;
-	selectFile: (file: TFile) => void;
+	selectFile: (file: TFile) => Promise<void>;
 	readFile: (file: TFile) => Promise<string>;
 	createFile: (folder: TFolder) => Promise<TFile>;
 	duplicateFile: (file: TFile) => Promise<TFile>;
-	restoreLastFocusedFile: () => void;
-	changeFileSortRule: (rule: FileSortRule) => void;
-	restoreFileSortRule: () => void;
+	restoreLastFocusedFile: () => Promise<void>;
+	changeFileSortRule: (rule: FileSortRule) => Promise<void>;
+	restoreFileSortRule: () => Promise<void>;
 	sortFiles: (files: TFile[], rule: FileSortRule) => TFile[];
 };
 
@@ -84,6 +88,35 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		folderSortRule: DEFAULT_FOLDER_SORT_RULE,
 		fileSortRule: DEFAULT_FILE_SORT_RULE,
 		expandedFolderPaths: [],
+
+		saveData: async (data: Record<string, unknown>): Promise<void> => {
+			const previousData = await plugin.loadData();
+			await plugin.saveData({
+				...previousData,
+				...data,
+			});
+		},
+		getData: async <T>(key: string): Promise<T | undefined> => {
+			const data = await plugin.loadData();
+
+			return data[key];
+		},
+		restoreData: async () => {
+			const {
+				restoreLastFocusedFolder,
+				restoreLastFocusedFile,
+				restoreFolderSortRule,
+				restoreFileSortRule,
+				restoreExpandedFolderPaths,
+			} = get();
+			await Promise.all([
+				restoreLastFocusedFolder(),
+				restoreLastFocusedFile(),
+				restoreFolderSortRule(),
+				restoreFileSortRule(),
+				restoreExpandedFolderPaths(),
+			]);
+		},
 
 		// Folders related
 		getTopLevelFolders: () => {
@@ -122,14 +155,16 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			const { folderSortRule } = get();
 			return folderSortRule.contains("Ascending");
 		},
-		setFocusedFolder: (folder: TFolder) =>
+		_setFocusedFolder: (folder: TFolder) =>
 			set({
 				focusedFolder: folder,
 			}),
-		setFocusedFolderAndSaveInLocalStorage: (folder: TFolder) => {
-			const { setFocusedFolder, focusedFile, setFocusedFile } = get();
-			setFocusedFolder(folder);
-			localStorage.setItem(FFS_FOCUSED_FOLDER_PATH_KEY, folder.path);
+		setFocusedFolder: async (folder: TFolder) => {
+			const { _setFocusedFolder, focusedFile, setFocusedFile, saveData } =
+				get();
+			_setFocusedFolder(folder);
+
+			await saveData({ [FFS_FOCUSED_FOLDER_PATH_KEY]: folder.path });
 			if (focusedFile?.parent?.path !== folder.path) {
 				setFocusedFile(null);
 			}
@@ -209,33 +244,34 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			}
 			return folders; // 如果没有匹配的规则，返回原始文件夹
 		},
-		changeFolderSortRule: (rule: FolderSortRule) => {
+		changeFolderSortRule: async (rule: FolderSortRule) => {
 			set({
 				folderSortRule: rule,
 			});
-			localStorage.setItem(FFS_FOLDER_SORT_RULE_KEY, rule);
+			await get().saveData({ [FFS_FOLDER_SORT_RULE_KEY]: rule });
 		},
-		restoreFolderSortRule: () => {
-			const lastFolderSortRule = localStorage.getItem(
+		restoreFolderSortRule: async () => {
+			const lastFolderSortRule = await get().getData<FolderSortRule>(
 				FFS_FOLDER_SORT_RULE_KEY
 			);
 			if (lastFolderSortRule) {
 				set({
-					folderSortRule: lastFolderSortRule as FolderSortRule,
+					folderSortRule: lastFolderSortRule,
 				});
 			}
 		},
-		changeExpandedFolderPaths: (folderPaths: string[]) => {
+		changeExpandedFolderPaths: async (folderPaths: string[]) => {
 			set({
 				expandedFolderPaths: folderPaths,
 			});
-			localStorage.setItem(
-				FFS_EXPANDED_FOLDER_PATHS_KEY,
-				JSON.stringify(folderPaths)
-			);
+			await get().saveData({
+				[FFS_EXPANDED_FOLDER_PATHS_KEY]: JSON.stringify(folderPaths),
+			});
+			const data = await plugin.loadData();
+			console.log(data);
 		},
-		restoreExpandedFolderPaths: () => {
-			const lastExpandedFolderPaths = localStorage.getItem(
+		restoreExpandedFolderPaths: async () => {
+			const lastExpandedFolderPaths = await get().getData<string>(
 				FFS_EXPANDED_FOLDER_PATHS_KEY
 			);
 			if (lastExpandedFolderPaths) {
@@ -249,20 +285,20 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				}
 			}
 		},
-		restoreLastFocusedFolder: () => {
-			const lastFocusedFolderPath = localStorage.getItem(
+		restoreLastFocusedFolder: async () => {
+			const lastFocusedFolderPath = await get().getData<string>(
 				FFS_FOCUSED_FOLDER_PATH_KEY
 			);
-			const { rootFolder, setFocusedFolder } = get();
+			const { rootFolder, _setFocusedFolder: _setFocusedFolder } = get();
 			if (lastFocusedFolderPath && lastFocusedFolderPath !== "/") {
 				const folder = plugin.app.vault.getFolderByPath(
 					lastFocusedFolderPath
 				);
 				if (folder) {
-					setFocusedFolder(folder);
+					_setFocusedFolder(folder);
 				}
 			} else if (rootFolder) {
-				setFocusedFolder(rootFolder);
+				_setFocusedFolder(rootFolder);
 			}
 		},
 
@@ -283,11 +319,13 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			plugin.app.workspace.setActiveLeaf(leaf, { focus: true });
 			leaf.openFile(file, { eState: { focus: true } });
 		},
-		selectFile: (file: TFile): void => {
+		selectFile: async (file: TFile): Promise<void> => {
 			const { setFocusedFile, openFile } = get();
 			setFocusedFile(file);
 			openFile(file);
-			localStorage.setItem(FFS_FOCUSED_FILE_PATH_KEY, file.path);
+			await get().saveData({
+				[FFS_FOCUSED_FILE_PATH_KEY]: file.path,
+			});
 		},
 		readFile: async (file: TFile): Promise<string> => {
 			return await plugin.app.vault.read(file);
@@ -340,8 +378,8 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			get().selectFile(newFile);
 			return newFile;
 		},
-		restoreLastFocusedFile: () => {
-			const lastFocusedFilePath = localStorage.getItem(
+		restoreLastFocusedFile: async () => {
+			const lastFocusedFilePath = await get().getData<string>(
 				FFS_FOCUSED_FILE_PATH_KEY
 			);
 			const { findFileByPath, selectFile } = get();
@@ -370,14 +408,16 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 					return files;
 			}
 		},
-		changeFileSortRule: (rule: FileSortRule) => {
+		changeFileSortRule: async (rule: FileSortRule) => {
 			set({
 				fileSortRule: rule,
 			});
-			localStorage.setItem(FFS_FILE_SORT_RULE_KEY, rule);
+			await get().saveData({
+				[FFS_FILE_SORT_RULE_KEY]: rule,
+			});
 		},
-		restoreFileSortRule: () => {
-			const lastFileSortRule = localStorage.getItem(
+		restoreFileSortRule: async () => {
+			const lastFileSortRule = await get().getData<FileSortRule>(
 				FFS_FILE_SORT_RULE_KEY
 			);
 			if (lastFileSortRule) {

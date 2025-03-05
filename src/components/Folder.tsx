@@ -61,7 +61,7 @@ const Folder = ({
 		useShallow((store: FileTreeStore) => ({
 			hasFolderChildren: store.hasFolderChildren,
 			focusedFolder: store.focusedFolder,
-			setFocusedFolder: store.setFocusedFolderAndSaveInLocalStorage,
+			setFocusedFolder: store.setFocusedFolder,
 			expandedFolderPaths: store.expandedFolderPaths,
 			changeExpandedFolderPaths: store.changeExpandedFolderPaths,
 			createNewFolder: store.createNewFolder,
@@ -224,7 +224,7 @@ const Folder = ({
 			folderClassNames.push("ffs-focused-folder-with-focused-file");
 		}
 		if (isFolderSelected) {
-			folderClassNames.push("ffs-selected-folder")
+			folderClassNames.push("ffs-selected-folder");
 		}
 		return folderClassNames.filter(Boolean).join(" ");
 	};
@@ -242,7 +242,6 @@ const Folder = ({
 
 	const onSelectOneByOne = () => {
 		let folders = beginMultiSelect();
-		console.log(folders)
 		if (isFolderSelected) {
 			folders = folders.filter((f) => f.path !== folder.path);
 		} else {
