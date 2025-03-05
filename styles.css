@@ -34,6 +34,7 @@ If your plugin does not need CSS, delete this file.
 	--ffs-focused-folder-with-focused-file-background-color: #d9dce0;
 	--ffs-focused-file-content-preview-color: #707070;
 	--ffs-file-border-color: #e6e6e6;
+	--ffs-pinned-file-border-color: #d2cece;
 }
 
 .theme-dark {
@@ -56,6 +57,7 @@ If your plugin does not need CSS, delete this file.
 	--ffs-focused-folder-with-focused-file-background-color: #42484d;
 	--ffs-focused-file-content-preview-color: #d1c59d;
 	--ffs-file-border-color: #3a3d42;
+	--ffs-pinned-file-border-color: #4d4f53;
 }
 
 .ffs-plugin-view {
@@ -362,4 +364,12 @@ If your plugin does not need CSS, delete this file.
 
 .ffs-pinned-folders .ffs-folder-arrow-icon-wrapper {
 	width: 0;
+}
+
+.ffs-pinned-files-section
+	.ffs-file:not(:last-child):not(.ffs-focused-file):has(
+		+ .ffs-file:not(.ffs-focused-file)
+	)
+	.ffs-file-content {
+	border-bottom: 1px solid var(--ffs-pinned-file-border-color);
 }
