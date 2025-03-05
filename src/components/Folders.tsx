@@ -50,7 +50,7 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 			foldersRef?.current &&
 			!foldersRef.current.contains(e.target as Node)
 		) {
-			setSelectedFolders(focusedFolder ? [focusedFolder] : []);
+			setSelectedFolders([]);
 		}
 	};
 
