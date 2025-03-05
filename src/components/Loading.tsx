@@ -10,8 +10,8 @@ const Loading = ({ width = 30, height = 30 }: Props) => {
 			<div className="loading-icon">
 				<LoadingIcon />
 			</div>
-      <p>Loading...</p>
-			<style jsx>
+			<p>Loading...</p>
+			<style>
 				{`
 					.loading {
             height: 100%;

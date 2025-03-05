@@ -1,14 +1,11 @@
 import { TAbstractFile } from "obsidian";
 
-export const FFS_FOCUSED_FOLDER_PATH_KEY =
-	"FocusedFolderPath";
-export const FFS_EXPANDED_FOLDER_PATHS_KEY =
-	"ExpandedFolderPaths";
-export const FFS_FOCUSED_FILE_PATH_KEY =
-	"FocusedFilePath";
-export const FFS_FOLDER_SORT_RULE_KEY =
-	"FolderSortRule";
+export const FFS_FOCUSED_FOLDER_PATH_KEY = "FocusedFolderPath";
+export const FFS_EXPANDED_FOLDER_PATHS_KEY = "ExpandedFolderPaths";
+export const FFS_FOCUSED_FILE_PATH_KEY = "FocusedFilePath";
+export const FFS_FOLDER_SORT_RULE_KEY = "FolderSortRule";
 export const FFS_FILE_SORT_RULE_KEY = "FileSortRule";
+export const FFS_PINNED_FOLDER_PATHS_KEY = "PinnedFolderPaths";
 
 export const FFS_FOLDER_PANE_WIDTH_KEY =
 	"FolderFileSplitterPlugin-FolderPaneWidth";

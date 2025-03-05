@@ -324,3 +324,32 @@ If your plugin does not need CSS, delete this file.
 .ffs-actions-icon-wrapper:not(:last-child) {
 	margin-right: 12px;
 }
+
+.ffs-pinned-folders-section {
+	margin: 8px 0 4px;
+	padding: 6px 4px 8px;
+	background-color: var(--ffs-actions-background-color);
+	border-radius: 4px;
+}
+
+.ffs-pinned-title {
+	display: flex;
+	align-items: center;
+	font-weight: 500;
+	color: var(--ffs-actions-icon-color);
+	margin-bottom: 4px;
+	margin-left: 2px;
+	font-size: 12px;
+}
+
+.ffs-pinned-folders-section .ffs-pin-icon {
+	width: 12px;
+	height: 12px;
+	margin-right: 2px;
+	fill: var(--ffs-actions-icon-color);
+	color: var(--ffs-actions-icon-color);
+}
+
+.ffs-pinned-folders .ffs-folder-arrow-icon-wrapper {
+	width: 0;
+}

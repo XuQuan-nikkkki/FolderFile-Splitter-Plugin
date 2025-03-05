@@ -2,13 +2,20 @@ import { create } from "zustand";
 import { TFile, TFolder } from "obsidian";
 
 import FolderFileSplitterPlugin from "./main";
-import { isFile, isFolder } from "./utils";
+import {
+	addItem,
+	isAbstractFileIncluded,
+	isFile,
+	isFolder,
+	removeItem,
+} from "./utils";
 import {
 	FFS_EXPANDED_FOLDER_PATHS_KEY,
 	FFS_FILE_SORT_RULE_KEY,
 	FFS_FOCUSED_FILE_PATH_KEY,
 	FFS_FOCUSED_FOLDER_PATH_KEY,
 	FFS_FOLDER_SORT_RULE_KEY,
+	FFS_PINNED_FOLDER_PATHS_KEY,
 } from "./assets/constants";
 
 export type FolderSortRule =
@@ -30,6 +37,7 @@ export type FileTreeStore = {
 	folders: TFolder[];
 	rootFolder: TFolder | null;
 	focusedFolder: TFolder | null;
+	pinnedFolderPaths: string[];
 	focusedFile: TFile | null;
 	folderSortRule: FolderSortRule;
 	fileSortRule: FileSortRule;
@@ -63,6 +71,10 @@ export type FileTreeStore = {
 	changeExpandedFolderPaths: (folderNames: string[]) => Promise<void>;
 	restoreExpandedFolderPaths: () => Promise<void>;
 	restoreLastFocusedFolder: () => Promise<void>;
+	pinFolder: (folder: TFolder) => Promise<void>;
+	unpinFolder: (folder: TFolder) => Promise<void>;
+	isFolderPinned: (folder: TFolder) => boolean;
+	restorePinnedFolders: () => Promise<void>;
 
 	// Files related
 	findFileByPath: (path: string) => TFile | null;
@@ -84,6 +96,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		folders: plugin.app.vault.getAllFolders() || [],
 		rootFolder: plugin.app.vault.getRoot() || null,
 		focusedFolder: null,
+		pinnedFolderPaths: [],
 		focusedFile: null,
 		folderSortRule: DEFAULT_FOLDER_SORT_RULE,
 		fileSortRule: DEFAULT_FILE_SORT_RULE,
@@ -98,7 +111,6 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		},
 		getData: async <T>(key: string): Promise<T | undefined> => {
 			const data = await plugin.loadData();
-
 			return data[key];
 		},
 		restoreData: async () => {
@@ -108,6 +120,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				restoreFolderSortRule,
 				restoreFileSortRule,
 				restoreExpandedFolderPaths,
+				restorePinnedFolders,
 			} = get();
 			await Promise.all([
 				restoreLastFocusedFolder(),
@@ -115,6 +128,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				restoreFolderSortRule(),
 				restoreFileSortRule(),
 				restoreExpandedFolderPaths(),
+				restorePinnedFolders(),
 			]);
 		},
 
@@ -297,6 +311,48 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				}
 			} else if (rootFolder) {
 				_setFocusedFolder(rootFolder);
+			}
+		},
+		isFolderPinned: (folder: TFolder) => {
+			const { pinnedFolderPaths } = get();
+			return pinnedFolderPaths.includes(folder.path);
+		},
+		pinFolder: async (folder: TFolder) => {
+			const { pinnedFolderPaths, saveData } = get();
+			const folderPaths = [...pinnedFolderPaths, folder.path];
+			set({
+				pinnedFolderPaths: folderPaths,
+			});
+			await saveData({
+				[FFS_PINNED_FOLDER_PATHS_KEY]: JSON.stringify(folderPaths),
+			});
+		},
+		unpinFolder: async (folder: TFolder) => {
+			const { pinnedFolderPaths, saveData } = get();
+			const folderPaths = pinnedFolderPaths.filter(
+				(path) => path !== folder.path
+			);
+			set({
+				pinnedFolderPaths: folderPaths,
+			});
+			await saveData({
+				[FFS_PINNED_FOLDER_PATHS_KEY]: JSON.stringify(folderPaths),
+			});
+		},
+		restorePinnedFolders: async () => {
+			const { getData } = get();
+			const pinnedFolderPaths = await getData<string>(
+				FFS_PINNED_FOLDER_PATHS_KEY
+			);
+			if (pinnedFolderPaths) {
+				try {
+					const folderPaths: string[] = JSON.parse(pinnedFolderPaths);
+					set({
+						pinnedFolderPaths: folderPaths,
+					});
+				} catch (error) {
+					console.error("Invalid Json format: ", error);
+				}
 			}
 		},
 
