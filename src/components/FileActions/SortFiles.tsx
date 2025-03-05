@@ -44,20 +44,17 @@ const SortFiles = ({ useFileTreeStore, plugin }: Props) => {
 		fileSortRule,
 		changeFileSortRule,
 		isFilesInAscendingOrder,
-		restoreFileSortRule,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			fileSortRule: store.fileSortRule,
 			isFilesInAscendingOrder: store.isFilesInAscendingOrder,
 			changeFileSortRule: store.changeFileSortRule,
-			restoreFileSortRule: store.restoreFileSortRule,
 		}))
 	);
 
 	return (
 		<SortAction
 			plugin={plugin}
-			restoreSortRule={restoreFileSortRule}
 			ruleGroups={[
 				FileSortByNameRules,
 				FileSortByModifiedTimeRules,

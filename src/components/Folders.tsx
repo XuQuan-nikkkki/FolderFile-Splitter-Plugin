@@ -21,9 +21,6 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		getFoldersByParent,
 		sortFolders,
 		expandedFolderPaths,
-		restoreExpandedFolderPaths,
-		restoreLastFocusedFolder,
-		setFocusedFolder,
 		focusedFolder,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
@@ -33,9 +30,6 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 			getFoldersByParent: store.getFoldersByParent,
 			sortFolders: store.sortFolders,
 			expandedFolderPaths: store.expandedFolderPaths,
-			restoreExpandedFolderPaths: store.restoreExpandedFolderPaths,
-			restoreLastFocusedFolder: store.restoreLastFocusedFolder,
-			setFocusedFolder: store.setFocusedFolder,
 			focusedFolder: store.focusedFolder,
 		}))
 	);
@@ -48,11 +42,6 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 	const [draggingFolders, setDraggingFolders] = useState<TFolder[]>([]);
 
 	const foldersRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		restoreLastFocusedFolder();
-		restoreExpandedFolderPaths();
-	}, []);
 
 	const onClickOutside = (e: MouseEvent) => {
 		if (
