@@ -2,19 +2,14 @@ import { create } from "zustand";
 import { TFile, TFolder } from "obsidian";
 
 import FolderFileSplitterPlugin from "./main";
-import {
-	addItem,
-	isAbstractFileIncluded,
-	isFile,
-	isFolder,
-	removeItem,
-} from "./utils";
+import { isAbstractFileIncluded, isFile, isFolder } from "./utils";
 import {
 	FFS_EXPANDED_FOLDER_PATHS_KEY,
 	FFS_FILE_SORT_RULE_KEY,
 	FFS_FOCUSED_FILE_PATH_KEY,
 	FFS_FOCUSED_FOLDER_PATH_KEY,
 	FFS_FOLDER_SORT_RULE_KEY,
+	FFS_PINNED_FILE_PATHS_KEY,
 	FFS_PINNED_FOLDER_PATHS_KEY,
 } from "./assets/constants";
 
@@ -39,6 +34,7 @@ export type FileTreeStore = {
 	focusedFolder: TFolder | null;
 	pinnedFolderPaths: string[];
 	focusedFile: TFile | null;
+	pinnedFilePaths: string[];
 	folderSortRule: FolderSortRule;
 	fileSortRule: FileSortRule;
 	expandedFolderPaths: string[];
@@ -89,6 +85,10 @@ export type FileTreeStore = {
 	changeFileSortRule: (rule: FileSortRule) => Promise<void>;
 	restoreFileSortRule: () => Promise<void>;
 	sortFiles: (files: TFile[], rule: FileSortRule) => TFile[];
+	pinFile: (file: TFile) => Promise<void>;
+	unpinFile: (file: TFile) => Promise<void>;
+	isFilePinned: (file: TFile) => boolean;
+	restorePinnedFiles: () => Promise<void>;
 };
 
 export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
@@ -98,6 +98,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		focusedFolder: null,
 		pinnedFolderPaths: [],
 		focusedFile: null,
+		pinnedFilePaths: [],
 		folderSortRule: DEFAULT_FOLDER_SORT_RULE,
 		fileSortRule: DEFAULT_FILE_SORT_RULE,
 		expandedFolderPaths: [],
@@ -121,6 +122,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				restoreFileSortRule,
 				restoreExpandedFolderPaths,
 				restorePinnedFolders,
+				restorePinnedFiles
 			} = get();
 			await Promise.all([
 				restoreLastFocusedFolder(),
@@ -129,6 +131,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				restoreFileSortRule(),
 				restoreExpandedFolderPaths(),
 				restorePinnedFolders(),
+				restorePinnedFiles(),
 			]);
 		},
 
@@ -478,6 +481,48 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				set({
 					fileSortRule: lastFileSortRule as FileSortRule,
 				});
+			}
+		},
+		isFilePinned: (file: TFile) => {
+			const { pinnedFilePaths } = get();
+			return pinnedFilePaths.includes(file.path);
+		},
+		pinFile: async (file: TFile) => {
+			const { pinnedFilePaths, saveData } = get();
+			const filePaths = [...pinnedFilePaths, file.path];
+			set({
+				pinnedFilePaths: filePaths,
+			});
+			await saveData({
+				[FFS_PINNED_FILE_PATHS_KEY]: JSON.stringify(filePaths),
+			});
+		},
+		unpinFile: async (file: TFile) => {
+			const { pinnedFilePaths, saveData } = get();
+			const filePaths = pinnedFilePaths.filter(
+				(path) => path !== file.path
+			);
+			set({
+				pinnedFilePaths: filePaths,
+			});
+			await saveData({
+				[FFS_PINNED_FILE_PATHS_KEY]: JSON.stringify(filePaths),
+			});
+		},
+		restorePinnedFiles: async () => {
+			const { getData } = get();
+			const pinnedFilePaths = await getData<string>(
+				FFS_PINNED_FILE_PATHS_KEY
+			);
+			if (pinnedFilePaths) {
+				try {
+					const filePaths: string[] = JSON.parse(pinnedFilePaths);
+					set({
+						pinnedFilePaths: filePaths,
+					});
+				} catch (error) {
+					console.error("Invalid Json format: ", error);
+				}
 			}
 		},
 	}));

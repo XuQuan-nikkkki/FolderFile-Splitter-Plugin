@@ -325,11 +325,20 @@ If your plugin does not need CSS, delete this file.
 	margin-right: 12px;
 }
 
-.ffs-pinned-folders-section {
+.ffs-pinned-folders-section,
+.ffs-pinned-files-section {
 	margin: 8px 0 4px;
 	padding: 6px 4px 8px;
 	background-color: var(--ffs-actions-background-color);
 	border-radius: 4px;
+}
+
+.ffs-pinned-files-section {
+	margin-left: 12px;
+}
+
+.ffs-pinned-files-section .ffs-file {
+	margin-left: 0;
 }
 
 .ffs-pinned-title {
@@ -342,7 +351,8 @@ If your plugin does not need CSS, delete this file.
 	font-size: 12px;
 }
 
-.ffs-pinned-folders-section .ffs-pin-icon {
+.ffs-pinned-folders-section .ffs-pin-icon,
+.ffs-pinned-files-section .ffs-pin-icon {
 	width: 12px;
 	height: 12px;
 	margin-right: 2px;

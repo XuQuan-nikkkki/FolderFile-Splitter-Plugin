@@ -41,6 +41,9 @@ const File = ({
 		duplicateFile,
 		folders,
 		setFocusedFile,
+		isFilePinned,
+		pinFile,
+		unpinFile,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			focusedFile: store.focusedFile,
@@ -49,6 +52,9 @@ const File = ({
 			duplicateFile: store.duplicateFile,
 			folders: store.folders,
 			setFocusedFile: store.setFocusedFile,
+			isFilePinned: store.isFilePinned,
+			pinFile: store.pinFile,
+			unpinFile: store.unpinFile,
 		}))
 	);
 
@@ -86,6 +92,19 @@ const File = ({
 		e.stopPropagation();
 
 		const menu = new Menu();
+		menu.addItem((item) => {
+			const isPinned = isFilePinned(file);
+			const title = isPinned ? "Unpin file" : "Pin file";
+			item.setTitle(title);
+			item.onClick(() => {
+				if (isPinned) {
+					unpinFile(file);
+				} else {
+					pinFile(file);
+				}
+			});
+		});
+		menu.addSeparator();
 		menu.addItem((item) => {
 			item.setTitle("Open in new tab");
 			item.onClick(() => {
@@ -140,17 +159,18 @@ const File = ({
 		return <FileDetail useFileTreeStore={useFileTreeStore} file={file} />;
 	};
 
-	const _isFileSelected = (fi: TFile) => isAbstractFileIncluded(selectedFiles, fi);
+	const _isFileSelected = (fi: TFile) =>
+		isAbstractFileIncluded(selectedFiles, fi);
 
 	const isFileSelected = () => _isFileSelected(file);
 
 	const beginMultiSelect = (): TFile[] => {
 		setFocusedFile(null);
-		let newFiles = [...selectedFiles]
+		let newFiles = [...selectedFiles];
 		if (focusedFile && !_isFileSelected(focusedFile)) {
 			newFiles = [...selectedFiles, focusedFile];
 		}
-		return newFiles
+		return newFiles;
 	};
 
 	const onSelectRange = () => {

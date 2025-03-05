@@ -9,6 +9,7 @@ import File from "./File";
 import FolderFileSplitterPlugin from "src/main";
 import { useChangeFile } from "src/hooks/useVaultChangeHandler";
 import { TFile } from "obsidian";
+import PinIcon from "src/assets/icons/PinIcon";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -20,6 +21,7 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 			sortFiles: store.sortFiles,
 			fileSortRule: store.fileSortRule,
 			focusedFile: store.focusedFile,
+			pinnedFiles: store.pinnedFilePaths
 		}))
 	);
 	const { files, onDeleteFileFromList } = useChangeFile({ useFileTreeStore });
@@ -49,24 +51,47 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 		);
 	};
 
+	const renderFile = (file: TFile) => (
+		<File
+		key={file.name}
+		useFileTreeStore={useFileTreeStore}
+		file={file}
+		plugin={plugin}
+		deleteFile={() => onDeleteFileFromList(file)}
+		fileList={sortedFiles}
+		selectedFiles={selectedFiles}
+		setSelectedFiles={setSelectedFiles}
+		draggingFiles={draggingFiles}
+		setDraggingFiles={setDraggingFiles}
+	/>
+	)	
+	
+
+	const renderPinnedFiles = () => {
+		const pinnedFilePaths = useFileTreeStore.getState().pinnedFilePaths;
+		const pinnedFiles = files.filter(f => pinnedFilePaths.includes(f.path))
+		if (!pinnedFiles) return null;
+		return (
+			<div className="ffs-pinned-files-section">
+				<span className="ffs-pinned-title">
+					<PinIcon />
+					Pin
+				</span>
+				<div className="ffs-pinned-files">
+					{pinnedFiles.map(renderFile)}
+				</div>
+			</div>
+		);
+	};
+
 	if (!files.length) return renderNoneFilesTips();
 	const sortedFiles = sortFiles(files, fileSortRule);
 	return (
-		<div ref={filesRef}>
-			{sortedFiles.map((file) => (
-				<File
-					key={file.name}
-					useFileTreeStore={useFileTreeStore}
-					file={file}
-					plugin={plugin}
-					deleteFile={() => onDeleteFileFromList(file)}
-					fileList={sortedFiles}
-					selectedFiles={selectedFiles}
-					setSelectedFiles={setSelectedFiles}
-					draggingFiles={draggingFiles}
-					setDraggingFiles={setDraggingFiles}
-				/>
-			))}
+		<div>
+			{renderPinnedFiles()}
+			<div ref={filesRef}>
+				{sortedFiles.map(renderFile)}
+			</div>
 		</div>
 	);
 };
