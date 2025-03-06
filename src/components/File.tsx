@@ -6,11 +6,11 @@ import { FileTreeStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
 import { FolderListModal } from "./FolderListModal";
 import { useShowFileDetail } from "src/hooks/useSettingsHandler";
-import useRenderEditableName from "src/hooks/useRenderEditableName";
 import FileDetail from "./FileDetail";
 import useDraggable, { getDraggingStyles } from "src/hooks/useDraggable";
 import { FFS_DRAG_FILES_TYPE } from "src/assets/constants";
 import { isAbstractFileIncluded } from "src/utils";
+import useRenderFileName from "src/hooks/useRenderFileName";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -75,17 +75,8 @@ const File = ({
 		plugin.settings.showFileDetail
 	);
 
-	const onSaveName = async (name: string) => {
-		const newPath = file.path.replace(file.basename, name);
-		await plugin.app.vault.rename(file, newPath);
-	};
-
-	const getClassNames = (isEditing: boolean) => {
-		return "ffs-file-name" + (isEditing ? " ffs-file-name-edit-mode" : "");
-	};
-
-	const { renderEditableName, selectFileNameText, onBeginEdit } =
-		useRenderEditableName(file.basename, onSaveName, getClassNames);
+	const { renderFileName, selectFileNameText, onBeginEdit } =
+		useRenderFileName(file, plugin);
 
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
@@ -235,7 +226,7 @@ const File = ({
 			style={getDraggingStyles(getIsDragging())}
 		>
 			<div className="ffs-file-content">
-				{renderEditableName()}
+				{renderFileName()}
 				{maybeRenderFileDetail()}
 			</div>
 		</div>
