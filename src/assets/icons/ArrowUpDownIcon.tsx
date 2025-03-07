@@ -6,7 +6,7 @@ const ArrowUpDownIcon = () => (
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
-		className="ffs-folder-actions-icon ffs-sort-icon"
+		className="ffs-actions-icon ffs-sort-icon"
 	>
 		<path d="m21 16-4 4-4-4" />
 		<path d="M17 20V4" />

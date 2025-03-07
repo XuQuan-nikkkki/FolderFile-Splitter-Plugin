@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { StoreApi, UseBoundStore } from "zustand";
 import { TFolder } from "obsidian";
@@ -117,12 +117,12 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		const pinnedFolderPaths = useFileTreeStore.getState().pinnedFolderPaths;
 		if (!pinnedFolderPaths.length) return null;
 		return (
-			<div className="ffs-pinned-folders-section">
+			<div className="ffs-pinned-section">
 				<span className="ffs-pinned-title">
 					<PinIcon />
 					Pin
 				</span>
-				<div className="ffs-pinned-folders">
+				<div className="ffs-pinned-content">
 					{pinnedFolderPaths.map((path) => {
 						const folder = plugin.app.vault.getFolderByPath(path);
 						return folder ? renderFolder(folder) : null;
@@ -133,11 +133,13 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 	};
 
 	return (
-		<div ref={foldersRef}>
+		<Fragment>
 			{renderPinnedFolders()}
-			{renderRootFolder()}
-			{renderFolders(topFolders)}
-		</div>
+			<div ref={foldersRef}>
+				{renderRootFolder()}
+				{renderFolders(topFolders)}
+			</div>
+		</Fragment>
 	);
 };
 

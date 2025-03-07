@@ -8,7 +8,7 @@ const AddFolderIcon = () => {
 			strokeWidth="2"
 			strokeLinecap="round"
 			strokeLinejoin="round"
-			className="ffs-folder-actions-icon"
+			className="ffs-actions-icon"
 		>
 			<path d="M12 10v6"></path>
 			<path d="M9 13h6"></path>

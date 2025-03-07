@@ -47,7 +47,7 @@ const FileTree = ({ plugin }: Props) => {
 	};
 
 	const renderFolderActions = () => (
-		<div className="ffs-actions ffs-folder-actions">
+		<div className="ffs-actions">
 			<CreateFolder useFileTreeStore={useFileTreeStore} />
 			<SortFolders useFileTreeStore={useFileTreeStore} plugin={plugin} />
 			<ToggleFolders useFileTreeStore={useFileTreeStore} />
@@ -55,7 +55,7 @@ const FileTree = ({ plugin }: Props) => {
 	);
 
 	const renderFileActions = () => (
-		<div className="ffs-actions ffs-file-actions">
+		<div className="ffs-actions">
 			<CreateFile useFileTreeStore={useFileTreeStore} />
 			<SortFiles useFileTreeStore={useFileTreeStore} plugin={plugin} />
 		</div>

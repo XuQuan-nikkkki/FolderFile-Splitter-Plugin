@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { StoreApi, UseBoundStore } from "zustand";
 
@@ -74,12 +74,12 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 		);
 		if (!pinnedFiles.length) return null;
 		return (
-			<div className="ffs-pinned-files-section">
+			<div className="ffs-pinned-section">
 				<span className="ffs-pinned-title">
 					<PinIcon />
 					Pin
 				</span>
-				<div className="ffs-pinned-files">
+				<div className="ffs-pinned-content">
 					{pinnedFiles.map(renderFile)}
 				</div>
 			</div>
@@ -89,10 +89,10 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 	if (!files.length) return renderNoneFilesTips();
 	const sortedFiles = sortFiles(files, fileSortRule);
 	return (
-		<div>
+		<Fragment>
 			{renderPinnedFiles()}
 			<div ref={filesRef}>{sortedFiles.map(renderFile)}</div>
-		</div>
+		</Fragment>
 	);
 };
 
