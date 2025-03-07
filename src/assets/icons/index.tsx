@@ -9,6 +9,8 @@ import DescendingSortIcon from "./DescendingSortIcon";
 import ExpandIcon from "./ExpandIcon";
 import CollapseIcon from "./CollapseIcon";
 import LoadingIcon from "./LoadingIcon";
+import GripIcon from "./GripIcon";
+import ArrowUpDownIcon from "./ArrowUpDownIcon";
 
 export {
 	ArrowDownIcon,
@@ -22,4 +24,6 @@ export {
 	ExpandIcon,
 	CollapseIcon,
 	LoadingIcon,
+	GripIcon,
+	ArrowUpDownIcon
 };

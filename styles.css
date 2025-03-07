@@ -239,7 +239,6 @@ If your plugin does not need CSS, delete this file.
 .ffs-file {
 	border-radius: var(--ffs-folder-border-radius);
 	padding: 0px 12px;
-	margin-left: 12px;
 }
 
 .ffs-file-content {
@@ -372,4 +371,26 @@ If your plugin does not need CSS, delete this file.
 	)
 	.ffs-file-content {
 	border-bottom: 1px solid var(--ffs-pinned-file-border-color);
+}
+
+.ffs-sortable-file {
+	position: relative;
+	margin-left: 12px;
+}
+
+.ffs-drag-sort-icon {
+	position: absolute;
+	top: 12px;
+	right: 4px;
+	visibility: hidden;
+}
+
+.ffs-sortable-file:hover .ffs-drag-sort-icon {
+	visibility: visible;
+	opacity: 0.4;
+}
+
+.ffs-drag-sort-icon .ffs-icon {
+	width: 15px;
+	height: 15px;
 }

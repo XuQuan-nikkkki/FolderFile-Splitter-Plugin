@@ -7,7 +7,7 @@ import FolderFileSplitterPlugin from "src/main";
 import useDraggable, { getDraggingStyles } from "src/hooks/useDraggable";
 import { FFS_DRAG_FILES_TYPE } from "src/assets/constants";
 import { isAbstractFileIncluded } from "src/utils";
-import File from "./File";
+import SortableFile from "./SortableFile";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -109,10 +109,7 @@ const DraggableFile = ({
 		isDragging || isAbstractFileIncluded(draggingFiles, file);
 
 	const getFileClassName = () => {
-		return [
-			"ffs-file",
-			isFileSelected() && "ffs-selected-file",
-		]
+		return [isFileSelected() && "ffs-selected-file"]
 			.filter(Boolean)
 			.join(" ");
 	};
@@ -124,11 +121,12 @@ const DraggableFile = ({
 			className={getFileClassName()}
 			style={getDraggingStyles(getIsDragging())}
 		>
-			<File
+			<SortableFile
 				useFileTreeStore={useFileTreeStore}
 				file={file}
 				plugin={plugin}
 				deleteFile={deleteFile}
+				fileList={fileList}
 			/>
 		</div>
 	);

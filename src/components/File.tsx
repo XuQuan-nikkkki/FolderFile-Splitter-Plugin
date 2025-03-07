@@ -126,7 +126,7 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 	const isFocused = focusedFile?.path === file.path;
 	return (
 		<div
-			className={isFocused ? "ffs-focused-file" : ""}
+			className={getFileClassName()}
 			onContextMenu={onShowContextMenu}
 		>
 			<div className="ffs-file-content">
