@@ -5,10 +5,10 @@ import { TFolder } from "obsidian";
 
 import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
-import Folder from "./Folder";
 import { useShowHierarchyLines } from "src/hooks/useSettingsHandler";
 import { useChangeFolder } from "src/hooks/useVaultChangeHandler";
 import PinIcon from "src/assets/icons/PinIcon";
+import DraggableFolder from "./DraggableFolder";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -67,7 +67,7 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 	};
 
 	const renderFolder = (folder: TFolder, isRoot?: boolean) => (
-		<Folder
+		<DraggableFolder
 			key={folder.path}
 			folder={folder}
 			useFileTreeStore={useFileTreeStore}

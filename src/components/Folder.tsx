@@ -1,8 +1,6 @@
-import { Menu, TFile, TFolder } from "obsidian";
+import { Menu, TFolder } from "obsidian";
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
-import { useDrop } from "react-dnd";
-import { useRef } from "react";
 
 import { FolderIcon } from "src/assets/icons";
 import FolderFileSplitterPlugin from "src/main";
@@ -12,17 +10,6 @@ import {
 	useShowFolderIcon,
 	useExpandFolderByClickingOnElement,
 } from "src/hooks/useSettingsHandler";
-import { isAbstractFileIncluded, moveFileOrFolder } from "src/utils";
-import useDraggable, {
-	DraggableFiles,
-	DraggableFolders,
-	DraggableItem,
-	getDraggingStyles,
-} from "src/hooks/useDraggable";
-import {
-	FFS_DRAG_FILES_TYPE,
-	FFS_DRAG_FOLDERS_TYPE,
-} from "src/assets/constants";
 import useRenderFolderName from "../hooks/useRenderFolderName";
 import FilesCount from "./FilesCount";
 import FolderExpandIcon from "./FolderExpandIcon";
@@ -31,28 +18,20 @@ type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
 	plugin: FolderFileSplitterPlugin;
 	folder: TFolder;
-	selectedFolders: TFolder[];
-	draggingFolders: TFolder[];
-	setSelectedFolders: (folders: TFolder[]) => void;
-	setDraggingFolders: (folders: TFolder[]) => void;
+	onToggleExpandState: () => void;
 	isRoot?: boolean;
 };
 const Folder = ({
 	folder,
 	useFileTreeStore,
 	plugin,
-	selectedFolders,
-	draggingFolders,
-	setSelectedFolders,
-	setDraggingFolders,
+	onToggleExpandState,
 	isRoot = false,
 }: Props) => {
 	const {
-		hasFolderChildren,
 		focusedFolder,
 		setFocusedFolder,
 		expandedFolderPaths,
-		changeExpandedFolderPaths,
 		createNewFolder,
 		createFile,
 		folders,
@@ -62,11 +41,9 @@ const Folder = ({
 		isFolderPinned,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
-			hasFolderChildren: store.hasFolderChildren,
 			focusedFolder: store.focusedFolder,
 			setFocusedFolder: store.setFocusedFolder,
 			expandedFolderPaths: store.expandedFolderPaths,
-			changeExpandedFolderPaths: store.changeExpandedFolderPaths,
 			createNewFolder: store.createNewFolder,
 			createFile: store.createFile,
 			folders: store.folders,
@@ -76,66 +53,6 @@ const Folder = ({
 			isFolderPinned: store.isFolderPinned,
 		}))
 	);
-
-	const folderRef = useRef<HTMLDivElement>(null);
-
-	const isFolderSelected = isAbstractFileIncluded(selectedFolders, folder);
-
-	const { drag, isDragging } = useDraggable({
-		type: FFS_DRAG_FOLDERS_TYPE,
-		item: () => {
-			const foldersToDrag = isFolderSelected ? selectedFolders : [folder];
-			setDraggingFolders(foldersToDrag);
-			return {
-				folders: foldersToDrag,
-			};
-		},
-		end: () => setDraggingFolders([]),
-		deps: [selectedFolders, draggingFolders],
-	});
-
-	const onDropFiles = async (files: TFile[]) => {
-		const filesToMove = files.filter((file) => file.path !== folder.path);
-		if (!filesToMove.length) return;
-		await Promise.all(
-			filesToMove.map(
-				async (file) =>
-					await moveFileOrFolder(plugin.app.fileManager, file, folder)
-			)
-		);
-		setFocusedFolder(folder);
-	};
-
-	const onDropFolders = async (folders: TFolder[]) => {
-		const foldersToMove = folders.filter((f) => f.path !== folder.path);
-		if (!foldersToMove.length) return;
-		await Promise.all(
-			foldersToMove.map(
-				async (f) =>
-					await moveFileOrFolder(plugin.app.fileManager, f, folder)
-			)
-		);
-		if (!isRoot && !expandedFolderPaths.includes(folder.path)) {
-			onToggleExpandState();
-		}
-	};
-
-	const [{ isOver }, drop] = useDrop(() => ({
-		accept: [FFS_DRAG_FILES_TYPE, FFS_DRAG_FOLDERS_TYPE],
-		drop: async (item: DraggableItem, monitor) => {
-			const itemType = monitor.getItemType();
-			if (itemType === FFS_DRAG_FOLDERS_TYPE) {
-				await onDropFolders((item as DraggableFolders).folders);
-			} else if (itemType === FFS_DRAG_FILES_TYPE) {
-				await onDropFiles((item as DraggableFiles).files);
-			}
-		},
-		collect: (monitor) => ({
-			isOver: !!monitor.isOver(),
-		}),
-	}));
-
-	drag(drop(folderRef));
 
 	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
 
@@ -147,16 +64,6 @@ const Folder = ({
 
 	const { renderFolderName, selectFileNameText, onBeginEdit } =
 		useRenderFolderName(folder, plugin, isRoot);
-
-	const onToggleExpandState = (): void => {
-		if (isRoot) return;
-		if (hasFolderChildren(folder)) {
-			const folderPaths = isFolderExpanded
-				? expandedFolderPaths.filter((path) => path !== folder.path)
-				: [...expandedFolderPaths, folder.path];
-			changeExpandedFolderPaths(folderPaths);
-		}
-	};
 
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
@@ -232,63 +139,17 @@ const Folder = ({
 		const isFocused = folder.path == focusedFolder?.path;
 
 		const isFocusedFileInFolder = focusedFile?.parent?.path === folder.path;
-		const folderClassNames = [
-			"ffs-folder",
-			isRoot && "ffs-root-folder",
-			isOver && "ffs-drop-target-folder",
-		];
+		const folderClassNames = ["ffs-folder", isRoot && "ffs-root-folder"];
 		if (isFocused && (!focusedFile || !isFocusedFileInFolder)) {
 			folderClassNames.push("ffs-focused-folder");
 		} else if (isFocused) {
 			folderClassNames.push("ffs-focused-folder-with-focused-file");
 		}
-		if (isFolderSelected) {
-			folderClassNames.push("ffs-selected-folder");
-		}
 		return folderClassNames.filter(Boolean).join(" ");
 	};
 
-	const beginMultiSelect = (): TFolder[] => {
-		let newFolders = [...selectedFolders];
-		if (
-			focusedFolder &&
-			!isAbstractFileIncluded(selectedFolders, focusedFolder)
-		) {
-			newFolders = [...selectedFolders, focusedFolder];
-		}
-		return newFolders;
-	};
-
-	const onSelectOneByOne = () => {
-		let folders = beginMultiSelect();
-		if (isFolderSelected) {
-			folders = folders.filter((f) => f.path !== folder.path);
-		} else {
-			folders.push(folder);
-		}
-		setSelectedFolders(folders);
-	};
-
-	const onClickFolder = (e: React.MouseEvent<HTMLDivElement>) => {
-		if (e.altKey || e.metaKey) {
-			onSelectOneByOne();
-		} else {
-			setSelectedFolders([folder]);
-			setFocusedFolder(folder);
-		}
-	};
-
-	const getIsDragging = () =>
-		isDragging || isAbstractFileIncluded(draggingFolders, folder);
-
 	return (
-		<div
-			ref={folderRef}
-			className={getFolderClassName()}
-			onClick={onClickFolder}
-			onContextMenu={onShowContextMenu}
-			style={getDraggingStyles(getIsDragging())}
-		>
+		<div className={getFolderClassName()} onContextMenu={onShowContextMenu}>
 			<div
 				className="ffs-folder-pane-left-section"
 				onClick={onClickFolderName}
