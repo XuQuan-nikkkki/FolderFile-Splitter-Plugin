@@ -9,6 +9,7 @@ import {
 	FFS_FILE_SORT_RULE_KEY,
 	FFS_FOCUSED_FILE_PATH_KEY,
 	FFS_FOCUSED_FOLDER_PATH_KEY,
+	FFS_FOLDER_MANUAL_SORT_ORDER_KEY,
 	FFS_FOLDER_SORT_RULE_KEY,
 	FFS_PINNED_FILE_PATHS_KEY,
 	FFS_PINNED_FOLDER_PATHS_KEY,
@@ -18,7 +19,8 @@ export type FolderSortRule =
 	| "FolderNameAscending"
 	| "FolderNameDescending"
 	| "FilesCountAscending"
-	| "FilesCountDescending";
+	| "FilesCountDescending"
+	| "FolderManualOrder";
 export const DEFAULT_FOLDER_SORT_RULE: FolderSortRule = "FolderNameAscending";
 export type FileSortRule =
 	| "FileNameAscending"
@@ -30,10 +32,11 @@ export type FileSortRule =
 	| "FileManualOrder";
 const DEFAULT_FILE_SORT_RULE: FileSortRule = "FileNameAscending";
 export const FILE_MANUAL_SORT_RULE: FileSortRule = "FileManualOrder";
+export const FOLDER_MANUAL_SORT_RULE: FolderSortRule = "FolderManualOrder";
 
 type FolderPath = string;
-type FilesPath = string[];
-export type FilesManualSortOrder = Record<FolderPath, FilesPath>;
+type ChildrenPaths = string[];
+export type ManualSortOrder = Record<FolderPath, ChildrenPaths>;
 
 export type FileTreeStore = {
 	folders: TFolder[];
@@ -45,7 +48,8 @@ export type FileTreeStore = {
 	folderSortRule: FolderSortRule;
 	fileSortRule: FileSortRule;
 	expandedFolderPaths: string[];
-	filesManualSortOrder: FilesManualSortOrder;
+	filesManualSortOrder: ManualSortOrder;
+	foldersManualSortOrder: ManualSortOrder;
 
 	getData: <T>(key: string) => Promise<T | undefined>;
 	saveData: (data: Record<string, unknown>) => Promise<void>;
@@ -79,6 +83,16 @@ export type FileTreeStore = {
 	unpinFolder: (folder: TFolder) => Promise<void>;
 	isFolderPinned: (folder: TFolder) => boolean;
 	restorePinnedFolders: () => Promise<void>;
+	initFoldersManualSortOrder: () => Promise<void>;
+	restoreFoldersManualSortOrder: () => Promise<void>;
+	changeFoldersManualOrder: (
+		folder: TFolder,
+		atIndex: number
+	) => ManualSortOrder | undefined;
+	changeFoldersManualOrderAndSave: (
+		folder: TFolder,
+		atIndex: number
+	) => Promise<void>;
 
 	// Files related
 	findFileByPath: (path: string) => TFile | null;
@@ -102,7 +116,7 @@ export type FileTreeStore = {
 	changeFilesManualOrder: (
 		file: TFile,
 		atIndex: number
-	) => FilesManualSortOrder | undefined;
+	) => ManualSortOrder | undefined;
 	changeFilesManualOrderAndSave: (
 		file: TFile,
 		atIndex: number
@@ -121,6 +135,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		fileSortRule: DEFAULT_FILE_SORT_RULE,
 		expandedFolderPaths: [],
 		filesManualSortOrder: {},
+		foldersManualSortOrder: {},
 
 		saveData: async (data: Record<string, unknown>): Promise<void> => {
 			const previousData = await plugin.loadData();
@@ -287,13 +302,17 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			await get().saveData({ [FFS_FOLDER_SORT_RULE_KEY]: rule });
 		},
 		restoreFolderSortRule: async () => {
-			const lastFolderSortRule = await get().getData<FolderSortRule>(
+			const { restoreFoldersManualSortOrder, getData } = get();
+			const lastFolderSortRule = await getData<FolderSortRule>(
 				FFS_FOLDER_SORT_RULE_KEY
 			);
 			if (lastFolderSortRule) {
 				set({
 					folderSortRule: lastFolderSortRule,
 				});
+				if (lastFolderSortRule === FOLDER_MANUAL_SORT_RULE) {
+					await restoreFoldersManualSortOrder();
+				}
 			}
 		},
 		changeExpandedFolderPaths: async (folderPaths: string[]) => {
@@ -376,6 +395,83 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 					console.error("Invalid Json format: ", error);
 				}
 			}
+		},
+		initFoldersManualSortOrder: async () => {
+			const {
+				folderSortRule,
+				folders,
+				getFoldersByParent,
+				rootFolder,
+				sortFolders,
+				saveData,
+			} = get();
+			const foldersToInit = [rootFolder, ...folders].filter(Boolean);
+			const order: ManualSortOrder = {};
+			foldersToInit.forEach((folder) => {
+				if (folder) {
+					const folders = getFoldersByParent(folder);
+					if (folders.length) {
+						const sortedFolders = sortFolders(
+							folders,
+							folderSortRule,
+							plugin.settings.includeSubfolderFilesCount
+						);
+						order[folder.path] = sortedFolders.map(
+							(folder) => folder.path
+						);
+					}
+				}
+			});
+			set({
+				foldersManualSortOrder: order,
+			});
+			console.log(order)
+			await saveData({
+				[FFS_FOLDER_MANUAL_SORT_ORDER_KEY]: order,
+			});
+		},
+		restoreFoldersManualSortOrder: async () => {
+			const { getData } = get();
+			const order = await getData<ManualSortOrder>(
+				FFS_FOLDER_MANUAL_SORT_ORDER_KEY
+			);
+			if (order) {
+				set({
+					foldersManualSortOrder: order,
+				});
+			}
+		},
+		changeFoldersManualOrder: (folder: TFolder, atIndex: number) => {
+			const { foldersManualSortOrder } = get();
+			const parentPath = folder.parent?.path;
+			if (!parentPath) return;
+
+			const initialOrder = foldersManualSortOrder[parentPath] ?? [];
+			const currentIndex = initialOrder.indexOf(folder.path);
+			if (currentIndex === atIndex) {
+				return foldersManualSortOrder;
+			}
+			const newOrder = [...initialOrder];
+			newOrder.splice(currentIndex, 1);
+			newOrder.splice(atIndex, 0, folder.path);
+			const updatedOrder = {
+				...foldersManualSortOrder,
+				[parentPath]: newOrder,
+			};
+			set({
+				foldersManualSortOrder: updatedOrder,
+			});
+			return updatedOrder;
+		},
+		changeFoldersManualOrderAndSave: async (
+			folder: TFolder,
+			atIndex: number
+		) => {
+			const { saveData, changeFoldersManualOrder } = get();
+			const updatedOrder = changeFoldersManualOrder(folder, atIndex);
+			await saveData({
+				[FFS_FOLDER_MANUAL_SORT_ORDER_KEY]: updatedOrder,
+			});
 		},
 
 		// Files related
@@ -572,7 +668,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				saveData,
 			} = get();
 			const foldersToInit = [rootFolder, ...folders].filter(Boolean);
-			const order: FilesManualSortOrder = {};
+			const order: ManualSortOrder = {};
 			foldersToInit.forEach((folder) => {
 				if (folder) {
 					const files = getDirectFilesInFolder(folder);
@@ -593,7 +689,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		},
 		restoreFilesManualSortOrder: async () => {
 			const { getData } = get();
-			const order = await getData<FilesManualSortOrder>(
+			const order = await getData<ManualSortOrder>(
 				FFS_FILE_MANUAL_SORT_ORDER_KEY
 			);
 			if (order) {

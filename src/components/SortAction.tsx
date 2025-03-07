@@ -20,7 +20,7 @@ type Props = {
 	changeSortRule: (rule: string) => void;
 	isInAscendingOrder: () => boolean;
 	currentSortRule: string;
-	isManualOrder?: boolean;
+	isManualOrder: boolean;
 };
 const SortAction = ({
 	plugin,
