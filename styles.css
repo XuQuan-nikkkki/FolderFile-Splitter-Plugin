@@ -11,7 +11,7 @@ If your plugin does not need CSS, delete this file.
 .theme-dark {
 	--ffs-folder-pane-min-width: 140px;
 	--ffs-files-pane-min-width: 200px;
-	--ffs-folder-border-radius: 4px;
+	--ffs-border-radius: 4px;
 }
 
 .theme-light {
@@ -75,7 +75,6 @@ If your plugin does not need CSS, delete this file.
 
 .ffs-folder-pane {
 	min-width: var(--ffs-folder-pane-min-width);
-	margin-right: 8px;
 	overflow-y: auto;
 }
 
@@ -83,11 +82,75 @@ If your plugin does not need CSS, delete this file.
 	min-width: var(--ffs-files-pane-min-width);
 	flex: 1;
 	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
 }
 
 .ffs-pane-divider {
 	border: 1px solid var(--ffs-pane-divider-color);
 	cursor: ew-resize;
+	margin: 0 8px;
+}
+
+.ffs-actions {
+	width: 100%;
+	margin-bottom: 8px;
+	padding: 8px 16px 4px;
+	border-radius: var(--ffs-border-radius);
+	background-color: var(--ffs-actions-background-color);
+	display: flex;
+}
+
+.ffs-actions-icon-wrapper:not(:last-child) {
+	margin-right: 12px;
+}
+
+.ffs-actions .ffs-actions-icon {
+	width: 18px;
+	height: 18px;
+	stroke: var(--ffs-actions-icon-color);
+}
+
+.ffs-actions .ffs-actions-icon:hover {
+	transform: scale(1.1);
+}
+
+.ffs-pinned-section {
+	margin-bottom: 4px;
+	padding: 6px 4px 8px;
+	background-color: var(--ffs-actions-background-color);
+	border-radius: var(--ffs-border-radius);
+}
+
+.ffs-pinned-title {
+	display: flex;
+	align-items: center;
+	font-weight: 500;
+	color: var(--ffs-actions-icon-color);
+	margin-bottom: 4px;
+	margin-left: 2px;
+	font-size: 12px;
+}
+
+.ffs-pinned-section .ffs-pin-icon {
+	width: 12px;
+	height: 12px;
+	margin-right: 2px;
+	fill: var(--ffs-actions-icon-color);
+	color: var(--ffs-actions-icon-color);
+}
+
+/* TODO: To remove */
+.ffs-pinned-content .ffs-folder-arrow-icon-wrapper {
+	width: 0;
+}
+
+.ffs-pinned-section
+	.ffs-file:not(:last-child):not(.ffs-focused-file):has(
+		+ .ffs-file:not(.ffs-focused-file)
+	)
+	.ffs-file-content {
+	border-bottom: 1px solid var(--ffs-pinned-file-border-color);
 }
 
 .ffs-folder {
@@ -104,7 +167,7 @@ If your plugin does not need CSS, delete this file.
 
 .ffs-folder:hover {
 	background-color: var(--ffs-folder-hover-background-color);
-	border-radius: var(--ffs-folder-border-radius);
+	border-radius: var(--ffs-border-radius);
 }
 
 .ffs-root-folder {
@@ -165,7 +228,7 @@ If your plugin does not need CSS, delete this file.
 .ffs-folder-pane .ffs-drop-target-folder,
 .ffs-folder-pane .ffs-selected-folder {
 	background-color: var(--ffs-focused-background-color);
-	border-radius: var(--ffs-folder-border-radius);
+	border-radius: var(--ffs-border-radius);
 	color: var(--ffs-folder-focused-color);
 }
 
@@ -173,7 +236,7 @@ If your plugin does not need CSS, delete this file.
 	background-color: var(
 		--ffs-focused-folder-with-focused-file-background-color
 	);
-	border-radius: var(--ffs-folder-border-radius);
+	border-radius: var(--ffs-border-radius);
 }
 
 .ffs-folder-pane .ffs-folder-name-edit-mode {
@@ -219,6 +282,7 @@ If your plugin does not need CSS, delete this file.
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	border: 1px solid red;
 }
 
 .ffs-hierarchy-line {
@@ -237,7 +301,7 @@ If your plugin does not need CSS, delete this file.
 }
 
 .ffs-file {
-	border-radius: var(--ffs-folder-border-radius);
+	border-radius: var(--ffs-border-radius);
 	padding: 0px 12px;
 }
 
@@ -298,79 +362,6 @@ If your plugin does not need CSS, delete this file.
 
 .ffs-focused-file .ffs-file-content-preview {
 	color: var(--ffs-focused-file-content-preview-color);
-}
-
-.ffs-actions {
-	margin: 0px auto 4px;
-	padding: 8px 16px 4px;
-	border-radius: var(--ffs-folder-border-radius);
-	background-color: var(--ffs-actions-background-color);
-	display: flex;
-}
-
-.ffs-file-actions {
-	margin-left: 12px;
-}
-
-.ffs-folder-actions-icon {
-	width: 18px;
-	height: 18px;
-	stroke: var(--ffs-actions-icon-color);
-}
-
-.ffs-folder-actions-icon:hover {
-	transform: scale(1.1);
-}
-
-.ffs-actions-icon-wrapper:not(:last-child) {
-	margin-right: 12px;
-}
-
-.ffs-pinned-folders-section,
-.ffs-pinned-files-section {
-	margin: 8px 0 4px;
-	padding: 6px 4px 8px;
-	background-color: var(--ffs-actions-background-color);
-	border-radius: 4px;
-}
-
-.ffs-pinned-files-section {
-	margin-left: 12px;
-}
-
-.ffs-pinned-files-section .ffs-file {
-	margin-left: 0;
-}
-
-.ffs-pinned-title {
-	display: flex;
-	align-items: center;
-	font-weight: 500;
-	color: var(--ffs-actions-icon-color);
-	margin-bottom: 4px;
-	margin-left: 2px;
-	font-size: 12px;
-}
-
-.ffs-pinned-folders-section .ffs-pin-icon,
-.ffs-pinned-files-section .ffs-pin-icon {
-	width: 12px;
-	height: 12px;
-	margin-right: 2px;
-	fill: var(--ffs-actions-icon-color);
-	color: var(--ffs-actions-icon-color);
-}
-
-.ffs-pinned-folders .ffs-folder-arrow-icon-wrapper {
-	width: 0;
-}
-
-.ffs-pinned-files-section
-	.ffs-file:not(:last-child):not(.ffs-focused-file):has(
-		+ .ffs-file:not(.ffs-focused-file)
-	)
-	.ffs-file-content {
-	border-bottom: 1px solid var(--ffs-pinned-file-border-color);
 }
 
 .ffs-sortable-file,
