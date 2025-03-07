@@ -5,7 +5,7 @@ import { StoreApi, UseBoundStore } from "zustand";
 import { FileTreeStore } from "src/store";
 import { EmptyFolderIcon } from "src/assets/icons";
 
-import File from "./File";
+import DraggableFile from "./DraggableFile";
 import FolderFileSplitterPlugin from "src/main";
 import { useChangeFile } from "src/hooks/useVaultChangeHandler";
 import { TFile } from "obsidian";
@@ -21,7 +21,7 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 			sortFiles: store.sortFiles,
 			fileSortRule: store.fileSortRule,
 			focusedFile: store.focusedFile,
-			pinnedFiles: store.pinnedFilePaths
+			pinnedFiles: store.pinnedFilePaths,
 		}))
 	);
 	const { files, onDeleteFileFromList } = useChangeFile({ useFileTreeStore });
@@ -52,25 +52,26 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 	};
 
 	const renderFile = (file: TFile) => (
-		<File
-		key={file.name}
-		useFileTreeStore={useFileTreeStore}
-		file={file}
-		plugin={plugin}
-		deleteFile={() => onDeleteFileFromList(file)}
-		fileList={sortedFiles}
-		selectedFiles={selectedFiles}
-		setSelectedFiles={setSelectedFiles}
-		draggingFiles={draggingFiles}
-		setDraggingFiles={setDraggingFiles}
-	/>
-	)	
-	
+		<DraggableFile
+			key={file.name}
+			useFileTreeStore={useFileTreeStore}
+			file={file}
+			plugin={plugin}
+			deleteFile={() => onDeleteFileFromList(file)}
+			fileList={sortedFiles}
+			selectedFiles={selectedFiles}
+			setSelectedFiles={setSelectedFiles}
+			draggingFiles={draggingFiles}
+			setDraggingFiles={setDraggingFiles}
+		/>
+	);
 
 	const renderPinnedFiles = () => {
 		const pinnedFilePaths = useFileTreeStore.getState().pinnedFilePaths;
-		const pinnedFiles = files.filter(f => pinnedFilePaths.includes(f.path))
-		if (!pinnedFiles) return null;
+		const pinnedFiles = files.filter((f) =>
+			pinnedFilePaths.includes(f.path)
+		);
+		if (!pinnedFiles.length) return null;
 		return (
 			<div className="ffs-pinned-files-section">
 				<span className="ffs-pinned-title">
@@ -89,9 +90,7 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 	return (
 		<div>
 			{renderPinnedFiles()}
-			<div ref={filesRef}>
-				{sortedFiles.map(renderFile)}
-			</div>
+			<div ref={filesRef}>{sortedFiles.map(renderFile)}</div>
 		</div>
 	);
 };
