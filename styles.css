@@ -373,8 +373,12 @@ If your plugin does not need CSS, delete this file.
 	border-bottom: 1px solid var(--ffs-pinned-file-border-color);
 }
 
-.ffs-sortable-file {
+.ffs-sortable-file,
+.ffs-sortable-folder {
 	position: relative;
+}
+
+.ffs-sortable-file {
 	margin-left: 12px;
 }
 

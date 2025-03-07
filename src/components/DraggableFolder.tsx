@@ -17,7 +17,7 @@ import {
 	FFS_DRAG_FILES_TYPE,
 	FFS_DRAG_FOLDERS_TYPE,
 } from "src/assets/constants";
-import Folder from "./Folder";
+import SortableFolder from "./SortableFolder";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -178,7 +178,7 @@ const DraggableFolder = ({
 			onClick={onClickFolder}
 			style={getDraggingStyles(getIsDragging())}
 		>
-			<Folder
+			<SortableFolder
 				folder={folder}
 				useFileTreeStore={useFileTreeStore}
 				plugin={plugin}
