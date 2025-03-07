@@ -1,6 +1,10 @@
 import { Menu } from "obsidian";
 
-import { AscendingSortIcon, DescendingSortIcon } from "src/assets/icons";
+import {
+	ArrowUpDownIcon,
+	AscendingSortIcon,
+	DescendingSortIcon,
+} from "src/assets/icons";
 import FolderFileSplitterPlugin from "src/main";
 
 type SortRule = {
@@ -16,6 +20,7 @@ type Props = {
 	changeSortRule: (rule: string) => void;
 	isInAscendingOrder: () => boolean;
 	currentSortRule: string;
+	isManualOrder?: boolean;
 };
 const SortAction = ({
 	plugin,
@@ -24,6 +29,7 @@ const SortAction = ({
 	changeSortRule,
 	isInAscendingOrder,
 	currentSortRule,
+	isManualOrder,
 }: Props) => {
 	const onChangeSortRule = (e: React.MouseEvent<HTMLDivElement>) => {
 		const menu = new Menu();
@@ -45,14 +51,20 @@ const SortAction = ({
 		return false;
 	};
 
-	const icon = isInAscendingOrder() ? (
-		<AscendingSortIcon />
-	) : (
-		<DescendingSortIcon />
-	);
+	const renderIcon = () => {
+		if (isManualOrder) {
+			return <ArrowUpDownIcon />;
+		}
+		return isInAscendingOrder() ? (
+			<AscendingSortIcon />
+		) : (
+			<DescendingSortIcon />
+		);
+	};
+
 	return (
 		<div className="ffs-actions-icon-wrapper" onClick={onChangeSortRule}>
-			{icon}
+			{renderIcon()}
 		</div>
 	);
 };

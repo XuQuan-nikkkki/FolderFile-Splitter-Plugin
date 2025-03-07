@@ -1,7 +1,7 @@
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
-import { FileSortRule, FileTreeStore } from "src/store";
+import { FILE_MANUAL_SORT_RULE, FileSortRule, FileTreeStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
 import SortAction from "../SortAction";
 
@@ -34,6 +34,12 @@ const FileSortByCreatedTimeRules: FileSortRuleGroup = [
 		rule: "FileCreatedTimeAscending",
 	},
 ];
+const FilesManualSortRules: FileSortRuleGroup = [
+	{
+		text: "Manual order",
+		rule: "FileManualOrder",
+	},
+];
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -44,11 +50,13 @@ const SortFiles = ({ useFileTreeStore, plugin }: Props) => {
 		fileSortRule,
 		changeFileSortRule,
 		isFilesInAscendingOrder,
+		initFilesManualSortOrder,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			fileSortRule: store.fileSortRule,
 			isFilesInAscendingOrder: store.isFilesInAscendingOrder,
 			changeFileSortRule: store.changeFileSortRule,
+			initFilesManualSortOrder: store.initFilesManualSortOrder,
 		}))
 	);
 
@@ -59,11 +67,18 @@ const SortFiles = ({ useFileTreeStore, plugin }: Props) => {
 				FileSortByNameRules,
 				FileSortByModifiedTimeRules,
 				FileSortByCreatedTimeRules,
+				FilesManualSortRules,
 			]}
 			menuName="sort-files-menu"
-			changeSortRule={changeFileSortRule}
+			changeSortRule={async (rule) => {
+				if (rule === FILE_MANUAL_SORT_RULE) {
+					await initFilesManualSortOrder();
+				}
+				changeFileSortRule(rule);
+			}}
 			isInAscendingOrder={isFilesInAscendingOrder}
 			currentSortRule={fileSortRule}
+			isManualOrder={fileSortRule === FILE_MANUAL_SORT_RULE}
 		/>
 	);
 };
