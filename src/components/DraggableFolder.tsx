@@ -129,7 +129,7 @@ const DraggableFolder = ({
 
 	const getFolderClassName = (): string => {
 		const folderClassNames = [
-			"ffs-folder",
+			"ffs-draggable-folder",
 			isOver && "ffs-drop-target-folder",
 		];
 		if (isFolderSelected) {

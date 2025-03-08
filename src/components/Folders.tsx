@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { StoreApi, UseBoundStore } from "zustand";
 import { TFolder } from "obsidian";
@@ -63,7 +63,7 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 
 	const maybeRenderHierarchyLine = () => {
 		if (!showHierarchyLines) return null;
-		return <div className="ffs-hierarchy-line"></div>;
+		return <div className="ffs-folder-hierarchy-line"></div>;
 	};
 
 	const renderFolder = (folder: TFolder, isRoot?: boolean) => (
@@ -133,13 +133,13 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 	};
 
 	return (
-		<Fragment>
+		<div className="ffs-folders">
 			{renderPinnedFolders()}
 			<div ref={foldersRef}>
 				{renderRootFolder()}
 				{renderFolders(topFolders)}
 			</div>
-		</Fragment>
+		</div>
 	);
 };
 

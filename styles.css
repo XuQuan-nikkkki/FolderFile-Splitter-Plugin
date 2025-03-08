@@ -75,7 +75,8 @@ If your plugin does not need CSS, delete this file.
 
 .ffs-folder-pane {
 	min-width: var(--ffs-folder-pane-min-width);
-	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
 }
 
 .ffs-files-pane {
@@ -153,9 +154,32 @@ If your plugin does not need CSS, delete this file.
 	border-bottom: 1px solid var(--ffs-pinned-file-border-color);
 }
 
+.ffs-folders {
+	flex: 1;
+	overflow-y: auto;
+}
+
+.ffs-folder-wrapper {
+	position: relative;
+}
+
+.ffs-folder-hierarchy-line {
+	width: 1px;
+	border-left: 1px solid var(--ffs-folder-hierarchy-line-color);
+	position: absolute;
+	left: -2px;
+	top: 0;
+	bottom: 0px;
+}
+
+.ffs-draggable-folder {
+	width: 100%;
+}
+
 .ffs-folder {
 	height: 30px;
 	font-size: 13px;
+	width: 100%;
 
 	display: flex;
 	align-items: center;
@@ -163,11 +187,12 @@ If your plugin does not need CSS, delete this file.
 	padding-left: 6px;
 	padding-right: 6px;
 	color: var(--ffs-folder-name-color);
+	border-radius: var(--ffs-border-radius);
+	/* border: 1px solid red; */
 }
 
 .ffs-folder:hover {
 	background-color: var(--ffs-folder-hover-background-color);
-	border-radius: var(--ffs-border-radius);
 }
 
 .ffs-root-folder {
@@ -206,13 +231,7 @@ If your plugin does not need CSS, delete this file.
 	width: 4px;
 }
 
-.ffs-root-folder .ffs-root-folder-icon {
-	width: 16px;
-	height: 14px;
-}
-
-.ffs-arrow-down-icon,
-.ffs-arrow-right-icon {
+.ffs-expand-icon {
 	width: 8px;
 	height: 8px;
 	fill: var(--ffs-folder-toggle-icon-color);
@@ -254,8 +273,7 @@ If your plugin does not need CSS, delete this file.
 	font-weight: 450;
 }
 
-.ffs-focused-folder .ffs-arrow-down-icon,
-.ffs-focused-folder .ffs-arrow-right-icon,
+.ffs-focused-folder .ffs-expand-icon,
 .ffs-focused-folder .ffs-folder-icon,
 .ffs-selected-folder .ffs-folder-icon {
 	fill: var(--ffs-folder-focused-color);
@@ -266,10 +284,6 @@ If your plugin does not need CSS, delete this file.
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-}
-
-.ffs-folder-wrapper {
-	position: relative;
 }
 
 .ffs-sub-folders-section {
@@ -283,15 +297,6 @@ If your plugin does not need CSS, delete this file.
 	justify-content: center;
 	align-items: center;
 	border: 1px solid red;
-}
-
-.ffs-hierarchy-line {
-	width: 1px;
-	border-left: 1px solid var(--ffs-folder-hierarchy-line-color);
-	position: absolute;
-	left: -2px;
-	top: 0;
-	bottom: 0px;
 }
 
 .ffs-none-files-tips .ffs-empty-folder-icon {
@@ -373,13 +378,24 @@ If your plugin does not need CSS, delete this file.
 	margin-left: 12px;
 }
 
-.ffs-drag-sort-icon {
+.ffs-sortable-folder .ffs-drag-sort-icon,
+.ffs-sortable-file .ffs-drag-sort-icon {
 	position: absolute;
 	top: 12px;
-	right: 4px;
 	visibility: hidden;
 }
 
+.ffs-sortable-file .ffs-drag-sort-icon {
+	right: 4px;
+	top: 12px;
+}
+
+.ffs-sortable-folder .ffs-drag-sort-icon {
+	right: 16px;
+	top: 7px;
+}
+
+.ffs-sortable-folder:hover .ffs-drag-sort-icon,
 .ffs-sortable-file:hover .ffs-drag-sort-icon {
 	visibility: visible;
 	opacity: 0.4;

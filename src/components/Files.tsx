@@ -22,7 +22,7 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 			fileSortRule: store.fileSortRule,
 			focusedFile: store.focusedFile,
 			pinnedFiles: store.pinnedFilePaths,
-			FileManualSortOrder: store.filesManualSortOrder
+			FileManualSortOrder: store.filesManualSortOrder,
 		}))
 	);
 	const { files, onDeleteFileFromList } = useChangeFile({ useFileTreeStore });
