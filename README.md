@@ -52,7 +52,7 @@ To uninstall the plugin, simply disable or delete it from the Obsidian plugin se
 
 ## Changelog
 
-- **v0.0.1**: Initial release with folder/file split view and improved navigation.
+- **v0.1.0**: Initial release with folder/file split view and improved navigation.
 
 ## Feedback & Issues
 
