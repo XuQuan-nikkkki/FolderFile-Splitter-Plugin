@@ -1,6 +1,7 @@
 import { Menu, TFolder } from "obsidian";
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
+import styled from "styled-components";
 
 import { FolderIcon } from "src/assets/icons";
 import FolderFileSplitterPlugin from "src/main";
@@ -14,20 +15,79 @@ import useRenderFolderName from "../hooks/useRenderFolderName";
 import FilesCount from "./FilesCount";
 import FolderExpandIcon from "./FolderExpandIcon";
 
-type Props = {
+const StyledFolder = styled.div<{
+	$isRoot?: boolean;
+	$isFocusedOnFolder?: boolean;
+	$isFocusedOnFile?: boolean;
+	$isSelected?: boolean;
+}>`
+	height: 30px;
+	font-size: ${({ $isRoot }) => ($isRoot ? "14px" : "13px")};
+	font-weight: ${({ $isRoot }) => ($isRoot ? 450 : undefined)};
+	width: 100%;
+
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding-left: 6px;
+	padding-right: 6px;
+	border-radius: var(--ffs-border-radius);
+
+	color: var(--text-muted);
+	background-color: ${({
+		$isFocusedOnFolder,
+		$isFocusedOnFile,
+		$isSelected,
+	}) => {
+		if ($isSelected) return "var(--interactive-accent)"
+		if ($isFocusedOnFile) return "var(--interactive-hover)";
+		if ($isFocusedOnFolder)
+			return "var(--interactive-accent)";
+		return undefined;
+	}} !important;
+
+	&:hover {
+		background-color: var(--interactive-hover);
+	}
+`;
+
+const StyledFolderIcon = styled(FolderIcon)<{
+	$isRoot?: boolean;
+	$isFocused?: boolean;
+	$isSelected?: boolean;
+}>`
+	fill: ${({ $isFocused, $isSelected }) =>
+		$isFocused || $isSelected ? "var(--text-on-accent)" : "#d19600"};
+	width: ${({ $isRoot }) => ($isRoot ? "16px" : "14px")};
+	height: ${({ $isRoot }) => ($isRoot ? "14px" : "12px")};
+	margin-right: var(--size-4-2);
+`;
+
+const FolderLeftSection = styled.div`
+	display: flex;
+	align-items: center;
+	flex: 1;
+	overflow: hidden;
+`;
+
+export type FolderProps = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
 	plugin: FolderFileSplitterPlugin;
 	folder: TFolder;
 	onToggleExpandState: () => void;
+	isSelected: boolean;
 	isRoot?: boolean;
+	hideExpandIcon?: boolean;
 };
 const Folder = ({
 	folder,
 	useFileTreeStore,
 	plugin,
 	onToggleExpandState,
+	isSelected,
 	isRoot = false,
-}: Props) => {
+	hideExpandIcon = false,
+}: FolderProps) => {
 	const {
 		focusedFolder,
 		setFocusedFolder,
@@ -61,9 +121,15 @@ const Folder = ({
 	const { expandFolderByClickingOn } = useExpandFolderByClickingOnElement(
 		settings.expandFolderByClickingOn
 	);
-
+	const isFocused = folder.path == focusedFolder?.path;
+	const isFocusedFileInFolder = focusedFile?.parent?.path === folder.path;
+	const isFocusedOnFile = isFocused && focusedFile && isFocusedFileInFolder;
+	const isFocusedOnFolder = isFocused && !isFocusedOnFile;
 	const { renderFolderName, selectFileNameText, onBeginEdit } =
-		useRenderFolderName(folder, plugin, isRoot);
+		useRenderFolderName(folder, plugin, {
+			isRoot,
+			isFocused: isFocusedOnFolder || isSelected,
+		});
 
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
@@ -135,40 +201,41 @@ const Folder = ({
 		}
 	};
 
-	const getFolderClassName = (): string => {
-		const isFocused = folder.path == focusedFolder?.path;
-
-		const isFocusedFileInFolder = focusedFile?.parent?.path === folder.path;
-		const folderClassNames = ["ffs-folder", isRoot && "ffs-root-folder"];
-		if (isFocused && (!focusedFile || !isFocusedFileInFolder)) {
-			folderClassNames.push("ffs-focused-folder");
-		} else if (isFocused) {
-			folderClassNames.push("ffs-focused-folder-with-focused-file");
-		}
-		return folderClassNames.filter(Boolean).join(" ");
-	};
-
 	return (
-		<div className={getFolderClassName()} onContextMenu={onShowContextMenu}>
-			<div
-				className="ffs-folder-pane-left-section"
-				onClick={onClickFolderName}
-			>
-				<FolderExpandIcon
-					folder={folder}
-					useFileTreeStore={useFileTreeStore}
-					plugin={plugin}
-					isRoot={isRoot}
-				/>
-				{showFolderIcon && <FolderIcon />}
+		<StyledFolder
+			onContextMenu={onShowContextMenu}
+			$isRoot={isRoot}
+			$isFocusedOnFolder={isFocusedOnFolder}
+			$isFocusedOnFile={isFocusedFileInFolder}
+			$isSelected={isSelected}
+		>
+			<FolderLeftSection onClick={onClickFolderName}>
+				{!isRoot && !hideExpandIcon && (
+					<FolderExpandIcon
+						folder={folder}
+						useFileTreeStore={useFileTreeStore}
+						plugin={plugin}
+						isFocused={isFocusedOnFolder}
+						isSelected={isSelected}
+					/>
+				)}
+				{showFolderIcon && (
+					<StyledFolderIcon
+						$isRoot={isRoot}
+						$isFocused={isFocusedOnFolder}
+						$isSelected={isSelected}
+					/>
+				)}
 				{renderFolderName()}
-			</div>
+			</FolderLeftSection>
 			<FilesCount
 				folder={folder}
 				useFileTreeStore={useFileTreeStore}
 				plugin={plugin}
+				isFocused={isFocusedOnFolder}
+				isSelected={isSelected}
 			/>
-		</div>
+		</StyledFolder>
 	);
 };
 

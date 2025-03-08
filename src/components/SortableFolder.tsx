@@ -1,29 +1,22 @@
 import { TFolder } from "obsidian";
-import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import { useDrag, useDrop } from "react-dnd";
 import { useRef } from "react";
 
 import { FileTreeStore, FOLDER_MANUAL_SORT_RULE } from "src/store";
-import FolderFileSplitterPlugin from "src/main";
-import { GripIcon } from "src/assets/icons";
 import { FFS_SORT_FILE_TYPE, FFS_SORT_FOLDER_TYPE } from "src/assets/constants";
-import Folder from "./Folder";
+import Folder, { FolderProps } from "./Folder";
+import { Sortable, StyledSortableIcon } from "./Styled/Sortable";
 
-type Props = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-	folder: TFolder;
-	plugin: FolderFileSplitterPlugin;
-	onToggleExpandState: () => void;
-	isRoot?: boolean;
-};
 const SortableFolder = ({
 	folder,
 	useFileTreeStore,
 	plugin,
 	onToggleExpandState,
 	isRoot = false,
-}: Props) => {
+	hideExpandIcon = false,
+	isSelected = false,
+}: FolderProps) => {
 	const {
 		folderSortRule,
 		order,
@@ -73,9 +66,8 @@ const SortableFolder = ({
 	drag(drop(folderRef));
 
 	return (
-		<div
+		<Sortable
 			ref={folderRef}
-			className="ffs-sortable-folder"
 			style={{
 				opacity: isDragging ? 0 : 1,
 				backgroundColor: isDragging ? "none" : undefined,
@@ -87,13 +79,13 @@ const SortableFolder = ({
 				useFileTreeStore={useFileTreeStore}
 				onToggleExpandState={onToggleExpandState}
 				isRoot={isRoot}
+				hideExpandIcon={hideExpandIcon}
+				isSelected={isSelected}
 			/>
 			{folderSortRule === FOLDER_MANUAL_SORT_RULE && (
-				<div className="ffs-drag-sort-icon">
-					<GripIcon />
-				</div>
+				<StyledSortableIcon $top="7px" $right="16px" />
 			)}
-		</div>
+		</Sortable>
 	);
 };
 

@@ -1,25 +1,19 @@
 import { TFile } from "obsidian";
-import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
 import { FileTreeStore } from "src/store";
-import FolderFileSplitterPlugin from "src/main";
 import useDraggable, { getDraggingStyles } from "src/hooks/useDraggable";
 import { FFS_DRAG_FILES_TYPE } from "src/assets/constants";
 import { isAbstractFileIncluded } from "src/utils";
 import SortableFile from "./SortableFile";
+import { FileProps } from "./File";
 
 type Props = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-	file: TFile;
-	fileList: TFile[];
-	plugin: FolderFileSplitterPlugin;
-	deleteFile: () => void;
 	selectedFiles: TFile[];
 	draggingFiles: TFile[];
 	setSelectedFiles: (files: TFile[]) => void;
 	setDraggingFiles: (files: TFile[]) => void;
-};
+} & Omit<FileProps, 'isSelected'>
 const DraggableFile = ({
 	file,
 	fileList,
@@ -108,17 +102,10 @@ const DraggableFile = ({
 	const getIsDragging = () =>
 		isDragging || isAbstractFileIncluded(draggingFiles, file);
 
-	const getFileClassName = () => {
-		return [isFileSelected() && "ffs-selected-file"]
-			.filter(Boolean)
-			.join(" ");
-	};
-
 	return (
 		<div
 			ref={drag}
 			onClick={onClickFile}
-			className={getFileClassName()}
 			style={getDraggingStyles(getIsDragging())}
 		>
 			<SortableFile
@@ -127,6 +114,7 @@ const DraggableFile = ({
 				plugin={plugin}
 				deleteFile={deleteFile}
 				fileList={fileList}
+				isSelected={isFileSelected()}
 			/>
 		</div>
 	);

@@ -1,6 +1,7 @@
 import { Menu, TFile } from "obsidian";
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
+import styled from "styled-components";
 
 import { FileTreeStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
@@ -9,13 +10,58 @@ import { useShowFileDetail } from "src/hooks/useSettingsHandler";
 import FileDetail from "./FileDetail";
 import useRenderFileName from "src/hooks/useRenderFileName";
 
-type Props = {
+const File = styled.div<{
+	$isFocused: boolean;
+	$isLast: boolean;
+	$isSelected: boolean;
+}>`
+	display: grid;
+	grid-template-rows: auto auto;
+	gap: 4px;
+	border-radius: var(--ffs-border-radius);
+	padding: 12px 16px 14px;
+	background-color: ${({ $isFocused, $isSelected }) =>
+		$isFocused || $isSelected
+			? "var(--interactive-accent)"
+			: undefined} !important;
+
+	&:hover {
+		background-color: var(--interactive-hover);
+	}
+
+	${({ $isFocused, $isLast, $isSelected }) =>
+		!$isFocused &&
+		!$isLast &&
+		!$isSelected &&
+		`
+    &:not(:hover)::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 14px;
+      right: 12px;
+      height: var(--border-width);
+      background-color: var(--interactive-hover);
+    }
+  `}
+`;
+
+export type FileProps = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
 	file: TFile;
 	plugin: FolderFileSplitterPlugin;
 	deleteFile: () => void;
+	fileList: TFile[];
+	isSelected: boolean;
 };
-const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
+const FileComponent = ({
+	file,
+	useFileTreeStore,
+	plugin,
+	deleteFile,
+	fileList,
+	isSelected,
+}: FileProps) => {
 	const {
 		focusedFile,
 		selectFile,
@@ -42,8 +88,9 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 		plugin.settings.showFileDetail
 	);
 
+	const isFocused = focusedFile?.path === file.path;
 	const { renderFileName, selectFileNameText, onBeginEdit } =
-		useRenderFileName(file, plugin);
+		useRenderFileName(file, plugin, isFocused || isSelected);
 
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
@@ -114,27 +161,27 @@ const File = ({ file, useFileTreeStore, plugin, deleteFile }: Props) => {
 
 	const maybeRenderFileDetail = () => {
 		if (!showFileDetail) return null;
-		return <FileDetail useFileTreeStore={useFileTreeStore} file={file} />;
+		return (
+			<FileDetail
+				useFileTreeStore={useFileTreeStore}
+				file={file}
+				isFocused={isFocused || isSelected}
+			/>
+		);
 	};
 
-	const getFileClassName = () => {
-		return ["ffs-file", isFocused && "ffs-focused-file"]
-		.filter(Boolean)
-		.join(" ");
-	};
-	
-	const isFocused = focusedFile?.path === file.path;
+	const isLast = [...fileList].reverse()[0].path === file.path;
 	return (
-		<div
-			className={getFileClassName()}
+		<File
 			onContextMenu={onShowContextMenu}
+			$isFocused={isFocused}
+			$isLast={isLast}
+			$isSelected={isSelected}
 		>
-			<div className="ffs-file-content">
-				{renderFileName()}
-				{maybeRenderFileDetail()}
-			</div>
-		</div>
+			{renderFileName()}
+			{maybeRenderFileDetail()}
+		</File>
 	);
 };
 
-export default File;
+export default FileComponent;

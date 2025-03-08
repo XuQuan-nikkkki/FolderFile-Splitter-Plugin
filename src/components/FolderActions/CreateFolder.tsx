@@ -3,6 +3,7 @@ import { useShallow } from "zustand/react/shallow";
 
 import { AddFolderIcon } from "src/assets/icons";
 import { FileTreeStore } from "src/store";
+import StyledActionIconWrapper from "../Styled/ActionIconWrapper";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -23,9 +24,9 @@ const CreateFolder = ({ useFileTreeStore }: Props) => {
 	};
 
 	return (
-		<div className="ffs-actions-icon-wrapper" onClick={onCreateFolder}>
+		<StyledActionIconWrapper onClick={onCreateFolder}>
 			<AddFolderIcon />
-		</div>
+		</StyledActionIconWrapper>
 	);
 };
 

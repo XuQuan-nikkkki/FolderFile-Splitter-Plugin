@@ -2,23 +2,43 @@ import { TFolder } from "obsidian";
 import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import { ReactNode } from "react";
+import styled from "styled-components";
 
 import { ArrowDownIcon, ArrowRightIcon } from "src/assets/icons";
 import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import { useExpandFolderByClickingOnElement } from "src/hooks/useSettingsHandler";
 
+const IconWrapper = styled.div<{ $isFocused: boolean; $isSelected: boolean }>`
+	width: 14px;
+	display: flex;
+	align-items: center;
+	margin-right: 2px;
+	padding: 2px;
+
+	svg {
+		width: 8px;
+		height: 8px;
+		fill: ${({ $isFocused, $isSelected }) =>
+			$isFocused || $isSelected
+				? "var(--text-on-accent)"
+				: "var(--text-normal)"};
+	}
+`;
+
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
 	plugin: FolderFileSplitterPlugin;
 	folder: TFolder;
-	isRoot?: boolean;
+	isFocused?: boolean;
+	isSelected?: boolean;
 };
 const FolderExpandIcon = ({
 	folder,
 	useFileTreeStore,
 	plugin,
-	isRoot = false,
+	isFocused = false,
+	isSelected = false,
 }: Props) => {
 	const {
 		hasFolderChildren,
@@ -40,7 +60,6 @@ const FolderExpandIcon = ({
 	);
 
 	const onToggleExpandState = (): void => {
-		if (isRoot) return;
 		if (hasFolderChildren(folder)) {
 			const folderPaths = isFolderExpanded
 				? expandedFolderPaths.filter((path) => path !== folder.path)
@@ -55,21 +74,22 @@ const FolderExpandIcon = ({
 		onToggleExpandState();
 	};
 
-	const isExpanded = isRoot || expandedFolderPaths.includes(folder.path);
+	const isExpanded = expandedFolderPaths.includes(folder.path);
 	let content: ReactNode;
-	if (!hasFolderChildren(folder) || isRoot) {
+	if (!hasFolderChildren(folder)) {
 		content = null;
 	} else {
 		content = isExpanded ? <ArrowDownIcon /> : <ArrowRightIcon />;
 	}
 
 	return (
-		<span
-			className="ffs-folder-arrow-icon-wrapper"
+		<IconWrapper
 			onClick={onClickExpandIcon}
+			$isFocused={isFocused}
+			$isSelected={isSelected}
 		>
 			{content}
-		</span>
+		</IconWrapper>
 	);
 };
 

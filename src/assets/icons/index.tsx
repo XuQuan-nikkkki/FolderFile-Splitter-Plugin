@@ -11,6 +11,7 @@ import CollapseIcon from "./CollapseIcon";
 import LoadingIcon from "./LoadingIcon";
 import GripIcon from "./GripIcon";
 import ArrowUpDownIcon from "./ArrowUpDownIcon";
+import PinIcon from "./PinIcon";
 
 export {
 	ArrowDownIcon,
@@ -25,5 +26,6 @@ export {
 	CollapseIcon,
 	LoadingIcon,
 	GripIcon,
-	ArrowUpDownIcon
+	ArrowUpDownIcon,
+	PinIcon,
 };

@@ -3,18 +3,17 @@ import { TFolder } from "obsidian";
 import FolderFileSplitterPlugin from "src/main";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 
+type Options = {
+	isRoot?: boolean;
+	isFocused?: boolean;
+};
 const useRenderFolderName = (
 	folder: TFolder,
 	plugin: FolderFileSplitterPlugin,
-	isRoot?: boolean
+	options?: Options
 ) => {
+	const { isRoot, isFocused } = options ?? {};
 	const folderName = isRoot ? plugin.app.vault.getName() : folder.name;
-
-	const getFolderNameClassNames = (isEditing: boolean): string => {
-		return (
-			"ffs-folder-name" + (isEditing ? " ffs-folder-name-edit-mode" : "")
-		);
-	};
 
 	const onSaveName = async (name: string) => {
 		const newPath = folder.path.replace(folder.name, name);
@@ -25,7 +24,11 @@ const useRenderFolderName = (
 		renderEditableName: renderFolderName,
 		selectFileNameText,
 		onBeginEdit,
-	} = useRenderEditableName(folderName, onSaveName, getFolderNameClassNames);
+	} = useRenderEditableName(folderName, onSaveName, {
+		isFocused,
+		isLarge: isRoot,
+		isBold: isRoot,
+	});
 
 	return {
 		renderFolderName,

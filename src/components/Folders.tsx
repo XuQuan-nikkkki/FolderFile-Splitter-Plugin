@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { StoreApi, UseBoundStore } from "zustand";
 import { TFolder } from "obsidian";
+import styled from "styled-components";
 
 import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
@@ -9,6 +10,22 @@ import { useShowHierarchyLines } from "src/hooks/useSettingsHandler";
 import { useChangeFolder } from "src/hooks/useVaultChangeHandler";
 import PinIcon from "src/assets/icons/PinIcon";
 import DraggableFolder from "./DraggableFolder";
+import { PinnedContent, PinnedSection, PinnedTitle } from "./Styled/Pin";
+
+const StyledFolders = styled.div`
+	flex: 1;
+	overflow-y: auto;
+`;
+
+const FoldersSection = styled.div<{ $showHierarchyLine?: boolean }>`
+	position: relative;
+	margin-left: 12px;
+	padding-left: 2px;
+	border-left: ${({ $showHierarchyLine }) =>
+		$showHierarchyLine
+			? "var(--border-width) solid var(--interactive-hover)"
+			: undefined};
+`;
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -61,12 +78,11 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		};
 	}, [focusedFolder]);
 
-	const maybeRenderHierarchyLine = () => {
-		if (!showHierarchyLines) return null;
-		return <div className="ffs-folder-hierarchy-line"></div>;
-	};
-
-	const renderFolder = (folder: TFolder, isRoot?: boolean) => (
+	const renderFolder = (
+		folder: TFolder,
+		isRoot?: boolean,
+		hideExpandIcon?: boolean
+	) => (
 		<DraggableFolder
 			key={folder.path}
 			folder={folder}
@@ -77,6 +93,7 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 			draggingFolders={draggingFolders}
 			setDraggingFolders={setDraggingFolders}
 			isRoot={isRoot}
+			hideExpandIcon={hideExpandIcon}
 		/>
 	);
 
@@ -92,10 +109,9 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 				<div key={folder.name}>
 					{renderFolder(folder)}
 					{isExpanded && hasFolderChildren(folder) && (
-						<div className="ffs-sub-folders-section ffs-folder-wrapper">
-							{maybeRenderHierarchyLine()}
+						<FoldersSection $showHierarchyLine={showHierarchyLines}>
 							{renderFolders(getFoldersByParent(folder))}
-						</div>
+						</FoldersSection>
 					)}
 				</div>
 			);
@@ -106,8 +122,7 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		if (!rootFolder) return null;
 
 		return (
-			<div className="ffs-folder-wrapper">
-				{maybeRenderHierarchyLine()}
+			<div style={{ marginLeft: 4 }}>
 				{renderFolder(rootFolder, true)}
 			</div>
 		);
@@ -117,29 +132,31 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		const pinnedFolderPaths = useFileTreeStore.getState().pinnedFolderPaths;
 		if (!pinnedFolderPaths.length) return null;
 		return (
-			<div className="ffs-pinned-section">
-				<span className="ffs-pinned-title">
+			<PinnedSection>
+				<PinnedTitle>
 					<PinIcon />
 					Pin
-				</span>
-				<div className="ffs-pinned-content">
+				</PinnedTitle>
+				<PinnedContent $indent>
 					{pinnedFolderPaths.map((path) => {
 						const folder = plugin.app.vault.getFolderByPath(path);
-						return folder ? renderFolder(folder) : null;
+						return folder
+							? renderFolder(folder, folder.isRoot(), true)
+							: null;
 					})}
-				</div>
-			</div>
+				</PinnedContent>
+			</PinnedSection>
 		);
 	};
 
 	return (
-		<div className="ffs-folders">
+		<StyledFolders>
 			{renderPinnedFolders()}
 			<div ref={foldersRef}>
 				{renderRootFolder()}
 				{renderFolders(topFolders)}
 			</div>
-		</div>
+		</StyledFolders>
 	);
 };
 

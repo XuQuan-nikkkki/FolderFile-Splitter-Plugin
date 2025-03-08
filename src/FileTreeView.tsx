@@ -1,8 +1,19 @@
 import { Root, createRoot } from "react-dom/client";
 import { ItemView, WorkspaceLeaf } from "obsidian";
+import styled from "styled-components";
 
 import FolderFileSplitterPlugin from "./main";
-import FileTree from "./components/FileTree";
+import FileTree, {
+	FILES_PANE_MIN_WIDTH,
+	FOLDERS_PANE_MIN_WIDTH,
+} from "./components/FileTree";
+
+const PluginView = styled.div`
+	height: 100%;
+	min-width: calc(
+		var(${FOLDERS_PANE_MIN_WIDTH}px) + var(${FILES_PANE_MIN_WIDTH}px)
+	);
+`;
 
 export class FileTreeView extends ItemView {
 	root: Root;
@@ -38,9 +49,9 @@ export class FileTreeView extends ItemView {
 		this.destroy();
 		this.root = createRoot(this.contentEl);
 		this.root.render(
-			<div className="ffs-plugin-view">
+			<PluginView>
 				<FileTree plugin={this.plugin} />
-			</div>
+			</PluginView>
 		);
 	}
 }

@@ -1,9 +1,16 @@
-const EmptyFolderIcon = () => (
+import { CSSProperties } from "react";
+
+type Props = {
+	className?: string
+	style?: CSSProperties;
+};
+const EmptyFolderIcon = ({ className, style }: Props) => (
 	<svg
 		version="1.1"
 		xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 462.035 462.035"
-		className="ffs-empty-folder-icon"
+		className={className}
+		style={style}
 	>
 		<g>
 			<path

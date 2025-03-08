@@ -4,6 +4,7 @@ import { useShallow } from "zustand/react/shallow";
 
 import { ExpandIcon, CollapseIcon } from "src/assets/icons";
 import { FileTreeStore } from "src/store";
+import StyledActionIconWrapper from "../Styled/ActionIconWrapper";
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -28,9 +29,9 @@ const ToggleFolders = ({ useFileTreeStore }: Props) => {
 	};
 
 	return (
-		<div className="ffs-actions-icon-wrapper" onClick={onToggleAllFolders}>
+		<StyledActionIconWrapper onClick={onToggleAllFolders}>
 			{isExpanded ? <CollapseIcon /> : <ExpandIcon />}
-		</div>
+		</StyledActionIconWrapper>
 	);
 };
 

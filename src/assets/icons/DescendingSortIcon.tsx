@@ -1,4 +1,10 @@
-const DescendingSortIcon = () => {
+import { CSSProperties } from "react";
+
+type Props = {
+	className?: string;
+	style?: CSSProperties;
+};
+const DescendingSortIcon = ({ className, style }: Props) => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -8,7 +14,8 @@ const DescendingSortIcon = () => {
 			strokeWidth="2"
 			strokeLinecap="round"
 			strokeLinejoin="round"
-			className="ffs-actions-icon"
+			className={className}
+			style={style}
 		>
 			<path d="m3 16 4 4 4-4" />
 			<path d="M7 20V4" />

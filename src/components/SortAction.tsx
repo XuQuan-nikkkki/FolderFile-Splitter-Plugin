@@ -6,6 +6,7 @@ import {
 	DescendingSortIcon,
 } from "src/assets/icons";
 import FolderFileSplitterPlugin from "src/main";
+import StyledActionIconWrapper from "./Styled/ActionIconWrapper";
 
 type SortRule = {
 	text: string;
@@ -63,9 +64,9 @@ const SortAction = ({
 	};
 
 	return (
-		<div className="ffs-actions-icon-wrapper" onClick={onChangeSortRule}>
+		<StyledActionIconWrapper onClick={onChangeSortRule}>
 			{renderIcon()}
-		</div>
+		</StyledActionIconWrapper>
 	);
 };
 

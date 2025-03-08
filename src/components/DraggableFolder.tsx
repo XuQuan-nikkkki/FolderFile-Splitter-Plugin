@@ -1,10 +1,8 @@
 import { TFile, TFolder } from "obsidian";
-import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import { useDrop } from "react-dnd";
 import { useRef } from "react";
 
-import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import { isAbstractFileIncluded, moveFileOrFolder } from "src/utils";
 import useDraggable, {
@@ -18,17 +16,14 @@ import {
 	FFS_DRAG_FOLDERS_TYPE,
 } from "src/assets/constants";
 import SortableFolder from "./SortableFolder";
+import { FolderProps } from "./Folder";
 
 type Props = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-	plugin: FolderFileSplitterPlugin;
-	folder: TFolder;
 	selectedFolders: TFolder[];
 	draggingFolders: TFolder[];
 	setSelectedFolders: (folders: TFolder[]) => void;
 	setDraggingFolders: (folders: TFolder[]) => void;
-	isRoot?: boolean;
-};
+} & Omit<FolderProps, "onToggleExpandState">;
 const DraggableFolder = ({
 	folder,
 	useFileTreeStore,
@@ -38,6 +33,7 @@ const DraggableFolder = ({
 	setSelectedFolders,
 	setDraggingFolders,
 	isRoot = false,
+	hideExpandIcon = false,
 }: Props) => {
 	const {
 		focusedFolder,
@@ -184,6 +180,8 @@ const DraggableFolder = ({
 				plugin={plugin}
 				onToggleExpandState={onToggleExpandState}
 				isRoot={isRoot}
+				hideExpandIcon={hideExpandIcon}
+				isSelected={isFolderSelected}
 			/>
 		</div>
 	);

@@ -1,15 +1,30 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { StoreApi, UseBoundStore } from "zustand";
+import styled from "styled-components";
 
 import { FileTreeStore } from "src/store";
-import { EmptyFolderIcon } from "src/assets/icons";
+import { EmptyFolderIcon, PinIcon } from "src/assets/icons";
 
 import DraggableFile from "./DraggableFile";
 import FolderFileSplitterPlugin from "src/main";
 import { useChangeFile } from "src/hooks/useVaultChangeHandler";
 import { TFile } from "obsidian";
-import PinIcon from "src/assets/icons/PinIcon";
+import { PinnedContent, PinnedSection, PinnedTitle } from "./Styled/Pin";
+
+const StyledEmptyIcon = styled(EmptyFolderIcon)`
+	width: 60px;
+	height: 60px;
+	fill: var(--text-faint);
+`;
+
+const NoneFilesTips = styled.div`
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
 
 type Props = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -44,22 +59,14 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 		};
 	}, [focusedFile]);
 
-	const renderNoneFilesTips = () => {
-		return (
-			<div className="ffs-none-files-tips">
-				<EmptyFolderIcon />
-			</div>
-		);
-	};
-
-	const renderFile = (file: TFile) => (
+	const renderFile = (file: TFile, fileList: TFile[]) => (
 		<DraggableFile
 			key={file.name}
 			useFileTreeStore={useFileTreeStore}
 			file={file}
 			plugin={plugin}
 			deleteFile={() => onDeleteFileFromList(file)}
-			fileList={sortedFiles}
+			fileList={fileList}
 			selectedFiles={selectedFiles}
 			setSelectedFiles={setSelectedFiles}
 			draggingFiles={draggingFiles}
@@ -74,24 +81,33 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 		);
 		if (!pinnedFiles.length) return null;
 		return (
-			<div className="ffs-pinned-section">
-				<span className="ffs-pinned-title">
+			<PinnedSection>
+				<PinnedTitle>
 					<PinIcon />
 					Pin
-				</span>
-				<div className="ffs-pinned-content">
-					{pinnedFiles.map(renderFile)}
-				</div>
-			</div>
+				</PinnedTitle>
+				<PinnedContent>
+					{pinnedFiles.map((file) => renderFile(file, pinnedFiles))}
+				</PinnedContent>
+			</PinnedSection>
 		);
 	};
 
-	if (!files.length) return renderNoneFilesTips();
+	if (!files.length) {
+		return (
+			<NoneFilesTips>
+				<StyledEmptyIcon />
+			</NoneFilesTips>
+		);
+	}
+
 	const sortedFiles = sortFiles(files, fileSortRule);
 	return (
 		<Fragment>
 			{renderPinnedFiles()}
-			<div ref={filesRef}>{sortedFiles.map(renderFile)}</div>
+			<div ref={filesRef}>
+				{sortedFiles.map((file) => renderFile(file, sortedFiles))}
+			</div>
 		</Fragment>
 	);
 };

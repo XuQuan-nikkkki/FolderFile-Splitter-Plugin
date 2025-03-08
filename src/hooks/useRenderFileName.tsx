@@ -6,11 +6,8 @@ import useRenderEditableName from "src/hooks/useRenderEditableName";
 const useRenderFileName = (
 	file: TFile,
 	plugin: FolderFileSplitterPlugin,
+	isFocused = false
 ) => {
-	const getClassNames = (isEditing: boolean) => {
-		return "ffs-file-name" + (isEditing ? " ffs-file-name-edit-mode" : "");
-	};
-
 	const onSaveName = async (name: string) => {
 		const newPath = file.path.replace(file.name, name);
 		await plugin.app.vault.rename(file, newPath);
@@ -20,7 +17,10 @@ const useRenderFileName = (
 		renderEditableName: renderFileName,
 		selectFileNameText,
 		onBeginEdit,
-	} = useRenderEditableName(file.basename, onSaveName, getClassNames);
+	} = useRenderEditableName(file.basename, onSaveName, {
+		isBold: true,
+		isFocused,
+	});
 
 	return {
 		renderFileName,

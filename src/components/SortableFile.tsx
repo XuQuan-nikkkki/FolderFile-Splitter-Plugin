@@ -1,29 +1,21 @@
 import { TFile } from "obsidian";
-import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import { useDrag, useDrop } from "react-dnd";
 import { useRef } from "react";
 
 import { FILE_MANUAL_SORT_RULE, FileTreeStore } from "src/store";
-import FolderFileSplitterPlugin from "src/main";
-import File from "./File";
-import { GripIcon } from "src/assets/icons";
+import File, { FileProps } from "./File";
 import { FFS_SORT_FILE_TYPE } from "src/assets/constants";
+import { Sortable, StyledSortableIcon } from "./Styled/Sortable";
 
-type Props = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-	file: TFile;
-	fileList: TFile[];
-	plugin: FolderFileSplitterPlugin;
-	deleteFile: () => void;
-};
 const SortableFile = ({
 	file,
 	fileList,
 	useFileTreeStore,
 	plugin,
 	deleteFile,
-}: Props) => {
+	isSelected,
+}: FileProps) => {
 	const {
 		fileSortRule,
 		order,
@@ -72,9 +64,8 @@ const SortableFile = ({
 	drag(drop(fileRef));
 
 	return (
-		<div
+		<Sortable
 			ref={fileRef}
-			className="ffs-sortable-file"
 			style={{
 				opacity: isDragging ? 0 : 1,
 				backgroundColor: isDragging ? "none" : undefined,
@@ -85,13 +76,13 @@ const SortableFile = ({
 				file={file}
 				plugin={plugin}
 				deleteFile={deleteFile}
+				fileList={fileList}
+				isSelected={isSelected}
 			/>
 			{fileSortRule === FILE_MANUAL_SORT_RULE && (
-				<div className="ffs-drag-sort-icon">
-					<GripIcon />
-				</div>
+				<StyledSortableIcon $top="12px" $left="4px" />
 			)}
-		</div>
+		</Sortable>
 	);
 };
 

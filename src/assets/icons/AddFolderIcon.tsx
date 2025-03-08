@@ -1,4 +1,10 @@
-const AddFolderIcon = () => {
+import { CSSProperties } from "react";
+
+type Props = {
+	className?: string;
+	style?: CSSProperties;
+};
+const AddFolderIcon = ({ className, style }: Props) => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -8,7 +14,8 @@ const AddFolderIcon = () => {
 			strokeWidth="2"
 			strokeLinecap="round"
 			strokeLinejoin="round"
-			className="ffs-actions-icon"
+			className={className}
+			style={style}
 		>
 			<path d="M12 10v6"></path>
 			<path d="M9 13h6"></path>

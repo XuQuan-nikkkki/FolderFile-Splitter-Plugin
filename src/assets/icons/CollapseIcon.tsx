@@ -1,4 +1,10 @@
-const CollapseIcon = () => {
+import { CSSProperties } from "react";
+
+type Props = {
+	className?: string;
+	style?: CSSProperties;
+};
+const CollapseIcon = ({ className, style }: Props) => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -8,7 +14,8 @@ const CollapseIcon = () => {
 			strokeWidth="2"
 			strokeLinecap="round"
 			strokeLinejoin="round"
-			className="ffs-actions-icon"
+			className={className}
+			style={style}
 		>
 			<path d="m7 20 5-5 5 5" />
 			<path d="m7 4 5 5 5-5" />

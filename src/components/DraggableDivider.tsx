@@ -1,4 +1,11 @@
 import { useRef } from "react";
+import styled from "styled-components";
+
+const PaneDivider = styled.div`
+	border: 1px solid var(--divider-color);
+	cursor: ew-resize;
+	margin: 0 8px;
+`;
 
 type Props = {
 	initialWidth: number | undefined;
@@ -26,8 +33,7 @@ const DraggableDivider = ({ initialWidth, onChangeWidth }: Props) => {
 	};
 
 	return (
-		<div
-			className="ffs-pane-divider"
+		<PaneDivider
 			ref={dividerRef}
 			onMouseDown={handleMouseDown}
 		/>

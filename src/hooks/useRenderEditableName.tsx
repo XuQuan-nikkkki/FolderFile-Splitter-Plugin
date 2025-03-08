@@ -1,9 +1,37 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
+import styled from "styled-components";
 
+const Name = styled.div<{
+	$isEditing?: boolean;
+	$isBold?: boolean;
+	$isFocused?: boolean;
+	$isLarge?: boolean;
+}>`
+	flex: 1;
+
+	font-size: 13px;
+	font-size: ${({ $isLarge }) => ($isLarge ? "14px" : "13px")};
+	font-weight: ${({ $isBold }) => ($isBold ? 600 : "normal")};
+
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+
+	background-color: ${({ $isEditing }) =>
+		$isEditing ? "var(--text-selection)" : undefined};
+	color: ${({ $isFocused }) =>
+		$isFocused ? "var(--text-on-accent)" : "var(--text-normal)"};
+`;
+
+type Options = {
+	isFocused?: boolean;
+	isBold?: boolean;
+	isLarge?: boolean;
+};
 const useRenderEditableName = (
 	defaultName: string,
 	onSaveName: (name: string) => Promise<void>,
-	getClassNames: (isEditing: boolean) => string
+	options?: Options
 ): {
 	renderEditableName: () => ReactElement;
 	selectFileNameText: () => void;
@@ -96,23 +124,27 @@ const useRenderEditableName = (
 	};
 
 	const renderEditableName = () => {
+		const { isBold, isFocused, isLarge } = options ?? {};
 		return (
-			<div
+			<Name
 				ref={eleRef}
+				$isEditing={isEditing}
 				contentEditable={isEditing}
-				className={getClassNames(isEditing)}
 				onKeyDown={onKeyDown}
 				onInput={onInputNewName}
+				$isBold={isBold}
+				$isFocused={isFocused}
+				$isLarge={isLarge}
 			>
 				{name}
-			</div>
+			</Name>
 		);
 	};
 
 	return {
 		renderEditableName,
 		selectFileNameText,
-		onBeginEdit
+		onBeginEdit,
 	};
 };
 
