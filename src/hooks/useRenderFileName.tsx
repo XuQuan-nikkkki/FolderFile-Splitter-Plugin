@@ -6,10 +6,12 @@ import useRenderEditableName from "src/hooks/useRenderEditableName";
 const useRenderFileName = (
 	file: TFile,
 	plugin: FolderFileSplitterPlugin,
-	isFocused = false
+	isFocused = false,
+	beforeSaveName?: (newPath: string) => Promise<void>
 ) => {
 	const onSaveName = async (name: string) => {
 		const newPath = file.path.replace(file.name, name);
+		await beforeSaveName?.(newPath);
 		await plugin.app.vault.rename(file, newPath);
 	};
 

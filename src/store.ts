@@ -736,6 +736,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				[FFS_FILE_MANUAL_SORT_ORDER_KEY]: updatedOrder,
 			});
 		},
+		updateFileNameInOrder: async (file: TFile) => {},
 		_updateAndSaveFilesOrder: async (updatedOrder: ManualSortOrder) => {
 			const { saveData } = get();
 			set({
