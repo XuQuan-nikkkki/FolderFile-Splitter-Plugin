@@ -7,7 +7,6 @@ import { StoreApi, UseBoundStore } from "zustand";
 
 export class ManualSortFoldersModal extends Modal {
 	folder: TFolder | null;
-	store: FileTreeStore;
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
 	plugin: FolderFileSplitterPlugin;
 	root: Root;

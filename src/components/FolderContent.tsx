@@ -115,7 +115,11 @@ const FolderContent = ({
 		menu.addItem((item) => {
 			item.setTitle("Move folder to...");
 			item.onClick(() => {
-				const modal = new FolderListModal(plugin, folders, folder);
+				const modal = new FolderListModal(
+					plugin,
+					useFileTreeStore,
+					folder
+				);
 				modal.open();
 			});
 		});

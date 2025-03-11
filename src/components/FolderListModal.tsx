@@ -1,18 +1,26 @@
 import { SuggestModal, TAbstractFile, TFolder } from "obsidian";
+import { StoreApi, UseBoundStore } from "zustand";
+
 import FolderFileSplitterPlugin from "src/main";
-import { moveFileOrFolder } from "src/utils";
+import { FileTreeStore } from "src/store";
+import { isFile, moveFileOrFolder } from "src/utils";
 
 export class FolderListModal extends SuggestModal<TFolder> {
 	folders: TFolder[];
 	item: TAbstractFile;
+	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
 
 	constructor(
 		plugin: FolderFileSplitterPlugin,
-		folders: TFolder[],
+		useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>,
 		item: TAbstractFile
 	) {
 		super(plugin.app);
-		this.folders = [plugin.app.vault.getRoot(), ...folders];
+		this.useFileTreeStore = useFileTreeStore;
+		this.folders = [
+			plugin.app.vault.getRoot(),
+			...useFileTreeStore.getState().folders,
+		];
 		this.item = item;
 		this.setPlaceholder("Type a folder");
 		this.setInstructions([
@@ -34,7 +42,17 @@ export class FolderListModal extends SuggestModal<TFolder> {
 		});
 	}
 
-	onChooseSuggestion(folder: TFolder, evt: MouseEvent | KeyboardEvent) {
-		moveFileOrFolder(this.app.fileManager, this.item, folder);
+	async onChooseSuggestion(folder: TFolder) {
+		const { _removeFilePathFromOrder } = this.useFileTreeStore.getState();
+		if (isFile(this.item)) {
+			try {
+				await _removeFilePathFromOrder(this.item);
+				await moveFileOrFolder(this.app.fileManager, this.item, folder);
+			} catch (e) {
+				alert(e);
+				console.error(e);
+			}
+		}
+		await moveFileOrFolder(this.app.fileManager, this.item, folder);
 	}
 }

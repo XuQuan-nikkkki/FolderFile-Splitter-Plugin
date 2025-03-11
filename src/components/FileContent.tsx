@@ -54,7 +54,6 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		selectFile,
 		createFile,
 		duplicateFile,
-		folders,
 		isFilePinned,
 		pinFile,
 		unpinFile,
@@ -65,7 +64,6 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			selectFile: store.selectFile,
 			createFile: store.createFile,
 			duplicateFile: store.duplicateFile,
-			folders: store.folders,
 			isFilePinned: store.isFilePinned,
 			pinFile: store.pinFile,
 			unpinFile: store.unpinFile,
@@ -123,7 +121,11 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		menu.addItem((item) => {
 			item.setTitle("Move file to...");
 			item.onClick(() => {
-				const modal = new FolderListModal(plugin, folders, file);
+				const modal = new FolderListModal(
+					plugin,
+					useFileTreeStore,
+					file
+				);
 				modal.open();
 			});
 		});

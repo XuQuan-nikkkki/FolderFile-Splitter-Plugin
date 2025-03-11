@@ -122,6 +122,7 @@ export type FileTreeStore = {
 		atIndex: number
 	) => Promise<void>;
 	_updateAndSaveFilesOrder: (updatedOrder: ManualSortOrder) => Promise<void>;
+	_removeFilePathFromOrder: (file: TFile) => Promise<void>;
 	trashFile: (file: TFile) => Promise<void>;
 };
 
@@ -744,14 +745,12 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				[FFS_FILE_MANUAL_SORT_ORDER_KEY]: updatedOrder,
 			});
 		},
-		trashFile: async (file: TFile) => {
+		_removeFilePathFromOrder: async (file: TFile) => {
 			const {
 				fileSortRule,
 				filesManualSortOrder: order,
 				_updateAndSaveFilesOrder,
 			} = get();
-			const { app } = plugin;
-			await app.fileManager.trashFile(file);
 			if (fileSortRule === FILE_MANUAL_SORT_RULE) {
 				const parentPath = file.parent?.path;
 				if (!parentPath) return;
@@ -763,5 +762,11 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				};
 				await _updateAndSaveFilesOrder(updatedOrder);
 			}
+		},
+		trashFile: async (file: TFile) => {
+			const { _removeFilePathFromOrder } = get();
+			const { app } = plugin;
+			await app.fileManager.trashFile(file);
+			await _removeFilePathFromOrder(file);
 		},
 	}));
