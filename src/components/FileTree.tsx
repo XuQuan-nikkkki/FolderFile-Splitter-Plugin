@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
+import { createContext, useEffect, useMemo, useState, useContext } from "react";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
 import styled from "styled-components";
+import { StoreApi, UseBoundStore } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
 import { createFileTreeStore, FileTreeStore } from "src/store";
@@ -52,6 +53,20 @@ const Acitions = styled.div`
 	gap: var(--size-4-3);
 `;
 
+type FileTreeContextType = {
+	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
+	plugin: FolderFileSplitterPlugin;
+};
+const FileTreeContext = createContext<FileTreeContextType | null>(null);
+
+export const useFileTree = () => {
+	const context = useContext(FileTreeContext);
+	if (!context) {
+		throw new Error("useFileTree must be used within a FileTreeProvider");
+	}
+	return context;
+};
+
 type Props = {
 	plugin: FolderFileSplitterPlugin;
 };
@@ -71,7 +86,6 @@ const FileTree = ({ plugin }: Props) => {
 		220
 	);
 	const [isRestoring, setIsRestoring] = useState<boolean>(true);
-	const [showDragIcon, setShowDragIcon] = useState<boolean>(false);
 
 	useEffect(() => {
 		restoreData().then(() => setIsRestoring(false));
@@ -84,16 +98,16 @@ const FileTree = ({ plugin }: Props) => {
 
 	const renderFolderActions = () => (
 		<Acitions>
-			<CreateFolder useFileTreeStore={useFileTreeStore} />
-			<SortFolders useFileTreeStore={useFileTreeStore} plugin={plugin} />
-			<ToggleFolders useFileTreeStore={useFileTreeStore} />
+			<CreateFolder />
+			<SortFolders />
+			<ToggleFolders />
 		</Acitions>
 	);
 
 	const renderFileActions = () => (
 		<Acitions>
-			<CreateFile useFileTreeStore={useFileTreeStore} />
-			<SortFiles useFileTreeStore={useFileTreeStore} plugin={plugin} />
+			<CreateFile />
+			<SortFiles />
 		</Acitions>
 	);
 
@@ -101,30 +115,23 @@ const FileTree = ({ plugin }: Props) => {
 		<Loading />
 	) : (
 		<DndProvider backend={HTML5Backend}>
-			<CustomDragLayer
-				useFileTreeStore={useFileTreeStore}
-				plugin={plugin}
-			/>
-			<PluginContainer>
-				<FoldersPane style={{ width: folderPaneWidth }}>
-					{renderFolderActions()}
-					<Folders
-						plugin={plugin}
-						useFileTreeStore={useFileTreeStore}
+			<CustomDragLayer />
+			<FileTreeContext.Provider value={{ useFileTreeStore, plugin }}>
+				<PluginContainer>
+					<FoldersPane style={{ width: folderPaneWidth }}>
+						{renderFolderActions()}
+						<Folders />
+					</FoldersPane>
+					<DraggableDivider
+						initialWidth={folderPaneWidth}
+						onChangeWidth={onChangeFolderPaneWidth}
 					/>
-				</FoldersPane>
-				<DraggableDivider
-					initialWidth={folderPaneWidth}
-					onChangeWidth={onChangeFolderPaneWidth}
-				/>
-				<FilesPane>
-					{renderFileActions()}
-					<Files
-						useFileTreeStore={useFileTreeStore}
-						plugin={plugin}
-					/>
-				</FilesPane>
-			</PluginContainer>
+					<FilesPane>
+						{renderFileActions()}
+						<Files />
+					</FilesPane>
+				</PluginContainer>
+			</FileTreeContext.Provider>
 		</DndProvider>
 	);
 };

@@ -1,10 +1,10 @@
 import { TFile } from "obsidian";
 import { useEffect, useState } from "react";
-import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import styled from "styled-components";
 
 import { FileTreeStore } from "src/store";
+import { useFileTree } from "./FileTree";
 
 const Detail = styled.div`
 	display: grid;
@@ -27,11 +27,12 @@ const FileContentPreview = styled.span<{ $isFocused: boolean }>`
 `;
 
 type Props = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
 	file: TFile;
 	isFocused: boolean;
 };
-const FileDetail = ({ file, useFileTreeStore, isFocused }: Props) => {
+const FileDetail = ({ file, isFocused }: Props) => {
+	const { useFileTreeStore } = useFileTree();
+
 	const { readFile } = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			readFile: store.readFile,

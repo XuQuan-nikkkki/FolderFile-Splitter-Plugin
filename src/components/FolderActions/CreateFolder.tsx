@@ -1,14 +1,13 @@
-import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
 import { AddFolderIcon } from "src/assets/icons";
 import { FileTreeStore } from "src/store";
 import StyledActionIconWrapper from "../Styled/ActionIconWrapper";
+import { useFileTree } from "../FileTree";
 
-type Props = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-};
-const CreateFolder = ({ useFileTreeStore }: Props) => {
+const CreateFolder = () => {
+	const { useFileTreeStore } = useFileTree();
+
 	const { rootFolder, focusedFolder, createNewFolder } = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			rootFolder: store.rootFolder,

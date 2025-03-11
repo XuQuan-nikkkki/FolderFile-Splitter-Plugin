@@ -1,11 +1,10 @@
 import { TFolder } from "obsidian";
-import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import styled from "styled-components";
 
-import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import { useIncludeSubfolderFilesCount } from "src/hooks/useSettingsHandler";
+import { useFileTree } from "./FileTree";
 
 const StyledCount = styled.div<{ $isFocused?: boolean }>`
 	color: ${({ $isFocused }) =>
@@ -15,12 +14,12 @@ const StyledCount = styled.div<{ $isFocused?: boolean }>`
 `;
 
 type Props = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-	plugin: FolderFileSplitterPlugin;
 	folder: TFolder;
 	isFocused: boolean;
 };
-const FilesCount = ({ folder, useFileTreeStore, plugin, isFocused }: Props) => {
+const FilesCount = ({ folder, isFocused }: Props) => {
+	const { useFileTreeStore, plugin } = useFileTree();
+
 	const { getFilesCountInFolder } = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			getFilesCountInFolder: store.getFilesCountInFolder,

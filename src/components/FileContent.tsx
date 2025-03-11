@@ -1,14 +1,13 @@
 import { Menu, TFile } from "obsidian";
-import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import styled from "styled-components";
 
 import { FileTreeStore } from "src/store";
-import FolderFileSplitterPlugin from "src/main";
 import { FolderListModal } from "./FolderListModal";
 import { useShowFileDetail } from "src/hooks/useSettingsHandler";
 import FileDetail from "./FileDetail";
 import useRenderFileName from "src/hooks/useRenderFileName";
+import { useFileTree } from "./FileTree";
 
 const StyledFileContent = styled.div<{
 	$isFocused: boolean;
@@ -43,19 +42,13 @@ const StyledFileContent = styled.div<{
 `;
 
 export type FileProps = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
 	file: TFile;
-	plugin: FolderFileSplitterPlugin;
 	deleteFile: () => void;
 	fileList: TFile[];
 };
-const FileContent = ({
-	file,
-	useFileTreeStore,
-	plugin,
-	deleteFile,
-	fileList,
-}: FileProps) => {
+const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
+	const { useFileTreeStore, plugin } = useFileTree();
+
 	const {
 		focusedFile,
 		selectFile,

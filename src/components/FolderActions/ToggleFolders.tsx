@@ -1,15 +1,14 @@
 import { useState } from "react";
-import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
 import { ExpandIcon, CollapseIcon } from "src/assets/icons";
 import { FileTreeStore } from "src/store";
 import StyledActionIconWrapper from "../Styled/ActionIconWrapper";
+import { useFileTree } from "../FileTree";
 
-type Props = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-};
-const ToggleFolders = ({ useFileTreeStore }: Props) => {
+const ToggleFolders = () => {
+	const { useFileTreeStore } = useFileTree();
+
 	const { folders, restoreExpandedFolderPaths } = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			folders: store.folders,

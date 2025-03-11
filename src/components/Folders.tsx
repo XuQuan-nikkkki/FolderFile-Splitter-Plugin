@@ -1,16 +1,14 @@
-import { useEffect, useRef, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { StoreApi, UseBoundStore } from "zustand";
 import { TFolder } from "obsidian";
 import styled from "styled-components";
 
-import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import { useShowHierarchyLines } from "src/hooks/useSettingsHandler";
 import { useChangeFolder } from "src/hooks/useVaultChangeHandler";
 import PinIcon from "src/assets/icons/PinIcon";
 import { PinnedContent, PinnedSection, PinnedTitle } from "./Styled/Pin";
 import Folder from "./Folder";
+import { useFileTree } from "./FileTree";
 
 const StyledFolders = styled.div`
 	flex: 1;
@@ -27,11 +25,9 @@ const FoldersSection = styled.div<{ $showHierarchyLine?: boolean }>`
 			: undefined};
 `;
 
-type Props = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-	plugin: FolderFileSplitterPlugin;
-};
-const Folders = ({ useFileTreeStore, plugin }: Props) => {
+const Folders = () => {
+	const { useFileTreeStore, plugin } = useFileTree();
+
 	const {
 		rootFolder,
 		folderSortRule,
@@ -55,7 +51,7 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 	const { showHierarchyLines } = useShowHierarchyLines(
 		plugin.settings.showFolderHierarchyLines
 	);
-	const { topFolders } = useChangeFolder({ useFileTreeStore });
+	const { topFolders } = useChangeFolder();
 
 	const renderFolder = (
 		folder: TFolder,
@@ -65,8 +61,6 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		<Folder
 			key={folder.path}
 			folder={folder}
-			useFileTreeStore={useFileTreeStore}
-			plugin={plugin}
 			isRoot={isRoot}
 			hideExpandIcon={hideExpandIcon}
 		/>

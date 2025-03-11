@@ -1,9 +1,8 @@
-import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
 import { FILE_MANUAL_SORT_RULE, FileSortRule, FileTreeStore } from "src/store";
-import FolderFileSplitterPlugin from "src/main";
 import SortAction from "../SortAction";
+import { useFileTree } from "../FileTree";
 
 type FileSortRuleItem = {
 	text: string;
@@ -41,11 +40,9 @@ const FilesManualSortRules: FileSortRuleGroup = [
 	},
 ];
 
-type Props = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-	plugin: FolderFileSplitterPlugin;
-};
-const SortFiles = ({ useFileTreeStore, plugin }: Props) => {
+const SortFiles = () => {
+	const { useFileTreeStore, plugin } = useFileTree();
+
 	const {
 		fileSortRule,
 		changeFileSortRule,

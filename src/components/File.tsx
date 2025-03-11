@@ -8,14 +8,11 @@ import FileContent, { FileProps } from "./FileContent";
 import { FFS_FILE } from "src/assets/constants";
 import { Draggable, StyledDraggableIcon } from "./Styled/Sortable";
 import { getEmptyImage } from "react-dnd-html5-backend";
+import { useFileTree } from "./FileTree";
 
-const File = ({
-	file,
-	fileList,
-	useFileTreeStore,
-	plugin,
-	deleteFile,
-}: FileProps) => {
+const File = ({ file, fileList, deleteFile }: FileProps) => {
+	const { useFileTreeStore } = useFileTree();
+
 	const {
 		fileSortRule,
 		order,
@@ -77,9 +74,7 @@ const File = ({
 			onClick={() => selectFile(file)}
 		>
 			<FileContent
-				useFileTreeStore={useFileTreeStore}
 				file={file}
-				plugin={plugin}
 				deleteFile={deleteFile}
 				fileList={fileList}
 			/>

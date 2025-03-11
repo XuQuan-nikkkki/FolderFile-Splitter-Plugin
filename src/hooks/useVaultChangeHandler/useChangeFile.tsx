@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { StoreApi, UseBoundStore } from "zustand";
 
 import { FileTreeStore } from "src/store";
 
 import { TFile } from "obsidian";
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFile } from "src/utils";
+import { useFileTree } from "src/components/FileTree";
 
-type Props = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-};
-const useChangeFile = ({ useFileTreeStore }: Props) => {
+const useChangeFile = () => {
+	const { useFileTreeStore } = useFileTree();
+
 	const { focusedFolder, getDirectFilesInFolder } = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			focusedFolder: store.focusedFolder,

@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { StoreApi, UseBoundStore } from "zustand";
 import { TFolder } from "obsidian";
 
 import { FileTreeStore } from "src/store";
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFolder } from "src/utils";
+import { useFileTree } from "src/components/FileTree";
 
-type Props = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-};
-const useChangeFolder = ({ useFileTreeStore }: Props) => {
+const useChangeFolder = () => {
+	const { useFileTreeStore } = useFileTree();
+
 	const { restoreExpandedFolderPaths, getTopLevelFolders } = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			restoreExpandedFolderPaths: store.restoreExpandedFolderPaths,
@@ -26,7 +25,7 @@ const useChangeFolder = ({ useFileTreeStore }: Props) => {
 	};
 
 	useEffect(() => {
-		onUpdateTopFolders()
+		onUpdateTopFolders();
 	}, []);
 
 	useEffect(() => {

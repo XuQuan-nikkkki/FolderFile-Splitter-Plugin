@@ -1,8 +1,6 @@
 import { Menu, TFolder } from "obsidian";
-import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
-import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import { FolderListModal } from "./FolderListModal";
 import {
@@ -17,10 +15,9 @@ import {
 	StyledFolder,
 	StyledFolderIcon,
 } from "./Styled/StyledFolder";
+import { useFileTree } from "./FileTree";
 
 export type FolderProps = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-	plugin: FolderFileSplitterPlugin;
 	folder: TFolder;
 	isRoot?: boolean;
 	hideExpandIcon?: boolean;
@@ -31,13 +28,13 @@ type Props = FolderProps & {
 };
 const FolderContent = ({
 	folder,
-	useFileTreeStore,
-	plugin,
 	isRoot = false,
 	hideExpandIcon = false,
 	isOver = false,
 	onToggleExpandState,
 }: Props) => {
+	const { useFileTreeStore, plugin } = useFileTree();
+
 	const {
 		focusedFolder,
 		setFocusedFolder,
@@ -163,8 +160,6 @@ const FolderContent = ({
 				{!isRoot && !hideExpandIcon && (
 					<FolderExpandIcon
 						folder={folder}
-						useFileTreeStore={useFileTreeStore}
-						plugin={plugin}
 						isFocused={isFocusedOnFolder || isOver}
 					/>
 				)}
@@ -178,8 +173,6 @@ const FolderContent = ({
 			</FolderLeftSection>
 			<FilesCount
 				folder={folder}
-				useFileTreeStore={useFileTreeStore}
-				plugin={plugin}
 				isFocused={isFocusedOnFolder || isOver}
 			/>
 		</StyledFolder>

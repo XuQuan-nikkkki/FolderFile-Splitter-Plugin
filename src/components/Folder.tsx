@@ -9,14 +9,15 @@ import FolderContent, { FolderProps } from "./FolderContent";
 import { Draggable } from "./Styled/Sortable";
 import { moveFileOrFolder } from "src/utils";
 import { getEmptyImage } from "react-dnd-html5-backend";
+import { useFileTree } from "./FileTree";
 
 const Folder = ({
 	folder,
-	useFileTreeStore,
-	plugin,
 	isRoot = false,
 	hideExpandIcon = false,
 }: FolderProps) => {
+	const { useFileTreeStore, plugin } = useFileTree();
+
 	const {
 		setFocusedFolder,
 		hasFolderChildren,
@@ -97,8 +98,6 @@ const Folder = ({
 		>
 			<FolderContent
 				folder={folder}
-				plugin={plugin}
-				useFileTreeStore={useFileTreeStore}
 				isRoot={isRoot}
 				hideExpandIcon={hideExpandIcon}
 				isOver={isOver}

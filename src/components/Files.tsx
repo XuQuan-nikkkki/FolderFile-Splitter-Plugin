@@ -1,16 +1,14 @@
-import { Fragment, useRef } from "react";
+import { Fragment } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { StoreApi, UseBoundStore } from "zustand";
 import styled from "styled-components";
 
 import { FileTreeStore } from "src/store";
 import { EmptyFolderIcon, PinIcon } from "src/assets/icons";
-
-import FolderFileSplitterPlugin from "src/main";
 import { useChangeFile } from "src/hooks/useVaultChangeHandler";
 import { TFile } from "obsidian";
 import { PinnedContent, PinnedSection, PinnedTitle } from "./Styled/Pin";
 import File from "./File";
+import { useFileTree } from "./FileTree";
 
 const StyledEmptyIcon = styled(EmptyFolderIcon)`
 	width: 60px;
@@ -26,11 +24,9 @@ const NoneFilesTips = styled.div`
 	align-items: center;
 `;
 
-type Props = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-	plugin: FolderFileSplitterPlugin;
-};
-const Files = ({ useFileTreeStore, plugin }: Props) => {
+const Files = () => {
+	const { useFileTreeStore } = useFileTree();
+
 	const { sortFiles, fileSortRule } = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			sortFiles: store.sortFiles,
@@ -40,14 +36,12 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 			FileManualSortOrder: store.filesManualSortOrder,
 		}))
 	);
-	const { files, onDeleteFileFromList } = useChangeFile({ useFileTreeStore });
+	const { files, onDeleteFileFromList } = useChangeFile();
 
 	const renderFile = (file: TFile, fileList: TFile[]) => (
 		<File
 			key={file.name}
-			useFileTreeStore={useFileTreeStore}
 			file={file}
-			plugin={plugin}
 			deleteFile={() => onDeleteFileFromList(file)}
 			fileList={fileList}
 		/>
@@ -84,9 +78,7 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 	return (
 		<Fragment>
 			{renderPinnedFiles()}
-			{/* <div ref={filesRef}> */}
-				{sortedFiles.map((file) => renderFile(file, sortedFiles))}
-			{/* </div> */}
+			{sortedFiles.map((file) => renderFile(file, sortedFiles))}
 		</Fragment>
 	);
 };

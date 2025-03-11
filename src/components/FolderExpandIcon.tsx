@@ -1,13 +1,12 @@
 import { TFolder } from "obsidian";
-import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 import { ReactNode } from "react";
 import styled from "styled-components";
 
 import { ArrowDownIcon, ArrowRightIcon } from "src/assets/icons";
-import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import { useExpandFolderByClickingOnElement } from "src/hooks/useSettingsHandler";
+import { useFileTree } from "./FileTree";
 
 const IconWrapper = styled.div<{ $isFocused: boolean }>`
 	width: 14px;
@@ -25,17 +24,12 @@ const IconWrapper = styled.div<{ $isFocused: boolean }>`
 `;
 
 type Props = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
-	plugin: FolderFileSplitterPlugin;
 	folder: TFolder;
 	isFocused?: boolean;
 };
-const FolderExpandIcon = ({
-	folder,
-	useFileTreeStore,
-	plugin,
-	isFocused = false,
-}: Props) => {
+const FolderExpandIcon = ({ folder, isFocused = false }: Props) => {
+	const { useFileTreeStore, plugin } = useFileTree();
+
 	const {
 		hasFolderChildren,
 		expandedFolderPaths,
