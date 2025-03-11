@@ -9,8 +9,8 @@ import { FileTreeStore } from "src/store";
 import { useShowHierarchyLines } from "src/hooks/useSettingsHandler";
 import { useChangeFolder } from "src/hooks/useVaultChangeHandler";
 import PinIcon from "src/assets/icons/PinIcon";
-import DraggableFolder from "./DraggableFolder";
 import { PinnedContent, PinnedSection, PinnedTitle } from "./Styled/Pin";
+import Folder from "./Folder";
 
 const StyledFolders = styled.div`
 	flex: 1;
@@ -39,7 +39,6 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		getFoldersByParent,
 		sortFolders,
 		expandedFolderPaths,
-		focusedFolder,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			rootFolder: store.rootFolder,
@@ -57,41 +56,17 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 		plugin.settings.showFolderHierarchyLines
 	);
 	const { topFolders } = useChangeFolder({ useFileTreeStore });
-	const [selectedFolders, setSelectedFolders] = useState<TFolder[]>([]);
-	const [draggingFolders, setDraggingFolders] = useState<TFolder[]>([]);
-
-	const foldersRef = useRef<HTMLDivElement>(null);
-
-	const onClickOutside = (e: MouseEvent) => {
-		if (
-			foldersRef?.current &&
-			!foldersRef.current.contains(e.target as Node)
-		) {
-			setSelectedFolders([]);
-		}
-	};
-
-	useEffect(() => {
-		window.addEventListener("mousedown", onClickOutside);
-		return () => {
-			window.removeEventListener("mousedown", onClickOutside);
-		};
-	}, [focusedFolder]);
 
 	const renderFolder = (
 		folder: TFolder,
 		isRoot?: boolean,
 		hideExpandIcon?: boolean
 	) => (
-		<DraggableFolder
+		<Folder
 			key={folder.path}
 			folder={folder}
 			useFileTreeStore={useFileTreeStore}
 			plugin={plugin}
-			selectedFolders={selectedFolders}
-			setSelectedFolders={setSelectedFolders}
-			draggingFolders={draggingFolders}
-			setDraggingFolders={setDraggingFolders}
 			isRoot={isRoot}
 			hideExpandIcon={hideExpandIcon}
 		/>
@@ -152,7 +127,7 @@ const Folders = ({ useFileTreeStore, plugin }: Props) => {
 	return (
 		<StyledFolders>
 			{renderPinnedFolders()}
-			<div ref={foldersRef}>
+			<div>
 				{renderRootFolder()}
 				{renderFolders(topFolders)}
 			</div>

@@ -71,6 +71,7 @@ const FileTree = ({ plugin }: Props) => {
 		220
 	);
 	const [isRestoring, setIsRestoring] = useState<boolean>(true);
+	const [showDragIcon, setShowDragIcon] = useState<boolean>(false);
 
 	useEffect(() => {
 		restoreData().then(() => setIsRestoring(false));
@@ -100,7 +101,10 @@ const FileTree = ({ plugin }: Props) => {
 		<Loading />
 	) : (
 		<DndProvider backend={HTML5Backend}>
-			<CustomDragLayer />
+			<CustomDragLayer
+				useFileTreeStore={useFileTreeStore}
+				plugin={plugin}
+			/>
 			<PluginContainer>
 				<FoldersPane style={{ width: folderPaneWidth }}>
 					{renderFolderActions()}

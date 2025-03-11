@@ -9,7 +9,7 @@ import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import { useExpandFolderByClickingOnElement } from "src/hooks/useSettingsHandler";
 
-const IconWrapper = styled.div<{ $isFocused: boolean; $isSelected: boolean }>`
+const IconWrapper = styled.div<{ $isFocused: boolean }>`
 	width: 14px;
 	display: flex;
 	align-items: center;
@@ -19,10 +19,8 @@ const IconWrapper = styled.div<{ $isFocused: boolean; $isSelected: boolean }>`
 	svg {
 		width: 8px;
 		height: 8px;
-		fill: ${({ $isFocused, $isSelected }) =>
-			$isFocused || $isSelected
-				? "var(--text-on-accent)"
-				: "var(--text-normal)"};
+		fill: ${({ $isFocused }) =>
+			$isFocused ? "var(--text-on-accent)" : "var(--text-normal)"};
 	}
 `;
 
@@ -31,14 +29,12 @@ type Props = {
 	plugin: FolderFileSplitterPlugin;
 	folder: TFolder;
 	isFocused?: boolean;
-	isSelected?: boolean;
 };
 const FolderExpandIcon = ({
 	folder,
 	useFileTreeStore,
 	plugin,
 	isFocused = false,
-	isSelected = false,
 }: Props) => {
 	const {
 		hasFolderChildren,
@@ -83,11 +79,7 @@ const FolderExpandIcon = ({
 	}
 
 	return (
-		<IconWrapper
-			onClick={onClickExpandIcon}
-			$isFocused={isFocused}
-			$isSelected={isSelected}
-		>
+		<IconWrapper onClick={onClickExpandIcon} $isFocused={isFocused}>
 			{content}
 		</IconWrapper>
 	);

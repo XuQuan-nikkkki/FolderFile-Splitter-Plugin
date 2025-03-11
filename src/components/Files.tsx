@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { StoreApi, UseBoundStore } from "zustand";
 import styled from "styled-components";
@@ -6,11 +6,11 @@ import styled from "styled-components";
 import { FileTreeStore } from "src/store";
 import { EmptyFolderIcon, PinIcon } from "src/assets/icons";
 
-import DraggableFile from "./DraggableFile";
 import FolderFileSplitterPlugin from "src/main";
 import { useChangeFile } from "src/hooks/useVaultChangeHandler";
 import { TFile } from "obsidian";
 import { PinnedContent, PinnedSection, PinnedTitle } from "./Styled/Pin";
+import File from "./File";
 
 const StyledEmptyIcon = styled(EmptyFolderIcon)`
 	width: 60px;
@@ -31,7 +31,7 @@ type Props = {
 	plugin: FolderFileSplitterPlugin;
 };
 const Files = ({ useFileTreeStore, plugin }: Props) => {
-	const { sortFiles, fileSortRule, focusedFile } = useFileTreeStore(
+	const { sortFiles, fileSortRule } = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			sortFiles: store.sortFiles,
 			fileSortRule: store.fileSortRule,
@@ -41,36 +41,15 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 		}))
 	);
 	const { files, onDeleteFileFromList } = useChangeFile({ useFileTreeStore });
-	const [selectedFiles, setSelectedFiles] = useState<TFile[]>([]);
-	const [draggingFiles, setDraggingFiles] = useState<TFile[]>([]);
-
-	const filesRef = useRef<HTMLDivElement>(null);
-
-	const onClickOutside = (e: MouseEvent) => {
-		if (filesRef?.current && !filesRef.current.contains(e.target as Node)) {
-			setSelectedFiles(focusedFile ? [focusedFile] : []);
-		}
-	};
-
-	useEffect(() => {
-		window.addEventListener("mousedown", onClickOutside);
-		return () => {
-			window.removeEventListener("mousedown", onClickOutside);
-		};
-	}, [focusedFile]);
 
 	const renderFile = (file: TFile, fileList: TFile[]) => (
-		<DraggableFile
+		<File
 			key={file.name}
 			useFileTreeStore={useFileTreeStore}
 			file={file}
 			plugin={plugin}
 			deleteFile={() => onDeleteFileFromList(file)}
 			fileList={fileList}
-			selectedFiles={selectedFiles}
-			setSelectedFiles={setSelectedFiles}
-			draggingFiles={draggingFiles}
-			setDraggingFiles={setDraggingFiles}
 		/>
 	);
 
@@ -105,9 +84,9 @@ const Files = ({ useFileTreeStore, plugin }: Props) => {
 	return (
 		<Fragment>
 			{renderPinnedFiles()}
-			<div ref={filesRef}>
+			{/* <div ref={filesRef}> */}
 				{sortedFiles.map((file) => renderFile(file, sortedFiles))}
-			</div>
+			{/* </div> */}
 		</Fragment>
 	);
 };

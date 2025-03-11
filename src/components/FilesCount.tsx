@@ -7,11 +7,9 @@ import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
 import { useIncludeSubfolderFilesCount } from "src/hooks/useSettingsHandler";
 
-const StyledCount = styled.div<{ $isFocused?: boolean; $isSelected?: boolean }>`
-	color: ${({ $isFocused, $isSelected }) =>
-		$isFocused || $isSelected
-			? "var(--text-on-accent)"
-			: "var(--text-muted)"};
+const StyledCount = styled.div<{ $isFocused?: boolean }>`
+	color: ${({ $isFocused }) =>
+		$isFocused ? "var(--text-on-accent)" : "var(--text-muted)"};
 	font-size: 12px;
 	margin-left: 4px;
 `;
@@ -21,15 +19,8 @@ type Props = {
 	plugin: FolderFileSplitterPlugin;
 	folder: TFolder;
 	isFocused: boolean;
-	isSelected: boolean;
 };
-const FilesCount = ({
-	folder,
-	useFileTreeStore,
-	plugin,
-	isFocused,
-	isSelected,
-}: Props) => {
+const FilesCount = ({ folder, useFileTreeStore, plugin, isFocused }: Props) => {
 	const { getFilesCountInFolder } = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			getFilesCountInFolder: store.getFilesCountInFolder,
@@ -45,11 +36,7 @@ const FilesCount = ({
 		folder,
 		includeSubfolderFilesCount
 	);
-	return (
-		<StyledCount $isFocused={isFocused} $isSelected={isSelected}>
-			{filesCount}
-		</StyledCount>
-	);
+	return <StyledCount $isFocused={isFocused}>{filesCount}</StyledCount>;
 };
 
 export default FilesCount;

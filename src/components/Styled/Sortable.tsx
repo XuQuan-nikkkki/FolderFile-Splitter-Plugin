@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import StyledDragIcon from "./DragIcon";
 
-export const StyledSortableIcon = styled(StyledDragIcon)<{
+export const StyledDraggableIcon = styled(StyledDragIcon)<{
 	$top?: string;
 	$left?: string;
 	$right?: string;
@@ -13,10 +13,10 @@ export const StyledSortableIcon = styled(StyledDragIcon)<{
 	bottom: ${({ $bottom }) => $bottom};
 `;
 
-export const Sortable = styled.div`
+export const Draggable = styled.div`
 	position: relative;
 
-	&:hover ${StyledSortableIcon} {
+	&:hover ${StyledDraggableIcon} {
 		visibility: visible;
 		opacity: 0.4;
 	}

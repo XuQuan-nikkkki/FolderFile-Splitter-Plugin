@@ -200,7 +200,8 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			return parentFolder.children.filter((child) => isFolder(child));
 		},
 		getDirectFilesInFolder: (folder: TFolder): TFile[] => {
-			return folder.children.filter((child) => isFile(child));
+			const files = folder.children ?? [];
+			return files.filter((child) => isFile(child));
 		},
 		isFoldersInAscendingOrder: (): boolean => {
 			const { folderSortRule } = get();
@@ -262,38 +263,43 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		sortFolders: (
 			folders: TFolder[],
 			rule: FolderSortRule,
-			includeSubfolderFilesCount: boolean
+			includeSubfolder: boolean
 		): TFolder[] => {
-			if (rule === "FolderNameAscending") {
-				return folders.sort((a, b) => a.name.localeCompare(b.name));
-			} else if (rule === "FolderNameDescending") {
-				return folders.sort((a, b) => b.name.localeCompare(a.name));
-			} else if (rule === "FilesCountAscending") {
-				return folders.sort(
-					(a, b) =>
-						get().getFilesCountInFolder(
-							a,
-							includeSubfolderFilesCount
-						) -
-						get().getFilesCountInFolder(
-							b,
-							includeSubfolderFilesCount
+			const {
+				getFilesCountInFolder: getFilesCount,
+				foldersManualSortOrder: order,
+			} = get();
+			const parentPath = folders[0]?.parent?.path;
+			const folderPaths = parentPath ? order[parentPath] : [];
+			switch (rule) {
+				case "FolderNameAscending":
+					return folders.sort((a, b) => a.name.localeCompare(b.name));
+				case "FolderNameDescending":
+					return folders.sort((a, b) => b.name.localeCompare(a.name));
+				case "FilesCountAscending":
+					return folders.sort(
+						(a, b) =>
+							getFilesCount(a, includeSubfolder) -
+							getFilesCount(b, includeSubfolder)
+					);
+				case "FilesCountDescending":
+					return folders.sort(
+						(a, b) =>
+							getFilesCount(b, includeSubfolder) -
+							getFilesCount(a, includeSubfolder)
+					);
+				case "FolderManualOrder":
+					if (!parentPath || !folderPaths || !folderPaths.length)
+						return folders;
+					return folderPaths
+						.map((path) => folders.find((f) => f.path === path))
+						.concat(
+							folders.filter((f) => !folderPaths.includes(f.path))
 						)
-				);
-			} else if (rule === "FilesCountDescending") {
-				return folders.sort(
-					(a, b) =>
-						get().getFilesCountInFolder(
-							b,
-							includeSubfolderFilesCount
-						) -
-						get().getFilesCountInFolder(
-							a,
-							includeSubfolderFilesCount
-						)
-				);
+						.filter(Boolean) as TFolder[];
+				default:
+					return folders;
 			}
-			return folders; // 如果没有匹配的规则，返回原始文件夹
 		},
 		changeFolderSortRule: async (rule: FolderSortRule) => {
 			set({
@@ -425,7 +431,6 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			set({
 				foldersManualSortOrder: order,
 			});
-			console.log(order)
 			await saveData({
 				[FFS_FOLDER_MANUAL_SORT_ORDER_KEY]: order,
 			});
