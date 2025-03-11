@@ -532,7 +532,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			});
 
 			if (untitledFilesCount > 0) {
-				newFileName = `${defaultFileName} ${untitledFilesCount + 1}.md`;
+				newFileName = `${defaultFileName} ${untitledFilesCount + 1}`;
 			}
 			const newFile = await vault.create(
 				`${folder.path}/${newFileName}.md`,
