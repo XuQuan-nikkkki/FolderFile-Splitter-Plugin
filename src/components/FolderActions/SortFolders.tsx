@@ -7,6 +7,7 @@ import {
 } from "src/store";
 import SortAction from "../SortAction";
 import { useFileTree } from "../FileTree";
+import { ManualSortFoldersModal } from "../ManualSortFoldersModal";
 
 type FolderSortRuleItem = {
 	text: string;
@@ -63,8 +64,16 @@ const SortFolders = () => {
 			changeSortRule={(rule) => {
 				if (rule === FOLDER_MANUAL_SORT_RULE) {
 					initFoldersManualSortOrder();
+					const modal = new ManualSortFoldersModal(
+						plugin,
+						plugin.app.vault.getRoot(),
+						useFileTreeStore
+					);
+					modal.open();
 				}
-				changeFolderSortRule(rule);
+				if (rule !== folderSortRule) {
+					changeFolderSortRule(rule);
+				}
 			}}
 			isInAscendingOrder={isFoldersInAscendingOrder}
 			currentSortRule={folderSortRule}

@@ -2,7 +2,7 @@ import { GripIcon } from "src/assets/icons";
 import styled from "styled-components";
 import { CSSProperties } from "react";
 
-const StyledIcon = styled(GripIcon)`
+export const StyledIcon = styled(GripIcon)`
 	width: 15px;
 	height: 15px;
 `;

@@ -45,6 +45,7 @@ const Folders = () => {
 			expandedFolderPaths: store.expandedFolderPaths,
 			focusedFolder: store.focusedFolder,
 			pinnedFolders: store.pinnedFolderPaths,
+			order: store.foldersManualSortOrder,
 		}))
 	);
 

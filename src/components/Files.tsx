@@ -33,7 +33,7 @@ const Files = () => {
 			fileSortRule: store.fileSortRule,
 			focusedFile: store.focusedFile,
 			pinnedFiles: store.pinnedFilePaths,
-			FileManualSortOrder: store.filesManualSortOrder,
+			fileManualSortOrder: store.filesManualSortOrder,
 		}))
 	);
 	const { files, onDeleteFileFromList } = useChangeFile();
