@@ -50,17 +50,18 @@ const File = ({
 		() => ({
 			accept: FFS_FILE,
 			hover: (item: TFile) => {
+				if (fileSortRule !== FILE_MANUAL_SORT_RULE) return;
 				if (item.path !== file.path) {
 					const atIndex = paths.indexOf(file.path);
 					changeFilesManualOrder(item, atIndex);
 				}
 			},
-			drop: (item, monitor) => {
+			drop: (item) => {
 				const atIndex = paths.indexOf(file.path);
 				changeFilesManualOrderAndSave(item, atIndex);
 			},
 		}),
-		[changeFilesManualOrder, order]
+		[changeFilesManualOrder, order, fileSortRule]
 	);
 
 	drag(drop(fileRef));
