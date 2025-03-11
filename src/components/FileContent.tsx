@@ -58,6 +58,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		isFilePinned,
 		pinFile,
 		unpinFile,
+		trashFile,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			focusedFile: store.focusedFile,
@@ -68,6 +69,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			isFilePinned: store.isFilePinned,
 			pinFile: store.pinFile,
 			unpinFile: store.unpinFile,
+			trashFile: store.trashFile,
 		}))
 	);
 
@@ -139,7 +141,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			item.setTitle("Delete");
 			item.onClick(async () => {
 				deleteFile();
-				await plugin.app.fileManager.trashFile(file);
+				await trashFile(file);
 			});
 		});
 		plugin.app.workspace.trigger("file-context-menu", menu);
@@ -148,13 +150,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 
 	const maybeRenderFileDetail = () => {
 		if (!showFileDetail) return null;
-		return (
-			<FileDetail
-				useFileTreeStore={useFileTreeStore}
-				file={file}
-				isFocused={isFocused}
-			/>
-		);
+		return <FileDetail file={file} isFocused={isFocused} />;
 	};
 
 	const isLast = [...fileList].reverse()[0]?.path === file.path;
