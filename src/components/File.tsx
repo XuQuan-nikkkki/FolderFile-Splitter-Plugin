@@ -10,7 +10,10 @@ import { Draggable, StyledDraggableIcon } from "./Styled/Sortable";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { useFileTree } from "./FileTree";
 
-const File = ({ file, fileList, deleteFile }: FileProps) => {
+type Props = FileProps & {
+	disableDrag?: boolean;
+};
+const File = ({ file, fileList, deleteFile, disableDrag }: Props) => {
 	const { useFileTreeStore } = useFileTree();
 
 	const {
@@ -39,6 +42,7 @@ const File = ({ file, fileList, deleteFile }: FileProps) => {
 			collect: (monitor) => ({
 				isDragging: monitor.isDragging(),
 			}),
+			canDrag: !disableDrag,
 		}),
 		[changeFilesManualOrderAndSave, order]
 	);
@@ -78,7 +82,7 @@ const File = ({ file, fileList, deleteFile }: FileProps) => {
 				deleteFile={deleteFile}
 				fileList={fileList}
 			/>
-			{fileSortRule === FILE_MANUAL_SORT_RULE && (
+			{fileSortRule === FILE_MANUAL_SORT_RULE && !disableDrag && (
 				<StyledDraggableIcon $top="12px" $left="2px" />
 			)}
 		</Draggable>

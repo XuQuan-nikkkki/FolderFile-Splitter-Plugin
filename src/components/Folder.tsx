@@ -11,11 +11,15 @@ import { moveFileOrFolder } from "src/utils";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { useFileTree } from "./FileTree";
 
+type Props = FolderProps & {
+	disableDrag?: boolean;
+};
 const Folder = ({
 	folder,
 	isRoot = false,
 	hideExpandIcon = false,
-}: FolderProps) => {
+	disableDrag = false,
+}: Props) => {
 	const { useFileTreeStore, plugin } = useFileTree();
 
 	const {
@@ -54,6 +58,7 @@ const Folder = ({
 		collect: (monitor) => ({
 			isDragging: monitor.isDragging(),
 		}),
+		canDrag: !disableDrag,
 	}));
 
 	const onDrop = async (item: TAbstractFile, itemType: string) => {

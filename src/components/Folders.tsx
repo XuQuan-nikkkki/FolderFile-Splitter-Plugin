@@ -25,6 +25,12 @@ const FoldersSection = styled.div<{ $showHierarchyLine?: boolean }>`
 			: undefined};
 `;
 
+type FolderOptions = {
+	isRoot?: boolean;
+	hideExpandIcon?: boolean;
+	disableDrag?: boolean;
+};
+
 const Folders = () => {
 	const { useFileTreeStore, plugin } = useFileTree();
 
@@ -54,18 +60,18 @@ const Folders = () => {
 	);
 	const { topFolders } = useChangeFolder();
 
-	const renderFolder = (
-		folder: TFolder,
-		isRoot?: boolean,
-		hideExpandIcon?: boolean
-	) => (
-		<Folder
-			key={folder.path}
-			folder={folder}
-			isRoot={isRoot}
-			hideExpandIcon={hideExpandIcon}
-		/>
-	);
+	const renderFolder = (folder: TFolder, options?: FolderOptions) => {
+		const { isRoot, hideExpandIcon, disableDrag } = options ?? {};
+		return (
+			<Folder
+				key={folder.path}
+				folder={folder}
+				isRoot={isRoot}
+				hideExpandIcon={hideExpandIcon}
+				disableDrag={disableDrag}
+			/>
+		);
+	};
 
 	const renderFolders = (folders: TFolder[]) => {
 		const sortedFolders = sortFolders(
@@ -93,7 +99,7 @@ const Folders = () => {
 
 		return (
 			<div style={{ marginLeft: 4 }}>
-				{renderFolder(rootFolder, true)}
+				{renderFolder(rootFolder, { isRoot: true })}
 			</div>
 		);
 	};
@@ -110,9 +116,12 @@ const Folders = () => {
 				<PinnedContent $indent>
 					{pinnedFolderPaths.map((path) => {
 						const folder = plugin.app.vault.getFolderByPath(path);
-						return folder
-							? renderFolder(folder, folder.isRoot(), true)
-							: null;
+						const options: FolderOptions = {
+							isRoot: folder?.isRoot(),
+							hideExpandIcon: true,
+							disableDrag: true,
+						};
+						return folder ? renderFolder(folder, options) : null;
 					})}
 				</PinnedContent>
 			</PinnedSection>

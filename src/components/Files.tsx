@@ -38,20 +38,25 @@ const Files = () => {
 	);
 	const { files, onDeleteFileFromList } = useChangeFile();
 
-	const renderFile = (file: TFile, fileList: TFile[]) => (
+	const renderFile = (
+		file: TFile,
+		fileList: TFile[],
+		disableDrag?: boolean
+	) => (
 		<File
 			key={file.name}
 			file={file}
 			deleteFile={() => onDeleteFileFromList(file)}
 			fileList={fileList}
+			disableDrag={disableDrag}
 		/>
 	);
 
 	const renderPinnedFiles = () => {
 		const pinnedFilePaths = useFileTreeStore.getState().pinnedFilePaths;
-		const pinnedFiles = files.filter((f) =>
-			pinnedFilePaths.includes(f.path)
-		);
+		const pinnedFiles = pinnedFilePaths
+			.map((path) => files.find((f) => f.path === path))
+			.filter(Boolean) as TFile[];
 		if (!pinnedFiles.length) return null;
 		return (
 			<PinnedSection>
@@ -60,7 +65,9 @@ const Files = () => {
 					Pin
 				</PinnedTitle>
 				<PinnedContent>
-					{pinnedFiles.map((file) => renderFile(file, pinnedFiles))}
+					{pinnedFiles.map((file) =>
+						renderFile(file, pinnedFiles, true)
+					)}
 				</PinnedContent>
 			</PinnedSection>
 		);
