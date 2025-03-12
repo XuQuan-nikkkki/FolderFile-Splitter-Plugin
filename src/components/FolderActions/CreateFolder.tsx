@@ -33,12 +33,10 @@ const CreateFolder = () => {
 		const parentPaths = [];
 		for (let i = 0; i <= pathParts.length; i++) {
 			const pathToExpand = pathParts.slice(0, i).join("/");
-			console.log(i, pathToExpand);
 			if (pathToExpand) {
 				parentPaths.push(pathToExpand);
 			}
 		}
-		console.log(parentPaths);
 		const pathsToExpand = [
 			...new Set([...expandedFolderPaths, ...parentPaths]),
 		];
