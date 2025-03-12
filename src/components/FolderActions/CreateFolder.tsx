@@ -30,7 +30,6 @@ const CreateFolder = () => {
 	const expandParentFolders = async (folder: TFolder) => {
 		const { path } = folder;
 		const pathParts = path.split("/");
-		console.log("parts", pathParts);
 		const parentPaths = [];
 		for (let i = 0; i <= pathParts.length; i++) {
 			const pathToExpand = pathParts.slice(0, i).join("/");

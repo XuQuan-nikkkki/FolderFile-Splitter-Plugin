@@ -68,7 +68,7 @@ export type FileTreeStore = {
 	_setFocusedFolder: (folder: TFolder | null) => void;
 	_createFolder: (path: string) => Promise<TFolder>;
 	createNewFolder: (parentFolder: TFolder) => Promise<TFolder | undefined>;
-	setFocusedFolder: (folder: TFolder) => Promise<void>;
+	setFocusedFolder: (folder: TFolder | null) => Promise<void>;
 	sortFolders: (
 		folders: TFolder[],
 		rule: FolderSortRule,
@@ -215,17 +215,19 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			const { folderSortRule } = get();
 			return folderSortRule.contains("Ascending");
 		},
-		_setFocusedFolder: (folder: TFolder) =>
+		_setFocusedFolder: (folder: TFolder | null) =>
 			set({
 				focusedFolder: folder,
 			}),
-		setFocusedFolder: async (folder: TFolder) => {
+		setFocusedFolder: async (folder: TFolder | null) => {
 			const { _setFocusedFolder, focusedFile, setFocusedFile, saveData } =
 				get();
 			_setFocusedFolder(folder);
 
-			await saveData({ [FFS_FOCUSED_FOLDER_PATH_KEY]: folder.path });
-			if (focusedFile?.parent?.path !== folder.path) {
+			await saveData({
+				[FFS_FOCUSED_FOLDER_PATH_KEY]: folder?.path ?? null,
+			});
+			if (focusedFile?.parent?.path !== folder?.path) {
 				setFocusedFile(null);
 				await get().saveData({
 					[FFS_FOCUSED_FILE_PATH_KEY]: null,
@@ -517,11 +519,19 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			await _updateAndSaveFilesOrder(updatedOrder);
 		},
 		trashFolder: async (folder: TFolder) => {
-			const { _removeFolderPathFromOrder, isFolderPinned, unpinFolder } =
-				get();
+			const {
+				_removeFolderPathFromOrder,
+				isFolderPinned,
+				unpinFolder,
+				focusedFolder,
+				setFocusedFolder,
+			} = get();
 			const { app } = plugin;
 			if (isFolderPinned(folder)) {
 				await unpinFolder(folder);
+			}
+			if (folder.path === focusedFolder?.path) {
+				setFocusedFolder(null);
 			}
 			await app.fileManager.trashFile(folder);
 			await _removeFolderPathFromOrder(folder);
