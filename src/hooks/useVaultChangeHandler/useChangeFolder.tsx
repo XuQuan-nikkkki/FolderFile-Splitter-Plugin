@@ -10,9 +10,8 @@ import { useFileTree } from "src/components/FileTree";
 const useChangeFolder = () => {
 	const { useFileTreeStore } = useFileTree();
 
-	const { restoreExpandedFolderPaths, getTopLevelFolders } = useFileTreeStore(
+	const { getTopLevelFolders } = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
-			restoreExpandedFolderPaths: store.restoreExpandedFolderPaths,
 			getTopLevelFolders: store.getTopLevelFolders,
 		}))
 	);
@@ -47,7 +46,6 @@ const useChangeFolder = () => {
 	const onHandleVaultChange = (event: VaultChangeEvent) => {
 		const { file: folder, changeType } = event.detail;
 		if (!isFolder(folder)) return;
-		restoreExpandedFolderPaths();
 
 		switch (changeType) {
 			case "create":
