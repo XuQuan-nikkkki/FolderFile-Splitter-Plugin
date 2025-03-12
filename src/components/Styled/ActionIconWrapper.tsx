@@ -9,7 +9,7 @@ const StyledActionIconWrapper = styled.div`
 	svg {
 		width: 18px;
 		height: 18px;
-		stroke: var(--ffs-actions-icon-color);
+		stroke: var(--icon-color);
 	}
 	svg:hover {
 		transform: scale(1.1);

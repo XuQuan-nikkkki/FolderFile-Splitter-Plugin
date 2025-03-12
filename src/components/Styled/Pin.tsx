@@ -9,8 +9,8 @@ export const PinnedSection = styled.div`
 		width: 12px;
 		height: 12px;
 		margin-right: 2px;
-		fill: var(--text-muted);
-		color: var(--ffs-actions-icon-color);
+		fill: var(--icon-color);
+		color: var(--icon-color);
 	}
 `;
 
@@ -18,7 +18,7 @@ export const PinnedTitle = styled.div`
 	display: flex;
 	align-items: center;
 	font-weight: 500;
-	color: var(--ffs-actions-icon-color);
+	color: var(--icon-color);
 	margin-bottom: 4px;
 	margin-left: 2px;
 	font-size: 12px;
