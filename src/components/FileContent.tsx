@@ -153,8 +153,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		menu.addItem((item) => {
 			item.setTitle("Open in new tab");
 			item.onClick(() => {
-				plugin.app.workspace.openLinkText(file.path, file.path, true);
-				selectFile(file);
+				openFileInNewTab(file);
 			});
 		});
 		menu.addSeparator();
@@ -203,6 +202,11 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		menu.showAtPosition({ x: e.clientX, y: e.clientY });
 	};
 
+	const openFileInNewTab = (file: TFile) => {
+		plugin.app.workspace.openLinkText(file.path, file.path, true);
+		selectFile(file);
+	};
+
 	const maybeRenderFileDetail = () => {
 		if (!showFileDetail) return null;
 		return <FileDetail file={file} isFocused={isFocused} />;
@@ -214,7 +218,9 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			ref={fileRef}
 			onContextMenu={onShowContextMenu}
 			onClick={(e) => {
-				if (isFocused) {
+				if (e.ctrlKey || e.metaKey) {
+					openFileInNewTab(file);
+				} else if (isFocused) {
 					e.stopPropagation();
 					fileRef.current?.focus();
 					setIsFocusing(true);
