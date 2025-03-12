@@ -5,6 +5,9 @@ import styled from "styled-components";
 import { FileTreeStore } from "src/store";
 import { useIncludeSubfolderFilesCount } from "src/hooks/useSettingsHandler";
 import { useFileTree } from "./FileTree";
+import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
+import { isFile } from "src/utils";
+import { useEffect, useState } from "react";
 
 const StyledCount = styled.div<{ $isFocused?: boolean }>`
 	color: ${({ $isFocused }) =>
@@ -25,17 +28,37 @@ const FilesCount = ({ folder, isFocused }: Props) => {
 			getFilesCountInFolder: store.getFilesCountInFolder,
 		}))
 	);
+	const [count, setCount] = useState<number | null>(null);
 
 	const { settings } = plugin;
 	const { includeSubfolderFilesCount } = useIncludeSubfolderFilesCount(
 		settings.includeSubfolderFilesCount
 	);
 
-	const filesCount = getFilesCountInFolder(
-		folder,
-		includeSubfolderFilesCount
-	);
-	return <StyledCount $isFocused={isFocused}>{filesCount}</StyledCount>;
+	const onHandleVaultChange = (event: VaultChangeEvent) => {
+		const { file, changeType } = event.detail;
+		if (!isFile(file)) return;
+		if (changeType === "delete") {
+			setCount(getFilesCountInFolder(folder, includeSubfolderFilesCount));
+		}
+	};
+
+	useEffect(() => {
+		setCount(getFilesCountInFolder(folder, includeSubfolderFilesCount));
+		window.addEventListener(VaultChangeEventName, onHandleVaultChange);
+		return () => {
+			window.removeEventListener(
+				VaultChangeEventName,
+				onHandleVaultChange
+			);
+		};
+	}, [folder]);
+
+	useEffect(() => {
+		setCount(getFilesCountInFolder(folder, includeSubfolderFilesCount));
+	}, [folder.children.length, includeSubfolderFilesCount]);
+
+	return <StyledCount $isFocused={isFocused}>{count}</StyledCount>;
 };
 
 export default FilesCount;
