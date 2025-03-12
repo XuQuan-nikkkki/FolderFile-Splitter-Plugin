@@ -13,10 +13,11 @@ import { useEffect, useRef, useState } from "react";
 const StyledFileContent = styled.div<{
 	$isFocused: boolean;
 	$isLast: boolean;
+	$disableGap?: boolean;
 }>`
 	display: grid;
 	grid-template-rows: auto auto;
-	gap: 4px;
+	gap: ${({ $disableGap }) => ($disableGap ? undefined : "4px")};
 	border-radius: var(--ffs-border-radius);
 	padding: 12px 16px 14px;
 	background-color: ${({ $isFocused }) =>
@@ -228,6 +229,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			}}
 			$isFocused={isFocused}
 			$isLast={isLast}
+			$disableGap={!showFileDetail}
 		>
 			{renderFileName()}
 			{maybeRenderFileDetail()}
