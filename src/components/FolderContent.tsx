@@ -16,6 +16,7 @@ import {
 	StyledFolderIcon,
 } from "./Styled/StyledFolder";
 import { useFileTree } from "./FileTree";
+import { useEffect, useRef, useState } from "react";
 
 export type FolderProps = {
 	folder: TFolder;
@@ -41,7 +42,6 @@ const FolderContent = ({
 		expandedFolderPaths,
 		createNewFolder,
 		createFile,
-		folders,
 		focusedFile,
 		pinFolder,
 		unpinFolder,
@@ -53,7 +53,6 @@ const FolderContent = ({
 			expandedFolderPaths: store.expandedFolderPaths,
 			createNewFolder: store.createNewFolder,
 			createFile: store.createFile,
-			folders: store.folders,
 			focusedFile: store.focusedFile,
 			pinFolder: store.pinFolder,
 			unpinFolder: store.unpinFolder,
@@ -77,6 +76,36 @@ const FolderContent = ({
 			isRoot,
 			isFocused: isFocusedOnFolder,
 		});
+
+	const folderRef = useRef<HTMLDivElement>(null);
+	const [isFocusing, setIsFocusing] = useState<boolean>(false);
+
+	const onClickOutside = (event: MouseEvent) => {
+		if (
+			folderRef.current &&
+			!folderRef.current.contains(event.target as Node)
+		) {
+			setIsFocusing(false);
+		}
+	};
+
+	const onKeyDown = (e: KeyboardEvent) => {
+		if (e.key === "Enter" && isFocusing) {
+			onBeginEdit();
+			setTimeout(() => {
+				selectFileNameText();
+			}, 100);
+		}
+	};
+
+	useEffect(() => {
+		window.addEventListener("keydown", onKeyDown);
+		window.addEventListener("mousedown", onClickOutside);
+		return () => {
+			window.removeEventListener("keydown", onKeyDown);
+			window.removeEventListener("mousedown", onClickOutside);
+		};
+	}, [isFocusing]);
 
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
@@ -154,7 +183,15 @@ const FolderContent = ({
 
 	return (
 		<StyledFolder
+			ref={folderRef}
 			onContextMenu={onShowContextMenu}
+			onClick={(e) => {
+				if (isFocused) {
+					e.stopPropagation();
+					folderRef.current?.focus();
+					setIsFocusing(true);
+				}
+			}}
 			$isRoot={isRoot}
 			$isOver={isOver}
 			$isFocusedOnFolder={isFocusedOnFolder}
