@@ -10,7 +10,7 @@ const useRenderFileName = (
 	beforeSaveName?: (newPath: string) => Promise<void>
 ) => {
 	const onSaveName = async (name: string) => {
-		const newPath = file.path.replace(file.name, name);
+		const newPath = file.path.replace(file.basename, name);
 		await beforeSaveName?.(newPath);
 		await plugin.app.vault.rename(file, newPath);
 	};
