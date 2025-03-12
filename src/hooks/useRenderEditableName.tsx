@@ -1,3 +1,4 @@
+import { debounce } from "obsidian";
 import { ReactElement, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
@@ -41,6 +42,7 @@ const useRenderEditableName = (
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [name, setName] = useState(defaultName);
+	const [isComposing, setIsComposing] = useState(false);
 
 	const onBeginEdit = () => {
 		setIsEditing(true);
@@ -49,10 +51,10 @@ const useRenderEditableName = (
 
 	const onSaveNewName = async () => {
 		try {
-			onSaveName(name);
+			await onSaveName(name);
 			setIsEditing(false);
 		} catch (error) {
-			console.error("Save failed：", error);
+			console.error("Save  failed：", error);
 			alert("Content save failed, please try again!！");
 		}
 	};
@@ -72,8 +74,21 @@ const useRenderEditableName = (
 		};
 	}, [isEditing, name]);
 
+	const handleCompositionStart = () => {
+		setIsComposing(true);
+	};
+
+	const handleCompositionEnd = (
+		e: React.CompositionEvent<HTMLDivElement>
+	) => {
+		setIsComposing(false);
+		const target = e.target as HTMLDivElement;
+		setName(target.textContent || "");
+		onMoveCursorToEnd()
+	};
+
 	const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
-		if (event.key === "Enter") {
+		if (event.key === "Enter" && !isComposing) {
 			event.preventDefault();
 			onSaveNewName();
 			eleRef?.current?.blur();
@@ -117,11 +132,13 @@ const useRenderEditableName = (
 		}
 	};
 
-	const onInputNewName = (e: React.FormEvent<HTMLDivElement>) => {
-		const target = e.target as HTMLDivElement;
-		setName(target.textContent || "");
-		onMoveCursorToEnd();
-	};
+	const onInputNewName = debounce((e: React.FormEvent<HTMLDivElement>) => {
+		if (!isComposing) {
+			const target = e.target as HTMLDivElement;
+			setName(target.textContent || "");
+			onMoveCursorToEnd();
+		}
+	}, 200);
 
 	const renderEditableName = () => {
 		const { isBold, isFocused, isLarge } = options ?? {};
@@ -132,9 +149,12 @@ const useRenderEditableName = (
 				contentEditable={isEditing}
 				onKeyDown={onKeyDown}
 				onInput={onInputNewName}
+				onCompositionStart={handleCompositionStart}
+				onCompositionEnd={handleCompositionEnd}
 				$isBold={isBold}
 				$isFocused={isFocused}
 				$isLarge={isLarge}
+				suppressContentEditableWarning
 			>
 				{name}
 			</Name>
