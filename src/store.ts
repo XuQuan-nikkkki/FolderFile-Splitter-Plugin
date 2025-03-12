@@ -93,6 +93,11 @@ export type FileTreeStore = {
 		folder: TFolder,
 		atIndex: number
 	) => Promise<void>;
+	_updateAndSaveFoldersOrder: (
+		updatedOrder: ManualSortOrder
+	) => Promise<void>;
+	_removeFolderPathFromOrder: (folder: TFolder) => Promise<void>;
+	trashFolder: (folder: TFolder) => Promise<void>;
 
 	// Files related
 	findFileByPath: (path: string) => TFile | null;
@@ -481,6 +486,39 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				[FFS_FOLDER_MANUAL_SORT_ORDER_KEY]: updatedOrder,
 			});
 		},
+		_updateAndSaveFoldersOrder: async (updatedOrder: ManualSortOrder) => {
+			const { saveData } = get();
+			set({
+				foldersManualSortOrder: updatedOrder,
+			});
+
+			await saveData({
+				[FFS_FOLDER_MANUAL_SORT_ORDER_KEY]: updatedOrder,
+			});
+		},
+		_removeFolderPathFromOrder: async (folder: TFolder) => {
+			const {
+				folderSortRule,
+				foldersManualSortOrder: order,
+				_updateAndSaveFilesOrder,
+			} = get();
+			if (folderSortRule !== FOLDER_MANUAL_SORT_RULE) return;
+			const parentPath = folder.parent?.path;
+			if (!parentPath) return;
+			let paths = order[parentPath] ?? [];
+			paths = paths.filter((p) => p !== folder.path);
+			const updatedOrder = {
+				...order,
+				[parentPath]: paths,
+			};
+			await _updateAndSaveFilesOrder(updatedOrder);
+		},
+		trashFolder: async (folder: TFolder) => {
+			const { _removeFolderPathFromOrder } = get();
+			const { app } = plugin;
+			await app.fileManager.trashFile(folder);
+			await _removeFolderPathFromOrder(folder);
+		},
 
 		// Files related
 		findFileByPath: (path: string): TFile | null => {
@@ -736,7 +774,6 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				[FFS_FILE_MANUAL_SORT_ORDER_KEY]: updatedOrder,
 			});
 		},
-		updateFileNameInOrder: async (file: TFile) => {},
 		_updateAndSaveFilesOrder: async (updatedOrder: ManualSortOrder) => {
 			const { saveData } = get();
 			set({

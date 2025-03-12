@@ -10,6 +10,7 @@ type Options = {
 const useRenderFolderName = (
 	folder: TFolder,
 	plugin: FolderFileSplitterPlugin,
+	beforeSaveName: (newPath: string) => Promise<void>,
 	options?: Options
 ) => {
 	const { isRoot, isFocused } = options ?? {};
@@ -17,6 +18,7 @@ const useRenderFolderName = (
 
 	const onSaveName = async (name: string) => {
 		const newPath = folder.path.replace(folder.name, name);
+		await beforeSaveName(newPath);
 		await plugin.app.vault.rename(folder, newPath);
 	};
 

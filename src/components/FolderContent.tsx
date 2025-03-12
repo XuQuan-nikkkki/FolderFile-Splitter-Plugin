@@ -1,7 +1,7 @@
 import { Menu, TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 
-import { FileTreeStore } from "src/store";
+import { FileTreeStore, FOLDER_MANUAL_SORT_RULE } from "src/store";
 import { FolderListModal } from "./FolderListModal";
 import {
 	useShowFolderIcon,
@@ -46,6 +46,10 @@ const FolderContent = ({
 		pinFolder,
 		unpinFolder,
 		isFolderPinned,
+		trashFolder,
+		folderSortRule,
+		order,
+		_updateAndSaveFoldersOrder,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			focusedFolder: store.focusedFolder,
@@ -57,6 +61,10 @@ const FolderContent = ({
 			pinFolder: store.pinFolder,
 			unpinFolder: store.unpinFolder,
 			isFolderPinned: store.isFolderPinned,
+			trashFolder: store.trashFolder,
+			folderSortRule: store.folderSortRule,
+			order: store.foldersManualSortOrder,
+			_updateAndSaveFoldersOrder: store._updateAndSaveFoldersOrder,
 		}))
 	);
 
@@ -71,8 +79,25 @@ const FolderContent = ({
 	const isFocusedFileInFolder = focusedFile?.parent?.path === folder.path;
 	const isFocusedOnFile = isFocused && focusedFile && isFocusedFileInFolder;
 	const isFocusedOnFolder = isFocused && !isFocusedOnFile;
+
+	const beforeSaveName = async (newPath: string) => {
+		if (folderSortRule !== FOLDER_MANUAL_SORT_RULE) return;
+		const parentPath = folder.parent?.path;
+		if (!parentPath) return;
+		const paths = order[parentPath] ?? [];
+		const index = paths.indexOf(folder.path);
+		if (index >= 0) {
+			paths[index] = newPath;
+		} else {
+			paths.push(newPath);
+		}
+		_updateAndSaveFoldersOrder({
+			...order,
+			[parentPath]: paths,
+		});
+	};
 	const { renderFolderName, selectFileNameText, onBeginEdit } =
-		useRenderFolderName(folder, plugin, {
+		useRenderFolderName(folder, plugin, beforeSaveName, {
 			isRoot,
 			isFocused: isFocusedOnFolder,
 		});
@@ -164,8 +189,8 @@ const FolderContent = ({
 		});
 		menu.addItem((item) => {
 			item.setTitle("Delete");
-			item.onClick(() => {
-				plugin.app.fileManager.trashFile(folder);
+			item.onClick(async () => {
+				trashFolder(folder);
 			});
 		});
 		plugin.app.workspace.trigger("folder-context-menu", menu);

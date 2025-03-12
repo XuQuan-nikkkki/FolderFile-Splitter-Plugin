@@ -3,7 +3,7 @@ import { StoreApi, UseBoundStore } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
 import { FileTreeStore } from "src/store";
-import { isFile, moveFileOrFolder } from "src/utils";
+import { isFile, isFolder, moveFileOrFolder } from "src/utils";
 
 export class FolderListModal extends SuggestModal<TFolder> {
 	folders: TFolder[];
@@ -43,16 +43,17 @@ export class FolderListModal extends SuggestModal<TFolder> {
 	}
 
 	async onChooseSuggestion(folder: TFolder) {
-		const { _removeFilePathFromOrder } = this.useFileTreeStore.getState();
-		if (isFile(this.item)) {
-			try {
-				await _removeFilePathFromOrder(this.item);
-				await moveFileOrFolder(this.app.fileManager, this.item, folder);
-			} catch (e) {
-				alert(e);
-				console.error(e);
-			}
+		const { _removeFilePathFromOrder, _removeFolderPathFromOrder } =
+			this.useFileTreeStore.getState();
+		const removeFromOrder = isFile(this.item)
+			? _removeFilePathFromOrder
+			: _removeFolderPathFromOrder;
+		try {
+			await removeFromOrder(this.item);
+			await moveFileOrFolder(this.app.fileManager, this.item, folder);
+		} catch (e) {
+			alert(e);
+			console.error(e);
 		}
-		await moveFileOrFolder(this.app.fileManager, this.item, folder);
 	}
 }
