@@ -517,8 +517,12 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			await _updateAndSaveFilesOrder(updatedOrder);
 		},
 		trashFolder: async (folder: TFolder) => {
-			const { _removeFolderPathFromOrder } = get();
+			const { _removeFolderPathFromOrder, isFolderPinned, unpinFolder } =
+				get();
 			const { app } = plugin;
+			if (isFolderPinned(folder)) {
+				await unpinFolder(folder);
+			}
 			await app.fileManager.trashFile(folder);
 			await _removeFolderPathFromOrder(folder);
 		},
