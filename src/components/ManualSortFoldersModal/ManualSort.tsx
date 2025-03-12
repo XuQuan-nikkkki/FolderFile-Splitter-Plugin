@@ -62,10 +62,14 @@ const ManualSort = ({ parentFolder, useFileTreeStore, plugin }: Props) => {
 
 	const renderBreadcrumbs = () => {
 		if (!folder) return null;
-		if (folder.parent?.isRoot()) {
-			return <StyledButton>{plugin.app.vault.getName()}</StyledButton>;
+		if (folder.isRoot()) {
+			return (
+				<StyledButton $disabled>
+					{plugin.app.vault.getName()}
+				</StyledButton>
+			);
 		}
-		const crumbs = folder.path.split("/").slice(0, -1);
+		const crumbs = folder.path.split("/");
 		const rootFolder = plugin.app.vault.getRoot();
 		return (
 			<>
@@ -79,7 +83,10 @@ const ManualSort = ({ parentFolder, useFileTreeStore, plugin }: Props) => {
 					return (
 						<Fragment key={crumb + index}>
 							{index > 0 && renderSlashSign()}
-							<StyledButton onClick={() => goInToFolder(target)}>
+							<StyledButton
+								$disabled={index === crumbs.length - 1}
+								onClick={() => goInToFolder(target)}
+							>
 								{crumb}
 							</StyledButton>
 						</Fragment>
