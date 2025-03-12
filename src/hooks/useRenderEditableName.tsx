@@ -84,7 +84,7 @@ const useRenderEditableName = (
 		setIsComposing(false);
 		const target = e.target as HTMLDivElement;
 		setName(target.textContent || "");
-		onMoveCursorToEnd()
+		onMoveCursorToEnd();
 	};
 
 	const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {

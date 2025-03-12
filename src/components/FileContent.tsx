@@ -8,6 +8,7 @@ import { useShowFileDetail } from "src/hooks/useSettingsHandler";
 import FileDetail from "./FileDetail";
 import useRenderFileName from "src/hooks/useRenderFileName";
 import { useFileTree } from "./FileTree";
+import { useEffect, useRef, useState } from "react";
 
 const StyledFileContent = styled.div<{
 	$isFocused: boolean;
@@ -101,6 +102,35 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 	const isFocused = focusedFile?.path === file.path;
 	const { renderFileName, selectFileNameText, onBeginEdit } =
 		useRenderFileName(file, plugin, isFocused, beforeSaveName);
+	const fileRef = useRef<HTMLDivElement>(null);
+	const [isFocusing, setIsFocusing] = useState<boolean>(false);
+
+	const onKeyDown = (event: KeyboardEvent) => {
+		if (event.key === "Enter" && isFocusing) {
+			onBeginEdit();
+			setTimeout(() => {
+				selectFileNameText();
+			}, 100);
+		}
+	};
+
+	const onClickOutside = (event: MouseEvent) => {
+		if (
+			fileRef.current &&
+			!fileRef.current.contains(event.target as Node)
+		) {
+			setIsFocusing(false);
+		}
+	};
+
+	useEffect(() => {
+		window.addEventListener("keydown", onKeyDown);
+		window.addEventListener("mousedown", onClickOutside);
+		return () => {
+			window.removeEventListener("keydown", onKeyDown);
+			window.removeEventListener("mousedown", onClickOutside);
+		};
+	}, [isFocusing]);
 
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
@@ -181,7 +211,15 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 	const isLast = [...fileList].reverse()[0]?.path === file.path;
 	return (
 		<StyledFileContent
+			ref={fileRef}
 			onContextMenu={onShowContextMenu}
+			onClick={(e) => {
+				if (isFocused) {
+					e.stopPropagation();
+					fileRef.current?.focus();
+					setIsFocusing(true);
+				}
+			}}
 			$isFocused={isFocused}
 			$isLast={isLast}
 		>
