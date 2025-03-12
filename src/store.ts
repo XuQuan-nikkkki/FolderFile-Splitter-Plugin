@@ -102,7 +102,7 @@ export type FileTreeStore = {
 	// Files related
 	findFileByPath: (path: string) => TFile | null;
 	isFilesInAscendingOrder: () => boolean;
-	setFocusedFile: (file: TFile | null) => void;
+	setFocusedFile: (file: TFile | null) => Promise<void>;
 	openFile: (file: TFile) => void;
 	selectFile: (file: TFile) => Promise<void>;
 	readFile: (file: TFile) => Promise<string>;
@@ -228,10 +228,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				[FFS_FOCUSED_FOLDER_PATH_KEY]: folder?.path ?? null,
 			});
 			if (focusedFile?.parent?.path !== folder?.path) {
-				setFocusedFile(null);
-				await get().saveData({
-					[FFS_FOCUSED_FILE_PATH_KEY]: null,
-				});
+				await setFocusedFile(null);
 			}
 		},
 		_createFolder: async (path: string): Promise<TFolder> => {
@@ -545,10 +542,14 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			const { fileSortRule } = get();
 			return fileSortRule.contains("Ascending");
 		},
-		setFocusedFile: (file: TFile) =>
+		setFocusedFile: async (file: TFile | null) => {
 			set({
 				focusedFile: file,
-			}),
+			});
+			await get().saveData({
+				[FFS_FOCUSED_FILE_PATH_KEY]: file?.path ?? null,
+			});
+		},
 		openFile: (file: TFile): void => {
 			const leaf = plugin.app.workspace.getLeaf();
 			plugin.app.workspace.setActiveLeaf(leaf, { focus: true });
@@ -556,11 +557,8 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		},
 		selectFile: async (file: TFile): Promise<void> => {
 			const { setFocusedFile, openFile } = get();
-			setFocusedFile(file);
+			await setFocusedFile(file);
 			openFile(file);
-			await get().saveData({
-				[FFS_FOCUSED_FILE_PATH_KEY]: file.path,
-			});
 		},
 		readFile: async (file: TFile): Promise<string> => {
 			return await plugin.app.vault.read(file);
@@ -819,10 +817,19 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			}
 		},
 		trashFile: async (file: TFile) => {
-			const { _removeFilePathFromOrder, isFilePinned, unpinFile } = get();
+			const {
+				_removeFilePathFromOrder,
+				isFilePinned,
+				unpinFile,
+				setFocusedFile,
+				focusedFile,
+			} = get();
 			const { app } = plugin;
 			if (isFilePinned(file)) {
 				await unpinFile(file);
+			}
+			if (file.path === focusedFile?.path) {
+				await setFocusedFile(null);
 			}
 			await app.fileManager.trashFile(file);
 			await _removeFilePathFromOrder(file);
