@@ -38,7 +38,7 @@ const FilesCount = ({ folder, isFocused }: Props) => {
 	const onHandleVaultChange = (event: VaultChangeEvent) => {
 		const { file, changeType } = event.detail;
 		if (!isFile(file)) return;
-		if (changeType === "delete") {
+		if (changeType === "delete" || changeType === "rename") {
 			setCount(getFilesCountInFolder(folder, includeSubfolderFilesCount));
 		}
 	};
