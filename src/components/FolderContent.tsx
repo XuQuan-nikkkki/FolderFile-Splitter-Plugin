@@ -152,8 +152,11 @@ const FolderContent = ({
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item.setTitle("New note");
-			item.onClick(() => {
-				createFile(folder);
+			item.onClick(async() => {
+				if (folder.path !== focusedFolder?.path) {
+					await setFocusedFolder(folder);
+				}
+				await createFile(folder);
 			});
 		});
 		menu.addItem((item) => {
