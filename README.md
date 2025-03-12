@@ -11,7 +11,10 @@
 - **Split View**: Separates folders and files into different panels for a better overview of your note structure.
 - **Improved Navigation**: Navigate through folders and files effortlessly without losing track of your location.
 - **Enhanced File Management**: Focus on what matters most with a streamlined interface that prioritizes usability.
-    ![plugin preview](./src/assets/images/split-views.jpg)
+- **Customizable Sorting**: Allows users to customize the order of files and folders, including the ability to pin specific items to the top for quick access.
+- **Pin Files and Folders**: Easily pin frequently used files or folders to the top of the list for faster access and better organization.
+- **Theme Adaptation**: Automatically adapts to the current Obsidian theme, ensuring a cohesive and visually appealing experience.
+    ![plugin preview](./src/assets/images/split-views.png)
 
 ## Install
 ### Method 1: Install from Obsidian Community Plugins (Recommended)
@@ -45,14 +48,14 @@ To uninstall the plugin, simply disable or delete it from the Obsidian plugin se
 
 ## What's Next
 
-- **Customizable Settings**: Allow users to customize the plugin’s behavior, such as setting the default location for new files or folders, and customizing the sorting order of files and folders for a more personalized experience.
+- **Customizable Settings**: Allow users to customize the plugin’s behavior, such as setting the default location for new files or folders.
 - **Mobile Support**: Adapt the plugin for use on Obsidian's mobile app, ensuring seamless file management across devices.
-- **Drag-and-Drop**: Enable drag-and-drop functionality for files and folders to simplify reorganization.
 - **Tag-Based Management**: Introduce the ability to manage files using tags for a more flexible organization system.
 
 ## Changelog
 
 - **v0.1.0**: Initial release with folder/file split view and improved navigation.
+- **v0.2.0**: Added customizable sorting, pinning of files and folders, and theme adaptation.
 
 ## Feedback & Issues
 
