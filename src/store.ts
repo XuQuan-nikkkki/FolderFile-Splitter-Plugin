@@ -227,6 +227,9 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			await saveData({ [FFS_FOCUSED_FOLDER_PATH_KEY]: folder.path });
 			if (focusedFile?.parent?.path !== folder.path) {
 				setFocusedFile(null);
+				await get().saveData({
+					[FFS_FOCUSED_FILE_PATH_KEY]: null,
+				});
 			}
 		},
 		_createFolder: async (path: string): Promise<TFolder> => {
