@@ -32,3 +32,16 @@ export const StyledFileContent = styled.div<{
     }
   `}
 `;
+
+export const StyledFileNameLine = styled.div`
+	display: flex;
+	overflow: hidden;
+	align-items: center;
+`;
+
+export const StyledFileExtension = styled.span<{ $isFocused: boolean }>`
+	color: ${({ $isFocused }) =>
+		$isFocused ? "var(--text-on-accent)" : "var(--text-faint)"};
+	font-size: 9px;
+	font-weight: var(--font-semibold);
+`;

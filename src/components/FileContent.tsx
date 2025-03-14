@@ -1,6 +1,5 @@
 import { Menu, TFile } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
-import styled from "styled-components";
 
 import { FILE_MANUAL_SORT_RULE, FileTreeStore } from "src/store";
 import { FolderListModal } from "./FolderListModal";
@@ -9,7 +8,11 @@ import FileDetail from "./FileDetail";
 import useRenderFileName from "src/hooks/useRenderFileName";
 import { useFileTree } from "./FileTree";
 import { useEffect, useRef, useState } from "react";
-import { StyledFileContent } from "./Styled/StyledFile";
+import {
+	StyledFileContent,
+	StyledFileExtension,
+	StyledFileNameLine,
+} from "./Styled/StyledFile";
 
 export type FileProps = {
 	file: TFile;
@@ -199,7 +202,12 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			$isLast={isLast}
 			$disableGap={!showFileDetail}
 		>
-			{renderFileName()}
+			<StyledFileNameLine>
+				{renderFileName()}
+				<StyledFileExtension $isFocused={isFocused}>
+					{file.extension !== "md" && file.extension.toUpperCase()}
+				</StyledFileExtension>
+			</StyledFileNameLine>
 			{maybeRenderFileDetail()}
 		</StyledFileContent>
 	);
