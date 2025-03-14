@@ -18,6 +18,8 @@ import SortFiles from "./FileActions/SortFiles";
 import CustomDragLayer from "./CustomDragLayer";
 import { useShallow } from "zustand/react/shallow";
 import Loading from "./Loading";
+import CloseFolderPane from "./CloseFolderPane";
+import OpenFolderPane from "./OpenFolderPane";
 
 export const FOLDERS_PANE_MIN_WIDTH = 140;
 export const FILES_PANE_MIN_WIDTH = 200;
@@ -48,6 +50,12 @@ const Acitions = styled.div`
 	padding: 8px 16px;
 	border-radius: var(--ffs-border-radius);
 	background-color: var(--interactive-normal);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+`;
+
+const AcitionsSection = styled.div`
 	display: flex;
 	align-items: center;
 	gap: var(--size-4-3);
@@ -86,6 +94,7 @@ const FileTree = ({ plugin }: Props) => {
 		220
 	);
 	const [isRestoring, setIsRestoring] = useState<boolean>(true);
+	const [isFolderPaneOpen, setIsFolderPaneOpen] = useState<boolean>(true);
 
 	useEffect(() => {
 		restoreData().then(() => setIsRestoring(false));
@@ -98,16 +107,32 @@ const FileTree = ({ plugin }: Props) => {
 
 	const renderFolderActions = () => (
 		<Acitions>
-			<CreateFolder />
-			<SortFolders />
-			<ToggleFolders />
+			<AcitionsSection>
+				<CreateFolder />
+				<SortFolders />
+				<ToggleFolders />
+			</AcitionsSection>
+			<AcitionsSection>
+				{isFolderPaneOpen && (
+					<CloseFolderPane
+						onClose={() => setIsFolderPaneOpen(false)}
+					/>
+				)}
+			</AcitionsSection>
 		</Acitions>
 	);
 
 	const renderFileActions = () => (
 		<Acitions>
-			<CreateFile />
-			<SortFiles />
+			<AcitionsSection>
+				<CreateFile />
+				<SortFiles />
+			</AcitionsSection>
+			<AcitionsSection>
+				{!isFolderPaneOpen && (
+					<OpenFolderPane onOpen={() => setIsFolderPaneOpen(true)} />
+				)}
+			</AcitionsSection>
 		</Acitions>
 	);
 
@@ -118,14 +143,18 @@ const FileTree = ({ plugin }: Props) => {
 			<CustomDragLayer />
 			<FileTreeContext.Provider value={{ useFileTreeStore, plugin }}>
 				<PluginContainer>
-					<FoldersPane style={{ width: folderPaneWidth }}>
-						{renderFolderActions()}
-						<Folders />
-					</FoldersPane>
-					<DraggableDivider
-						initialWidth={folderPaneWidth}
-						onChangeWidth={onChangeFolderPaneWidth}
-					/>
+					{isFolderPaneOpen && (
+						<>
+							<FoldersPane style={{ width: folderPaneWidth }}>
+								{renderFolderActions()}
+								<Folders />
+							</FoldersPane>
+							<DraggableDivider
+								initialWidth={folderPaneWidth}
+								onChangeWidth={onChangeFolderPaneWidth}
+							/>
+						</>
+					)}
 					<FilesPane>
 						{renderFileActions()}
 						<Files />
