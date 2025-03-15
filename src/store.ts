@@ -364,27 +364,28 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			}
 		},
 		changeExpandedFolderPaths: async (folderPaths: string[]) => {
+			const { saveDataInLocalStorage } = get();
 			set({
 				expandedFolderPaths: folderPaths,
 			});
-			await get().saveDataInPlugin({
-				[FFS_EXPANDED_FOLDER_PATHS_KEY]: JSON.stringify(folderPaths),
-			});
+			saveDataInLocalStorage(
+				FFS_EXPANDED_FOLDER_PATHS_KEY,
+				JSON.stringify(folderPaths)
+			);
 		},
 		restoreExpandedFolderPaths: async () => {
-			const lastExpandedFolderPaths =
-				await get().getDataFromPlugin<string>(
-					FFS_EXPANDED_FOLDER_PATHS_KEY
-				);
-			if (lastExpandedFolderPaths) {
-				try {
-					const folderPaths = JSON.parse(lastExpandedFolderPaths);
-					set({
-						expandedFolderPaths: folderPaths,
-					});
-				} catch (error) {
-					console.error("Invalid Json format: ", error);
-				}
+			const { getDataFromLocalStorage } = get();
+			const lastExpandedFolderPaths = getDataFromLocalStorage(
+				FFS_EXPANDED_FOLDER_PATHS_KEY
+			);
+			if (!lastExpandedFolderPaths) return;
+			try {
+				const folderPaths = JSON.parse(lastExpandedFolderPaths);
+				set({
+					expandedFolderPaths: folderPaths,
+				});
+			} catch (error) {
+				console.error("Invalid Json format: ", error);
 			}
 		},
 		restoreLastFocusedFolder: async () => {
