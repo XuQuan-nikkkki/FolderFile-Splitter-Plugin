@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const PinnedSection = styled.div`
 	margin-bottom: 16px;
-	padding: 6px 4px 2px;
+	padding-bottom: 16px;
 	border-bottom: var(--border-width) solid var(--background-modifier-border);
 
 	.ffs-pin-icon {
