@@ -1,9 +1,8 @@
-import { debounce } from "obsidian";
 import { ReactElement, useEffect, useRef, useState } from "react";
+import { StyledInput } from "src/components/Styled/StyledInput";
 import styled from "styled-components";
 
 const Name = styled.div<{
-	$isEditing?: boolean;
 	$isBold?: boolean;
 	$isFocused?: boolean;
 	$isLarge?: boolean;
@@ -18,8 +17,6 @@ const Name = styled.div<{
 	text-overflow: ellipsis;
 	white-space: nowrap;
 
-	background-color: ${({ $isEditing }) =>
-		$isEditing ? "var(--text-selection)" : undefined};
 	color: ${({ $isFocused }) =>
 		$isFocused ? "var(--text-on-accent)" : "var(--text-normal)"};
 `;
@@ -39,10 +36,10 @@ const useRenderEditableName = (
 	onBeginEdit: () => void;
 } => {
 	const eleRef = useRef<HTMLDivElement>(null);
+	const inputRef = useRef<HTMLInputElement>(null);
 
 	const [isEditing, setIsEditing] = useState(false);
 	const [name, setName] = useState(defaultName);
-	const [isComposing, setIsComposing] = useState(false);
 
 	const onBeginEdit = () => {
 		setIsEditing(true);
@@ -60,7 +57,7 @@ const useRenderEditableName = (
 	};
 
 	const onClickOutside = (event: MouseEvent) => {
-		if (eleRef?.current && !eleRef.current.contains(event.target)) {
+		if (inputRef?.current && !inputRef.current.contains(event.target)) {
 			if (isEditing) {
 				onSaveNewName();
 			}
@@ -74,83 +71,41 @@ const useRenderEditableName = (
 		};
 	}, [isEditing, name]);
 
-	const handleCompositionStart = () => {
-		setIsComposing(true);
-	};
-
-	const handleCompositionEnd = (
-		e: React.CompositionEvent<HTMLDivElement>
-	) => {
-		setIsComposing(false);
-		const target = e.target as HTMLDivElement;
-		setName(target.textContent || "");
-		onMoveCursorToEnd();
-	};
-
 	const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
-		if (event.key === "Enter" && !isComposing) {
+		if (event.key === "Enter") {
 			event.preventDefault();
 			onSaveNewName();
-			eleRef?.current?.blur();
 		} else if (event.key === "Escape") {
 			event.preventDefault();
 			setIsEditing(false);
 			setName(defaultName);
-			eleRef.current?.blur();
 		}
 	};
 
-	const selectText = (element: HTMLElement) => {
+	const selectText = (element: HTMLInputElement) => {
 		element.focus();
-		const range = document.createRange();
-		range.selectNodeContents(element);
-		const selection = window.getSelection();
-		selection?.removeAllRanges();
-		selection?.addRange(range);
+		element.setSelectionRange(0, element.value.length);
 	};
 
 	const selectFileNameText = () => {
-		const element = eleRef.current;
+		const element = inputRef.current;
 		if (element) {
 			selectText(element);
 		}
 	};
 
-	const moveCursorToEnd = (element: HTMLElement) => {
-		const range = document.createRange();
-		const selection = window.getSelection();
-		range.selectNodeContents(element);
-		range.collapse(false);
-		selection?.removeAllRanges();
-		selection?.addRange(range);
-	};
-
-	const onMoveCursorToEnd = () => {
-		const element = eleRef.current;
-		if (element) {
-			moveCursorToEnd(element);
-		}
-	};
-
-	const onInputNewName = debounce((e: React.FormEvent<HTMLDivElement>) => {
-		if (!isComposing) {
-			const target = e.target as HTMLDivElement;
-			setName(target.textContent || "");
-			onMoveCursorToEnd();
-		}
-	}, 200);
-
 	const renderEditableName = () => {
 		const { isBold, isFocused, isLarge } = options ?? {};
-		return (
+		return isEditing ? (
+			<StyledInput
+				ref={inputRef}
+				value={name}
+				onKeyDown={onKeyDown}
+				onChange={(e) => setName(e.target.value)}
+			/>
+		) : (
 			<Name
 				ref={eleRef}
-				$isEditing={isEditing}
-				contentEditable={isEditing}
-				onKeyDown={onKeyDown}
-				onInput={onInputNewName}
-				onCompositionStart={handleCompositionStart}
-				onCompositionEnd={handleCompositionEnd}
 				$isBold={isBold}
 				$isFocused={isFocused}
 				$isLarge={isLarge}
