@@ -51,6 +51,9 @@ export type FileTreeStore = {
 	filesManualSortOrder: ManualSortOrder;
 	foldersManualSortOrder: ManualSortOrder;
 
+	getDataFromLocalStorage: (key: string) => string | null;
+	saveDataInLocalStorage: (key: string, value: string) => void;
+	removeDataFromLocalStorage: (key: string) => void;
 	getDataFromPlugin: <T>(key: string) => Promise<T | undefined>;
 	saveDataInPlugin: (data: Record<string, unknown>) => Promise<void>;
 	restoreData: () => Promise<void>;
@@ -145,6 +148,15 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		filesManualSortOrder: {},
 		foldersManualSortOrder: {},
 
+		saveDataInLocalStorage: (key: string, value: string) => {
+			localStorage.setItem(key, value);
+		},
+		getDataFromLocalStorage: (key: string) => {
+			return localStorage.getItem(key);
+		},
+		removeDataFromLocalStorage: (key: string) => {
+			localStorage.removeItem(key);
+		},
 		saveDataInPlugin: async (
 			data: Record<string, unknown>
 		): Promise<void> => {
@@ -231,13 +243,19 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				_setFocusedFolder,
 				focusedFile,
 				setFocusedFile,
-				saveDataInPlugin,
+				saveDataInLocalStorage,
+				removeDataFromLocalStorage,
 			} = get();
 			_setFocusedFolder(folder);
 
-			await saveDataInPlugin({
-				[FFS_FOCUSED_FOLDER_PATH_KEY]: folder?.path ?? null,
-			});
+			if (folder) {
+				saveDataInLocalStorage(
+					FFS_FOCUSED_FOLDER_PATH_KEY,
+					folder.path
+				);
+			} else {
+				removeDataFromLocalStorage(FFS_FOCUSED_FOLDER_PATH_KEY);
+			}
 			if (focusedFile?.parent?.path !== folder?.path) {
 				await setFocusedFile(null);
 			}
@@ -370,11 +388,13 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			}
 		},
 		restoreLastFocusedFolder: async () => {
-			const lastFocusedFolderPath = await get().getDataFromPlugin<string>(
+			const { getDataFromLocalStorage } = get();
+			const lastFocusedFolderPath = getDataFromLocalStorage(
 				FFS_FOCUSED_FOLDER_PATH_KEY
 			);
 			const { rootFolder, _setFocusedFolder: _setFocusedFolder } = get();
-			if (lastFocusedFolderPath && lastFocusedFolderPath !== "/") {
+			if (!lastFocusedFolderPath) return;
+			if (lastFocusedFolderPath !== "/") {
 				const folder = plugin.app.vault.getFolderByPath(
 					lastFocusedFolderPath
 				);
