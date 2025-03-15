@@ -578,12 +578,16 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			return fileSortRule.contains("Ascending");
 		},
 		setFocusedFile: async (file: TFile | null) => {
+			const { saveDataInLocalStorage, removeDataFromLocalStorage } =
+				get();
 			set({
 				focusedFile: file,
 			});
-			await get().saveDataInPlugin({
-				[FFS_FOCUSED_FILE_PATH_KEY]: file?.path ?? null,
-			});
+			if (file) {
+				saveDataInLocalStorage(FFS_FOCUSED_FILE_PATH_KEY, file.path);
+			} else {
+				removeDataFromLocalStorage(FFS_FOCUSED_FILE_PATH_KEY);
+			}
 		},
 		openFile: (file: TFile): void => {
 			const leaf = plugin.app.workspace.getLeaf();
@@ -647,15 +651,15 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			return newFile;
 		},
 		restoreLastFocusedFile: async () => {
-			const lastFocusedFilePath = await get().getDataFromPlugin<string>(
+			const { findFileByPath, selectFile, getDataFromLocalStorage } =
+				get();
+			const lastFocusedFilePath = getDataFromLocalStorage(
 				FFS_FOCUSED_FILE_PATH_KEY
 			);
-			const { findFileByPath, selectFile } = get();
-			if (lastFocusedFilePath) {
-				const file = findFileByPath(lastFocusedFilePath);
-				if (file) {
-					selectFile(file);
-				}
+			if (!lastFocusedFilePath) return;
+			const file = findFileByPath(lastFocusedFilePath);
+			if (file) {
+				selectFile(file);
 			}
 		},
 		sortFiles: (files: TFile[], rule: FileSortRule): TFile[] => {
