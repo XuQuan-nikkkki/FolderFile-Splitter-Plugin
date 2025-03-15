@@ -1,6 +1,6 @@
 {
 	"name": "folder-file-splitter",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "This is an Obsidian plugin",
 	"main": "main.js",
 	"scripts": {
