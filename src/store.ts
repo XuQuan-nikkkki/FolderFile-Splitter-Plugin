@@ -51,8 +51,8 @@ export type FileTreeStore = {
 	filesManualSortOrder: ManualSortOrder;
 	foldersManualSortOrder: ManualSortOrder;
 
-	getData: <T>(key: string) => Promise<T | undefined>;
-	saveData: (data: Record<string, unknown>) => Promise<void>;
+	getDataFromPlugin: <T>(key: string) => Promise<T | undefined>;
+	saveDataInPlugin: (data: Record<string, unknown>) => Promise<void>;
 	restoreData: () => Promise<void>;
 
 	// Folders related
@@ -145,16 +145,23 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		filesManualSortOrder: {},
 		foldersManualSortOrder: {},
 
-		saveData: async (data: Record<string, unknown>): Promise<void> => {
+		saveDataInPlugin: async (
+			data: Record<string, unknown>
+		): Promise<void> => {
 			const previousData = await plugin.loadData();
 			await plugin.saveData({
 				...previousData,
 				...data,
 			});
 		},
-		getData: async <T>(key: string): Promise<T | undefined> => {
-			const data = await plugin.loadData();
-			return data[key];
+		getDataFromPlugin: async <T>(key: string): Promise<T | undefined> => {
+			try {
+				const data = await plugin.loadData();
+				return data[key];
+			} catch (e) {
+				console.error(e);
+				return undefined;
+			}
 		},
 		restoreData: async () => {
 			const {
@@ -220,11 +227,15 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				focusedFolder: folder,
 			}),
 		setFocusedFolder: async (folder: TFolder | null) => {
-			const { _setFocusedFolder, focusedFile, setFocusedFile, saveData } =
-				get();
+			const {
+				_setFocusedFolder,
+				focusedFile,
+				setFocusedFile,
+				saveDataInPlugin,
+			} = get();
 			_setFocusedFolder(folder);
 
-			await saveData({
+			await saveDataInPlugin({
 				[FFS_FOCUSED_FOLDER_PATH_KEY]: folder?.path ?? null,
 			});
 			if (focusedFile?.parent?.path !== folder?.path) {
@@ -315,10 +326,13 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			set({
 				folderSortRule: rule,
 			});
-			await get().saveData({ [FFS_FOLDER_SORT_RULE_KEY]: rule });
+			await get().saveDataInPlugin({ [FFS_FOLDER_SORT_RULE_KEY]: rule });
 		},
 		restoreFolderSortRule: async () => {
-			const { restoreFoldersManualSortOrder, getData } = get();
+			const {
+				restoreFoldersManualSortOrder,
+				getDataFromPlugin: getData,
+			} = get();
 			const lastFolderSortRule = await getData<FolderSortRule>(
 				FFS_FOLDER_SORT_RULE_KEY
 			);
@@ -335,14 +349,15 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			set({
 				expandedFolderPaths: folderPaths,
 			});
-			await get().saveData({
+			await get().saveDataInPlugin({
 				[FFS_EXPANDED_FOLDER_PATHS_KEY]: JSON.stringify(folderPaths),
 			});
 		},
 		restoreExpandedFolderPaths: async () => {
-			const lastExpandedFolderPaths = await get().getData<string>(
-				FFS_EXPANDED_FOLDER_PATHS_KEY
-			);
+			const lastExpandedFolderPaths =
+				await get().getDataFromPlugin<string>(
+					FFS_EXPANDED_FOLDER_PATHS_KEY
+				);
 			if (lastExpandedFolderPaths) {
 				try {
 					const folderPaths = JSON.parse(lastExpandedFolderPaths);
@@ -355,7 +370,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			}
 		},
 		restoreLastFocusedFolder: async () => {
-			const lastFocusedFolderPath = await get().getData<string>(
+			const lastFocusedFolderPath = await get().getDataFromPlugin<string>(
 				FFS_FOCUSED_FOLDER_PATH_KEY
 			);
 			const { rootFolder, _setFocusedFolder: _setFocusedFolder } = get();
@@ -375,29 +390,29 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			return pinnedFolderPaths.includes(folder.path);
 		},
 		pinFolder: async (folder: TFolder) => {
-			const { pinnedFolderPaths, saveData } = get();
+			const { pinnedFolderPaths, saveDataInPlugin } = get();
 			const folderPaths = [...pinnedFolderPaths, folder.path];
 			set({
 				pinnedFolderPaths: folderPaths,
 			});
-			await saveData({
+			await saveDataInPlugin({
 				[FFS_PINNED_FOLDER_PATHS_KEY]: JSON.stringify(folderPaths),
 			});
 		},
 		unpinFolder: async (folder: TFolder) => {
-			const { pinnedFolderPaths, saveData } = get();
+			const { pinnedFolderPaths, saveDataInPlugin } = get();
 			const folderPaths = pinnedFolderPaths.filter(
 				(path) => path !== folder.path
 			);
 			set({
 				pinnedFolderPaths: folderPaths,
 			});
-			await saveData({
+			await saveDataInPlugin({
 				[FFS_PINNED_FOLDER_PATHS_KEY]: JSON.stringify(folderPaths),
 			});
 		},
 		restorePinnedFolders: async () => {
-			const { getData } = get();
+			const { getDataFromPlugin: getData } = get();
 			const pinnedFolderPaths = await getData<string>(
 				FFS_PINNED_FOLDER_PATHS_KEY
 			);
@@ -419,7 +434,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				getFoldersByParent,
 				rootFolder,
 				sortFolders,
-				saveData,
+				saveDataInPlugin,
 			} = get();
 			const foldersToInit = [rootFolder, ...folders].filter(Boolean);
 			const order: ManualSortOrder = {};
@@ -441,12 +456,12 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			set({
 				foldersManualSortOrder: order,
 			});
-			await saveData({
+			await saveDataInPlugin({
 				[FFS_FOLDER_MANUAL_SORT_ORDER_KEY]: order,
 			});
 		},
 		restoreFoldersManualSortOrder: async () => {
-			const { getData } = get();
+			const { getDataFromPlugin: getData } = get();
 			const order = await getData<ManualSortOrder>(
 				FFS_FOLDER_MANUAL_SORT_ORDER_KEY
 			);
@@ -482,19 +497,19 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			folder: TFolder,
 			atIndex: number
 		) => {
-			const { saveData, changeFoldersManualOrder } = get();
+			const { saveDataInPlugin, changeFoldersManualOrder } = get();
 			const updatedOrder = changeFoldersManualOrder(folder, atIndex);
-			await saveData({
+			await saveDataInPlugin({
 				[FFS_FOLDER_MANUAL_SORT_ORDER_KEY]: updatedOrder,
 			});
 		},
 		_updateAndSaveFoldersOrder: async (updatedOrder: ManualSortOrder) => {
-			const { saveData } = get();
+			const { saveDataInPlugin } = get();
 			set({
 				foldersManualSortOrder: updatedOrder,
 			});
 
-			await saveData({
+			await saveDataInPlugin({
 				[FFS_FOLDER_MANUAL_SORT_ORDER_KEY]: updatedOrder,
 			});
 		},
@@ -546,7 +561,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			set({
 				focusedFile: file,
 			});
-			await get().saveData({
+			await get().saveDataInPlugin({
 				[FFS_FOCUSED_FILE_PATH_KEY]: file?.path ?? null,
 			});
 		},
@@ -612,7 +627,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			return newFile;
 		},
 		restoreLastFocusedFile: async () => {
-			const lastFocusedFilePath = await get().getData<string>(
+			const lastFocusedFilePath = await get().getDataFromPlugin<string>(
 				FFS_FOCUSED_FILE_PATH_KEY
 			);
 			const { findFileByPath, selectFile } = get();
@@ -659,12 +674,13 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			set({
 				fileSortRule: rule,
 			});
-			await get().saveData({
+			await get().saveDataInPlugin({
 				[FFS_FILE_SORT_RULE_KEY]: rule,
 			});
 		},
 		restoreFileSortRule: async () => {
-			const { getData, restoreFilesManualSortOrder } = get();
+			const { getDataFromPlugin: getData, restoreFilesManualSortOrder } =
+				get();
 			const lastFileSortRule = await getData<FileSortRule>(
 				FFS_FILE_SORT_RULE_KEY
 			);
@@ -682,29 +698,29 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			return pinnedFilePaths.includes(file.path);
 		},
 		pinFile: async (file: TFile) => {
-			const { pinnedFilePaths, saveData } = get();
+			const { pinnedFilePaths, saveDataInPlugin } = get();
 			const filePaths = [...pinnedFilePaths, file.path];
 			set({
 				pinnedFilePaths: filePaths,
 			});
-			await saveData({
+			await saveDataInPlugin({
 				[FFS_PINNED_FILE_PATHS_KEY]: JSON.stringify(filePaths),
 			});
 		},
 		unpinFile: async (file: TFile) => {
-			const { pinnedFilePaths, saveData } = get();
+			const { pinnedFilePaths, saveDataInPlugin } = get();
 			const filePaths = pinnedFilePaths.filter(
 				(path) => path !== file.path
 			);
 			set({
 				pinnedFilePaths: filePaths,
 			});
-			await saveData({
+			await saveDataInPlugin({
 				[FFS_PINNED_FILE_PATHS_KEY]: JSON.stringify(filePaths),
 			});
 		},
 		restorePinnedFiles: async () => {
-			const { getData } = get();
+			const { getDataFromPlugin: getData } = get();
 			const pinnedFilePaths = await getData<string>(
 				FFS_PINNED_FILE_PATHS_KEY
 			);
@@ -726,7 +742,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				rootFolder,
 				sortFiles,
 				getDirectFilesInFolder,
-				saveData,
+				saveDataInPlugin,
 			} = get();
 			const foldersToInit = [rootFolder, ...folders].filter(Boolean);
 			const order: ManualSortOrder = {};
@@ -744,12 +760,12 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			set({
 				filesManualSortOrder: order,
 			});
-			await saveData({
+			await saveDataInPlugin({
 				[FFS_FILE_MANUAL_SORT_ORDER_KEY]: order,
 			});
 		},
 		restoreFilesManualSortOrder: async () => {
-			const { getData } = get();
+			const { getDataFromPlugin: getData } = get();
 			const order = await getData<ManualSortOrder>(
 				FFS_FILE_MANUAL_SORT_ORDER_KEY
 			);
@@ -783,18 +799,18 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			return updatedOrder;
 		},
 		changeFilesManualOrderAndSave: async (file: TFile, atIndex: number) => {
-			const { saveData, changeFilesManualOrder } = get();
+			const { saveDataInPlugin, changeFilesManualOrder } = get();
 			const updatedOrder = changeFilesManualOrder(file, atIndex);
-			await saveData({
+			await saveDataInPlugin({
 				[FFS_FILE_MANUAL_SORT_ORDER_KEY]: updatedOrder,
 			});
 		},
 		_updateAndSaveFilesOrder: async (updatedOrder: ManualSortOrder) => {
-			const { saveData } = get();
+			const { saveDataInPlugin } = get();
 			set({
 				filesManualSortOrder: updatedOrder,
 			});
-			await saveData({
+			await saveDataInPlugin({
 				[FFS_FILE_MANUAL_SORT_ORDER_KEY]: updatedOrder,
 			});
 		},
