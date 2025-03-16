@@ -1,7 +1,7 @@
 import { Menu, TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 
-import { FileTreeStore, FOLDER_MANUAL_SORT_RULE } from "src/store";
+import { FileTreeStore } from "src/store";
 import { FolderListModal } from "./FolderListModal";
 import {
 	useShowFolderIcon,
@@ -47,9 +47,7 @@ const FolderContent = ({
 		unpinFolder,
 		isFolderPinned,
 		trashFolder,
-		folderSortRule,
-		order,
-		_updateAndSaveFoldersOrder,
+		renameFolder,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			focusedFolder: store.focusedFolder,
@@ -62,9 +60,7 @@ const FolderContent = ({
 			unpinFolder: store.unpinFolder,
 			isFolderPinned: store.isFolderPinned,
 			trashFolder: store.trashFolder,
-			folderSortRule: store.folderSortRule,
-			order: store.foldersManualSortOrder,
-			_updateAndSaveFoldersOrder: store._updateAndSaveFoldersOrder,
+			renameFolder: store.renameFolder,
 		}))
 	);
 
@@ -80,24 +76,9 @@ const FolderContent = ({
 	const isFocusedOnFile = isFocused && focusedFile && isFocusedFileInFolder;
 	const isFocusedOnFolder = isFocused && !isFocusedOnFile;
 
-	const beforeSaveName = async (newPath: string) => {
-		if (folderSortRule !== FOLDER_MANUAL_SORT_RULE) return;
-		const parentPath = folder.parent?.path;
-		if (!parentPath) return;
-		const paths = order[parentPath] ?? [];
-		const index = paths.indexOf(folder.path);
-		if (index >= 0) {
-			paths[index] = newPath;
-		} else {
-			paths.push(newPath);
-		}
-		_updateAndSaveFoldersOrder({
-			...order,
-			[parentPath]: paths,
-		});
-	};
+	const onSaveName = (name: string) => renameFolder(folder, name);
 	const { renderFolderName, selectFileNameText, onBeginEdit } =
-		useRenderFolderName(folder, plugin, beforeSaveName, {
+		useRenderFolderName(folder, plugin, onSaveName, {
 			isRoot,
 			isFocused: isFocusedOnFolder,
 		});
@@ -152,7 +133,7 @@ const FolderContent = ({
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item.setTitle("New note");
-			item.onClick(async() => {
+			item.onClick(async () => {
 				if (folder.path !== focusedFolder?.path) {
 					await setFocusedFolder(folder);
 				}

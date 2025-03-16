@@ -82,6 +82,7 @@ export type FileTreeStore = {
 	changeExpandedFolderPaths: (folderNames: string[]) => Promise<void>;
 	restoreExpandedFolderPaths: () => Promise<void>;
 	restoreLastFocusedFolder: () => Promise<void>;
+	_updatePinnedFolderPaths: (paths: string[]) => Promise<void>;
 	pinFolder: (folder: TFolder) => Promise<void>;
 	unpinFolder: (folder: TFolder) => Promise<void>;
 	isFolderPinned: (folder: TFolder) => boolean;
@@ -102,6 +103,16 @@ export type FileTreeStore = {
 	) => Promise<void>;
 	_removeFolderPathFromOrder: (folder: TFolder) => Promise<void>;
 	trashFolder: (folder: TFolder) => Promise<void>;
+	_updatePinnedFolderPath: (
+		oldPath: string,
+		newPath: string
+	) => Promise<void>;
+	_updateFolderManualOrder: (
+		parentPath: string,
+		oldPath: string,
+		newPath: string
+	) => Promise<void>;
+	renameFolder: (folder: TFolder, newName: string) => Promise<void>;
 
 	// Files related
 	findFileByPath: (path: string) => TFile | null;
@@ -417,9 +428,8 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			const { pinnedFolderPaths } = get();
 			return pinnedFolderPaths.includes(folder.path);
 		},
-		pinFolder: async (folder: TFolder) => {
-			const { pinnedFolderPaths, saveDataInPlugin } = get();
-			const folderPaths = [...pinnedFolderPaths, folder.path];
+		_updatePinnedFolderPaths: async (folderPaths: string[]) => {
+			const { saveDataInPlugin } = get();
 			set({
 				pinnedFolderPaths: folderPaths,
 			});
@@ -427,17 +437,17 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				[FFS_PINNED_FOLDER_PATHS_KEY]: JSON.stringify(folderPaths),
 			});
 		},
+		pinFolder: async (folder: TFolder) => {
+			const { pinnedFolderPaths, _updatePinnedFolderPaths } = get();
+			const folderPaths = [...pinnedFolderPaths, folder.path];
+			await _updatePinnedFolderPaths(folderPaths);
+		},
 		unpinFolder: async (folder: TFolder) => {
-			const { pinnedFolderPaths, saveDataInPlugin } = get();
+			const { pinnedFolderPaths, _updatePinnedFolderPaths } = get();
 			const folderPaths = pinnedFolderPaths.filter(
 				(path) => path !== folder.path
 			);
-			set({
-				pinnedFolderPaths: folderPaths,
-			});
-			await saveDataInPlugin({
-				[FFS_PINNED_FOLDER_PATHS_KEY]: JSON.stringify(folderPaths),
-			});
+			await _updatePinnedFolderPaths(folderPaths);
 		},
 		restorePinnedFolders: async () => {
 			const { getDataFromPlugin: getData } = get();
@@ -605,6 +615,58 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			}
 			await app.fileManager.trashFile(folder);
 			await _removeFolderPathFromOrder(folder);
+		},
+		_updatePinnedFolderPath: async (oldPath: string, newPath: string) => {
+			const { pinnedFolderPaths, _updatePinnedFolderPaths } = get();
+			if (!pinnedFolderPaths.includes(oldPath)) return;
+
+			const pinnedIndex = pinnedFolderPaths.indexOf(oldPath);
+			const paths = [...pinnedFolderPaths];
+			paths.splice(pinnedIndex, 1, newPath);
+			await _updatePinnedFolderPaths(paths);
+		},
+		_updateFolderManualOrder: async (
+			parentPath: string,
+			oldPath: string,
+			newPath: string
+		) => {
+			const {
+				foldersManualSortOrder: order,
+				_updateAndSaveFoldersOrder,
+			} = get();
+			const orderedPaths = [...(order[parentPath] ?? [])];
+			if (!orderedPaths.length) return;
+			const index = orderedPaths.indexOf(oldPath);
+			if (index >= 0) {
+				orderedPaths[index] = newPath;
+			} else {
+				orderedPaths.push(newPath);
+			}
+			_updateAndSaveFoldersOrder({
+				...order,
+				[parentPath]: orderedPaths,
+			});
+		},
+		renameFolder: async (folder: TFolder, newName: string) => {
+			const {
+				isFolderPinned,
+				_updatePinnedFolderPath,
+				_updateFolderManualOrder,
+			} = get();
+			const oldPath = folder.path;
+			const parentPath = folder.parent?.path;
+			const newPath = folder.path.replace(folder.name, newName);
+			try {
+				const isPinned = isFolderPinned(folder);
+				await plugin.app.vault.rename(folder, newPath);
+				if (isPinned) {
+					await _updatePinnedFolderPath(oldPath, newPath);
+				}
+				if (!parentPath) return;
+				await _updateFolderManualOrder(parentPath, oldPath, newPath);
+			} catch (e) {
+				console.log(e);
+			}
 		},
 
 		// Files related
