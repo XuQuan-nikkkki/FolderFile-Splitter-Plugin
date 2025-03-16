@@ -1,6 +1,5 @@
 import { TFile } from "obsidian";
 
-import FolderFileSplitterPlugin from "src/main";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 
 type Options = {
@@ -8,16 +7,9 @@ type Options = {
 };
 const useRenderFileName = (
 	file: TFile,
-	plugin: FolderFileSplitterPlugin,
-	beforeSaveName: (newPath: string) => Promise<void>,
+	onSaveName: (name: string) => Promise<void>,
 	options: Options,
 ) => {
-	const onSaveName = async (name: string) => {
-		const newPath = file.path.replace(file.basename, name);
-		await beforeSaveName(newPath);
-		await plugin.app.vault.rename(file, newPath);
-	};
-
 	const { isFocused } = options ?? { isFocused: false };
 	const {
 		renderEditableName: renderFileName,

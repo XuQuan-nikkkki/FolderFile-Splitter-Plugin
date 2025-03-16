@@ -118,11 +118,18 @@ export type FileTreeStore = {
 	sortFiles: (files: TFile[], rule: FileSortRule) => TFile[];
 	pinFile: (file: TFile) => Promise<void>;
 	unpinFile: (file: TFile) => Promise<void>;
+	_updatePinnedFilePath: (oldPath: string, newPath: string) => Promise<void>;
+	_updatePinnedFilePaths: (paths: string[]) => Promise<void>;
 	isFilePinned: (file: TFile) => boolean;
 	restorePinnedFiles: () => Promise<void>;
 	initFilesManualSortOrder: () => Promise<void>;
 	getInitialFilesOrder: () => ManualSortOrder;
 	restoreFilesManualSortOrder: () => Promise<void>;
+	_updateFileManualOrder: (
+		parentPath: string,
+		oldPath: string,
+		newPath: string
+	) => Promise<void>;
 	changeFilesManualOrder: (
 		file: TFile,
 		atIndex: number
@@ -134,6 +141,7 @@ export type FileTreeStore = {
 	_updateAndSaveFilesOrder: (updatedOrder: ManualSortOrder) => Promise<void>;
 	_removeFilePathFromOrder: (file: TFile) => Promise<void>;
 	trashFile: (file: TFile) => Promise<void>;
+	renameFile: (file: TFile, newName: string) => Promise<void>;
 };
 
 export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
@@ -750,9 +758,8 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			const { pinnedFilePaths } = get();
 			return pinnedFilePaths.includes(file.path);
 		},
-		pinFile: async (file: TFile) => {
-			const { pinnedFilePaths, saveDataInPlugin } = get();
-			const filePaths = [...pinnedFilePaths, file.path];
+		_updatePinnedFilePaths: async (filePaths: string[]) => {
+			const { saveDataInPlugin } = get();
 			set({
 				pinnedFilePaths: filePaths,
 			});
@@ -760,17 +767,17 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				[FFS_PINNED_FILE_PATHS_KEY]: JSON.stringify(filePaths),
 			});
 		},
+		pinFile: async (file: TFile) => {
+			const { pinnedFilePaths, _updatePinnedFilePaths } = get();
+			const filePaths = [...pinnedFilePaths, file.path];
+			await _updatePinnedFilePaths(filePaths);
+		},
 		unpinFile: async (file: TFile) => {
-			const { pinnedFilePaths, saveDataInPlugin } = get();
+			const { pinnedFilePaths, _updatePinnedFilePaths } = get();
 			const filePaths = pinnedFilePaths.filter(
 				(path) => path !== file.path
 			);
-			set({
-				pinnedFilePaths: filePaths,
-			});
-			await saveDataInPlugin({
-				[FFS_PINNED_FILE_PATHS_KEY]: JSON.stringify(filePaths),
-			});
+			await _updatePinnedFilePaths(filePaths);
 		},
 		restorePinnedFiles: async () => {
 			const { getDataFromPlugin: getData } = get();
@@ -928,5 +935,55 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			}
 			await app.fileManager.trashFile(file);
 			await _removeFilePathFromOrder(file);
+		},
+		_updatePinnedFilePath: async (oldPath: string, newPath: string) => {
+			const { pinnedFilePaths, _updatePinnedFilePaths } = get();
+			if (!pinnedFilePaths.includes(oldPath)) return;
+
+			const pinnedIndex = pinnedFilePaths.indexOf(oldPath);
+			const paths = [...pinnedFilePaths];
+			paths.splice(pinnedIndex, 1, newPath);
+			await _updatePinnedFilePaths(paths);
+		},
+		_updateFileManualOrder: async (
+			parentPath: string,
+			oldPath: string,
+			newPath: string
+		) => {
+			const { filesManualSortOrder: order, _updateAndSaveFilesOrder } =
+				get();
+			const orderedPaths = [...(order[parentPath] ?? [])];
+			if (!orderedPaths.length) return;
+			const index = orderedPaths.indexOf(oldPath);
+			if (index >= 0) {
+				orderedPaths[index] = newPath;
+			} else {
+				orderedPaths.push(newPath);
+			}
+			_updateAndSaveFilesOrder({
+				...order,
+				[parentPath]: orderedPaths,
+			});
+		},
+		renameFile: async (file: TFile, newName: string) => {
+			const {
+				isFilePinned,
+				_updatePinnedFilePath,
+				_updateFileManualOrder,
+			} = get();
+			const oldPath = file.path;
+			const parentPath = file.parent?.path;
+			const newPath = file.path.replace(file.basename, newName);
+			try {
+				const isPinned = isFilePinned(file);
+				await plugin.app.vault.rename(file, newPath);
+				if (isPinned) {
+					await _updatePinnedFilePath(oldPath, newPath);
+				}
+				if (!parentPath) return;
+				await _updateFileManualOrder(parentPath, oldPath, newPath);
+			} catch (e) {
+				console.log(e);
+			}
 		},
 	}));

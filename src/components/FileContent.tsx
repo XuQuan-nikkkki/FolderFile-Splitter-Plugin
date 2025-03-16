@@ -1,7 +1,7 @@
 import { Menu, TFile } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 
-import { FILE_MANUAL_SORT_RULE, FileTreeStore } from "src/store";
+import { FileTreeStore } from "src/store";
 import { FolderListModal } from "./FolderListModal";
 import { useShowFileDetail } from "src/hooks/useSettingsHandler";
 import FileDetail from "./FileDetail";
@@ -31,9 +31,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		pinFile,
 		unpinFile,
 		trashFile,
-		fileSortRule,
-		order,
-		_updateAndSaveFilesOrder,
+		renameFile,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			focusedFile: store.focusedFile,
@@ -44,9 +42,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			pinFile: store.pinFile,
 			unpinFile: store.unpinFile,
 			trashFile: store.trashFile,
-			fileSortRule: store.fileSortRule,
-			order: store.filesManualSortOrder,
-			_updateAndSaveFilesOrder: store._updateAndSaveFilesOrder,
+			renameFile: store.renameFile,
 		}))
 	);
 
@@ -54,26 +50,11 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		plugin.settings.showFileDetail
 	);
 
-	const beforeSaveName = async (newPath: string) => {
-		if (fileSortRule !== FILE_MANUAL_SORT_RULE) return;
-		const parentPath = file.parent?.path;
-		if (!parentPath) return;
-		const paths = order[parentPath] ?? [];
-		const index = paths.indexOf(file.path);
-		if (index >= 0) {
-			paths[index] = newPath;
-		} else {
-			paths.push(newPath);
-		}
-		_updateAndSaveFilesOrder({
-			...order,
-			[parentPath]: paths,
-		});
-	};
-
 	const isFocused = focusedFile?.path === file.path;
+	const onSaveName = (name: string) => renameFile(file, name);
+
 	const { renderFileName, selectFileNameText, onBeginEdit } =
-		useRenderFileName(file, plugin, beforeSaveName, { isFocused });
+		useRenderFileName(file, onSaveName, { isFocused });
 	const fileRef = useRef<HTMLDivElement>(null);
 	const [isFocusing, setIsFocusing] = useState<boolean>(false);
 
