@@ -1,18 +1,18 @@
 import { Menu, TFile } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
+import { useEffect, useRef, useState } from "react";
 
 import { FileTreeStore } from "src/store";
 import { FolderListModal } from "./FolderListModal";
 import { useShowFileDetail } from "src/hooks/useSettingsHandler";
 import FileDetail from "./FileDetail";
-import useRenderFileName from "src/hooks/useRenderFileName";
 import { useFileTree } from "./FileTree";
-import { useEffect, useRef, useState } from "react";
 import {
 	StyledFileContent,
 	StyledFileExtension,
 	StyledFileNameLine,
 } from "./Styled/StyledFile";
+import useRenderEditableName from "src/hooks/useRenderEditableName";
 
 export type FileProps = {
 	file: TFile;
@@ -53,8 +53,15 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 	const isFocused = focusedFile?.path === file.path;
 	const onSaveName = (name: string) => renameFile(file, name);
 
-	const { renderFileName, selectFileNameText, onBeginEdit } =
-		useRenderFileName(file, onSaveName, { isFocused });
+	const {
+		renderEditableName: renderFileName,
+		selectFileNameText,
+		onBeginEdit,
+	} = useRenderEditableName(file.basename, onSaveName, {
+		isBold: true,
+		isFocused,
+	});
+
 	const fileRef = useRef<HTMLDivElement>(null);
 	const [isFocusing, setIsFocusing] = useState<boolean>(false);
 

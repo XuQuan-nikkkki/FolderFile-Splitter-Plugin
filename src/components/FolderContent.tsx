@@ -1,5 +1,6 @@
 import { Menu, TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
+import { useEffect, useRef, useState } from "react";
 
 import { FileTreeStore } from "src/store";
 import { FolderListModal } from "./FolderListModal";
@@ -7,7 +8,6 @@ import {
 	useShowFolderIcon,
 	useExpandFolderByClickingOnElement,
 } from "src/hooks/useSettingsHandler";
-import useRenderFolderName from "../hooks/useRenderFolderName";
 import FilesCount from "./FilesCount";
 import FolderExpandIcon from "./FolderExpandIcon";
 import {
@@ -16,7 +16,7 @@ import {
 	StyledFolderIcon,
 } from "./Styled/StyledFolder";
 import { useFileTree } from "./FileTree";
-import { useEffect, useRef, useState } from "react";
+import useRenderEditableName from "src/hooks/useRenderEditableName";
 
 export type FolderProps = {
 	folder: TFolder;
@@ -77,11 +77,16 @@ const FolderContent = ({
 	const isFocusedOnFolder = isFocused && !isFocusedOnFile;
 
 	const onSaveName = (name: string) => renameFolder(folder, name);
-	const { renderFolderName, selectFileNameText, onBeginEdit } =
-		useRenderFolderName(folder, plugin, onSaveName, {
-			isRoot,
-			isFocused: isFocusedOnFolder,
-		});
+	const folderName = isRoot ? plugin.app.vault.getName() : folder.name;
+	const {
+		renderEditableName: renderFolderName,
+		selectFileNameText,
+		onBeginEdit,
+	} = useRenderEditableName(folderName, onSaveName, {
+		isFocused: isFocusedOnFolder,
+		isLarge: isRoot,
+		isBold: isRoot,
+	});
 
 	const folderRef = useRef<HTMLDivElement>(null);
 	const [isFocusing, setIsFocusing] = useState<boolean>(false);
