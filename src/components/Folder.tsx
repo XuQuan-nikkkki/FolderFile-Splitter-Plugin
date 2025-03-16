@@ -7,7 +7,7 @@ import { FileTreeStore } from "src/store";
 import { FFS_FILE, FFS_FOLDER } from "src/assets/constants";
 import FolderContent, { FolderProps } from "./FolderContent";
 import { Draggable } from "./Styled/Sortable";
-import { moveFileOrFolder } from "src/utils";
+import { isFile } from "src/utils";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { useFileTree } from "./FileTree";
 
@@ -20,7 +20,7 @@ const Folder = ({
 	hideExpandIcon = false,
 	disableDrag = false,
 }: Props) => {
-	const { useFileTreeStore, plugin } = useFileTree();
+	const { useFileTreeStore } = useFileTree();
 
 	const {
 		setFocusedFolder,
@@ -28,6 +28,8 @@ const Folder = ({
 		expandedFolderPaths,
 		changeExpandedFolderPaths,
 		selectFile,
+		moveFile,
+		moveFolder,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			folderSortRule: store.folderSortRule,
@@ -36,6 +38,8 @@ const Folder = ({
 			expandedFolderPaths: store.expandedFolderPaths,
 			changeExpandedFolderPaths: store.changeExpandedFolderPaths,
 			selectFile: store.selectFile,
+			moveFile: store.moveFile,
+			moveFolder: store.moveFolder,
 		}))
 	);
 
@@ -63,7 +67,12 @@ const Folder = ({
 
 	const onDrop = async (item: TAbstractFile, itemType: string) => {
 		if (item.parent?.path === folder.path) return;
-		await moveFileOrFolder(plugin.app.fileManager, item, folder);
+		const newPath = folder.path + "/" + item.name;
+		if (isFile(item)) {
+			await moveFile(item, newPath);
+		} else {
+			await moveFolder(item as TFolder, newPath);
+		}
 		if (!isFolderExpanded) {
 			onToggleExpandState();
 		}

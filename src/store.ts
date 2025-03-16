@@ -112,6 +112,7 @@ export type FileTreeStore = {
 		oldPath: string,
 		newPath: string
 	) => Promise<void>;
+	moveFolder: (folder: TFolder, newPath: string) => Promise<void>;
 	renameFolder: (folder: TFolder, newName: string) => Promise<void>;
 
 	// Files related
@@ -152,6 +153,7 @@ export type FileTreeStore = {
 	_updateAndSaveFilesOrder: (updatedOrder: ManualSortOrder) => Promise<void>;
 	_removeFilePathFromOrder: (file: TFile) => Promise<void>;
 	trashFile: (file: TFile) => Promise<void>;
+	moveFile: (file: TFile, newPath: string) => Promise<void>;
 	renameFile: (file: TFile, newName: string) => Promise<void>;
 };
 
@@ -647,7 +649,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				[parentPath]: orderedPaths,
 			});
 		},
-		renameFolder: async (folder: TFolder, newName: string) => {
+		moveFolder: async (folder: TFolder, newPath: string) => {
 			const {
 				isFolderPinned,
 				_updatePinnedFolderPath,
@@ -655,7 +657,6 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			} = get();
 			const oldPath = folder.path;
 			const parentPath = folder.parent?.path;
-			const newPath = folder.path.replace(folder.name, newName);
 			try {
 				const isPinned = isFolderPinned(folder);
 				await plugin.app.vault.rename(folder, newPath);
@@ -667,6 +668,11 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			} catch (e) {
 				console.log(e);
 			}
+		},
+		renameFolder: async (folder: TFolder, newName: string) => {
+			const { moveFolder } = get();
+			const newPath = folder.path.replace(folder.name, newName);
+			await moveFolder(folder, newPath);
 		},
 
 		// Files related
@@ -1027,7 +1033,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				[parentPath]: orderedPaths,
 			});
 		},
-		renameFile: async (file: TFile, newName: string) => {
+		moveFile: async (file: TFile, newPath: string) => {
 			const {
 				isFilePinned,
 				_updatePinnedFilePath,
@@ -1035,7 +1041,6 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			} = get();
 			const oldPath = file.path;
 			const parentPath = file.parent?.path;
-			const newPath = file.path.replace(file.basename, newName);
 			try {
 				const isPinned = isFilePinned(file);
 				await plugin.app.fileManager.renameFile(file, newPath);
@@ -1046,6 +1051,12 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				await _updateFileManualOrder(parentPath, oldPath, newPath);
 			} catch (e) {
 				console.log(e);
+				alert(e);
 			}
+		},
+		renameFile: async (file: TFile, newName: string) => {
+			const { moveFile } = get();
+			const newPath = file.path.replace(file.basename, newName);
+			await moveFile(file, newPath);
 		},
 	}));
