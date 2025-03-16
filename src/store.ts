@@ -1038,7 +1038,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			const newPath = file.path.replace(file.basename, newName);
 			try {
 				const isPinned = isFilePinned(file);
-				await plugin.app.vault.rename(file, newPath);
+				await plugin.app.fileManager.renameFile(file, newPath);
 				if (isPinned) {
 					await _updatePinnedFilePath(oldPath, newPath);
 				}
