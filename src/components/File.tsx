@@ -33,7 +33,7 @@ const File = ({ file, fileList, deleteFile, disableDrag }: Props) => {
 	);
 
 	const fileRef = useRef<HTMLDivElement>(null);
-	const paths = file.parent ? order[file.parent.path] : [];
+	const paths = (file.parent ? order[file.parent.path] : []) ?? [];
 
 	const [{ isDragging }, drag, preview] = useDrag(
 		() => ({

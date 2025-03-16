@@ -584,20 +584,17 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			});
 		},
 		_removeFolderPathFromOrder: async (folder: TFolder) => {
-			const {
-				folderSortRule,
-				foldersManualSortOrder: order,
-				_updateAndSaveFilesOrder,
-			} = get();
-			if (folderSortRule !== FOLDER_MANUAL_SORT_RULE) return;
+			const { foldersManualSortOrder: order, _updateAndSaveFilesOrder } =
+				get();
 			const parentPath = folder.parent?.path;
+			const updatedOrder = { ...order };
+			if (updatedOrder[folder.path]) {
+				delete updatedOrder[folder.path];
+			}
 			if (!parentPath) return;
-			let paths = order[parentPath] ?? [];
+			let paths = updatedOrder[parentPath] ?? [];
 			paths = paths.filter((p) => p !== folder.path);
-			const updatedOrder = {
-				...order,
-				[parentPath]: paths,
-			};
+			updatedOrder[parentPath] = paths
 			await _updateAndSaveFilesOrder(updatedOrder);
 		},
 		trashFolder: async (folder: TFolder) => {
