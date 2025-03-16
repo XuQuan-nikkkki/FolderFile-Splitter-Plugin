@@ -73,7 +73,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 
 	const isFocused = focusedFile?.path === file.path;
 	const { renderFileName, selectFileNameText, onBeginEdit } =
-		useRenderFileName(file, plugin, isFocused, beforeSaveName);
+		useRenderFileName(file, plugin, beforeSaveName, { isFocused });
 	const fileRef = useRef<HTMLDivElement>(null);
 	const [isFocusing, setIsFocusing] = useState<boolean>(false);
 
