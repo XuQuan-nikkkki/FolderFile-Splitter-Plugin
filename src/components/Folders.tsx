@@ -5,10 +5,9 @@ import styled from "styled-components";
 import { FileTreeStore } from "src/store";
 import { useShowHierarchyLines } from "src/hooks/useSettingsHandler";
 import { useChangeFolder } from "src/hooks/useVaultChangeHandler";
-import PinIcon from "src/assets/icons/PinIcon";
-import { PinnedContent, PinnedSection, PinnedTitle } from "./Styled/Pin";
 import Folder from "./Folder";
 import { useFileTree } from "./FileTree";
+import PinnedFolders, { FolderOptions } from "./PinnedFolders";
 
 const StyledFolders = styled.div`
 	flex: 1;
@@ -24,12 +23,6 @@ const FoldersSection = styled.div<{ $showHierarchyLine?: boolean }>`
 			? "var(--border-width) solid var(--interactive-hover)"
 			: undefined};
 `;
-
-type FolderOptions = {
-	isRoot?: boolean;
-	hideExpandIcon?: boolean;
-	disableDrag?: boolean;
-};
 
 const Folders = () => {
 	const { useFileTreeStore, plugin } = useFileTree();
@@ -104,33 +97,9 @@ const Folders = () => {
 		);
 	};
 
-	const renderPinnedFolders = () => {
-		const pinnedFolderPaths = useFileTreeStore.getState().pinnedFolderPaths;
-		if (!pinnedFolderPaths.length) return null;
-		return (
-			<PinnedSection>
-				<PinnedTitle>
-					<PinIcon />
-					Pin
-				</PinnedTitle>
-				<PinnedContent $indent>
-					{pinnedFolderPaths.map((path) => {
-						const folder = plugin.app.vault.getFolderByPath(path);
-						const options: FolderOptions = {
-							isRoot: folder?.isRoot(),
-							hideExpandIcon: true,
-							disableDrag: true,
-						};
-						return folder ? renderFolder(folder, options) : null;
-					})}
-				</PinnedContent>
-			</PinnedSection>
-		);
-	};
-
 	return (
 		<StyledFolders>
-			{renderPinnedFolders()}
+			<PinnedFolders renderFolder={renderFolder} />
 			<div>
 				{renderRootFolder()}
 				{renderFolders(topFolders)}

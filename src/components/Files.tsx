@@ -3,12 +3,12 @@ import { useShallow } from "zustand/react/shallow";
 import styled from "styled-components";
 
 import { FileTreeStore } from "src/store";
-import { EmptyFolderIcon, PinIcon } from "src/assets/icons";
+import { EmptyFolderIcon } from "src/assets/icons";
 import { useChangeFile } from "src/hooks/useVaultChangeHandler";
 import { TFile } from "obsidian";
-import { PinnedContent, PinnedSection, PinnedTitle } from "./Styled/Pin";
 import File from "./File";
 import { useFileTree } from "./FileTree";
+import PinnedFiles from "./PinnedFiles";
 
 const StyledEmptyIcon = styled(EmptyFolderIcon)`
 	width: 60px;
@@ -52,27 +52,6 @@ const Files = () => {
 		/>
 	);
 
-	const renderPinnedFiles = () => {
-		const pinnedFilePaths = useFileTreeStore.getState().pinnedFilePaths;
-		const pinnedFiles = pinnedFilePaths
-			.map((path) => files.find((f) => f.path === path))
-			.filter(Boolean) as TFile[];
-		if (!pinnedFiles.length) return null;
-		return (
-			<PinnedSection>
-				<PinnedTitle>
-					<PinIcon />
-					Pin
-				</PinnedTitle>
-				<PinnedContent>
-					{pinnedFiles.map((file) =>
-						renderFile(file, pinnedFiles, true)
-					)}
-				</PinnedContent>
-			</PinnedSection>
-		);
-	};
-
 	if (!files.length) {
 		return (
 			<NoneFilesTips>
@@ -84,7 +63,7 @@ const Files = () => {
 	const sortedFiles = sortFiles(files, fileSortRule);
 	return (
 		<Fragment>
-			{renderPinnedFiles()}
+			<PinnedFiles files={files} renderFile={renderFile} />
 			{sortedFiles.map((file) => renderFile(file, sortedFiles))}
 		</Fragment>
 	);
