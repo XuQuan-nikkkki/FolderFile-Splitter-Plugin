@@ -7,11 +7,10 @@ import StyledActionIconWrapper from "../Styled/ActionIconWrapper";
 import { useFileTree } from "../FileTree";
 
 const ToggleFolders = () => {
-	const { useFileTreeStore } = useFileTree();
+	const { useFileTreeStore, plugin } = useFileTree();
 
-	const { folders, restoreExpandedFolderPaths } = useFileTreeStore(
+	const { restoreExpandedFolderPaths } = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
-			folders: store.folders,
 			restoreExpandedFolderPaths: store.changeExpandedFolderPaths,
 		}))
 	);
@@ -19,6 +18,7 @@ const ToggleFolders = () => {
 	const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
 	const onToggleAllFolders = () => {
+		const folders = plugin.app.vault.getAllFolders();
 		if (isExpanded) {
 			restoreExpandedFolderPaths([]);
 		} else {

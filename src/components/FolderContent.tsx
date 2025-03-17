@@ -2,7 +2,7 @@ import { Menu, TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 import { useEffect, useRef, useState } from "react";
 
-import { FileTreeStore } from "src/store";
+import { FileTreeStore, FOLDER_MANUAL_SORT_RULE } from "src/store";
 import { FolderListModal } from "./FolderListModal";
 import {
 	useShowFolderIcon,
@@ -48,6 +48,8 @@ const FolderContent = ({
 		isFolderPinned,
 		trashFolder,
 		renameFolder,
+		initOrder,
+		folderSortRule,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			focusedFolder: store.focusedFolder,
@@ -61,6 +63,8 @@ const FolderContent = ({
 			isFolderPinned: store.isFolderPinned,
 			trashFolder: store.trashFolder,
 			renameFolder: store.renameFolder,
+			initOrder: store.initFoldersManualSortOrder,
+			folderSortRule: store.folderSortRule,
 		}))
 	);
 
@@ -109,6 +113,11 @@ const FolderContent = ({
 		}
 	};
 
+	const maybeInitOrder = async () => {
+		if (folderSortRule !== FOLDER_MANUAL_SORT_RULE) return;
+		await initOrder();
+	};
+
 	useEffect(() => {
 		window.addEventListener("keydown", onKeyDown);
 		window.addEventListener("mousedown", onClickOutside);
@@ -143,12 +152,14 @@ const FolderContent = ({
 					await setFocusedFolder(folder);
 				}
 				await createFile(folder);
+				await maybeInitOrder();
 			});
 		});
 		menu.addItem((item) => {
 			item.setTitle("New folder");
-			item.onClick(() => {
-				createNewFolder(folder);
+			item.onClick(async () => {
+				await createNewFolder(folder);
+				await maybeInitOrder();
 				if (!isFolderExpanded) {
 					onToggleExpandState();
 				}
@@ -179,7 +190,8 @@ const FolderContent = ({
 		menu.addItem((item) => {
 			item.setTitle("Delete");
 			item.onClick(async () => {
-				trashFolder(folder);
+				await trashFolder(folder);
+				await maybeInitOrder();
 			});
 		});
 		plugin.app.workspace.trigger("folder-context-menu", menu);

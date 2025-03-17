@@ -2,7 +2,7 @@ import { Menu, TFile } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 import { useEffect, useRef, useState } from "react";
 
-import { FileTreeStore } from "src/store";
+import { FILE_MANUAL_SORT_RULE, FileTreeStore } from "src/store";
 import { FolderListModal } from "./FolderListModal";
 import { useShowFileDetail } from "src/hooks/useSettingsHandler";
 import FileDetail from "./FileDetail";
@@ -32,6 +32,8 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		unpinFile,
 		trashFile,
 		renameFile,
+		initOrder,
+		fileSortRule,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			focusedFile: store.focusedFile,
@@ -43,6 +45,8 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			unpinFile: store.unpinFile,
 			trashFile: store.trashFile,
 			renameFile: store.renameFile,
+			initOrder: store.initFilesManualSortOrder,
+			fileSortRule: store.fileSortRule,
 		}))
 	);
 
@@ -83,6 +87,11 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		}
 	};
 
+	const maybeInitOrder = async () => {
+		if (fileSortRule !== FILE_MANUAL_SORT_RULE) return;
+		await initOrder();
+	};
+
 	useEffect(() => {
 		window.addEventListener("keydown", onKeyDown);
 		window.addEventListener("mousedown", onClickOutside);
@@ -119,15 +128,17 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item.setTitle("New note");
-			item.onClick(() => {
+			item.onClick(async () => {
 				const folder = file.parent || plugin.app.vault.getRoot();
-				createFile(folder);
+				await createFile(folder);
+				await maybeInitOrder();
 			});
 		});
 		menu.addItem((item) => {
 			item.setTitle("Duplicate");
-			item.onClick(() => {
-				duplicateFile(file);
+			item.onClick(async () => {
+				await duplicateFile(file);
+				await maybeInitOrder();
 			});
 		});
 		menu.addItem((item) => {
@@ -156,6 +167,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			item.onClick(async () => {
 				deleteFile();
 				await trashFile(file);
+				await maybeInitOrder();
 			});
 		});
 		plugin.app.workspace.trigger("file-context-menu", menu);

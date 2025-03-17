@@ -101,7 +101,6 @@ export type FileTreeStore = {
 	_updateAndSaveFoldersOrder: (
 		updatedOrder: ManualSortOrder
 	) => Promise<void>;
-	_removeFolderPathFromOrder: (folder: TFolder) => Promise<void>;
 	trashFolder: (folder: TFolder) => Promise<void>;
 	_updatePinnedFolderPath: (
 		oldPath: string,
@@ -122,7 +121,7 @@ export type FileTreeStore = {
 	openFile: (file: TFile) => void;
 	selectFile: (file: TFile) => Promise<void>;
 	readFile: (file: TFile) => Promise<string>;
-	createFile: (folder: TFolder) => Promise<TFile>;
+	createFile: (folder: TFolder) => Promise<TFile | undefined>;
 	duplicateFile: (file: TFile) => Promise<TFile>;
 	restoreLastFocusedFile: () => Promise<void>;
 	changeFileSortRule: (rule: FileSortRule) => Promise<void>;
@@ -151,7 +150,6 @@ export type FileTreeStore = {
 		atIndex: number
 	) => Promise<void>;
 	_updateAndSaveFilesOrder: (updatedOrder: ManualSortOrder) => Promise<void>;
-	_removeFilePathFromOrder: (file: TFile) => Promise<void>;
 	trashFile: (file: TFile) => Promise<void>;
 	moveFile: (file: TFile, newPath: string) => Promise<void>;
 	renameFile: (file: TFile, newName: string) => Promise<void>;
@@ -221,9 +219,9 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 
 		// Folders related
 		getTopLevelFolders: () => {
-			return get().folders.filter(
-				(folder) => folder.parent?.parent === null
-			);
+			return plugin.app.vault
+				.getAllFolders()
+				.filter((folder) => folder.parent?.parent === null);
 		},
 		hasFolderChildren: (folder: TFolder): boolean => {
 			return folder.children.some((child) => isFolder(child));
@@ -374,13 +372,12 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			const lastFolderSortRule = await getDataFromPlugin<FolderSortRule>(
 				FFS_FOLDER_SORT_RULE_KEY
 			);
-			if (lastFolderSortRule) {
-				set({
-					folderSortRule: lastFolderSortRule,
-				});
-				if (lastFolderSortRule === FOLDER_MANUAL_SORT_RULE) {
-					await restoreFoldersManualSortOrder();
-				}
+			if (!lastFolderSortRule) return;
+			set({
+				folderSortRule: lastFolderSortRule,
+			});
+			if (lastFolderSortRule === FOLDER_MANUAL_SORT_RULE) {
+				await restoreFoldersManualSortOrder();
 			}
 		},
 		changeExpandedFolderPaths: async (folderPaths: string[]) => {
@@ -468,14 +465,8 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			}
 		},
 		getInitialFoldersOrder: () => {
-			const {
-				folderSortRule,
-				folders,
-				getFoldersByParent,
-				rootFolder,
-				sortFolders,
-			} = get();
-			const foldersToInit = [rootFolder, ...folders].filter(Boolean);
+			const { folderSortRule, getFoldersByParent, sortFolders } = get();
+			const foldersToInit = plugin.app.vault.getAllFolders(true);
 			const order: ManualSortOrder = {};
 			foldersToInit.forEach((folder) => {
 				if (folder) {
@@ -497,27 +488,23 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		initFoldersManualSortOrder: async () => {
 			const {
 				folderSortRule,
-				folders,
 				getFoldersByParent,
-				rootFolder,
 				sortFolders,
 				saveDataInPlugin,
 			} = get();
-			const foldersToInit = [rootFolder, ...folders].filter(Boolean);
+			const foldersToInit = plugin.app.vault.getAllFolders(true);
 			const order: ManualSortOrder = {};
 			foldersToInit.forEach((folder) => {
-				if (folder) {
-					const folders = getFoldersByParent(folder);
-					if (folders.length) {
-						const sortedFolders = sortFolders(
-							folders,
-							folderSortRule,
-							plugin.settings.includeSubfolderFilesCount
-						);
-						order[folder.path] = sortedFolders.map(
-							(folder) => folder.path
-						);
-					}
+				const folders = getFoldersByParent(folder);
+				if (folders.length) {
+					const sortedFolders = sortFolders(
+						folders,
+						folderSortRule,
+						plugin.settings.includeSubfolderFilesCount
+					);
+					order[folder.path] = sortedFolders.map(
+						(folder) => folder.path
+					);
 				}
 			});
 			set({
@@ -528,18 +515,27 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			});
 		},
 		restoreFoldersManualSortOrder: async () => {
-			const { getDataFromPlugin, getInitialFoldersOrder } = get();
-			const initialOrder = getInitialFoldersOrder();
-			const previousRrder =
+			const {
+				getDataFromPlugin,
+				getInitialFoldersOrder,
+				_updateAndSaveFoldersOrder,
+			} = get();
+			const { vault } = plugin.app;
+			const order = getInitialFoldersOrder();
+			const previousOrder =
 				(await getDataFromPlugin<ManualSortOrder>(
 					FFS_FOLDER_MANUAL_SORT_ORDER_KEY
 				)) ?? {};
-			set({
-				foldersManualSortOrder: {
-					...initialOrder,
-					...previousRrder,
-				},
+			Object.keys(previousOrder).forEach((parentFolderPath) => {
+				if (!vault.getFolderByPath(parentFolderPath)) return;
+				const paths = previousOrder[parentFolderPath].filter((p) =>
+					Boolean(vault.getFolderByPath(p))
+				);
+				if (paths.length > 0) {
+					order[parentFolderPath] = paths;
+				}
 			});
+			await _updateAndSaveFoldersOrder(order);
 		},
 		changeFoldersManualOrder: (folder: TFolder, atIndex: number) => {
 			const { foldersManualSortOrder } = get();
@@ -583,23 +579,8 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				[FFS_FOLDER_MANUAL_SORT_ORDER_KEY]: updatedOrder,
 			});
 		},
-		_removeFolderPathFromOrder: async (folder: TFolder) => {
-			const { foldersManualSortOrder: order, _updateAndSaveFilesOrder } =
-				get();
-			const parentPath = folder.parent?.path;
-			const updatedOrder = { ...order };
-			if (updatedOrder[folder.path]) {
-				delete updatedOrder[folder.path];
-			}
-			if (!parentPath) return;
-			let paths = updatedOrder[parentPath] ?? [];
-			paths = paths.filter((p) => p !== folder.path);
-			updatedOrder[parentPath] = paths
-			await _updateAndSaveFilesOrder(updatedOrder);
-		},
 		trashFolder: async (folder: TFolder) => {
 			const {
-				_removeFolderPathFromOrder,
 				isFolderPinned,
 				unpinFolder,
 				focusedFolder,
@@ -609,11 +590,11 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			if (isFolderPinned(folder)) {
 				await unpinFolder(folder);
 			}
-			if (folder.path === focusedFolder?.path) {
+			const focusedFolderPaths = focusedFolder?.path.split("/") ?? [];
+			if (focusedFolderPaths.includes(folder.path)) {
 				setFocusedFolder(null);
 			}
 			await app.fileManager.trashFile(folder);
-			await _removeFolderPathFromOrder(folder);
 		},
 		_updatePinnedFolderPath: async (oldPath: string, newPath: string) => {
 			const { pinnedFolderPaths, _updatePinnedFolderPaths } = get();
@@ -635,16 +616,20 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			} = get();
 			const orderedPaths = [...(order[parentPath] ?? [])];
 			if (!orderedPaths.length) return;
+			const updatedOrder = { ...order };
 			const index = orderedPaths.indexOf(oldPath);
 			if (index >= 0) {
 				orderedPaths[index] = newPath;
 			} else {
 				orderedPaths.push(newPath);
 			}
-			_updateAndSaveFoldersOrder({
-				...order,
-				[parentPath]: orderedPaths,
-			});
+			updatedOrder[parentPath] = orderedPaths;
+			const childPaths = updatedOrder[oldPath];
+			if (childPaths) {
+				delete updatedOrder[oldPath];
+				updatedOrder[newPath] = childPaths;
+			}
+			_updateAndSaveFoldersOrder(updatedOrder);
 		},
 		moveFolder: async (folder: TFolder, newPath: string) => {
 			const {
@@ -663,7 +648,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				if (!parentPath) return;
 				await _updateFolderManualOrder(parentPath, oldPath, newPath);
 			} catch (e) {
-				console.log(e);
+				alert(e);
 			}
 		},
 		renameFolder: async (folder: TFolder, newName: string) => {
@@ -730,12 +715,16 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			if (untitledFilesCount > 0) {
 				newFileName = `${defaultFileName} ${untitledFilesCount + 1}`;
 			}
-			const newFile = await vault.create(
-				`${folder.path}/${newFileName}.md`,
-				""
-			);
-			get().selectFile(newFile);
-			return newFile;
+			try {
+				const newFile = await vault.create(
+					`${folder.path}/${newFileName}.md`,
+					""
+				);
+				get().selectFile(newFile);
+				return newFile;
+			} catch (e) {
+				alert(e);
+			}
 		},
 		duplicateFile: async (file: TFile) => {
 			const { vault } = plugin.app;
@@ -861,14 +850,8 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			}
 		},
 		getInitialFilesOrder: () => {
-			const {
-				fileSortRule,
-				folders,
-				rootFolder,
-				sortFiles,
-				getDirectFilesInFolder,
-			} = get();
-			const foldersToInit = [rootFolder, ...folders].filter(Boolean);
+			const { fileSortRule, sortFiles, getDirectFilesInFolder } = get();
+			const foldersToInit = plugin.app.vault.getAllFolders(true);
 			const order: ManualSortOrder = {};
 			foldersToInit.forEach((folder) => {
 				if (folder) {
@@ -886,23 +869,17 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		initFilesManualSortOrder: async () => {
 			const {
 				fileSortRule,
-				folders,
-				rootFolder,
 				sortFiles,
 				getDirectFilesInFolder,
 				saveDataInPlugin,
 			} = get();
-			const foldersToInit = [rootFolder, ...folders].filter(Boolean);
+			const foldersToInit = plugin.app.vault.getAllFolders(true);
 			const order: ManualSortOrder = {};
 			foldersToInit.forEach((folder) => {
-				if (folder) {
-					const files = getDirectFilesInFolder(folder);
-					if (files.length) {
-						const sortedFiles = sortFiles(files, fileSortRule);
-						order[folder.path] = sortedFiles.map(
-							(file) => file.path
-						);
-					}
+				const files = getDirectFilesInFolder(folder);
+				if (files.length) {
+					const sortedFiles = sortFiles(files, fileSortRule);
+					order[folder.path] = sortedFiles.map((file) => file.path);
 				}
 			});
 			set({
@@ -913,18 +890,27 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			});
 		},
 		restoreFilesManualSortOrder: async () => {
-			const { getDataFromPlugin, getInitialFilesOrder } = get();
-			const initialOrder = getInitialFilesOrder();
+			const {
+				getDataFromPlugin,
+				getInitialFilesOrder,
+				_updateAndSaveFilesOrder,
+			} = get();
+			const { vault } = plugin.app;
+			const order = getInitialFilesOrder();
 			const previousOrder =
 				(await getDataFromPlugin<ManualSortOrder>(
 					FFS_FILE_MANUAL_SORT_ORDER_KEY
 				)) ?? {};
-			set({
-				filesManualSortOrder: {
-					...initialOrder,
-					...previousOrder,
-				},
+			Object.keys(previousOrder).forEach((path) => {
+				if (!vault.getFolderByPath(path)) return;
+				const paths = previousOrder[path].filter((path) =>
+					Boolean(vault.getFileByPath(path))
+				);
+				if (paths.length > 0) {
+					order[path] = paths;
+				}
 			});
+			await _updateAndSaveFilesOrder(order);
 		},
 		changeFilesManualOrder: (file: TFile, atIndex: number) => {
 			const { filesManualSortOrder } = get();
@@ -965,32 +951,9 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				[FFS_FILE_MANUAL_SORT_ORDER_KEY]: updatedOrder,
 			});
 		},
-		_removeFilePathFromOrder: async (file: TFile) => {
-			const {
-				fileSortRule,
-				filesManualSortOrder: order,
-				_updateAndSaveFilesOrder,
-			} = get();
-			if (fileSortRule === FILE_MANUAL_SORT_RULE) {
-				const parentPath = file.parent?.path;
-				if (!parentPath) return;
-				let paths = order[parentPath] ?? [];
-				paths = paths.filter((p) => p !== file.path);
-				const updatedOrder = {
-					...order,
-					[parentPath]: paths,
-				};
-				await _updateAndSaveFilesOrder(updatedOrder);
-			}
-		},
 		trashFile: async (file: TFile) => {
-			const {
-				_removeFilePathFromOrder,
-				isFilePinned,
-				unpinFile,
-				setFocusedFile,
-				focusedFile,
-			} = get();
+			const { isFilePinned, unpinFile, setFocusedFile, focusedFile } =
+				get();
 			const { app } = plugin;
 			if (isFilePinned(file)) {
 				await unpinFile(file);
@@ -999,7 +962,6 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				await setFocusedFile(null);
 			}
 			await app.fileManager.trashFile(file);
-			await _removeFilePathFromOrder(file);
 		},
 		_updatePinnedFilePath: async (oldPath: string, newPath: string) => {
 			const { pinnedFilePaths, _updatePinnedFilePaths } = get();
@@ -1047,7 +1009,6 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				if (!parentPath) return;
 				await _updateFileManualOrder(parentPath, oldPath, newPath);
 			} catch (e) {
-				console.log(e);
 				alert(e);
 			}
 		},

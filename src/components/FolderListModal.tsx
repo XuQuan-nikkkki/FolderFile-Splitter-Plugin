@@ -2,7 +2,11 @@ import { SuggestModal, TAbstractFile, TFolder } from "obsidian";
 import { StoreApi, UseBoundStore } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
-import { FileTreeStore } from "src/store";
+import {
+	FILE_MANUAL_SORT_RULE,
+	FileTreeStore,
+	FOLDER_MANUAL_SORT_RULE,
+} from "src/store";
 import { isFile } from "src/utils";
 
 export class FolderListModal extends SuggestModal<TFolder> {
@@ -17,10 +21,7 @@ export class FolderListModal extends SuggestModal<TFolder> {
 	) {
 		super(plugin.app);
 		this.useFileTreeStore = useFileTreeStore;
-		this.folders = [
-			plugin.app.vault.getRoot(),
-			...useFileTreeStore.getState().folders,
-		];
+		this.folders = plugin.app.vault.getAllFolders(true);
 		this.item = item;
 		this.setPlaceholder("Type a folder");
 		this.setInstructions([
@@ -43,13 +44,24 @@ export class FolderListModal extends SuggestModal<TFolder> {
 	}
 
 	async onChooseSuggestion(folder: TFolder) {
-		const { moveFile, moveFolder } = this.useFileTreeStore.getState();
+		const {
+			moveFile,
+			moveFolder,
+			fileSortRule,
+			folderSortRule,
+			initFilesManualSortOrder,
+			initFoldersManualSortOrder,
+		} = this.useFileTreeStore.getState();
 		try {
 			const newPath = folder.path + "/" + this.item.name;
 			if (isFile(this.item)) {
-				moveFile(this.item, newPath);
+				await moveFile(this.item, newPath);
+				if (fileSortRule !== FILE_MANUAL_SORT_RULE) return;
+				await initFilesManualSortOrder();
 			} else {
-				moveFolder(this.item as TFolder, newPath);
+				await moveFolder(this.item as TFolder, newPath);
+				if (folderSortRule !== FOLDER_MANUAL_SORT_RULE) return;
+				await initFoldersManualSortOrder();
 			}
 		} catch (e) {
 			alert(e);

@@ -16,6 +16,7 @@ const CreateFolder = () => {
 		changeExpandedFolderPaths,
 		setFocusedFolder,
 		expandedFolderPaths,
+		initOrder
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			rootFolder: store.rootFolder,
@@ -24,6 +25,7 @@ const CreateFolder = () => {
 			changeExpandedFolderPaths: store.changeExpandedFolderPaths,
 			setFocusedFolder: store.setFocusedFolder,
 			expandedFolderPaths: store.expandedFolderPaths,
+			initOrder: store.initFoldersManualSortOrder
 		}))
 	);
 
@@ -51,6 +53,7 @@ const CreateFolder = () => {
 			await expandParentFolders(parentFolder);
 			await setFocusedFolder(newFolder);
 		}
+		await initOrder()
 	};
 
 	return (
