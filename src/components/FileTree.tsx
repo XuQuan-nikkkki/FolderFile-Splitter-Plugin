@@ -18,31 +18,17 @@ import SortFiles from "./FileActions/SortFiles";
 import CustomDragLayer from "./CustomDragLayer";
 import { useShallow } from "zustand/react/shallow";
 import Loading from "./Loading";
-import CloseFolderPane from "./CloseFolderPane";
-import OpenFolderPane from "./OpenFolderPane";
-
-export const FOLDERS_PANE_MIN_WIDTH = 140;
-export const FILES_PANE_MIN_WIDTH = 200;
-
-const PluginContainer = styled.div`
-	display: flex;
-	height: 100%;
-	overflow-y: hidden;
-`;
-
-const FoldersPane = styled.div`
-	min-width: ${FOLDERS_PANE_MIN_WIDTH}px;
-	display: flex;
-	flex-direction: column;
-`;
-
-const FilesPane = styled.div`
-	min-width: ${FILES_PANE_MIN_WIDTH}px;
-	flex: 1;
-	overflow-y: auto;
-	display: flex;
-	flex-direction: column;
-`;
+import { useLayoutMode } from "src/hooks/useSettingsHandler";
+import {
+	HorizontalSplitLayout,
+	ToggleViewLayout,
+	VerticalSplitLayout,
+} from "src/settings";
+import {
+	HorizontalSplitContainer,
+	HorizontalSplitFilesPane,
+	HorizontalSplitFoldersPane,
+} from "./Styled/HorizontalSplitLayout";
 
 const Acitions = styled.div`
 	width: 100%;
@@ -90,11 +76,12 @@ const FileTree = ({ plugin }: Props) => {
 		}))
 	);
 
+	const { layoutMode } = useLayoutMode(plugin.settings.layoutMode);
+
 	const [folderPaneWidth, setFolderPaneWidth] = useState<number | undefined>(
 		220
 	);
 	const [isRestoring, setIsRestoring] = useState<boolean>(true);
-	const [isFolderPaneOpen, setIsFolderPaneOpen] = useState<boolean>(true);
 
 	useEffect(() => {
 		restoreData().then(() => setIsRestoring(false));
@@ -105,61 +92,66 @@ const FileTree = ({ plugin }: Props) => {
 		localStorage.setItem(FFS_FOLDER_PANE_WIDTH_KEY, String(width));
 	};
 
-	const renderFolderActions = () => (
-		<Acitions>
-			<AcitionsSection>
-				<CreateFolder />
-				<SortFolders />
-				<ToggleFolders />
-			</AcitionsSection>
-			<AcitionsSection>
-				{isFolderPaneOpen && (
-					<CloseFolderPane
-						onClose={() => setIsFolderPaneOpen(false)}
-					/>
-				)}
-			</AcitionsSection>
-		</Acitions>
+	const renderFoldersPane = () => (
+		<>
+			<Acitions>
+				<AcitionsSection>
+					<CreateFolder />
+					<SortFolders />
+					<ToggleFolders />
+				</AcitionsSection>
+			</Acitions>
+			<Folders />
+		</>
 	);
 
-	const renderFileActions = () => (
-		<Acitions>
-			<AcitionsSection>
-				<CreateFile />
-				<SortFiles />
-			</AcitionsSection>
-			<AcitionsSection>
-				{!isFolderPaneOpen && (
-					<OpenFolderPane onOpen={() => setIsFolderPaneOpen(true)} />
-				)}
-			</AcitionsSection>
-		</Acitions>
+	const renderFilesPane = () => (
+		<>
+			<Acitions>
+				<AcitionsSection>
+					<CreateFile />
+					<SortFiles />
+				</AcitionsSection>
+			</Acitions>
+			<Files />
+		</>
 	);
 
-	return isRestoring ? (
-		<Loading />
-	) : (
+	const renderContent = () => {
+		switch (layoutMode) {
+			case HorizontalSplitLayout:
+				return (
+					<HorizontalSplitContainer>
+						<HorizontalSplitFoldersPane
+							style={{ width: folderPaneWidth }}
+						>
+							{renderFoldersPane()}
+						</HorizontalSplitFoldersPane>
+						<DraggableDivider
+							initialWidth={folderPaneWidth}
+							onChangeWidth={onChangeFolderPaneWidth}
+						/>
+						<HorizontalSplitFilesPane>
+							{renderFilesPane()}
+						</HorizontalSplitFilesPane>
+					</HorizontalSplitContainer>
+				);
+			case VerticalSplitLayout:
+				return "vertical";
+			case ToggleViewLayout:
+				return "toggle";
+			default:
+				return "unknown layout mode";
+		}
+	};
+
+	if (isRestoring) return <Loading />;
+
+	return (
 		<DndProvider backend={HTML5Backend}>
 			<CustomDragLayer />
 			<FileTreeContext.Provider value={{ useFileTreeStore, plugin }}>
-				<PluginContainer>
-					{isFolderPaneOpen && (
-						<>
-							<FoldersPane style={{ width: folderPaneWidth }}>
-								{renderFolderActions()}
-								<Folders />
-							</FoldersPane>
-							<DraggableDivider
-								initialWidth={folderPaneWidth}
-								onChangeWidth={onChangeFolderPaneWidth}
-							/>
-						</>
-					)}
-					<FilesPane>
-						{renderFileActions()}
-						<Files />
-					</FilesPane>
-				</PluginContainer>
+				{renderContent()}
 			</FileTreeContext.Provider>
 		</DndProvider>
 	);

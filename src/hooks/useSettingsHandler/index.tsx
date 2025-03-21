@@ -3,6 +3,7 @@ import { useExpandFolderByClickingOnElement } from "./useExpandFolderByClickingO
 import { useIncludeSubfolderFilesCount } from "./useIncludeSubfolderFilesCount";
 import { useShowFileDetail } from "./useShowFileDetail";
 import { useShowHierarchyLines } from "./useShowHierarchyLines";
+import { useLayoutMode } from "./useLayoutMode";
 
 export {
 	useShowFolderIcon,
@@ -10,4 +11,5 @@ export {
 	useIncludeSubfolderFilesCount,
 	useShowFileDetail,
 	useShowHierarchyLines,
+	useLayoutMode,
 };

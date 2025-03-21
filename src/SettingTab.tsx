@@ -1,6 +1,12 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import FolderFileSplitterPlugin from "./main";
-import { ExpandFolderByClickingOnElement } from "./settings";
+import {
+	ExpandFolderByClickingOnElement,
+	HorizontalSplitLayout,
+	LayoutMode,
+	ToggleViewLayout,
+	VerticalSplitLayout,
+} from "./settings";
 
 export class SettingTab extends PluginSettingTab {
 	plugin: FolderFileSplitterPlugin;
@@ -29,6 +35,23 @@ export class SettingTab extends PluginSettingTab {
 						"openPluginViewOnStartup",
 						val
 					);
+				});
+			});
+
+		new Setting(containerEl)
+			.setName("Layout mode")
+			.setDesc(
+				"Choose how to display folders and files in the plugin view. You can arrange them side-by-side, stacked vertically, or use a toggle view that switches between folders and files."
+			)
+			.addDropdown((cb) => {
+				cb.addOption(HorizontalSplitLayout, "Horizontal split");
+				cb.addOption(VerticalSplitLayout, "Vertical split");
+				cb.addOption(ToggleViewLayout, "Toggle view");
+				cb.setValue(this.plugin.settings.layoutMode);
+				cb.onChange(async (val: LayoutMode) => {
+					this.plugin.settings.layoutMode = val;
+					await this.plugin.saveSettings();
+					this.plugin.triggerSettingsChangeEvent("layoutMode", val);
 				});
 			});
 
