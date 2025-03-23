@@ -1,4 +1,11 @@
-import { createContext, useEffect, useMemo, useState, useContext } from "react";
+import {
+	createContext,
+	useEffect,
+	useMemo,
+	useState,
+	useContext,
+	useRef,
+} from "react";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
 import styled from "styled-components";
@@ -6,8 +13,11 @@ import { StoreApi, UseBoundStore } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
 import { createFileTreeStore, FileTreeStore } from "src/store";
-import { FFS_FOLDER_PANE_WIDTH_KEY } from "src/assets/constants";
-import DraggableDivider from "./DraggableDivider";
+import {
+	FFS_FOLDER_PANE_HEIGHT_KEY,
+	FFS_FOLDER_PANE_WIDTH_KEY,
+} from "src/assets/constants";
+import DraggableDivider, { Direction } from "./DraggableDivider";
 import Files from "./Files";
 import Folders from "./Folders";
 import CreateFolder from "./FolderActions/CreateFolder";
@@ -26,9 +36,9 @@ import {
 } from "src/settings";
 import {
 	HorizontalSplitContainer,
-	HorizontalSplitFilesPane,
-	HorizontalSplitFoldersPane,
-} from "./Styled/HorizontalSplitLayout";
+	VerticalSplitContainer,
+} from "./Styled/Layout";
+import { FilesPane, FoldersPane } from "./Styled/Layout";
 
 const Acitions = styled.div`
 	width: 100%;
@@ -78,18 +88,71 @@ const FileTree = ({ plugin }: Props) => {
 
 	const { layoutMode } = useLayoutMode(plugin.settings.layoutMode);
 
-	const [folderPaneWidth, setFolderPaneWidth] = useState<number | undefined>(
-		220
-	);
+	const [folderPaneWidth, setFolderPaneWidth] = useState<
+		number | undefined
+	>();
+	const [folderPaneHeight, setFolderPaneHeight] = useState<
+		number | undefined
+	>();
 	const [isRestoring, setIsRestoring] = useState<boolean>(true);
+
+	const pluginRef = useRef<HTMLDivElement>(null);
+
+	const restoreLayout = () => {
+		try {
+			const previousWidthStr = localStorage.getItem(
+				FFS_FOLDER_PANE_WIDTH_KEY
+			);
+			const previousHeightStr = localStorage.getItem(
+				FFS_FOLDER_PANE_HEIGHT_KEY
+			);
+			if (previousWidthStr) {
+				const previousWidth = Number(previousWidthStr);
+				if (previousWidth) {
+					setFolderPaneWidth(previousWidth);
+				}
+			}
+			if (previousHeightStr) {
+				const previousHeight = Number(previousHeightStr);
+				if (previousHeight) {
+					setFolderPaneHeight(previousHeight);
+				}
+			}
+		} catch (e) {
+			const pluginWidth = pluginRef.current?.offsetWidth;
+			const pluginHeight = pluginRef.current?.offsetHeight;
+			if (pluginWidth) {
+				const folderPaneWidth = pluginWidth / 2;
+				setFolderPaneWidth(folderPaneWidth);
+				localStorage.setItem(
+					FFS_FOLDER_PANE_WIDTH_KEY,
+					String(folderPaneWidth)
+				);
+			}
+			if (pluginHeight) {
+				const folderPaneHeight = pluginHeight / 2;
+				setFolderPaneHeight(folderPaneHeight);
+				localStorage.setItem(
+					FFS_FOLDER_PANE_HEIGHT_KEY,
+					String(folderPaneHeight)
+				);
+			}
+		}
+	};
 
 	useEffect(() => {
 		restoreData().then(() => setIsRestoring(false));
+		restoreLayout();
 	}, []);
 
 	const onChangeFolderPaneWidth = (width: number) => {
 		setFolderPaneWidth(width);
 		localStorage.setItem(FFS_FOLDER_PANE_WIDTH_KEY, String(width));
+	};
+
+	const onChangeFolderPaneHeight = (height: number) => {
+		setFolderPaneHeight(height);
+		localStorage.setItem(FFS_FOLDER_PANE_HEIGHT_KEY, String(height));
 	};
 
 	const renderFoldersPane = () => (
@@ -117,27 +180,38 @@ const FileTree = ({ plugin }: Props) => {
 		</>
 	);
 
+	const renderDivider = (direction: Direction) => (
+		<DraggableDivider
+			direction={direction}
+			initialWidth={folderPaneWidth}
+			initialHeight={folderPaneHeight}
+			onChangeWidth={onChangeFolderPaneWidth}
+			onChangeHeight={onChangeFolderPaneHeight}
+		/>
+	);
+
 	const renderContent = () => {
 		switch (layoutMode) {
 			case HorizontalSplitLayout:
 				return (
-					<HorizontalSplitContainer>
-						<HorizontalSplitFoldersPane
-							style={{ width: folderPaneWidth }}
-						>
+					<HorizontalSplitContainer ref={pluginRef}>
+						<FoldersPane style={{ width: folderPaneWidth }}>
 							{renderFoldersPane()}
-						</HorizontalSplitFoldersPane>
-						<DraggableDivider
-							initialWidth={folderPaneWidth}
-							onChangeWidth={onChangeFolderPaneWidth}
-						/>
-						<HorizontalSplitFilesPane>
-							{renderFilesPane()}
-						</HorizontalSplitFilesPane>
+						</FoldersPane>
+						{renderDivider("horizontal")}
+						<FilesPane>{renderFilesPane()}</FilesPane>
 					</HorizontalSplitContainer>
 				);
 			case VerticalSplitLayout:
-				return "vertical";
+				return (
+					<VerticalSplitContainer ref={pluginRef}>
+						<FoldersPane style={{ height: folderPaneHeight }}>
+							{renderFoldersPane()}
+						</FoldersPane>
+						{renderDivider("vertical")}
+						<FilesPane>{renderFilesPane()}</FilesPane>
+					</VerticalSplitContainer>
+				);
 			case ToggleViewLayout:
 				return "toggle";
 			default:

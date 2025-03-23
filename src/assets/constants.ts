@@ -12,6 +12,8 @@ export const FFS_FOLDER_MANUAL_SORT_ORDER_KEY = "FolderManualSortOrder";
 
 export const FFS_FOLDER_PANE_WIDTH_KEY =
 	"FolderFileSplitterPlugin-FolderPaneWidth";
+export const FFS_FOLDER_PANE_HEIGHT_KEY =
+	"FolderFileSplitterPlugin-FolderPaneHeight";
 
 export const VaultChangeEventName = "FFS-VaultChangeEvent";
 export type VaultChangeType = "create" | "modify" | "delete" | "rename";
