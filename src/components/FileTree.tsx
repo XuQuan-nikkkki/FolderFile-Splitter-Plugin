@@ -35,10 +35,17 @@ import {
 	VerticalSplitLayout,
 } from "src/settings";
 import {
-	HorizontalSplitContainer,
-	VerticalSplitContainer,
+	HorizontalContainer,
+	ToggleContainer,
+	ToggledOnFilesPane,
+	ToggledOnFoldersPane,
+	VerticalWord,
+	VerticalContainer,
+	IconWrapper,
 } from "./Styled/Layout";
 import { FilesPane, FoldersPane } from "./Styled/Layout";
+import { PanelRightClose, PanelRightOpen } from "src/assets/icons";
+import StyledActionIconWrapper from "./Styled/ActionIconWrapper";
 
 const Acitions = styled.div`
 	width: 100%;
@@ -94,6 +101,8 @@ const FileTree = ({ plugin }: Props) => {
 	const [folderPaneHeight, setFolderPaneHeight] = useState<
 		number | undefined
 	>();
+	const [isFoldersPaneVisible, setIsFoldersPaneVisible] =
+		useState<boolean>(true);
 	const [isRestoring, setIsRestoring] = useState<boolean>(true);
 
 	const pluginRef = useRef<HTMLDivElement>(null);
@@ -190,30 +199,56 @@ const FileTree = ({ plugin }: Props) => {
 		/>
 	);
 
+	const renderToggleView = () => {
+		if (isFoldersPaneVisible) {
+			return (
+				<ToggleContainer $offSide="right">
+					<ToggledOnFoldersPane>
+						{renderFoldersPane()}
+					</ToggledOnFoldersPane>
+					<IconWrapper onClick={() => setIsFoldersPaneVisible(false)}>
+						<PanelRightOpen />
+						<VerticalWord>Files</VerticalWord>
+					</IconWrapper>
+				</ToggleContainer>
+			);
+		} else {
+			return (
+				<ToggleContainer $offSide="left">
+					<IconWrapper onClick={() => setIsFoldersPaneVisible(true)}>
+						<PanelRightClose />
+						<VerticalWord>Folders</VerticalWord>
+					</IconWrapper>
+					<ToggledOnFilesPane>{renderFilesPane()}</ToggledOnFilesPane>
+				</ToggleContainer>
+			);
+		}
+	};
+
 	const renderContent = () => {
 		switch (layoutMode) {
 			case HorizontalSplitLayout:
 				return (
-					<HorizontalSplitContainer ref={pluginRef}>
+					<HorizontalContainer ref={pluginRef}>
 						<FoldersPane style={{ width: folderPaneWidth }}>
 							{renderFoldersPane()}
 						</FoldersPane>
 						{renderDivider("horizontal")}
 						<FilesPane>{renderFilesPane()}</FilesPane>
-					</HorizontalSplitContainer>
+					</HorizontalContainer>
 				);
 			case VerticalSplitLayout:
 				return (
-					<VerticalSplitContainer ref={pluginRef}>
+					<VerticalContainer ref={pluginRef}>
 						<FoldersPane style={{ height: folderPaneHeight }}>
 							{renderFoldersPane()}
 						</FoldersPane>
 						{renderDivider("vertical")}
 						<FilesPane>{renderFilesPane()}</FilesPane>
-					</VerticalSplitContainer>
+					</VerticalContainer>
 				);
 			case ToggleViewLayout:
-				return "toggle";
+				return renderToggleView();
 			default:
 				return "unknown layout mode";
 		}
