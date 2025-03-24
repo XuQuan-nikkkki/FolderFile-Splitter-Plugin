@@ -16,11 +16,18 @@ export class SettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
+	createHeader(containerEl: HTMLElement, textContent: string) {
+		const header = containerEl.createEl("h2");
+		header.textContent = textContent;
+		header.style.marginBottom = "8px"
+	}
+
 	display(): void {
 		const { containerEl } = this;
 
 		containerEl.empty();
 
+		this.createHeader(containerEl, "🔷 Startup");
 		new Setting(containerEl)
 			.setName("Open plugin view on startup")
 			.setDesc(
@@ -38,6 +45,7 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
+		this.createHeader(containerEl, "🧭 Layout");
 		new Setting(containerEl)
 			.setName("Layout mode")
 			.setDesc(
@@ -106,6 +114,7 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
+		this.createHeader(containerEl, "📁 Folder & File Behavior");
 		new Setting(containerEl)
 			.setName("Expand folder on click")
 			.setDesc(
