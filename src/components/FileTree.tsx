@@ -45,7 +45,6 @@ import {
 } from "./Styled/Layout";
 import { FilesPane, FoldersPane } from "./Styled/Layout";
 import { PanelRightClose, PanelRightOpen } from "src/assets/icons";
-import StyledActionIconWrapper from "./Styled/ActionIconWrapper";
 
 const Acitions = styled.div`
 	width: 100%;
@@ -164,6 +163,16 @@ const FileTree = ({ plugin }: Props) => {
 		localStorage.setItem(FFS_FOLDER_PANE_HEIGHT_KEY, String(height));
 	};
 
+	const onOpenFilesPane = () => {
+		if (layoutMode !== "Toggle view") return;
+		setIsFoldersPaneVisible(false);
+	};
+
+	const onOpenFoldersPane = () => {
+		if (layoutMode !== "Toggle view") return;
+		setIsFoldersPaneVisible(true);
+	};
+
 	const renderFoldersPane = () => (
 		<>
 			<Acitions>
@@ -173,7 +182,7 @@ const FileTree = ({ plugin }: Props) => {
 					<ToggleFolders />
 				</AcitionsSection>
 			</Acitions>
-			<Folders />
+			<Folders onOpenFilesPane={onOpenFilesPane} />
 		</>
 	);
 
@@ -185,7 +194,7 @@ const FileTree = ({ plugin }: Props) => {
 					<SortFiles />
 				</AcitionsSection>
 			</Acitions>
-			<Files />
+			<Files onOpenFoldersPane={onOpenFoldersPane} />
 		</>
 	);
 
@@ -206,7 +215,7 @@ const FileTree = ({ plugin }: Props) => {
 					<ToggledOnFoldersPane>
 						{renderFoldersPane()}
 					</ToggledOnFoldersPane>
-					<IconWrapper onClick={() => setIsFoldersPaneVisible(false)}>
+					<IconWrapper onClick={onOpenFilesPane}>
 						<PanelRightOpen />
 						<VerticalWord>Files</VerticalWord>
 					</IconWrapper>
@@ -215,7 +224,7 @@ const FileTree = ({ plugin }: Props) => {
 		} else {
 			return (
 				<ToggleContainer $offSide="left">
-					<IconWrapper onClick={() => setIsFoldersPaneVisible(true)}>
+					<IconWrapper onClick={onOpenFoldersPane}>
 						<PanelRightClose />
 						<VerticalWord>Folders</VerticalWord>
 					</IconWrapper>

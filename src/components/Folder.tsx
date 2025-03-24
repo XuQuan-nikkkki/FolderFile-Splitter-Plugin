@@ -12,10 +12,12 @@ import { getEmptyImage } from "react-dnd-html5-backend";
 import { useFileTree } from "./FileTree";
 
 type Props = FolderProps & {
+	onOpenFilesPane: () => void;
 	disableDrag?: boolean;
 };
 const Folder = ({
 	folder,
+	onOpenFilesPane,
 	isRoot = false,
 	hideExpandIcon = false,
 	disableDrag = false,
@@ -103,6 +105,13 @@ const Folder = ({
 	useEffect(() => {
 		preview(getEmptyImage(), { captureDraggingState: true });
 	}, [preview]);
+
+	useEffect(() => {
+		window.addEventListener("dblclick", onOpenFilesPane);
+		return () => {
+			window.removeEventListener("dblclick", onOpenFilesPane);
+		};
+	}, [onOpenFilesPane]);
 
 	return (
 		<Draggable

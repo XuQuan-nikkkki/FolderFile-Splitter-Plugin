@@ -11,9 +11,16 @@ import { getEmptyImage } from "react-dnd-html5-backend";
 import { useFileTree } from "./FileTree";
 
 type Props = FileProps & {
+	onOpenFoldersPane: () => void;
 	disableDrag?: boolean;
 };
-const File = ({ file, fileList, deleteFile, disableDrag }: Props) => {
+const File = ({
+	file,
+	fileList,
+	deleteFile,
+	disableDrag,
+	onOpenFoldersPane,
+}: Props) => {
 	const { useFileTreeStore } = useFileTree();
 
 	const {
@@ -70,6 +77,13 @@ const File = ({ file, fileList, deleteFile, disableDrag }: Props) => {
 	useEffect(() => {
 		preview(getEmptyImage(), { captureDraggingState: true });
 	}, [preview]);
+
+	useEffect(() => {
+		window.addEventListener("dblclick", onOpenFoldersPane);
+		return () => {
+			window.removeEventListener("dblclick", onOpenFoldersPane);
+		};
+	}, [onOpenFoldersPane]);
 
 	return (
 		<Draggable

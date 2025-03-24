@@ -24,7 +24,10 @@ const FoldersSection = styled.div<{ $showHierarchyLine?: boolean }>`
 			: undefined};
 `;
 
-const Folders = () => {
+type Props = {
+	onOpenFilesPane: () => void;
+};
+const Folders = ({ onOpenFilesPane }: Props) => {
 	const { useFileTreeStore, plugin } = useFileTree();
 
 	const {
@@ -62,6 +65,7 @@ const Folders = () => {
 				isRoot={isRoot}
 				hideExpandIcon={hideExpandIcon}
 				disableDrag={disableDrag}
+				onOpenFilesPane={onOpenFilesPane}
 			/>
 		);
 	};

@@ -24,7 +24,10 @@ const NoneFilesTips = styled.div`
 	align-items: center;
 `;
 
-const Files = () => {
+type Props = {
+	onOpenFoldersPane: () => void;
+};
+const Files = ({ onOpenFoldersPane }: Props) => {
 	const { useFileTreeStore } = useFileTree();
 
 	const { sortFiles, fileSortRule } = useFileTreeStore(
@@ -49,6 +52,7 @@ const Files = () => {
 			deleteFile={() => onDeleteFileFromList(file)}
 			fileList={fileList}
 			disableDrag={disableDrag}
+			onOpenFoldersPane={onOpenFoldersPane}
 		/>
 	);
 
