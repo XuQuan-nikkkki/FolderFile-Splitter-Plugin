@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import { useShallow } from "zustand/react/shallow";
 import styled from "styled-components";
 
@@ -9,6 +8,11 @@ import { TFile } from "obsidian";
 import File from "./File";
 import { useFileTree } from "./FileTree";
 import PinnedFiles from "./PinnedFiles";
+
+const StyledFiles = styled.div`
+	flex: 1;
+	overflow-y: auto;
+`;
 
 const StyledEmptyIcon = styled(EmptyFolderIcon)`
 	width: 60px;
@@ -25,9 +29,9 @@ const NoneFilesTips = styled.div`
 `;
 
 type Props = {
-	onOpenFoldersPane: () => void;
+	onOpenFoldersPane?: () => void;
 };
-const Files = ({ onOpenFoldersPane }: Props) => {
+const Files = ({ onOpenFoldersPane = () => {} }: Props) => {
 	const { useFileTreeStore } = useFileTree();
 
 	const { sortFiles, fileSortRule } = useFileTreeStore(
@@ -66,10 +70,10 @@ const Files = ({ onOpenFoldersPane }: Props) => {
 
 	const sortedFiles = sortFiles(files, fileSortRule);
 	return (
-		<Fragment>
+		<StyledFiles>
 			<PinnedFiles files={files} renderFile={renderFile} />
 			{sortedFiles.map((file) => renderFile(file, sortedFiles))}
-		</Fragment>
+		</StyledFiles>
 	);
 };
 

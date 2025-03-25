@@ -1,67 +1,24 @@
-import {
-	createContext,
-	useEffect,
-	useMemo,
-	useState,
-	useContext,
-	useRef,
-} from "react";
+import { createContext, useEffect, useMemo, useState, useContext } from "react";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { DndProvider } from "react-dnd";
-import styled from "styled-components";
 import { StoreApi, UseBoundStore } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
 import { createFileTreeStore, FileTreeStore } from "src/store";
-import {
-	FFS_FOLDER_PANE_HEIGHT_KEY,
-	FFS_FOLDER_PANE_WIDTH_KEY,
-} from "src/assets/constants";
-import DraggableDivider, { Direction } from "./DraggableDivider";
-import Files from "./Files";
-import Folders from "./Folders";
-import CreateFolder from "./FolderActions/CreateFolder";
-import ToggleFolders from "./FolderActions/ToggleFolders";
-import SortFolders from "./FolderActions/SortFolders";
-import CreateFile from "./FileActions/CreateFile";
-import SortFiles from "./FileActions/SortFiles";
 import CustomDragLayer from "./CustomDragLayer";
 import { useShallow } from "zustand/react/shallow";
 import Loading from "./Loading";
 import { useLayoutMode } from "src/hooks/useSettingsHandler";
 import {
-	HorizontalSplitLayout,
-	ToggleViewLayout,
-	VerticalSplitLayout,
+	HorizontalSplitLayoutMode,
+	ToggleViewLayoutMode,
+	VerticalSplitLayoutMode,
 } from "src/settings";
 import {
-	HorizontalContainer,
-	ToggleContainer,
-	ToggledOnFilesPane,
-	ToggledOnFoldersPane,
-	VerticalWord,
-	VerticalContainer,
-	IconWrapper,
-} from "./Styled/Layout";
-import { FilesPane, FoldersPane } from "./Styled/Layout";
-import { PanelRightClose, PanelRightOpen } from "src/assets/icons";
-
-const Acitions = styled.div`
-	width: 100%;
-	margin-bottom: 8px;
-	padding: 8px 16px;
-	border-radius: var(--ffs-border-radius);
-	background-color: var(--interactive-normal);
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-`;
-
-const AcitionsSection = styled.div`
-	display: flex;
-	align-items: center;
-	gap: var(--size-4-3);
-`;
+	HorizontalSplitLayout,
+	VerticalSplitLayout,
+	ToggleViewLayout,
+} from "./layout";
 
 type FileTreeContextType = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
@@ -94,170 +51,20 @@ const FileTree = ({ plugin }: Props) => {
 
 	const { layoutMode } = useLayoutMode(plugin.settings.layoutMode);
 
-	const [folderPaneWidth, setFolderPaneWidth] = useState<
-		number | undefined
-	>();
-	const [folderPaneHeight, setFolderPaneHeight] = useState<
-		number | undefined
-	>();
-	const [isFoldersPaneVisible, setIsFoldersPaneVisible] =
-		useState<boolean>(true);
 	const [isRestoring, setIsRestoring] = useState<boolean>(true);
-
-	const pluginRef = useRef<HTMLDivElement>(null);
-
-	const restoreLayout = () => {
-		try {
-			const previousWidthStr = localStorage.getItem(
-				FFS_FOLDER_PANE_WIDTH_KEY
-			);
-			const previousHeightStr = localStorage.getItem(
-				FFS_FOLDER_PANE_HEIGHT_KEY
-			);
-			if (previousWidthStr) {
-				const previousWidth = Number(previousWidthStr);
-				if (previousWidth) {
-					setFolderPaneWidth(previousWidth);
-				}
-			}
-			if (previousHeightStr) {
-				const previousHeight = Number(previousHeightStr);
-				if (previousHeight) {
-					setFolderPaneHeight(previousHeight);
-				}
-			}
-		} catch (e) {
-			const pluginWidth = pluginRef.current?.offsetWidth;
-			const pluginHeight = pluginRef.current?.offsetHeight;
-			if (pluginWidth) {
-				const folderPaneWidth = pluginWidth / 2;
-				setFolderPaneWidth(folderPaneWidth);
-				localStorage.setItem(
-					FFS_FOLDER_PANE_WIDTH_KEY,
-					String(folderPaneWidth)
-				);
-			}
-			if (pluginHeight) {
-				const folderPaneHeight = pluginHeight / 2;
-				setFolderPaneHeight(folderPaneHeight);
-				localStorage.setItem(
-					FFS_FOLDER_PANE_HEIGHT_KEY,
-					String(folderPaneHeight)
-				);
-			}
-		}
-	};
 
 	useEffect(() => {
 		restoreData().then(() => setIsRestoring(false));
-		restoreLayout();
 	}, []);
-
-	const onChangeFolderPaneWidth = (width: number) => {
-		setFolderPaneWidth(width);
-		localStorage.setItem(FFS_FOLDER_PANE_WIDTH_KEY, String(width));
-	};
-
-	const onChangeFolderPaneHeight = (height: number) => {
-		setFolderPaneHeight(height);
-		localStorage.setItem(FFS_FOLDER_PANE_HEIGHT_KEY, String(height));
-	};
-
-	const onOpenFilesPane = () => {
-		if (layoutMode !== "Toggle view") return;
-		setIsFoldersPaneVisible(false);
-	};
-
-	const onOpenFoldersPane = () => {
-		if (layoutMode !== "Toggle view") return;
-		setIsFoldersPaneVisible(true);
-	};
-
-	const renderFoldersPane = () => (
-		<>
-			<Acitions>
-				<AcitionsSection>
-					<CreateFolder />
-					<SortFolders />
-					<ToggleFolders />
-				</AcitionsSection>
-			</Acitions>
-			<Folders onOpenFilesPane={onOpenFilesPane} />
-		</>
-	);
-
-	const renderFilesPane = () => (
-		<>
-			<Acitions>
-				<AcitionsSection>
-					<CreateFile />
-					<SortFiles />
-				</AcitionsSection>
-			</Acitions>
-			<Files onOpenFoldersPane={onOpenFoldersPane} />
-		</>
-	);
-
-	const renderDivider = (direction: Direction) => (
-		<DraggableDivider
-			direction={direction}
-			initialWidth={folderPaneWidth}
-			initialHeight={folderPaneHeight}
-			onChangeWidth={onChangeFolderPaneWidth}
-			onChangeHeight={onChangeFolderPaneHeight}
-		/>
-	);
-
-	const renderToggleView = () => {
-		if (isFoldersPaneVisible) {
-			return (
-				<ToggleContainer $offSide="right">
-					<ToggledOnFoldersPane>
-						{renderFoldersPane()}
-					</ToggledOnFoldersPane>
-					<IconWrapper onClick={onOpenFilesPane}>
-						<PanelRightOpen />
-						<VerticalWord>Files</VerticalWord>
-					</IconWrapper>
-				</ToggleContainer>
-			);
-		} else {
-			return (
-				<ToggleContainer $offSide="left">
-					<IconWrapper onClick={onOpenFoldersPane}>
-						<PanelRightClose />
-						<VerticalWord>Folders</VerticalWord>
-					</IconWrapper>
-					<ToggledOnFilesPane>{renderFilesPane()}</ToggledOnFilesPane>
-				</ToggleContainer>
-			);
-		}
-	};
 
 	const renderContent = () => {
 		switch (layoutMode) {
-			case HorizontalSplitLayout:
-				return (
-					<HorizontalContainer ref={pluginRef}>
-						<FoldersPane style={{ width: folderPaneWidth }}>
-							{renderFoldersPane()}
-						</FoldersPane>
-						{renderDivider("horizontal")}
-						<FilesPane>{renderFilesPane()}</FilesPane>
-					</HorizontalContainer>
-				);
-			case VerticalSplitLayout:
-				return (
-					<VerticalContainer ref={pluginRef}>
-						<FoldersPane style={{ height: folderPaneHeight }}>
-							{renderFoldersPane()}
-						</FoldersPane>
-						{renderDivider("vertical")}
-						<FilesPane>{renderFilesPane()}</FilesPane>
-					</VerticalContainer>
-				);
-			case ToggleViewLayout:
-				return renderToggleView();
+			case HorizontalSplitLayoutMode:
+				return <HorizontalSplitLayout />;
+			case VerticalSplitLayoutMode:
+				return <VerticalSplitLayout />;
+			case ToggleViewLayoutMode:
+				return <ToggleViewLayout />;
 			default:
 				return "unknown layout mode";
 		}

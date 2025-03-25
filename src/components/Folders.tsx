@@ -25,9 +25,9 @@ const FoldersSection = styled.div<{ $showHierarchyLine?: boolean }>`
 `;
 
 type Props = {
-	onOpenFilesPane: () => void;
+	onOpenFilesPane?: () => void;
 };
-const Folders = ({ onOpenFilesPane }: Props) => {
+const Folders = ({ onOpenFilesPane = () => {} }: Props) => {
 	const { useFileTreeStore, plugin } = useFileTree();
 
 	const {

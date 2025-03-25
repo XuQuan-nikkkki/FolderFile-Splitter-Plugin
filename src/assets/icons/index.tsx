@@ -14,6 +14,8 @@ import ArrowUpDownIcon from "./ArrowUpDownIcon";
 import PinIcon from "./PinIcon";
 import PanelRightOpen from "./PanelRightOpen";
 import PanelRightClose from "./PanelRightClose";
+import ChevronDown from './ChevronDown'
+import ChevronRight from './ChevronRight'
 
 export {
 	ArrowDownIcon,
@@ -31,5 +33,7 @@ export {
 	ArrowUpDownIcon,
 	PinIcon,
 	PanelRightOpen,
-	PanelRightClose
+	PanelRightClose,
+	ChevronDown,
+	ChevronRight
 };

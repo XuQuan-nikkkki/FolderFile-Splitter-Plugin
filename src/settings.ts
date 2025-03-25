@@ -5,13 +5,13 @@ export type ExpandFolderByClickingOnElement =
 	| typeof ExpandFolderByClickingIcon
 	| typeof ExpandFolderByClickingFolder;
 
-export const HorizontalSplitLayout = "Horizontal split";
-export const VerticalSplitLayout = "Vertical split";
-export const ToggleViewLayout = "Toggle view";
+export const HorizontalSplitLayoutMode = "Horizontal split";
+export const VerticalSplitLayoutMode = "Vertical split";
+export const ToggleViewLayoutMode = "Toggle view";
 export type LayoutMode =
-	| typeof HorizontalSplitLayout
-	| typeof VerticalSplitLayout
-	| typeof ToggleViewLayout;
+	| typeof HorizontalSplitLayoutMode
+	| typeof VerticalSplitLayoutMode
+	| typeof ToggleViewLayoutMode;
 
 export interface FolderFileSplitterPluginSettings {
 	expandFolderByClickingOn: ExpandFolderByClickingOnElement;
@@ -30,5 +30,5 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	showFolderIcon: true,
 	showFileDetail: true,
 	openPluginViewOnStartup: true,
-	layoutMode: HorizontalSplitLayout,
+	layoutMode: HorizontalSplitLayoutMode,
 };
