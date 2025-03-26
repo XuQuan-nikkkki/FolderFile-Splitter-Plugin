@@ -7,6 +7,12 @@ import {
 	ToggleViewLayoutMode,
 	VerticalSplitLayoutMode,
 } from "./settings";
+import {
+	EN_SETTINGS,
+	EN_SETTINGS_HEADER,
+	ZH_SETTINGS,
+	ZH_SETTINGS_HEADER,
+} from "./locales/settings";
 
 export class SettingTab extends PluginSettingTab {
 	plugin: FolderFileSplitterPlugin;
@@ -27,12 +33,17 @@ export class SettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		this.createHeader(containerEl, "🔷 Startup");
+		const headersCopy =
+			this.plugin.language === "zh"
+				? ZH_SETTINGS_HEADER
+				: EN_SETTINGS_HEADER;
+		const settingsCopy =
+			this.plugin.language === "zh" ? ZH_SETTINGS : EN_SETTINGS;
+
+		this.createHeader(containerEl, headersCopy.startup);
 		new Setting(containerEl)
-			.setName("Open plugin view on startup")
-			.setDesc(
-				"When enabled, the plugin view will be opened automatically when Obsidian starts."
-			)
+			.setName(settingsCopy.openOnStartup.name)
+			.setDesc(settingsCopy.openOnStartup.desc)
 			.addToggle((cb) => {
 				cb.setValue(this.plugin.settings.openPluginViewOnStartup);
 				cb.onChange(async (val) => {
@@ -45,16 +56,21 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
-		this.createHeader(containerEl, "🧭 Layout");
+		this.createHeader(containerEl, headersCopy.layout);
 		new Setting(containerEl)
-			.setName("Layout mode")
-			.setDesc(
-				"Choose how to display folders and files in the plugin view. You can arrange them side-by-side, stacked vertically, or use a toggle view that switches between folders and files."
-			)
+			.setName(settingsCopy.layoutMode.name)
+			.setDesc(settingsCopy.layoutMode.desc)
 			.addDropdown((cb) => {
-				cb.addOption(HorizontalSplitLayoutMode, "Horizontal split");
-				cb.addOption(VerticalSplitLayoutMode, "Vertical split");
-				cb.addOption(ToggleViewLayoutMode, "Toggle view");
+				const { options } = settingsCopy.layoutMode;
+				cb.addOption(
+					HorizontalSplitLayoutMode,
+					options?.horizontalSplit ?? ""
+				);
+				cb.addOption(
+					VerticalSplitLayoutMode,
+					options?.verticalSplit ?? ""
+				);
+				cb.addOption(ToggleViewLayoutMode, options?.toggleView ?? "");
 				cb.setValue(this.plugin.settings.layoutMode);
 				cb.onChange(async (val: LayoutMode) => {
 					this.plugin.settings.layoutMode = val;
@@ -64,10 +80,8 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Show file detail")
-			.setDesc(
-				"When enabled, file details such as creation time and a content preview will be displayed below the file name."
-			)
+			.setName(settingsCopy.showFileDetail.name)
+			.setDesc(settingsCopy.showFileDetail.desc)
 			.addToggle((cb) => {
 				cb.setValue(this.plugin.settings.showFileDetail);
 				cb.onChange(async (val) => {
@@ -81,10 +95,8 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Show folder hierarchy lines")
-			.setDesc(
-				"When enabled, a line will be displayed next to folders in the same hierarchy level under an expanded parent folder, visually indicating their nesting relationship."
-			)
+			.setName(settingsCopy.showHierarchyLines.name)
+			.setDesc(settingsCopy.showHierarchyLines.desc)
 			.addToggle((cb) => {
 				cb.setValue(this.plugin.settings.showFolderHierarchyLines);
 				cb.onChange(async (val) => {
@@ -98,10 +110,8 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Show folder icon")
-			.setDesc(
-				"Enable this option to display icon next to folder, enhancing visual distinction between folders and files."
-			)
+			.setName(settingsCopy.showFolderIcon.name)
+			.setDesc(settingsCopy.showFolderIcon.desc)
 			.addToggle((cb) => {
 				cb.setValue(this.plugin.settings.showFolderIcon);
 				cb.onChange(async (val) => {
@@ -114,15 +124,14 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
-		this.createHeader(containerEl, "📁 Folder & File Behavior");
+		this.createHeader(containerEl, headersCopy.folderAndFileBehavior);
 		new Setting(containerEl)
-			.setName("Expand folder on click")
-			.setDesc(
-				"Choose whether to expand a folder by clicking on the toggle icon (▶/▼) or the folder name."
-			)
+			.setName(settingsCopy.expandFolderOnClick.name)
+			.setDesc(settingsCopy.expandFolderOnClick.desc)
 			.addDropdown((cb) => {
-				cb.addOption("icon", "Toggle Icon");
-				cb.addOption("folder", "Folder Name");
+				const { options } = settingsCopy.expandFolderOnClick;
+				cb.addOption("icon", options?.icon ?? "");
+				cb.addOption("folder", options?.folder ?? "");
 				cb.setValue(this.plugin.settings.expandFolderByClickingOn);
 				cb.onChange(async (val: ExpandFolderByClickingOnElement) => {
 					this.plugin.settings.expandFolderByClickingOn = val;
@@ -135,10 +144,8 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Include subfolder files count")
-			.setDesc(
-				"When enabled, the file count will include files inside subfolders. Otherwise, only direct child files are counted."
-			)
+			.setName(settingsCopy.includeSubfolderFilesCount.name)
+			.setDesc(settingsCopy.includeSubfolderFilesCount.desc)
 			.addToggle((cb) => {
 				cb.setValue(this.plugin.settings.includeSubfolderFilesCount);
 				cb.onChange(async (val) => {
@@ -152,10 +159,8 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Show files from subfolders")
-			.setDesc(
-				"When enabled, the file list will include files from subfolders of the selected folder."
-			)
+			.setName(settingsCopy.showFilesFromSubfolders.name)
+			.setDesc(settingsCopy.showFilesFromSubfolders.desc)
 			.addToggle((cb) => {
 				cb.setValue(this.plugin.settings.showFilesFromSubfolders);
 				cb.onChange(async (val) => {

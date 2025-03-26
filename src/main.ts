@@ -9,8 +9,10 @@ import {
 	VaultChangeType,
 } from "./assets/constants";
 
+type Lang = "en" | "zh";
 export default class FolderFileSplitterPlugin extends Plugin {
 	settings: FolderFileSplitterPluginSettings;
+	language: Lang = "en";
 
 	VIEW_TYPE = "ffs-plugin-file-tree-view";
 	VIEW_DISPLAY_TEXT = "FolderFile Splitter Plugin File Tree";
@@ -18,6 +20,10 @@ export default class FolderFileSplitterPlugin extends Plugin {
 
 	async onload() {
 		console.log("FolderFile Splitter Plugin onload");
+
+		if (document.documentElement.getAttribute("lang")?.startsWith("zh")) {
+			this.language = "zh";
+		}
 
 		this.addSettingTab(new SettingTab(this.app, this));
 
