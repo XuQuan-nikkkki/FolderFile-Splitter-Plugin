@@ -13,6 +13,7 @@ import {
 	StyledFileNameLine,
 } from "./Styled/StyledFile";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
+import { FILE_OPERATION_COPY } from "src/locales";
 
 export type FileProps = {
 	file: TFile;
@@ -50,6 +51,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		}))
 	);
 
+	const { language } = plugin;
 	const { showFileDetail } = useShowFileDetail(
 		plugin.settings.showFileDetail
 	);
@@ -108,7 +110,9 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		const menu = new Menu();
 		menu.addItem((item) => {
 			const isPinned = isFilePinned(file);
-			const title = isPinned ? "Unpin file" : "Pin file";
+			const title = isPinned
+				? FILE_OPERATION_COPY.unpinFile[language]
+				: FILE_OPERATION_COPY.pinFile[language];
 			item.setTitle(title);
 			item.onClick(() => {
 				if (isPinned) {
@@ -120,14 +124,14 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
-			item.setTitle("Open in new tab");
+			item.setTitle(FILE_OPERATION_COPY.openInNewTab[language]);
 			item.onClick(() => {
 				openFileInNewTab(file);
 			});
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
-			item.setTitle("New note");
+			item.setTitle(FILE_OPERATION_COPY.newNote[language]);
 			item.onClick(async () => {
 				const folder = file.parent || plugin.app.vault.getRoot();
 				await createFile(folder);
@@ -135,14 +139,14 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			});
 		});
 		menu.addItem((item) => {
-			item.setTitle("Duplicate");
+			item.setTitle(FILE_OPERATION_COPY.duplicate[language]);
 			item.onClick(async () => {
 				await duplicateFile(file);
 				await maybeInitOrder();
 			});
 		});
 		menu.addItem((item) => {
-			item.setTitle("Move file to...");
+			item.setTitle(FILE_OPERATION_COPY.moveFile[language]);
 			item.onClick(() => {
 				const modal = new FolderListModal(
 					plugin,
@@ -154,7 +158,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
-			item.setTitle("Rename");
+			item.setTitle(FILE_OPERATION_COPY.rename[language]);
 			item.onClick(() => {
 				onBeginEdit();
 				setTimeout(() => {
@@ -163,7 +167,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			});
 		});
 		menu.addItem((item) => {
-			item.setTitle("Delete");
+			item.setTitle(FILE_OPERATION_COPY.delete[language]);
 			item.onClick(async () => {
 				deleteFile();
 				await trashFile(file);

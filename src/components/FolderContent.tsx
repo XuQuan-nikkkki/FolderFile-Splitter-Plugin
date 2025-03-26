@@ -17,6 +17,7 @@ import {
 } from "./Styled/StyledFolder";
 import { useFileTree } from "./FileTree";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
+import { FOLDER_OPERATION_COPY } from "src/locales";
 
 export type FolderProps = {
 	folder: TFolder;
@@ -68,6 +69,7 @@ const FolderContent = ({
 		}))
 	);
 
+	const { language } = plugin;
 	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
 
 	const { settings } = plugin;
@@ -134,7 +136,9 @@ const FolderContent = ({
 		const menu = new Menu();
 		menu.addItem((item) => {
 			const isPinned = isFolderPinned(folder);
-			const title = isPinned ? "Unpin folder" : "Pin folder";
+			const title = isPinned
+				? FOLDER_OPERATION_COPY.unpinFolder[language]
+				: FOLDER_OPERATION_COPY.pinFolder[language];
 			item.setTitle(title);
 			item.onClick(() => {
 				if (isPinned) {
@@ -146,7 +150,7 @@ const FolderContent = ({
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
-			item.setTitle("New note");
+			item.setTitle(FOLDER_OPERATION_COPY.createFile[language]);
 			item.onClick(async () => {
 				if (folder.path !== focusedFolder?.path) {
 					await setFocusedFolder(folder);
@@ -156,7 +160,7 @@ const FolderContent = ({
 			});
 		});
 		menu.addItem((item) => {
-			item.setTitle("New folder");
+			item.setTitle(FOLDER_OPERATION_COPY.createFolder[language]);
 			item.onClick(async () => {
 				await createNewFolder(folder);
 				await maybeInitOrder();
@@ -167,7 +171,7 @@ const FolderContent = ({
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
-			item.setTitle("Move folder to...");
+			item.setTitle(FOLDER_OPERATION_COPY.moveFolder[language]);
 			item.onClick(() => {
 				const modal = new FolderListModal(
 					plugin,
@@ -179,7 +183,7 @@ const FolderContent = ({
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
-			item.setTitle("Rename folder");
+			item.setTitle(FOLDER_OPERATION_COPY.renameFolder[language]);
 			item.onClick(() => {
 				onBeginEdit();
 				setTimeout(() => {
@@ -188,7 +192,7 @@ const FolderContent = ({
 			});
 		});
 		menu.addItem((item) => {
-			item.setTitle("Delete");
+			item.setTitle(FOLDER_OPERATION_COPY.deleteFolder[language]);
 			item.onClick(async () => {
 				await trashFolder(folder);
 				await maybeInitOrder();

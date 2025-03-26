@@ -8,8 +8,8 @@ import {
 	VaultChangeEventName,
 	VaultChangeType,
 } from "./assets/constants";
+import { Lang } from "./locales";
 
-type Lang = "en" | "zh";
 export default class FolderFileSplitterPlugin extends Plugin {
 	settings: FolderFileSplitterPluginSettings;
 	language: Lang = "en";
