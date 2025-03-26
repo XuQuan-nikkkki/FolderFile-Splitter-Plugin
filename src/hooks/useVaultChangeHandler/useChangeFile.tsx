@@ -1,24 +1,29 @@
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
+import { TFile } from "obsidian";
 
 import { FileTreeStore } from "src/store";
 
-import { TFile } from "obsidian";
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFile } from "src/utils";
 import { useFileTree } from "src/components/FileTree";
+import { useShowFilesFromSubfolders } from "../useSettingsHandler";
 
 const useChangeFile = () => {
-	const { useFileTreeStore } = useFileTree();
+	const { useFileTreeStore, plugin } = useFileTree();
 
-	const { focusedFolder, getDirectFilesInFolder } = useFileTreeStore(
+	const { focusedFolder, getFilesInFolder } = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			focusedFolder: store.focusedFolder,
-			getDirectFilesInFolder: store.getDirectFilesInFolder,
+			getFilesInFolder: store.getFilesInFolder,
 		}))
 	);
+
+	const { showFilesFromSubfolders } = useShowFilesFromSubfolders(
+		plugin.settings.showFilesFromSubfolders
+	);
 	const defaultFiles: TFile[] = focusedFolder
-		? getDirectFilesInFolder(focusedFolder)
+		? getFilesInFolder(focusedFolder, showFilesFromSubfolders)
 		: [];
 	const [files, setFiles] = useState<TFile[]>(defaultFiles);
 
@@ -31,7 +36,7 @@ const useChangeFile = () => {
 				onHandleVaultChange
 			);
 		};
-	}, [focusedFolder]);
+	}, [focusedFolder, showFilesFromSubfolders]);
 
 	const onDeleteFileFromList = (file: TFile) => {
 		setFiles((prevFiles) =>

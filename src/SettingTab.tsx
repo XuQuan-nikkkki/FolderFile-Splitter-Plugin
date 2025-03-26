@@ -150,5 +150,22 @@ export class SettingTab extends PluginSettingTab {
 					);
 				});
 			});
+
+		new Setting(containerEl)
+			.setName("Show files from subfolders")
+			.setDesc(
+				"When enabled, the file list will include files from subfolders of the selected folder."
+			)
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.showFilesFromSubfolders);
+				cb.onChange(async (val) => {
+					this.plugin.settings.showFilesFromSubfolders = val;
+					await this.plugin.saveSettings();
+					this.plugin.triggerSettingsChangeEvent(
+						"showFilesFromSubfolders",
+						val
+					);
+				});
+			});
 	}
 }

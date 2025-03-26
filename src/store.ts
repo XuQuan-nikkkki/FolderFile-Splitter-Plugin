@@ -65,7 +65,7 @@ export type FileTreeStore = {
 		includeSubfolderFilesCount: boolean
 	) => number;
 	getFoldersByParent: (parentFolder: TFolder) => TFolder[];
-	getDirectFilesInFolder: (folder: TFolder) => TFile[];
+	getFilesInFolder: (folder: TFolder, getFilesInFolder?: boolean) => TFile[];
 	hasFolderChildren: (folder: TFolder) => boolean;
 	isFoldersInAscendingOrder: () => boolean;
 	_setFocusedFolder: (folder: TFolder | null) => void;
@@ -247,9 +247,24 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		getFoldersByParent: (parentFolder: TFolder): TFolder[] => {
 			return parentFolder.children.filter((child) => isFolder(child));
 		},
-		getDirectFilesInFolder: (folder: TFolder): TFile[] => {
-			const files = folder.children ?? [];
-			return files.filter((child) => isFile(child));
+		getFilesInFolder: (
+			folder: TFolder,
+			includeSubfolder = false
+		): TFile[] => {
+			const getFiles = (folder: TFolder): TFile[] => {
+				if (!folder || !folder.children) return [];
+				
+				return folder.children.reduce<TFile[]>((files, child) => {
+					if (isFile(child)) {
+						files.push(child as TFile);
+					} else if (includeSubfolder && isFolder(child)) {
+						files.push(...getFiles(child as TFolder));
+					}
+					return files;
+				}, []);
+			};
+
+			return getFiles(folder);
 		},
 		isFoldersInAscendingOrder: (): boolean => {
 			const { folderSortRule } = get();
@@ -850,12 +865,12 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			}
 		},
 		getInitialFilesOrder: () => {
-			const { fileSortRule, sortFiles, getDirectFilesInFolder } = get();
+			const { fileSortRule, sortFiles, getFilesInFolder } = get();
 			const foldersToInit = plugin.app.vault.getAllFolders(true);
 			const order: ManualSortOrder = {};
 			foldersToInit.forEach((folder) => {
 				if (folder) {
-					const files = getDirectFilesInFolder(folder);
+					const files = getFilesInFolder(folder);
 					if (files.length) {
 						const sortedFiles = sortFiles(files, fileSortRule);
 						order[folder.path] = sortedFiles.map(
@@ -870,13 +885,13 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			const {
 				fileSortRule,
 				sortFiles,
-				getDirectFilesInFolder,
+				getFilesInFolder,
 				saveDataInPlugin,
 			} = get();
 			const foldersToInit = plugin.app.vault.getAllFolders(true);
 			const order: ManualSortOrder = {};
 			foldersToInit.forEach((folder) => {
-				const files = getDirectFilesInFolder(folder);
+				const files = getFilesInFolder(folder);
 				if (files.length) {
 					const sortedFiles = sortFiles(files, fileSortRule);
 					order[folder.path] = sortedFiles.map((file) => file.path);

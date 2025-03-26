@@ -21,6 +21,7 @@ export interface FolderFileSplitterPluginSettings {
 	showFileDetail: boolean;
 	openPluginViewOnStartup: boolean;
 	layoutMode: LayoutMode;
+	showFilesFromSubfolders: boolean;
 }
 
 export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
@@ -31,4 +32,5 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	showFileDetail: true,
 	openPluginViewOnStartup: true,
 	layoutMode: HorizontalSplitLayoutMode,
+	showFilesFromSubfolders: false,
 };

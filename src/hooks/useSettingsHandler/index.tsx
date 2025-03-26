@@ -4,6 +4,7 @@ import { useIncludeSubfolderFilesCount } from "./useIncludeSubfolderFilesCount";
 import { useShowFileDetail } from "./useShowFileDetail";
 import { useShowHierarchyLines } from "./useShowHierarchyLines";
 import { useLayoutMode } from "./useLayoutMode";
+import { useShowFilesFromSubfolders } from "./useShowFilesFromSubfolders";
 
 export {
 	useShowFolderIcon,
@@ -12,4 +13,5 @@ export {
 	useShowFileDetail,
 	useShowHierarchyLines,
 	useLayoutMode,
+	useShowFilesFromSubfolders,
 };
