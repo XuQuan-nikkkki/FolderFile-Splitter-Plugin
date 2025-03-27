@@ -1,13 +1,11 @@
 import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
-import { useDrag, useDrop } from "react-dnd";
-import { useRef } from "react";
 import { StoreApi, UseBoundStore } from "zustand";
 import styled from "styled-components";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
-import { FileTreeStore, FOLDER_MANUAL_SORT_RULE } from "src/store";
-import { FFS_FOLDER } from "src/assets/constants";
-import { Draggable } from "../Styled/Sortable";
+import { FileTreeStore } from "src/store";
 import { StyledIcon } from "../Styled/DragIcon";
 
 const StyledFolder = styled.div`
@@ -18,6 +16,7 @@ const StyledFolder = styled.div`
 	align-items: center;
 	padding: 4px;
 	border-radius: var(--ffs-border-radius);
+	touch-action: none;
 
 	&:hover {
 		background-color: var(--interactive-hover);
@@ -38,67 +37,44 @@ type Props = {
 	goInToFolder: (folder: TFolder | null) => void;
 };
 const FolderToSort = ({ folder, useFileTreeStore, goInToFolder }: Props) => {
-	const {
-		order,
-		getFoldersByParent,
-		folderSortRule,
-		changeFoldersManualOrder,
-		changeFoldersManualOrderAndSave,
-	} = useFileTreeStore(
+	const { getFoldersByParent } = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
-			order: store.foldersManualSortOrder,
 			getFoldersByParent: store.getFoldersByParent,
-			folderSortRule: store.folderSortRule,
-			changeFoldersManualOrder: store.changeFoldersManualOrder,
-			changeFoldersManualOrderAndSave:
-				store.changeFoldersManualOrderAndSave,
 		}))
 	);
 
-	const folderRef = useRef<HTMLDivElement>(null);
-	const paths = folder.parent ? order[folder.parent.path] : [];
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({ id: folder.path });
 
-	const [{ isDragging }, drag] = useDrag(() => ({
-		type: FFS_FOLDER,
-		item: folder,
-		collect: (monitor) => ({
-			isDragging: monitor.isDragging(),
-		}),
-	}));
-
-	const [, drop] = useDrop(
-		() => ({
-			accept: FFS_FOLDER,
-			hover: (item: TFolder) => {
-				if (folderSortRule !== FOLDER_MANUAL_SORT_RULE) return;
-				if (item.path !== folder.path) {
-					const atIndex = paths.indexOf(folder.path);
-					changeFoldersManualOrder(item, atIndex);
-				}
-			},
-			drop: (item) => {
-				const atIndex = paths.indexOf(folder.path);
-				changeFoldersManualOrderAndSave(item, atIndex);
-			},
-		}),
-		[changeFoldersManualOrder, order, folderSortRule]
-	);
-	drag(drop(folderRef));
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+		opacity: isDragging ? 0.5 : 1,
+	};
 
 	const subfolders = getFoldersByParent(folder);
-
 	return (
-		<Draggable ref={folderRef} style={{ opacity: isDragging ? 0 : 1 }}>
-			<StyledFolder>
-				<StyledIcon />
-				<div>{folder.name}</div>
-				{subfolders.length > 0 && (
-					<StyledButton onClick={() => goInToFolder(folder)}>
-						Sort subfolders
-					</StyledButton>
-				)}
-			</StyledFolder>
-		</Draggable>
+		<StyledFolder
+			ref={setNodeRef}
+			id={folder.path}
+			style={style}
+			{...attributes}
+			{...listeners}
+		>
+			<StyledIcon />
+			<div>{folder.name}</div>
+			{subfolders.length > 0 && (
+				<StyledButton onClick={() => goInToFolder(folder)}>
+					Sort subfolders
+				</StyledButton>
+			)}
+		</StyledFolder>
 	);
 };
 

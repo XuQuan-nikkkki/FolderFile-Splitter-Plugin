@@ -1,13 +1,28 @@
 import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
-import { FileTreeStore } from "src/store";
 import { StoreApi, UseBoundStore } from "zustand";
-import FolderFileSplitterPlugin from "src/main";
-import FolderToSort, { StyledButton } from "./FolderToSort";
 import styled from "styled-components";
 import { Fragment, useEffect, useState } from "react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import {
+	SortableContext,
+	sortableKeyboardCoordinates,
+	verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import {
+	closestCenter,
+	DndContext,
+	DragEndEvent,
+	DragOverlay,
+	DragStartEvent,
+	KeyboardSensor,
+	PointerSensor,
+	useSensor,
+	useSensors,
+} from "@dnd-kit/core";
+
+import { FileTreeStore } from "src/store";
+import FolderFileSplitterPlugin from "src/main";
+import FolderToSort, { StyledButton } from "./FolderToSort";
 
 const StyledFoldersList = styled.div`
 	overflow-y: auto;
@@ -36,22 +51,58 @@ type Props = {
 	plugin: FolderFileSplitterPlugin;
 };
 const ManualSort = ({ parentFolder, useFileTreeStore, plugin }: Props) => {
-	const { getFoldersByParent, sortFolders, folderSortRule } =
-		useFileTreeStore(
-			useShallow((store: FileTreeStore) => ({
-				getFoldersByParent: store.getFoldersByParent,
-				sortFolders: store.sortFolders,
-				folderSortRule: store.folderSortRule,
-				order: store.foldersManualSortOrder,
-			}))
-		);
+	const {
+		getFoldersByParent,
+		sortFolders,
+		folderSortRule,
+		changeFoldersManualOrderAndSave,
+	} = useFileTreeStore(
+		useShallow((store: FileTreeStore) => ({
+			getFoldersByParent: store.getFoldersByParent,
+			sortFolders: store.sortFolders,
+			folderSortRule: store.folderSortRule,
+			order: store.foldersManualSortOrder,
+			changeFoldersManualOrderAndSave:
+				store.changeFoldersManualOrderAndSave,
+		}))
+	);
 
 	const [folder, setFolder] = useState<TFolder | null>(null);
+	const [activeId, setActiveId] = useState<string | null>(null);
+
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		})
+	);
 
 	useEffect(() => {
 		const targetFolder = parentFolder ?? plugin.app.vault.getRoot();
 		setFolder(targetFolder);
 	}, []);
+
+	const getSortedFolders = () => {
+		if (!folder) return [];
+		return sortFolders(getFoldersByParent(folder), folderSortRule, false);
+	};
+
+	const onDragStart = (event: DragStartEvent) => {
+		setActiveId(String(event.active.id));
+	};
+
+	const onDragEnd = async (event: DragEndEvent) => {
+		const { active, over } = event;
+
+		if (over && active.id !== over.id) {
+			const folder = getSortedFolders().find((f) => f.path === active.id);
+			if (!folder) return;
+			const atIndex = getSortedFolders().findIndex(
+				(f) => f.path === over.id
+			);
+			return await changeFoldersManualOrderAndSave(folder, atIndex);
+		}
+	};
 
 	const goInToFolder = (folder: TFolder | null) => {
 		if (!folder) return;
@@ -98,27 +149,50 @@ const ManualSort = ({ parentFolder, useFileTreeStore, plugin }: Props) => {
 
 	if (!folder) return null;
 
-	const sortedFolders = sortFolders(
-		getFoldersByParent(folder),
-		folderSortRule,
-		false
-	);
+	const items = getSortedFolders().map((folder) => folder.path);
+
+	const renderOverlayContent = () => {
+		if (!activeId) return null;
+		const folder = getSortedFolders().find((f) => f.path === activeId);
+		if (!folder) return null;
+		return (
+			<div style={{ opacity: 0.8, transform: "scale(1.05)" }}>
+				<FolderToSort
+					folder={folder}
+					useFileTreeStore={useFileTreeStore}
+					goInToFolder={goInToFolder}
+				/>
+			</div>
+		);
+	};
+
 	return (
-		<DndProvider backend={HTML5Backend}>
+		<DndContext
+			sensors={sensors}
+			collisionDetection={closestCenter}
+			onDragStart={onDragStart}
+			onDragEnd={onDragEnd}
+		>
 			<StyledPanel>
 				<StyledAction>{renderBreadcrumbs()}</StyledAction>
-				<StyledFoldersList>
-					{sortedFolders.map((folder) => (
-						<FolderToSort
-							key={folder.path}
-							folder={folder}
-							useFileTreeStore={useFileTreeStore}
-							goInToFolder={goInToFolder}
-						/>
-					))}
-				</StyledFoldersList>
+				<SortableContext
+					items={items}
+					strategy={verticalListSortingStrategy}
+				>
+					<StyledFoldersList>
+						{getSortedFolders().map((folder) => (
+							<FolderToSort
+								key={folder.path}
+								folder={folder}
+								useFileTreeStore={useFileTreeStore}
+								goInToFolder={goInToFolder}
+							/>
+						))}
+					</StyledFoldersList>
+				</SortableContext>
 			</StyledPanel>
-		</DndProvider>
+			<DragOverlay>{renderOverlayContent()}</DragOverlay>
+		</DndContext>
 	);
 };
 
