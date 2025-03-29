@@ -47,17 +47,13 @@ export class FolderListModal extends SuggestModal<TFolder> {
 		const {
 			moveFile,
 			moveFolder,
-			fileSortRule,
 			folderSortRule,
-			initFilesManualSortOrder,
 			initFoldersManualSortOrder,
 		} = this.useFileTreeStore.getState();
 		try {
 			const newPath = folder.path + "/" + this.item.name;
 			if (isFile(this.item)) {
 				await moveFile(this.item, newPath);
-				if (fileSortRule !== FILE_MANUAL_SORT_RULE) return;
-				await initFilesManualSortOrder();
 			} else {
 				await moveFolder(this.item as TFolder, newPath);
 				if (folderSortRule !== FOLDER_MANUAL_SORT_RULE) return;

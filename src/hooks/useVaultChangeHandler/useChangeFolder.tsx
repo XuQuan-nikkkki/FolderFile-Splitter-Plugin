@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { TFolder } from "obsidian";
 
-import { FileTreeStore } from "src/store";
+import { FileTreeStore, FOLDER_MANUAL_SORT_RULE } from "src/store";
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFolder } from "src/utils";
 import { useFileTree } from "src/components/FileTree";
@@ -10,9 +10,23 @@ import { useFileTree } from "src/components/FileTree";
 const useChangeFolder = () => {
 	const { useFileTreeStore } = useFileTree();
 
-	const { getTopLevelFolders } = useFileTreeStore(
+	const {
+		getTopLevelFolders,
+		folderSortRule,
+		initOrder,
+		isFolderPinned,
+		unpinFolder,
+		updateFolderPinState,
+		updateFolderManualOrder,
+	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			getTopLevelFolders: store.getTopLevelFolders,
+			folderSortRule: store.folderSortRule,
+			initOrder: store.initFoldersManualSortOrder,
+			isFolderPinned: store.isFolderPinned,
+			unpinFolder: store.unpinFolder,
+			updateFolderPinState: store.updateFolderPinState,
+			updateFolderManualOrder: store._updateFolderManualOrder,
 		}))
 	);
 
@@ -43,21 +57,37 @@ const useChangeFolder = () => {
 		);
 	};
 
-	const onHandleVaultChange = (event: VaultChangeEvent) => {
-		const { file: folder, changeType } = event.detail;
+	const maybeInitOrder = async () => {
+		if (folderSortRule !== FOLDER_MANUAL_SORT_RULE) return;
+		await initOrder();
+	};
+
+	const onHandleVaultChange = async (event: VaultChangeEvent) => {
+		const { file: folder, changeType, oldPath } = event.detail;
 		if (!isFolder(folder)) return;
+		const parentPath = folder.parent?.path;
 
 		switch (changeType) {
 			case "create":
+				await maybeInitOrder();
 				if (folder.parent?.isRoot()) {
 					setTopFolders((prevFolders) => [...prevFolders, folder]);
 				}
 				break;
 			case "delete":
+				await maybeInitOrder();
+				if (isFolderPinned(folder)) {
+					await unpinFolder(folder);
+				}
 				onDeleteFolderFromList(folder);
 				break;
 			case "rename":
 				onUpdateTopFolders();
+				if (!oldPath) return;
+				await updateFolderPinState(oldPath, folder.path);
+				if (!parentPath || folderSortRule !== FOLDER_MANUAL_SORT_RULE)
+					return;
+				await updateFolderManualOrder(parentPath, oldPath, folder.path);
 				break;
 			case "modify":
 				onUpdateTopFolders();

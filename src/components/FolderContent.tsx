@@ -163,7 +163,6 @@ const FolderContent = ({
 			item.setTitle(FOLDER_OPERATION_COPY.createFolder[language]);
 			item.onClick(async () => {
 				await createNewFolder(folder);
-				await maybeInitOrder();
 				if (!isFolderExpanded) {
 					onToggleExpandState();
 				}
@@ -195,7 +194,6 @@ const FolderContent = ({
 			item.setTitle(FOLDER_OPERATION_COPY.deleteFolder[language]);
 			item.onClick(async () => {
 				await trashFolder(folder);
-				await maybeInitOrder();
 			});
 		});
 		plugin.app.workspace.trigger("folder-context-menu", menu);

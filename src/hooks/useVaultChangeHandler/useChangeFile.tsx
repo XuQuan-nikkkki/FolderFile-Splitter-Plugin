@@ -15,7 +15,7 @@ const useChangeFile = () => {
 	const {
 		focusedFolder,
 		getFilesInFolder,
-		updatePinStateAfterPathChange,
+		updateFilePinState,
 		updateFileManualOrder,
 		fileSortRule,
 		initOrder,
@@ -25,7 +25,7 @@ const useChangeFile = () => {
 		useShallow((store: FileTreeStore) => ({
 			focusedFolder: store.focusedFolder,
 			getFilesInFolder: store.getFilesInFolder,
-			updatePinStateAfterPathChange: store.updatePinStateAfterPathChange,
+			updateFilePinState: store.updateFilePinState,
 			updateFileManualOrder: store.updateFileManualOrder,
 			fileSortRule: store.fileSortRule,
 			initOrder: store.initFilesManualSortOrder,
@@ -78,7 +78,7 @@ const useChangeFile = () => {
 
 		switch (changeType) {
 			case "create":
-				maybeInitOrder();
+				await maybeInitOrder();
 				if (focusedFolder && file.parent?.path == focusedFolder.path) {
 					setFiles((prevFiles) => [...prevFiles, file]);
 				}
@@ -99,7 +99,7 @@ const useChangeFile = () => {
 				}
 				if (oldPath) {
 					const parentPath = file.parent?.path;
-					await updatePinStateAfterPathChange(oldPath, file.path);
+					await updateFilePinState(oldPath, file.path);
 					if (parentPath && fileSortRule === FILE_MANUAL_SORT_RULE) {
 						await updateFileManualOrder(
 							parentPath,
