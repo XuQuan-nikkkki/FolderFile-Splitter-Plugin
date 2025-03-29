@@ -176,18 +176,8 @@ const FileTree = ({ plugin }: Props) => {
 			sensors={sensors}
 			collisionDetection={pointerWithin}
 			onDragStart={onDragStart}
-			// onDragMove={onDragMove}
 			onDragEnd={onDragEnd}
 			onDragCancel={onDragCancel}
-			measuring={{
-				draggable: {
-					measure: (node) => {
-						console.log("the measured node: ", node);
-						console.log("children: ", node.children);
-						return node.getBoundingClientRect();
-					},
-				},
-			}}
 		>
 			<FileTreeContext.Provider value={{ useFileTreeStore, plugin }}>
 				{renderContent()}
