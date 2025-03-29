@@ -5,6 +5,7 @@ import { useShowFileDetail } from "./useShowFileDetail";
 import { useShowHierarchyLines } from "./useShowHierarchyLines";
 import { useLayoutMode } from "./useLayoutMode";
 import { useShowFilesFromSubfolders } from "./useShowFilesFromSubfolders";
+import { useOpenDestinationFolder } from "./useOpenDestinationFolder";
 
 export {
 	useShowFolderIcon,
@@ -14,4 +15,5 @@ export {
 	useShowHierarchyLines,
 	useLayoutMode,
 	useShowFilesFromSubfolders,
+	useOpenDestinationFolder,
 };

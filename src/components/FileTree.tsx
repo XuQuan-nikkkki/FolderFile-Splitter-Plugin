@@ -16,7 +16,10 @@ import FolderFileSplitterPlugin from "src/main";
 import { createFileTreeStore, FileTreeStore } from "src/store";
 import { useShallow } from "zustand/react/shallow";
 import Loading from "./Loading";
-import { useLayoutMode } from "src/hooks/useSettingsHandler";
+import {
+	useLayoutMode,
+	useOpenDestinationFolder,
+} from "src/hooks/useSettingsHandler";
 import {
 	HorizontalSplitLayoutMode,
 	ToggleViewLayoutMode,
@@ -73,7 +76,12 @@ const FileTree = ({ plugin }: Props) => {
 		}))
 	);
 
-	const { layoutMode } = useLayoutMode(plugin.settings.layoutMode);
+	const { layoutMode: defaultLayout, openDestinationFolderAfterMove } =
+		plugin.settings;
+	const { layoutMode } = useLayoutMode(defaultLayout);
+	const { openDestinationFolder } = useOpenDestinationFolder(
+		openDestinationFolderAfterMove
+	);
 
 	const [isRestoring, setIsRestoring] = useState<boolean>(true);
 	const [activeItem, setActiveItem] = useState<TAbstractFile | null>(null);
@@ -111,11 +119,15 @@ const FileTree = ({ plugin }: Props) => {
 		const newPath = targetFolder.path + "/" + item.name;
 		if (isFile(item)) {
 			await moveFile(item, newPath);
-			await setFocusedFolder(targetFolder);
-			await selectFile(item);
+			if (openDestinationFolder) {
+				await setFocusedFolder(targetFolder);
+				await selectFile(item);
+			}
 		} else if (isFolder(item)) {
 			await moveFolder(item, newPath);
-			await setFocusedFolder(item);
+			if (openDestinationFolder) {
+				await setFocusedFolder(item);
+			}
 		}
 		if (!expandedFolderPaths.includes(targetFolder.path)) {
 			expandFolder(targetFolder);

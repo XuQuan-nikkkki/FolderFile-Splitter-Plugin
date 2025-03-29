@@ -62,6 +62,10 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Show files from subfolders",
 		desc: "When enabled, the file list will include files from subfolders of the selected folder.",
 	},
+	openDestinationFolder: {
+		name: "Open destination folder after move",
+		desc: "When enabled, the destination folder will automatically open after moving a file or folder.",
+	},
 };
 
 export const ZH_SETTINGS: SettingsLocaleResource = {
@@ -105,5 +109,9 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	showFilesFromSubfolders: {
 		name: "显示子文件夹中的文件",
 		desc: "启用后，文件列表会包含所选文件夹的子文件夹中的文件。",
+	},
+	openDestinationFolder: {
+		name: "移动后打开目标文件夹",
+		desc: "启用后，在移动文件或文件夹后，目标文件夹将自动展开并显示。",
 	},
 };

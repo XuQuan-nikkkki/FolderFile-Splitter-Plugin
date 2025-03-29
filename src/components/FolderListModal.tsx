@@ -2,11 +2,7 @@ import { SuggestModal, TAbstractFile, TFolder } from "obsidian";
 import { StoreApi, UseBoundStore } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
-import {
-	FILE_MANUAL_SORT_RULE,
-	FileTreeStore,
-	FOLDER_MANUAL_SORT_RULE,
-} from "src/store";
+import { FileTreeStore, FOLDER_MANUAL_SORT_RULE } from "src/store";
 import { isFile } from "src/utils";
 
 export class FolderListModal extends SuggestModal<TFolder> {
@@ -44,20 +40,13 @@ export class FolderListModal extends SuggestModal<TFolder> {
 	}
 
 	async onChooseSuggestion(folder: TFolder) {
-		const {
-			moveFile,
-			moveFolder,
-			folderSortRule,
-			initFoldersManualSortOrder,
-		} = this.useFileTreeStore.getState();
+		const { moveFile, moveFolder } = this.useFileTreeStore.getState();
 		try {
 			const newPath = folder.path + "/" + this.item.name;
 			if (isFile(this.item)) {
 				await moveFile(this.item, newPath);
 			} else {
 				await moveFolder(this.item as TFolder, newPath);
-				if (folderSortRule !== FOLDER_MANUAL_SORT_RULE) return;
-				await initFoldersManualSortOrder();
 			}
 		} catch (e) {
 			alert(e);

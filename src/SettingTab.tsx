@@ -172,5 +172,22 @@ export class SettingTab extends PluginSettingTab {
 					);
 				});
 			});
+
+		new Setting(containerEl)
+			.setName(settingsCopy.openDestinationFolder.name)
+			.setDesc(settingsCopy.openDestinationFolder.desc)
+			.addToggle((cb) => {
+				cb.setValue(
+					this.plugin.settings.openDestinationFolderAfterMove
+				);
+				cb.onChange(async (val) => {
+					this.plugin.settings.openDestinationFolderAfterMove = val;
+					await this.plugin.saveSettings();
+					this.plugin.triggerSettingsChangeEvent(
+						"openDestinationFolderAfterMove",
+						val
+					);
+				});
+			});
 	}
 }
