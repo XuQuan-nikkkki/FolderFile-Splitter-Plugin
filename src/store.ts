@@ -113,6 +113,8 @@ export type FileTreeStore = {
 	) => Promise<void>;
 	moveFolder: (folder: TFolder, newPath: string) => Promise<void>;
 	renameFolder: (folder: TFolder, newName: string) => Promise<void>;
+	expandFolder: (folder: TFolder) => void;
+	collapseFolder: (folder: TFolder) => void;
 
 	// Files related
 	findFileByPath: (path: string) => TFile | null;
@@ -253,7 +255,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		): TFile[] => {
 			const getFiles = (folder: TFolder): TFile[] => {
 				if (!folder || !folder.children) return [];
-				
+
 				return folder.children.reduce<TFile[]>((files, child) => {
 					if (isFile(child)) {
 						files.push(child as TFile);
@@ -670,6 +672,28 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			const { moveFolder } = get();
 			const newPath = folder.path.replace(folder.name, newName);
 			await moveFolder(folder, newPath);
+		},
+		expandFolder: (folder: TFolder) => {
+			const {
+				changeExpandedFolderPaths,
+				expandedFolderPaths,
+				hasFolderChildren,
+			} = get();
+			if (!hasFolderChildren(folder) || folder.isRoot()) return;
+			changeExpandedFolderPaths([
+				...new Set([...expandedFolderPaths, folder.path]),
+			]);
+		},
+		collapseFolder: (folder: TFolder) => {
+			const {
+				changeExpandedFolderPaths,
+				hasFolderChildren,
+				expandedFolderPaths,
+			} = get();
+			if (!hasFolderChildren(folder) || folder.isRoot()) return;
+			changeExpandedFolderPaths(
+				expandedFolderPaths.filter((path) => path !== folder.path)
+			);
 		},
 
 		// Files related

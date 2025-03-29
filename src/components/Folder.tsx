@@ -1,15 +1,12 @@
-import { TAbstractFile, TFile, TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
-import { useDrag, useDrop } from "react-dnd";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 import { FileTreeStore } from "src/store";
-import { FFS_FILE, FFS_FOLDER } from "src/assets/constants";
+import { FFS_DRAG_FILE, FFS_DRAG_FOLDER } from "src/assets/constants";
 import FolderContent, { FolderProps } from "./FolderContent";
 import { Draggable } from "./Styled/Sortable";
-import { isFile } from "src/utils";
-import { getEmptyImage } from "react-dnd-html5-backend";
 import { useFileTree } from "./FileTree";
+import { useDraggable, useDroppable } from "@dnd-kit/core";
 
 type Props = FolderProps & {
 	onOpenFilesPane: () => void;
@@ -26,85 +23,47 @@ const Folder = ({
 
 	const {
 		setFocusedFolder,
-		hasFolderChildren,
+		expandFolder,
+		collapseFolder,
 		expandedFolderPaths,
-		changeExpandedFolderPaths,
-		selectFile,
-		moveFile,
-		moveFolder,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
-			folderSortRule: store.folderSortRule,
 			setFocusedFolder: store.setFocusedFolder,
 			hasFolderChildren: store.hasFolderChildren,
 			expandedFolderPaths: store.expandedFolderPaths,
-			changeExpandedFolderPaths: store.changeExpandedFolderPaths,
-			selectFile: store.selectFile,
-			moveFile: store.moveFile,
-			moveFolder: store.moveFolder,
+			expandFolder: store.expandFolder,
+			collapseFolder: store.collapseFolder,
 		}))
 	);
 
-	const folderRef = useRef<HTMLDivElement>(null);
+	const {
+		setNodeRef: setDragRef,
+		attributes,
+		listeners,
+		isDragging,
+	} = useDraggable({
+		id: folder.path,
+		data: { type: FFS_DRAG_FOLDER, item: folder },
+	});
 
-	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
-	const onToggleExpandState = (): void => {
-		if (isRoot) return;
-		if (hasFolderChildren(folder)) {
-			const folderPaths = isFolderExpanded
-				? expandedFolderPaths.filter((path) => path !== folder.path)
-				: [...expandedFolderPaths, folder.path];
-			changeExpandedFolderPaths(folderPaths);
-		}
-	};
-
-	const [{ isDragging }, drag, preview] = useDrag(() => ({
-		type: FFS_FOLDER,
-		item: folder,
-		collect: (monitor) => ({
-			isDragging: monitor.isDragging(),
-		}),
-		canDrag: !disableDrag,
-	}));
-
-	const onDrop = async (item: TAbstractFile, itemType: string) => {
-		if (item.parent?.path === folder.path) return;
-		const newPath = folder.path + "/" + item.name;
-		if (isFile(item)) {
-			await moveFile(item, newPath);
-		} else {
-			await moveFolder(item as TFolder, newPath);
-		}
-		if (!isFolderExpanded) {
-			onToggleExpandState();
-		}
-		if (itemType === FFS_FILE) {
-			await setFocusedFolder(folder);
-			await selectFile(item as TFile);
-		} else {
-			setFocusedFolder(item as TFolder);
-		}
-	};
-
-	const [{ isOver }, drop] = useDrop(
-		() => ({
-			accept: [FFS_FILE, FFS_FOLDER],
-			drop: async (item: TAbstractFile, monitor) => {
-				const itemType = monitor.getItemType();
-				await onDrop(item, itemType as string);
-			},
-			collect: (monitor) => ({
-				isOver: !!monitor.isOver({ shallow: true }),
-			}),
-		}),
-		[isFolderExpanded]
-	);
-
-	drag(drop(folderRef));
+	const { setNodeRef: setDropRef, isOver } = useDroppable({
+		id: `drop-${folder.path}`,
+		data: {
+			accepts: [FFS_DRAG_FILE, FFS_DRAG_FOLDER],
+			item: folder,
+		},
+		disabled: disableDrag,
+	});
 
 	useEffect(() => {
-		preview(getEmptyImage(), { captureDraggingState: true });
-	}, [preview]);
+		if (!isOver) return;
+		const timer = setTimeout(() => {
+			if (!expandedFolderPaths.includes(folder.path)) {
+				expandFolder(folder);
+			}
+		}, 800);
+		return () => clearTimeout(timer);
+	}, [isOver]);
 
 	useEffect(() => {
 		window.addEventListener("dblclick", onOpenFilesPane);
@@ -113,20 +72,33 @@ const Folder = ({
 		};
 	}, [onOpenFilesPane]);
 
+	const onToggleExpandState = (): void => {
+		const isFolderExpanded = expandedFolderPaths.includes(folder.path);
+		if (isFolderExpanded) {
+			collapseFolder(folder);
+		} else {
+			expandFolder(folder);
+		}
+	};
+
 	return (
-		<Draggable
-			ref={folderRef}
-			onClick={() => setFocusedFolder(folder)}
-			style={{ opacity: isDragging ? 0 : 1 }}
-		>
-			<FolderContent
-				folder={folder}
-				isRoot={isRoot}
-				hideExpandIcon={hideExpandIcon}
-				isOver={isOver}
-				onToggleExpandState={onToggleExpandState}
-			/>
-		</Draggable>
+		<div ref={setDropRef}>
+			<Draggable
+				ref={setDragRef}
+				style={{ opacity: isDragging ? 0 : 1 }}
+				onClick={() => setFocusedFolder(folder)}
+				{...attributes}
+				{...listeners}
+			>
+				<FolderContent
+					folder={folder}
+					isRoot={isRoot}
+					hideExpandIcon={hideExpandIcon}
+					isOver={isOver}
+					onToggleExpandState={onToggleExpandState}
+				/>
+			</Draggable>
+		</div>
 	);
 };
 

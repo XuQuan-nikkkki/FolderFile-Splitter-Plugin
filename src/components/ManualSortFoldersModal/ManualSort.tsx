@@ -2,7 +2,7 @@ import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 import { StoreApi, UseBoundStore } from "zustand";
 import styled from "styled-components";
-import { Fragment, useEffect, useState } from "react";
+import { act, Fragment, useEffect, useState } from "react";
 import {
 	SortableContext,
 	sortableKeyboardCoordinates,
@@ -95,7 +95,7 @@ const ManualSort = ({ parentFolder, useFileTreeStore, plugin }: Props) => {
 		const { active, over } = event;
 
 		if (over && active.id !== over.id) {
-			const folder = getSortedFolders().find((f) => f.path === active.id);
+			const folder = active.data.current?.item as TFolder;
 			if (!folder) return;
 			const atIndex = getSortedFolders().findIndex(
 				(f) => f.path === over.id

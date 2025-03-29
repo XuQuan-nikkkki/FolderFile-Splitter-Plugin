@@ -7,6 +7,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 import { FileTreeStore } from "src/store";
 import { StyledIcon } from "../Styled/DragIcon";
+import { FFS_SORT_FOLDER } from "src/assets/constants";
 
 const StyledFolder = styled.div`
 	display: grid;
@@ -50,7 +51,10 @@ const FolderToSort = ({ folder, useFileTreeStore, goInToFolder }: Props) => {
 		transform,
 		transition,
 		isDragging,
-	} = useSortable({ id: folder.path });
+	} = useSortable({
+		id: folder.path,
+		data: { item: folder, type: FFS_SORT_FOLDER },
+	});
 
 	const style = {
 		transform: CSS.Transform.toString(transform),

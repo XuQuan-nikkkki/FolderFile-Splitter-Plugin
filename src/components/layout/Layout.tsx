@@ -1,6 +1,5 @@
 import styled, { css } from "styled-components";
 
-type Direction = "horizontal" | "vertical";
 type Side = "left" | "right";
 
 const BorderRadiusStyle = css`
