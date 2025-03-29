@@ -3,6 +3,7 @@ import { useShallow } from "zustand/react/shallow";
 import { FILE_MANUAL_SORT_RULE, FileSortRule, FileTreeStore } from "src/store";
 import SortAction from "../SortAction";
 import { useFileTree } from "../FileTree";
+import { ManualSortFilesModal } from "../ManualSortFilesModal";
 
 type FileSortRuleItem = {
 	text: string;
@@ -48,12 +49,14 @@ const SortFiles = () => {
 		changeFileSortRule,
 		isFilesInAscendingOrder,
 		initFilesManualSortOrder,
+		focusedFolder,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			fileSortRule: store.fileSortRule,
 			isFilesInAscendingOrder: store.isFilesInAscendingOrder,
 			changeFileSortRule: store.changeFileSortRule,
 			initFilesManualSortOrder: store.initFilesManualSortOrder,
+			focusedFolder: store.focusedFolder,
 		}))
 	);
 
@@ -70,6 +73,14 @@ const SortFiles = () => {
 			changeSortRule={async (rule) => {
 				if (rule === FILE_MANUAL_SORT_RULE) {
 					await initFilesManualSortOrder();
+					if (focusedFolder) {
+						const modal = new ManualSortFilesModal(
+							plugin,
+							focusedFolder,
+							useFileTreeStore
+						);
+						modal.open();
+					}
 				}
 				changeFileSortRule(rule);
 			}}

@@ -1,8 +1,7 @@
 import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 import { StoreApi, UseBoundStore } from "zustand";
-import styled from "styled-components";
-import { act, Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
 	SortableContext,
 	sortableKeyboardCoordinates,
@@ -23,34 +22,22 @@ import {
 import { FileTreeStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
 import FolderToSort, { StyledButton } from "./FolderToSort";
-
-const StyledFoldersList = styled.div`
-	overflow-y: auto;
-	height: 50vh;
-
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-`;
-const StyledAction = styled.div`
-	width: 100%;
-	background-color: var(--interactive-normal);
-	border-radius: var(--ffs-border-radius);
-	padding: 8px 16px;
-`;
-const StyledPanel = styled.div`
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-	width: 100%;
-`;
+import {
+	StyledAction,
+	StyledList,
+	StyledPanel,
+} from "../Styled/ManualSortModal";
 
 type Props = {
 	parentFolder: TFolder | null;
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
 	plugin: FolderFileSplitterPlugin;
 };
-const ManualSort = ({ parentFolder, useFileTreeStore, plugin }: Props) => {
+const ManualSortFolders = ({
+	parentFolder,
+	useFileTreeStore,
+	plugin,
+}: Props) => {
 	const {
 		getFoldersByParent,
 		sortFolders,
@@ -179,7 +166,7 @@ const ManualSort = ({ parentFolder, useFileTreeStore, plugin }: Props) => {
 					items={items}
 					strategy={verticalListSortingStrategy}
 				>
-					<StyledFoldersList>
+					<StyledList>
 						{getSortedFolders().map((folder) => (
 							<FolderToSort
 								key={folder.path}
@@ -188,7 +175,7 @@ const ManualSort = ({ parentFolder, useFileTreeStore, plugin }: Props) => {
 								goInToFolder={goInToFolder}
 							/>
 						))}
-					</StyledFoldersList>
+					</StyledList>
 				</SortableContext>
 			</StyledPanel>
 			<DragOverlay>{renderOverlayContent()}</DragOverlay>
@@ -196,4 +183,4 @@ const ManualSort = ({ parentFolder, useFileTreeStore, plugin }: Props) => {
 	);
 };
 
-export default ManualSort;
+export default ManualSortFolders;

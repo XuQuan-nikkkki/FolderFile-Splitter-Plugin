@@ -1,6 +1,7 @@
 export type Lang = "en" | "zh";
+type Copy = Record<string, Record<Lang, string>>;
 
-export const FOLDER_OPERATION_COPY: Record<string, Record<Lang, string>> = {
+export const FOLDER_OPERATION_COPY: Copy = {
 	pinFolder: {
 		en: "Pin folder",
 		zh: "置顶",
@@ -31,7 +32,7 @@ export const FOLDER_OPERATION_COPY: Record<string, Record<Lang, string>> = {
 	},
 };
 
-export const FILE_OPERATION_COPY: Record<string, Record<Lang, string>> = {
+export const FILE_OPERATION_COPY: Copy = {
 	pinFile: {
 		en: "Pin file",
 		zh: "置顶",
@@ -65,3 +66,14 @@ export const FILE_OPERATION_COPY: Record<string, Record<Lang, string>> = {
 		zh: "删除",
 	},
 };
+
+export const TIPS_COPY: Copy = {
+	dragToSortFolders: {
+		en: "Drag to sort folders",
+		zh: "拖动文件夹排序",
+	},
+	dragToSortFiles: {
+		en: "Drag to sort files",
+		zh: "拖动笔记排序",
+	},
+}
