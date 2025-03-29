@@ -58,12 +58,14 @@ export default class FolderFileSplitterPlugin extends Plugin {
 
 	triggerVaultChangeEvent = (
 		file: TAbstractFile,
-		changeType: VaultChangeType
+		changeType: VaultChangeType,
+		oldPath?: string
 	) => {
 		const event = new CustomEvent(VaultChangeEventName, {
 			detail: {
 				file,
 				changeType,
+				oldPath,
 			},
 		});
 		window.dispatchEvent(event);
@@ -81,8 +83,11 @@ export default class FolderFileSplitterPlugin extends Plugin {
 		this.triggerVaultChangeEvent(file, "delete");
 	};
 
-	onRename: (file: TAbstractFile) => void = (file) => {
-		this.triggerVaultChangeEvent(file, "rename");
+	onRename: (file: TAbstractFile, oldPath: string) => void = (
+		file,
+		oldPath
+	) => {
+		this.triggerVaultChangeEvent(file, "rename", oldPath);
 	};
 
 	triggerSettingsChangeEvent = <

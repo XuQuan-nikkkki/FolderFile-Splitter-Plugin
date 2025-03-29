@@ -138,7 +138,7 @@ export type FileTreeStore = {
 	initFilesManualSortOrder: () => Promise<void>;
 	getInitialFilesOrder: () => ManualSortOrder;
 	restoreFilesManualSortOrder: () => Promise<void>;
-	_updateFileManualOrder: (
+	updateFileManualOrder: (
 		parentPath: string,
 		oldPath: string,
 		newPath: string
@@ -155,6 +155,10 @@ export type FileTreeStore = {
 	trashFile: (file: TFile) => Promise<void>;
 	moveFile: (file: TFile, newPath: string) => Promise<void>;
 	renameFile: (file: TFile, newName: string) => Promise<void>;
+	updatePinStateAfterPathChange: (
+		oldPath: string,
+		newPath: string
+	) => Promise<void>;
 };
 
 export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
@@ -1011,7 +1015,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			paths.splice(pinnedIndex, 1, newPath);
 			await _updatePinnedFilePaths(paths);
 		},
-		_updateFileManualOrder: async (
+		updateFileManualOrder: async (
 			parentPath: string,
 			oldPath: string,
 			newPath: string
@@ -1031,25 +1035,16 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				[parentPath]: orderedPaths,
 			});
 		},
+		updatePinStateAfterPathChange: async (
+			oldPath: string,
+			newPath: string
+		) => {
+			const { pinnedFilePaths, _updatePinnedFilePath } = get();
+			if (!pinnedFilePaths.includes(oldPath)) return;
+			await _updatePinnedFilePath(oldPath, newPath);
+		},
 		moveFile: async (file: TFile, newPath: string) => {
-			const {
-				isFilePinned,
-				_updatePinnedFilePath,
-				_updateFileManualOrder,
-			} = get();
-			const oldPath = file.path;
-			const parentPath = file.parent?.path;
-			try {
-				const isPinned = isFilePinned(file);
-				await plugin.app.fileManager.renameFile(file, newPath);
-				if (isPinned) {
-					await _updatePinnedFilePath(oldPath, newPath);
-				}
-				if (!parentPath) return;
-				await _updateFileManualOrder(parentPath, oldPath, newPath);
-			} catch (e) {
-				alert(e);
-			}
+			await plugin.app.fileManager.renameFile(file, newPath);
 		},
 		renameFile: async (file: TFile, newName: string) => {
 			const { moveFile } = get();

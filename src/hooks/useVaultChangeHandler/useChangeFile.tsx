@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { TFile } from "obsidian";
 
-import { FileTreeStore } from "src/store";
+import { FILE_MANUAL_SORT_RULE, FileTreeStore } from "src/store";
 
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFile } from "src/utils";
@@ -12,10 +12,19 @@ import { useShowFilesFromSubfolders } from "../useSettingsHandler";
 const useChangeFile = () => {
 	const { useFileTreeStore, plugin } = useFileTree();
 
-	const { focusedFolder, getFilesInFolder } = useFileTreeStore(
+	const {
+		focusedFolder,
+		getFilesInFolder,
+		updatePinStateAfterPathChange,
+		updateFileManualOrder,
+		fileSortRule,
+	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			focusedFolder: store.focusedFolder,
 			getFilesInFolder: store.getFilesInFolder,
+			updatePinStateAfterPathChange: store.updatePinStateAfterPathChange,
+			updateFileManualOrder: store.updateFileManualOrder,
+			fileSortRule: store.fileSortRule,
 		}))
 	);
 
@@ -52,8 +61,8 @@ const useChangeFile = () => {
 		);
 	};
 
-	const onHandleVaultChange = (event: VaultChangeEvent) => {
-		const { file, changeType } = event.detail;
+	const onHandleVaultChange = async (event: VaultChangeEvent) => {
+		const { file, changeType, oldPath } = event.detail;
 		if (!isFile(file)) return;
 
 		switch (changeType) {
@@ -71,6 +80,17 @@ const useChangeFile = () => {
 					onUpdateFileInList(file);
 				} else {
 					onDeleteFileFromList(file);
+				}
+				if (oldPath) {
+					const parentPath = file.parent?.path;
+					await updatePinStateAfterPathChange(oldPath, file.path);
+					if (parentPath && fileSortRule === FILE_MANUAL_SORT_RULE) {
+						await updateFileManualOrder(
+							parentPath,
+							oldPath,
+							file.path
+						);
+					}
 				}
 				break;
 			case "modify":

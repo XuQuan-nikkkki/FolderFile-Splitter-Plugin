@@ -20,6 +20,7 @@ export type VaultChangeType = "create" | "modify" | "delete" | "rename";
 export type VaultChangeEvent = CustomEvent<{
 	file: TAbstractFile;
 	changeType: VaultChangeType;
+	oldPath?: string
 }>;
 
 export const FFS_PLUGIN_SETTINGS = "FolderFileSplitterPlugin-Settings";
