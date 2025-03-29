@@ -135,14 +135,12 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			item.onClick(async () => {
 				const folder = file.parent || plugin.app.vault.getRoot();
 				await createFile(folder);
-				await maybeInitOrder();
 			});
 		});
 		menu.addItem((item) => {
 			item.setTitle(FILE_OPERATION_COPY.duplicate[language]);
 			item.onClick(async () => {
 				await duplicateFile(file);
-				await maybeInitOrder();
 			});
 		});
 		menu.addItem((item) => {
@@ -171,7 +169,6 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			item.onClick(async () => {
 				deleteFile();
 				await trashFile(file);
-				await maybeInitOrder();
 			});
 		});
 		plugin.app.workspace.trigger("file-context-menu", menu);

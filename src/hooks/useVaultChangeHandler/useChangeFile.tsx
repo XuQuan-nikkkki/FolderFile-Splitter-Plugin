@@ -18,6 +18,9 @@ const useChangeFile = () => {
 		updatePinStateAfterPathChange,
 		updateFileManualOrder,
 		fileSortRule,
+		initOrder,
+		isFilePinned,
+		unpinFile,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			focusedFolder: store.focusedFolder,
@@ -25,6 +28,9 @@ const useChangeFile = () => {
 			updatePinStateAfterPathChange: store.updatePinStateAfterPathChange,
 			updateFileManualOrder: store.updateFileManualOrder,
 			fileSortRule: store.fileSortRule,
+			initOrder: store.initFilesManualSortOrder,
+			isFilePinned: store.isFilePinned,
+			unpinFile: store.unpinFile,
 		}))
 	);
 
@@ -61,17 +67,27 @@ const useChangeFile = () => {
 		);
 	};
 
+	const maybeInitOrder = async () => {
+		if (fileSortRule !== FILE_MANUAL_SORT_RULE) return;
+		await initOrder();
+	};
+
 	const onHandleVaultChange = async (event: VaultChangeEvent) => {
 		const { file, changeType, oldPath } = event.detail;
 		if (!isFile(file)) return;
 
 		switch (changeType) {
 			case "create":
+				maybeInitOrder();
 				if (focusedFolder && file.parent?.path == focusedFolder.path) {
 					setFiles((prevFiles) => [...prevFiles, file]);
 				}
 				break;
 			case "delete":
+				await maybeInitOrder();
+				if (isFilePinned(file)) {
+					await unpinFile(file);
+				}
 				onDeleteFileFromList(file);
 				break;
 			case "rename":

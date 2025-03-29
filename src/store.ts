@@ -995,12 +995,8 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 			});
 		},
 		trashFile: async (file: TFile) => {
-			const { isFilePinned, unpinFile, setFocusedFile, focusedFile } =
-				get();
+			const { setFocusedFile, focusedFile } = get();
 			const { app } = plugin;
-			if (isFilePinned(file)) {
-				await unpinFile(file);
-			}
 			if (file.path === focusedFile?.path) {
 				await setFocusedFile(null);
 			}
