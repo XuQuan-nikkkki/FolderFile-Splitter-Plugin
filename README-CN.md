@@ -9,8 +9,10 @@
 - **改进的导航**：轻松在文件夹和文件间导航，提升工作效率。
 - **增强的文件管理**：通过简化界面，集中管理最重要的内容，提升可用性。
     ![file management example](./src/assets/images/file_management.gif)
+- **布局模式切换**：可在水平分屏和垂直分屏布局之间切换，以适应你的工作习惯。
+    ![layout mode toggle](./src/assets/images/layout_mode.gif)
 - **自定义排序**：允许用户自定义文件和文件夹的顺序，包括将特定项目置顶以便快速访问。
-    ![manual sort files and folders](./src/assets/images/manual%20sort.gif)
+    ![manual sort files and folders](./src/assets/images/manual_sort.gif)
 - **置顶文件和文件夹**：轻松将常用文件或文件夹置顶，以便更快访问和更好组织。
    ![pin files and folders](./src/assets/images/pin.gif)
 - **主题适配**：自动适配当前 Obsidian 主题，确保一致且美观的视觉体验。

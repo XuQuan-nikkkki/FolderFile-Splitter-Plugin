@@ -12,8 +12,10 @@
 - **Improved Navigation**: Navigate through folders and files effortlessly without losing track of your location.
 - **Enhanced File Management**: Focus on what matters most with a streamlined interface that prioritizes usability.
   ![file management example](./src/assets/images/file_management.gif)
+- **Layout Mode Toggle**: Choose between horizontal split and vertical split layouts to match your workspace preference.
+  ![layout mode toggle](./src/assets/images/layout_mode.gif)
 - **Customizable Sorting**: Allows users to customize the order of files and folders, including the ability to pin specific items to the top for quick access.
-   ![manual sort files and folders](./src/assets/images/manual%20sort.gif)
+   ![manual sort files and folders](./src/assets/images/manual_sort.gif)
 - **Pin Files and Folders**: Easily pin frequently used files or folders to the top of the list for faster access and better organization.
    ![pin files and folders](./src/assets/images/pin.gif)
 - **Theme Adaptation**: Automatically adapts to the current Obsidian theme, ensuring a cohesive and visually appealing experience.
