@@ -1,10 +1,10 @@
 {
 	"id": "folder-file-splitter",
 	"name": "FolderFile Splitter",
-	"version": "0.2.2",
+	"version": "0.2.3",
 	"minAppVersion": "1.5.7",
 	"description": "Splits folder and file lists into separate views, simplifying navigation, improving clarity, and making it more intuitive to organize your notes.",
 	"author": "Xu Quan",
 	"authorUrl": "https://xuquan.site/",
-	"isDesktopOnly": true 
+	"isDesktopOnly": true
 }
