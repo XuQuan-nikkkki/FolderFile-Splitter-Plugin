@@ -9,9 +9,15 @@ import { FileTreeStore } from "src/store";
 import { StyledIcon } from "../Styled/DragIcon";
 import { FFS_SORT_FOLDER } from "src/assets/constants";
 
+const DraggableSection = styled.div`
+	display: flex;
+	gap: 8px;
+	align-items: center;
+`;
+
 const StyledFolder = styled.div`
 	display: grid;
-	grid-template-columns: 20px 1fr auto;
+	grid-template-columns: 1fr auto;
 	gap: 8px;
 	height: 30px;
 	align-items: center;
@@ -69,12 +75,17 @@ const FolderToSort = ({ folder, useFileTreeStore, goInToFolder }: Props) => {
 			id={folder.path}
 			style={style}
 			{...attributes}
-			{...listeners}
 		>
-			<StyledIcon />
-			<div>{folder.name}</div>
+			<DraggableSection {...listeners}>
+				<StyledIcon />
+				<div>{folder.name}</div>
+			</DraggableSection>
 			{subfolders.length > 0 && (
-				<StyledButton onClick={() => goInToFolder(folder)}>
+				<StyledButton
+					onClick={(e) => {
+						goInToFolder(folder);
+					}}
+				>
 					Sort subfolders
 				</StyledButton>
 			)}
