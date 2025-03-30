@@ -31,7 +31,6 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		options: {
 			horizontalSplit: "Horizontal split",
 			verticalSplit: "Vertical split",
-			toggleView: "Toggle view",
 		},
 	},
 	showFileDetail: {
@@ -79,7 +78,6 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 		options: {
 			horizontalSplit: "水平分割",
 			verticalSplit: "垂直分割",
-			toggleView: "切换视图",
 		},
 	},
 	showFileDetail: {

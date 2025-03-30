@@ -22,13 +22,11 @@ import {
 } from "src/hooks/useSettingsHandler";
 import {
 	HorizontalSplitLayoutMode,
-	ToggleViewLayoutMode,
 	VerticalSplitLayoutMode,
 } from "src/settings";
 import {
 	HorizontalSplitLayout,
 	VerticalSplitLayout,
-	ToggleViewLayout,
 } from "./layout";
 import { isFile, isFolder } from "src/utils";
 import { snapCenterToCursor } from "@dnd-kit/modifiers";
@@ -145,8 +143,6 @@ const FileTree = ({ plugin }: Props) => {
 				return <HorizontalSplitLayout />;
 			case VerticalSplitLayoutMode:
 				return <VerticalSplitLayout />;
-			case ToggleViewLayoutMode:
-				return <ToggleViewLayout />;
 			default:
 				return "unknown layout mode";
 		}

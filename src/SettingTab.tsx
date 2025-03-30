@@ -4,7 +4,6 @@ import {
 	ExpandFolderByClickingOnElement,
 	HorizontalSplitLayoutMode,
 	LayoutMode,
-	ToggleViewLayoutMode,
 	VerticalSplitLayoutMode,
 } from "./settings";
 import {
@@ -70,7 +69,6 @@ export class SettingTab extends PluginSettingTab {
 					VerticalSplitLayoutMode,
 					options?.verticalSplit ?? ""
 				);
-				cb.addOption(ToggleViewLayoutMode, options?.toggleView ?? "");
 				cb.setValue(this.plugin.settings.layoutMode);
 				cb.onChange(async (val: LayoutMode) => {
 					this.plugin.settings.layoutMode = val;

@@ -7,11 +7,9 @@ export type ExpandFolderByClickingOnElement =
 
 export const HorizontalSplitLayoutMode = "Horizontal split";
 export const VerticalSplitLayoutMode = "Vertical split";
-export const ToggleViewLayoutMode = "Toggle view";
 export type LayoutMode =
 	| typeof HorizontalSplitLayoutMode
-	| typeof VerticalSplitLayoutMode
-	| typeof ToggleViewLayoutMode;
+	| typeof VerticalSplitLayoutMode;
 
 export interface FolderFileSplitterPluginSettings {
 	expandFolderByClickingOn: ExpandFolderByClickingOnElement;
