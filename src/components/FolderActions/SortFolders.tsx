@@ -8,35 +8,18 @@ import {
 import SortAction from "../SortAction";
 import { useFileTree } from "../FileTree";
 import { ManualSortFoldersModal } from "../ManualSortFoldersModal";
+import { FOLDER_SORT_RULES_COPY } from "src/locales";
 
 type FolderSortRuleItem = {
 	text: string;
 	rule: FolderSortRule;
 };
 type FolderSortRuleGroup = FolderSortRuleItem[];
-const FolderSortByNameRules: FolderSortRuleGroup = [
-	{ text: "Folder name(A to Z)", rule: "FolderNameAscending" },
-	{ text: "Folder name(Z to A)", rule: "FolderNameDescending" },
-];
-const FolderSortByFilesCountRules: FolderSortRuleGroup = [
-	{
-		text: "Files count(small to large)",
-		rule: "FilesCountAscending",
-	},
-	{
-		text: "Files count(large to small)",
-		rule: "FilesCountDescending",
-	},
-];
-const FolderManualSortRules: FolderSortRuleGroup = [
-	{
-		text: "Manual order",
-		rule: "FolderManualOrder",
-	},
-];
 
 const SortFolders = () => {
 	const { useFileTreeStore, plugin } = useFileTree();
+
+	const { language } = plugin;
 
 	const {
 		folderSortRule,
@@ -52,14 +35,51 @@ const SortFolders = () => {
 		}))
 	);
 
+	const getRuleGroups = () => {
+		const {
+			folderNameAscending,
+			folderNameDescending,
+			filesCountAscending,
+			filesCountDescending,
+			manualOrder,
+		} = FOLDER_SORT_RULES_COPY;
+		const folderSortByNameRules: FolderSortRuleGroup = [
+			{
+				text: folderNameAscending[language],
+				rule: "FolderNameAscending",
+			},
+			{
+				text: folderNameDescending[language],
+				rule: "FolderNameDescending",
+			},
+		];
+		const folderSortByFilesCountRules: FolderSortRuleGroup = [
+			{
+				text: filesCountAscending[language],
+				rule: "FilesCountAscending",
+			},
+			{
+				text: filesCountDescending[language],
+				rule: "FilesCountDescending",
+			},
+		];
+		const folderManualSortRules: FolderSortRuleGroup = [
+			{
+				text: manualOrder[language],
+				rule: "FolderManualOrder",
+			},
+		];
+		return [
+			folderSortByNameRules,
+			folderSortByFilesCountRules,
+			folderManualSortRules,
+		];
+	};
+
 	return (
 		<SortAction
 			plugin={plugin}
-			ruleGroups={[
-				FolderSortByNameRules,
-				FolderSortByFilesCountRules,
-				FolderManualSortRules,
-			]}
+			ruleGroups={getRuleGroups()}
 			menuName="sort-folders-menu"
 			changeSortRule={(rule) => {
 				if (rule === FOLDER_MANUAL_SORT_RULE) {

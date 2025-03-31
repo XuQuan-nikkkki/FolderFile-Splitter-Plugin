@@ -4,45 +4,18 @@ import { FILE_MANUAL_SORT_RULE, FileSortRule, FileTreeStore } from "src/store";
 import SortAction from "../SortAction";
 import { useFileTree } from "../FileTree";
 import { ManualSortFilesModal } from "../ManualSortFilesModal";
+import { FILE_SORT_RULES_COPY } from "src/locales";
 
 type FileSortRuleItem = {
 	text: string;
 	rule: FileSortRule;
 };
 type FileSortRuleGroup = FileSortRuleItem[];
-const FileSortByNameRules: FileSortRuleGroup = [
-	{ text: "File name(A to Z)", rule: "FileNameAscending" },
-	{ text: "File name(Z to A)", rule: "FileNameDescending" },
-];
-const FileSortByModifiedTimeRules: FileSortRuleGroup = [
-	{
-		text: "Modified time(new to old)",
-		rule: "FileModifiedTimeDescending",
-	},
-	{
-		text: "Modified time(old to new)",
-		rule: "FileModifiedTimeAscending",
-	},
-];
-const FileSortByCreatedTimeRules: FileSortRuleGroup = [
-	{
-		text: "Created time(new to old)",
-		rule: "FileCreatedTimeDescending",
-	},
-	{
-		text: "Created time(old to new)",
-		rule: "FileCreatedTimeAscending",
-	},
-];
-const FilesManualSortRules: FileSortRuleGroup = [
-	{
-		text: "Manual order",
-		rule: "FileManualOrder",
-	},
-];
 
 const SortFiles = () => {
 	const { useFileTreeStore, plugin } = useFileTree();
+
+	const { language } = plugin;
 
 	const {
 		fileSortRule,
@@ -60,15 +33,59 @@ const SortFiles = () => {
 		}))
 	);
 
+	const getRuleGroups = () => {
+		const {
+			fileNameAscending,
+			fileNameDescending,
+			modifiledTimeAscending,
+			modifiledTimeDescending,
+			createdTimeAscending,
+			createdTimeDescending,
+			manualOrder,
+		} = FILE_SORT_RULES_COPY;
+		const fileSortByNameRules: FileSortRuleGroup = [
+			{ text: fileNameAscending[language], rule: "FileNameAscending" },
+			{ text: fileNameDescending[language], rule: "FileNameDescending" },
+		];
+		const fileSortByModifiedTimeRules: FileSortRuleGroup = [
+			{
+				text: modifiledTimeDescending[language],
+				rule: "FileModifiedTimeDescending",
+			},
+			{
+				text: modifiledTimeAscending[language],
+				rule: "FileModifiedTimeAscending",
+			},
+		];
+		const fileSortByCreatedTimeRules: FileSortRuleGroup = [
+			{
+				text: createdTimeDescending[language],
+				rule: "FileCreatedTimeDescending",
+			},
+			{
+				text: createdTimeAscending[language],
+				rule: "FileCreatedTimeAscending",
+			},
+		];
+		const filesManualSortRules: FileSortRuleGroup = [
+			{
+				text: manualOrder[language],
+				rule: "FileManualOrder",
+			},
+		];
+
+		return [
+			fileSortByNameRules,
+			fileSortByModifiedTimeRules,
+			fileSortByCreatedTimeRules,
+			filesManualSortRules,
+		];
+	};
+
 	return (
 		<SortAction
 			plugin={plugin}
-			ruleGroups={[
-				FileSortByNameRules,
-				FileSortByModifiedTimeRules,
-				FileSortByCreatedTimeRules,
-				FilesManualSortRules,
-			]}
+			ruleGroups={getRuleGroups()}
 			menuName="sort-files-menu"
 			changeSortRule={async (rule) => {
 				if (rule === FILE_MANUAL_SORT_RULE) {

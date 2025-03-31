@@ -76,4 +76,58 @@ export const TIPS_COPY: Copy = {
 		en: "Drag to sort files",
 		zh: "拖动笔记排序",
 	},
-}
+};
+
+export const FOLDER_SORT_RULES_COPY: Copy = {
+	folderNameAscending: {
+		en: "Folder name(A to Z)",
+		zh: "按文件夹名升序",
+	},
+	folderNameDescending: {
+		en: "Folder name(Z to A)",
+		zh: "按文件夹名降序",
+	},
+	filesCountAscending: {
+		en: "Files count(small to large)",
+		zh: "按文件数（从少到多）",
+	},
+	filesCountDescending: {
+		en: "Files count(large to small)",
+		zh: "按文件数（从多到少）",
+	},
+	manualOrder: {
+		en: "Manual order",
+		zh: "手动排序",
+	},
+};
+
+export const FILE_SORT_RULES_COPY: Copy = {
+	fileNameAscending: {
+		en: "File name(A to Z)",
+		zh: "按文件名升序",
+	},
+	fileNameDescending: {
+		en: "File name(Z to A)",
+		zh: "按文件名降序",
+	},
+	modifiledTimeDescending: {
+		en: "Modifiled time(new to old)",
+		zh: "按修改时间（从新到旧）",
+	},
+	modifiledTimeAscending: {
+		en: "Modifiled time(old to new)",
+		zh: "按修改时间（从旧到新）",
+	},
+	createdTimeDescending: {
+		en: "Created time(new to old)",
+		zh: "按创建时间（从新到旧）",
+	},
+	createdTimeAscending: {
+		en: "Created time(old to new)",
+		zh: "按创建时间（从旧到新）",
+	},
+	manualOrder: {
+		en: "Manual order",
+		zh: "手动排序",
+	},
+};
