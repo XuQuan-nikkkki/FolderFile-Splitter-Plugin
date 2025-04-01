@@ -162,9 +162,12 @@ const FolderContent = ({
 		menu.addItem((item) => {
 			item.setTitle(FOLDER_OPERATION_COPY.createFolder[language]);
 			item.onClick(async () => {
-				await createNewFolder(folder);
+				const newFolder = await createNewFolder(folder);
 				if (!isFolderExpanded) {
 					onToggleExpandState();
+				}
+				if (newFolder) {
+					await setFocusedFolder(newFolder);
 				}
 			});
 		});
