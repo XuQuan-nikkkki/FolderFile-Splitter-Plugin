@@ -11,6 +11,7 @@ import {
 	useSensors,
 } from "@dnd-kit/core";
 import { TAbstractFile, TFolder } from "obsidian";
+import { snapCenterToCursor } from "@dnd-kit/modifiers";
 
 import FolderFileSplitterPlugin from "src/main";
 import { createFileTreeStore, FileTreeStore } from "src/store";
@@ -24,12 +25,9 @@ import {
 	HorizontalSplitLayoutMode,
 	VerticalSplitLayoutMode,
 } from "src/settings";
-import {
-	HorizontalSplitLayout,
-	VerticalSplitLayout,
-} from "./layout";
+import { HorizontalSplitLayout, VerticalSplitLayout } from "./layout";
 import { isFile, isFolder } from "src/utils";
-import { snapCenterToCursor } from "@dnd-kit/modifiers";
+import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
 
 type FileTreeContextType = {
 	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;

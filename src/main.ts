@@ -1,9 +1,10 @@
-import { Plugin, TAbstractFile } from "obsidian";
+import { Plugin, TAbstractFile, WorkspaceLeaf } from "obsidian";
 
 import { FileTreeView } from "./FileTreeView";
 import { SettingTab } from "./SettingTab";
 import { DEFAULT_SETTINGS, FolderFileSplitterPluginSettings } from "./settings";
 import {
+	ActiveLeafChangeEventName,
 	SettingsChangeEventName,
 	VaultChangeEventName,
 	VaultChangeType,
@@ -54,6 +55,7 @@ export default class FolderFileSplitterPlugin extends Plugin {
 		this.app.vault.on("modify", this.onModify);
 		this.app.vault.on("delete", this.onDelete);
 		this.app.vault.on("rename", this.onRename);
+		this.app.workspace.on("active-leaf-change", this.onChangeActiveLeaf);
 	}
 
 	triggerVaultChangeEvent = (
@@ -105,12 +107,26 @@ export default class FolderFileSplitterPlugin extends Plugin {
 		window.dispatchEvent(event);
 	};
 
+	triggerActiveLeafChangeEvent = (leaf: WorkspaceLeaf) => {
+		const event = new CustomEvent(ActiveLeafChangeEventName, {
+			detail: {
+				leaf,
+			},
+		});
+		window.dispatchEvent(event);
+	};
+
+	onChangeActiveLeaf: (leaf: WorkspaceLeaf) => void = (leaf) => {
+		this.triggerActiveLeafChangeEvent(leaf);
+	};
+
 	onunload() {
 		this.detachFileTreeLeafs();
 		this.app.vault.off("create", this.onCreate);
 		this.app.vault.off("modify", this.onModify);
 		this.app.vault.off("delete", this.onDelete);
 		this.app.vault.off("rename", this.onRename);
+		this.app.workspace.off("active-leaf-change", this.onChangeActiveLeaf);
 	}
 
 	openFileTreeLeaf = async (showAfterAttach: boolean) => {

@@ -10,6 +10,7 @@ import {
 import { Actions, BasicFileActions, BasicFolderActions } from "./Actions";
 import Folders from "../Folders";
 import Files from "../Files";
+import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
 
 const HorizontalSplitLayout = () => {
 	const [folderPaneWidth, setFolderPaneWidth] = useState<
@@ -17,6 +18,7 @@ const HorizontalSplitLayout = () => {
 	>();
 
 	const pluginRef = useRef<HTMLDivElement>(null);
+	useChangeActiveLeaf()
 
 	const restoreLayout = () => {
 		try {

@@ -1,4 +1,4 @@
-import { TAbstractFile } from "obsidian";
+import { TAbstractFile, WorkspaceLeaf } from "obsidian";
 
 export const FFS_FOCUSED_FOLDER_PATH_KEY = "FocusedFolderPath";
 export const FFS_EXPANDED_FOLDER_PATHS_KEY = "ExpandedFolderPaths";
@@ -20,11 +20,16 @@ export type VaultChangeType = "create" | "modify" | "delete" | "rename";
 export type VaultChangeEvent = CustomEvent<{
 	file: TAbstractFile;
 	changeType: VaultChangeType;
-	oldPath?: string
+	oldPath?: string;
 }>;
 
 export const FFS_PLUGIN_SETTINGS = "FolderFileSplitterPlugin-Settings";
 export const SettingsChangeEventName = "FFS-SettingsChangeEvent";
+
+export const ActiveLeafChangeEventName = "FFS-ActiveLeafChangeEvent";
+export type ActiveLeafChangeEvent = CustomEvent<{
+	leaf: WorkspaceLeaf;
+}>;
 
 export const FFS_DRAG_FILE = "Drag_File";
 export const FFS_SORT_FILE = "Sort_File";
