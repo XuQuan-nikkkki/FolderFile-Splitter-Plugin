@@ -123,8 +123,8 @@ export type FileTreeStore = {
 	findFileByPath: (path: string) => TFile | null;
 	isFilesInAscendingOrder: () => boolean;
 	setFocusedFile: (file: TFile | null) => Promise<void>;
-	openFile: (file: TFile) => void;
-	selectFile: (file: TFile) => Promise<void>;
+	openFile: (file: TFile, focus?: boolean) => void;
+	selectFile: (file: TFile, focus?: boolean) => Promise<void>;
 	readFile: (file: TFile) => Promise<string>;
 	createFile: (folder: TFolder) => Promise<TFile | undefined>;
 	duplicateFile: (file: TFile) => Promise<TFile>;
@@ -706,15 +706,15 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				removeDataFromLocalStorage(FFS_FOCUSED_FILE_PATH_KEY);
 			}
 		},
-		openFile: (file: TFile): void => {
+		openFile: (file: TFile, focus = true): void => {
 			const leaf = plugin.app.workspace.getLeaf();
-			plugin.app.workspace.setActiveLeaf(leaf, { focus: true });
-			leaf.openFile(file, { eState: { focus: true } });
+			plugin.app.workspace.setActiveLeaf(leaf, { focus });
+			leaf.openFile(file, { eState: { focus } });
 		},
-		selectFile: async (file: TFile): Promise<void> => {
+		selectFile: async (file: TFile, focus?: boolean): Promise<void> => {
 			const { setFocusedFile, openFile } = get();
 			await setFocusedFile(file);
-			openFile(file);
+			openFile(file, focus);
 		},
 		readFile: async (file: TFile): Promise<string> => {
 			return await plugin.app.vault.read(file);
@@ -749,7 +749,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 					`${folder.path}/${newFileName}.md`,
 					""
 				);
-				get().selectFile(newFile);
+				get().selectFile(newFile, false);
 				return newFile;
 			} catch (e) {
 				alert(e);
@@ -768,7 +768,7 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 				file,
 				`${folder.path}/${newFileName}`
 			);
-			get().selectFile(newFile);
+			get().selectFile(newFile, false);
 			return newFile;
 		},
 		restoreLastFocusedFile: async () => {
