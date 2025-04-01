@@ -2,7 +2,7 @@ import { Menu, TFile } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 import { useEffect, useRef, useState } from "react";
 
-import { FILE_MANUAL_SORT_RULE, FileTreeStore } from "src/store";
+import { FileTreeStore } from "src/store";
 import { FolderListModal } from "./FolderListModal";
 import { useShowFileDetail } from "src/hooks/useSettingsHandler";
 import FileDetail from "./FileDetail";
@@ -33,8 +33,6 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		unpinFile,
 		trashFile,
 		renameFile,
-		initOrder,
-		fileSortRule,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			focusedFile: store.focusedFile,
@@ -46,8 +44,6 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			unpinFile: store.unpinFile,
 			trashFile: store.trashFile,
 			renameFile: store.renameFile,
-			initOrder: store.initFilesManualSortOrder,
-			fileSortRule: store.fileSortRule,
 		}))
 	);
 
@@ -89,10 +85,12 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		}
 	};
 
-	const maybeInitOrder = async () => {
-		if (fileSortRule !== FILE_MANUAL_SORT_RULE) return;
-		await initOrder();
-	};
+	const onStartEditingName = () => {
+		onBeginEdit();
+		setTimeout(() => {
+			selectFileNameText();
+		}, 100);	
+	}
 
 	useEffect(() => {
 		window.addEventListener("keydown", onKeyDown);
@@ -102,6 +100,14 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			window.removeEventListener("mousedown", onClickOutside);
 		};
 	}, [isFocusing]);
+
+	useEffect(() => {
+		const now = Date.now();
+		const fileCreateTime = file.stat.ctime;
+		if (now - fileCreateTime < 3000) {
+			onStartEditingName();
+		}
+	}, [])
 
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
@@ -158,10 +164,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		menu.addItem((item) => {
 			item.setTitle(FILE_OPERATION_COPY.rename[language]);
 			item.onClick(() => {
-				onBeginEdit();
-				setTimeout(() => {
-					selectFileNameText();
-				}, 100);
+				onStartEditingName();
 			});
 		});
 		menu.addItem((item) => {
