@@ -50,6 +50,8 @@ export type FileTreeStore = {
 	expandedFolderPaths: string[];
 	filesManualSortOrder: ManualSortOrder;
 	foldersManualSortOrder: ManualSortOrder;
+	latestCreatedFolder: TFolder | null;
+	latestFolderCreatedTime: number | null;
 
 	getDataFromLocalStorage: (key: string) => string | null;
 	saveDataInLocalStorage: (key: string, value: string) => void;
@@ -172,6 +174,8 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		expandedFolderPaths: [],
 		filesManualSortOrder: {},
 		foldersManualSortOrder: {},
+		latestCreatedFolder: null,
+		latestFolderCreatedTime: null,
 
 		saveDataInLocalStorage: (key: string, value: string) => {
 			localStorage.setItem(key, value);
@@ -302,6 +306,10 @@ export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
 		},
 		_createFolder: async (path: string): Promise<TFolder> => {
 			const newFolder = await plugin.app.vault.createFolder(path);
+			set({
+				latestCreatedFolder: newFolder,
+				latestFolderCreatedTime: Date.now(),
+			});
 			return newFolder;
 		},
 		createNewFolder: async (

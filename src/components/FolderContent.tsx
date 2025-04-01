@@ -51,6 +51,8 @@ const FolderContent = ({
 		renameFolder,
 		initOrder,
 		folderSortRule,
+		latestCreatedFolder,
+		latestFolderCreatedTime,
 	} = useFileTreeStore(
 		useShallow((store: FileTreeStore) => ({
 			focusedFolder: store.focusedFolder,
@@ -66,6 +68,8 @@ const FolderContent = ({
 			renameFolder: store.renameFolder,
 			initOrder: store.initFoldersManualSortOrder,
 			folderSortRule: store.folderSortRule,
+			latestCreatedFolder: store.latestCreatedFolder,
+			latestFolderCreatedTime: store.latestFolderCreatedTime,
 		}))
 	);
 
@@ -120,6 +124,13 @@ const FolderContent = ({
 		await initOrder();
 	};
 
+	const onStartEditingName = () => {
+		onBeginEdit();
+		setTimeout(() => {
+			selectFileNameText();
+		}, 100);
+	};
+
 	useEffect(() => {
 		window.addEventListener("keydown", onKeyDown);
 		window.addEventListener("mousedown", onClickOutside);
@@ -128,6 +139,17 @@ const FolderContent = ({
 			window.removeEventListener("mousedown", onClickOutside);
 		};
 	}, [isFocusing]);
+
+	useEffect(() => {
+		const now = Date.now();
+		if (
+			folder.path === latestCreatedFolder?.path &&
+			latestFolderCreatedTime &&
+			now - latestFolderCreatedTime < 3000
+		) {
+			onStartEditingName();
+		}
+	}, []);
 
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
@@ -187,10 +209,7 @@ const FolderContent = ({
 		menu.addItem((item) => {
 			item.setTitle(FOLDER_OPERATION_COPY.renameFolder[language]);
 			item.onClick(() => {
-				onBeginEdit();
-				setTimeout(() => {
-					selectFileNameText();
-				}, 100);
+				onStartEditingName();
 			});
 		});
 		menu.addItem((item) => {
