@@ -1,10 +1,10 @@
+import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 
 import { AddFolderIcon } from "src/assets/icons";
 import { ExplorerStore } from "src/store";
-import StyledActionIconWrapper from "../Styled/ActionIconWrapper";
-import { useExplorer } from "../Explorer";
-import { TFolder } from "obsidian";
+import { StyledActionButtonWrapper } from "../layout/Actions";
+import { useExplorer } from "src/hooks/useExplorer";
 
 const CreateFolder = () => {
 	const { useExplorerStore } = useExplorer();
@@ -57,9 +57,9 @@ const CreateFolder = () => {
 	};
 
 	return (
-		<StyledActionIconWrapper onClick={onCreateFolder}>
-			<AddFolderIcon />
-		</StyledActionIconWrapper>
+		<StyledActionButtonWrapper onClick={onCreateFolder}>
+			<AddFolderIcon className="ffs__action-button" />
+		</StyledActionButtonWrapper>
 	);
 };
 

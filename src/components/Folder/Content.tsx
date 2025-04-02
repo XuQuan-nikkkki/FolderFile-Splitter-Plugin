@@ -3,21 +3,21 @@ import { useShallow } from "zustand/react/shallow";
 import { useEffect, useRef, useState } from "react";
 
 import { ExplorerStore } from "src/store";
-import { FolderListModal } from "./FolderListModal";
+import { FolderListModal } from "../FolderListModal";
 import {
 	useShowFolderIcon,
 	useExpandFolderByClickingOnElement,
 } from "src/hooks/useSettingsHandler";
 import FilesCount from "./FilesCount";
-import FolderExpandIcon from "./FolderExpandIcon";
+import FolderExpandIcon from "./ExpandIcon";
 import {
-	FolderLeftSection,
-	StyledFolder,
+	StyledFolderMainContent,
+	StyledFolderContent,
 	StyledFolderIcon,
-} from "./Styled/StyledFolder";
-import { useExplorer } from "./Explorer";
+} from "./Styled";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { FOLDER_OPERATION_COPY } from "src/locales";
+import { useExplorer } from "src/hooks/useExplorer";
 
 export type FolderProps = {
 	folder: TFolder;
@@ -92,6 +92,7 @@ const FolderContent = ({
 		isFocused: isFocusedOnFolder,
 		isLarge: isRoot,
 		isBold: isRoot,
+		className: "ffs__folder-name",
 	});
 
 	const folderRef = useRef<HTMLDivElement>(null);
@@ -222,7 +223,7 @@ const FolderContent = ({
 	};
 
 	return (
-		<StyledFolder
+		<StyledFolderContent
 			ref={folderRef}
 			onContextMenu={onShowContextMenu}
 			onClick={(e) => {
@@ -237,7 +238,7 @@ const FolderContent = ({
 			$isFocusedOnFolder={isFocusedOnFolder}
 			$isFocusedOnFile={isFocusedFileInFolder}
 		>
-			<FolderLeftSection onClick={onClickFolderName}>
+			<StyledFolderMainContent onClick={onClickFolderName}>
 				{!isRoot && !hideExpandIcon && (
 					<FolderExpandIcon
 						folder={folder}
@@ -251,12 +252,12 @@ const FolderContent = ({
 					/>
 				)}
 				{renderFolderName()}
-			</FolderLeftSection>
+			</StyledFolderMainContent>
 			<FilesCount
 				folder={folder}
 				isFocused={isFocusedOnFolder || isOver}
 			/>
-		</StyledFolder>
+		</StyledFolderContent>
 	);
 };
 

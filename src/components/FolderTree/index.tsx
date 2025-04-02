@@ -1,33 +1,23 @@
 import { useShallow } from "zustand/react/shallow";
 import { TFolder } from "obsidian";
-import styled from "styled-components";
 
 import { ExplorerStore } from "src/store";
 import { useShowHierarchyLines } from "src/hooks/useSettingsHandler";
 import { useChangeFolder } from "src/hooks/useVaultChangeHandler";
-import Folder from "./Folder";
-import { useExplorer } from "./Explorer";
+import { useExplorer } from "src/hooks/useExplorer";
+
+import Folder from "../Folder";
 import PinnedFolders, { FolderOptions } from "./PinnedFolders";
-
-const StyledFolders = styled.div`
-	flex: 1;
-	overflow-y: auto;
-`;
-
-const FoldersSection = styled.div<{ $showHierarchyLine?: boolean }>`
-	position: relative;
-	margin-left: 12px;
-	padding-left: 2px;
-	border-left: ${({ $showHierarchyLine }) =>
-		$showHierarchyLine
-			? "var(--border-width) solid var(--interactive-hover)"
-			: undefined};
-`;
+import {
+	StyledFolderTree,
+	StyledFolderTreeItem,
+	StyledSubfoldersGroup,
+} from "./Styled";
 
 type Props = {
 	onOpenFilesPane?: () => void;
 };
-const Folders = ({ onOpenFilesPane = () => {} }: Props) => {
+const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
 
 	const {
@@ -79,14 +69,16 @@ const Folders = ({ onOpenFilesPane = () => {} }: Props) => {
 		return sortedFolders.map((folder) => {
 			const isExpanded = expandedFolderPaths.includes(folder.path);
 			return (
-				<div key={folder.name}>
+				<StyledFolderTreeItem key={folder.name}>
 					{renderFolder(folder)}
 					{isExpanded && hasFolderChildren(folder) && (
-						<FoldersSection $showHierarchyLine={showHierarchyLines}>
+						<StyledSubfoldersGroup
+							$showHierarchyLine={showHierarchyLines}
+						>
 							{renderFolders(getFoldersByParent(folder))}
-						</FoldersSection>
+						</StyledSubfoldersGroup>
 					)}
-				</div>
+				</StyledFolderTreeItem>
 			);
 		});
 	};
@@ -95,21 +87,19 @@ const Folders = ({ onOpenFilesPane = () => {} }: Props) => {
 		if (!rootFolder) return null;
 
 		return (
-			<div style={{ marginLeft: 4 }}>
+			<StyledFolderTreeItem style={{ marginLeft: 4 }}>
 				{renderFolder(rootFolder, { isRoot: true })}
-			</div>
+			</StyledFolderTreeItem>
 		);
 	};
 
 	return (
-		<StyledFolders>
+		<StyledFolderTree>
 			<PinnedFolders renderFolder={renderFolder} />
-			<div>
-				{renderRootFolder()}
-				{renderFolders(topFolders)}
-			</div>
-		</StyledFolders>
+			{renderRootFolder()}
+			{renderFolders(topFolders)}
+		</StyledFolderTree>
 	);
 };
 
-export default Folders;
+export default FolderTree;

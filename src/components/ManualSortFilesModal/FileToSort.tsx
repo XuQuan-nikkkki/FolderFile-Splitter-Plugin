@@ -1,25 +1,13 @@
 import { TFile } from "obsidian";
-import styled from "styled-components";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { StyledIcon } from "../Styled/DragIcon";
 import { FFS_SORT_FOLDER } from "src/assets/constants";
-
-const StyledFile = styled.div`
-	display: grid;
-	grid-template-columns: 20px 1fr;
-	gap: 8px;
-	height: 30px;
-	align-items: center;
-	padding: 4px;
-	border-radius: var(--ffs-border-radius);
-	touch-action: none;
-
-	&:hover {
-		background-color: var(--interactive-hover);
-	}
-`;
+import { StyledManualSortFile } from "./Styled";
+import {
+	StyledDraggableIcon,
+	StyledManualSortItemName,
+} from "../Styled/ManualSortModal";
 
 type Props = {
 	file: TFile;
@@ -44,16 +32,16 @@ const FileToSort = ({ file }: Props) => {
 	};
 
 	return (
-		<StyledFile
+		<StyledManualSortFile
 			ref={setNodeRef}
 			id={file.path}
 			style={style}
 			{...attributes}
 			{...listeners}
 		>
-			<StyledIcon />
-			<div>{file.name}</div>
-		</StyledFile>
+			<StyledDraggableIcon />
+			<StyledManualSortItemName>{file.name}</StyledManualSortItemName>
+		</StyledManualSortFile>
 	);
 };
 

@@ -3,10 +3,11 @@ import { useDraggable } from "@dnd-kit/core";
 import { useShallow } from "zustand/react/shallow";
 
 import { ExplorerStore } from "src/store";
-import FileContent, { FileProps } from "./FileContent";
 import { FFS_DRAG_FILE } from "src/assets/constants";
-import { Draggable } from "./Styled/Sortable";
-import { useExplorer } from "./Explorer";
+import { useExplorer } from "src/hooks/useExplorer";
+
+import FileContent, { FileProps } from "./Content";
+import { StyledFileTreeItem } from "./Styled";
 
 type Props = FileProps & {
 	onOpenFoldersPane: () => void;
@@ -41,9 +42,9 @@ const File = ({
 	}, [onOpenFoldersPane]);
 
 	return (
-		<Draggable
+		<StyledFileTreeItem
 			ref={setNodeRef}
-			style={{ opacity: isDragging ? 0 : 1 }}
+			$isDragging={isDragging}
 			onClick={() => selectFile(file)}
 			{...attributes}
 			{...listeners}
@@ -53,7 +54,7 @@ const File = ({
 				deleteFile={deleteFile}
 				fileList={fileList}
 			/>
-		</Draggable>
+		</StyledFileTreeItem>
 	);
 };
 

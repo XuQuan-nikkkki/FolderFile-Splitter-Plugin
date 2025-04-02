@@ -1,12 +1,12 @@
 import { useShallow } from "zustand/react/shallow";
 import { useEffect } from "react";
+import { useDraggable, useDroppable } from "@dnd-kit/core";
 
 import { ExplorerStore } from "src/store";
 import { FFS_DRAG_FILE, FFS_DRAG_FOLDER } from "src/assets/constants";
-import FolderContent, { FolderProps } from "./FolderContent";
-import { Draggable } from "./Styled/Sortable";
-import { useExplorer } from "./Explorer";
-import { useDraggable, useDroppable } from "@dnd-kit/core";
+import FolderContent, { FolderProps } from "./Content";
+import { useExplorer } from "src/hooks/useExplorer";
+import { StyledDraggableContainer, StyledFolderContainer } from "./Styled";
 
 type Props = FolderProps & {
 	onOpenFilesPane: () => void;
@@ -82,10 +82,10 @@ const Folder = ({
 	};
 
 	return (
-		<div ref={setDropRef}>
-			<Draggable
+		<StyledFolderContainer ref={setDropRef}>
+			<StyledDraggableContainer
+				$isDragging={isDragging}
 				ref={setDragRef}
-				style={{ opacity: isDragging ? 0 : 1 }}
 				onClick={() => setFocusedFolder(folder)}
 				{...attributes}
 				{...listeners}
@@ -97,8 +97,8 @@ const Folder = ({
 					isOver={isOver}
 					onToggleExpandState={onToggleExpandState}
 				/>
-			</Draggable>
-		</div>
+			</StyledDraggableContainer>
+		</StyledFolderContainer>
 	);
 };
 

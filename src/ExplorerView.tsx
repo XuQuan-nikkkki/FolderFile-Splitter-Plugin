@@ -5,7 +5,9 @@ import styled from "styled-components";
 import FolderFileSplitterPlugin from "./main";
 import Explorer from "./components/Explorer";
 
-const StyledExplorerView = styled.div`
+const StyledExplorerContainer = styled.div.attrs({
+	className: "ffs__plugin-container",
+})`
 	height: 100%;
 `;
 
@@ -43,9 +45,9 @@ export class ExplorerView extends ItemView {
 		this.destroy();
 		this.root = createRoot(this.contentEl);
 		this.root.render(
-			<StyledExplorerView>
+			<StyledExplorerContainer>
 				<Explorer plugin={this.plugin} />
-			</StyledExplorerView>
+			</StyledExplorerContainer>
 		);
 	}
 }

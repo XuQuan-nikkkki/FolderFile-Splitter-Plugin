@@ -1,30 +1,15 @@
 import { TFile } from "obsidian";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import styled from "styled-components";
 
 import { ExplorerStore } from "src/store";
-import { useExplorer } from "./Explorer";
+import { useExplorer } from "src/hooks/useExplorer";
 
-const Detail = styled.div`
-	display: grid;
-	grid-template-columns: auto 1fr;
-	gap: 10px;
-	font-size: 12px;
-`;
-const FileCreatedTime = styled.div<{ $isFocused: boolean }>`
-	letter-spacing: -0.6px;
-	font-weight: 450;
-	color: ${({ $isFocused: isFocused }) =>
-		isFocused ? "var(--text-on-accent)" : " var(--text-normal)"};
-`;
-const FileContentPreview = styled.span<{ $isFocused: boolean }>`
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	color: ${({ $isFocused: isFocused }) =>
-		isFocused ? "var(--text-on-accent)" : " var(--text-muted)"};
-`;
+import {
+	StyledFileDetail,
+	StyledFileContentPreview,
+	StyledFileCreatedTime,
+} from "./Styled";
 
 type Props = {
 	file: TFile;
@@ -58,14 +43,14 @@ const FileDetail = ({ file, isFocused }: Props) => {
 		.toLocaleString()
 		.split(" ")[0];
 	return (
-		<Detail>
-			<FileCreatedTime $isFocused={isFocused}>
+		<StyledFileDetail>
+			<StyledFileCreatedTime $isFocused={isFocused}>
 				{fileCreatedDate}
-			</FileCreatedTime>
-			<FileContentPreview $isFocused={isFocused}>
+			</StyledFileCreatedTime>
+			<StyledFileContentPreview $isFocused={isFocused}>
 				{contentPreview}
-			</FileContentPreview>
-		</Detail>
+			</StyledFileContentPreview>
+		</StyledFileDetail>
 	);
 };
 

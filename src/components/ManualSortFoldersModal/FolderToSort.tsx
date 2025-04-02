@@ -1,42 +1,20 @@
 import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 import { StoreApi, UseBoundStore } from "zustand";
-import styled from "styled-components";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 import { ExplorerStore } from "src/store";
-import { StyledIcon } from "../Styled/DragIcon";
 import { FFS_SORT_FOLDER } from "src/assets/constants";
-
-const DraggableSection = styled.div`
-	display: flex;
-	gap: 8px;
-	align-items: center;
-`;
-
-const StyledFolder = styled.div`
-	display: grid;
-	grid-template-columns: 1fr auto;
-	gap: 8px;
-	height: 30px;
-	align-items: center;
-	padding: 4px;
-	border-radius: var(--ffs-border-radius);
-	touch-action: none;
-
-	&:hover {
-		background-color: var(--interactive-hover);
-	}
-`;
-export const StyledButton = styled.span<{ $disabled?: boolean }>`
-	color: ${({ $disabled }) =>
-		$disabled
-			? "color-mix(in srgb, var(--text-accent), transparent 50%)"
-			: "var(--text-accent)"};
-	text-decoration: underline;
-	cursor: ${({ $disabled }) => ($disabled ? "not-allowed" : undefined)};
-`;
+import {
+	StyledDraggableArea,
+	StyledEnterFolderButton,
+	StyledManualSortFolder,
+} from "./Styled";
+import {
+	StyledDraggableIcon,
+	StyledManualSortItemName,
+} from "../Styled/ManualSortModal";
 
 type Props = {
 	folder: TFolder;
@@ -70,26 +48,24 @@ const FolderToSort = ({ folder, useExplorerStore, goInToFolder }: Props) => {
 
 	const subfolders = getFoldersByParent(folder);
 	return (
-		<StyledFolder
+		<StyledManualSortFolder
 			ref={setNodeRef}
 			id={folder.path}
 			style={style}
 			{...attributes}
 		>
-			<DraggableSection {...listeners}>
-				<StyledIcon />
-				<div>{folder.name}</div>
-			</DraggableSection>
+			<StyledDraggableArea {...listeners}>
+				<StyledDraggableIcon />
+				<StyledManualSortItemName>
+					{folder.name}
+				</StyledManualSortItemName>
+			</StyledDraggableArea>
 			{subfolders.length > 0 && (
-				<StyledButton
-					onClick={(e) => {
-						goInToFolder(folder);
-					}}
-				>
+				<StyledEnterFolderButton onClick={() => goInToFolder(folder)}>
 					Sort subfolders
-				</StyledButton>
+				</StyledEnterFolderButton>
 			)}
-		</StyledFolder>
+		</StyledManualSortFolder>
 	);
 };
 

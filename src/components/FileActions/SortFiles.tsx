@@ -1,10 +1,11 @@
 import { useShallow } from "zustand/react/shallow";
 
 import { FILE_MANUAL_SORT_RULE, FileSortRule, ExplorerStore } from "src/store";
-import SortAction from "../SortAction";
-import { useExplorer } from "../Explorer";
-import { ManualSortFilesModal } from "../ManualSortFilesModal";
 import { FILE_SORT_RULES_COPY } from "src/locales";
+import { useExplorer } from "src/hooks/useExplorer";
+
+import { ManualSortFilesModal } from "../ManualSortFilesModal";
+import SortAction from "../SortAction";
 
 type FileSortRuleItem = {
 	text: string;
@@ -99,7 +100,7 @@ const SortFiles = () => {
 						modal.open();
 					}
 				}
-				changeFileSortRule(rule);
+				changeFileSortRule(rule as FileSortRule);
 			}}
 			isInAscendingOrder={isFilesInAscendingOrder}
 			currentSortRule={fileSortRule}

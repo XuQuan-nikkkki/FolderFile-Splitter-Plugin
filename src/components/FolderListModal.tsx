@@ -2,7 +2,7 @@ import { SuggestModal, TAbstractFile, TFolder } from "obsidian";
 import { StoreApi, UseBoundStore } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
-import { ExplorerStore, FOLDER_MANUAL_SORT_RULE } from "src/store";
+import { ExplorerStore } from "src/store";
 import { isFile } from "src/utils";
 
 export class FolderListModal extends SuggestModal<TFolder> {

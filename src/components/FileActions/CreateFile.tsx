@@ -2,8 +2,9 @@ import { useShallow } from "zustand/react/shallow";
 
 import { AddFileIcon } from "src/assets/icons";
 import { ExplorerStore } from "src/store";
-import StyledActionIconWrapper from "../Styled/ActionIconWrapper";
-import { useExplorer } from "../Explorer";
+import { useExplorer } from "src/hooks/useExplorer";
+
+import { StyledActionButtonWrapper } from "../layout/Actions";
 
 const CreateFile = () => {
 	const { useExplorerStore } = useExplorer();
@@ -26,9 +27,9 @@ const CreateFile = () => {
 	};
 
 	return (
-		<StyledActionIconWrapper onClick={onCreateNewFile}>
-			<AddFileIcon />
-		</StyledActionIconWrapper>
+		<StyledActionButtonWrapper onClick={onCreateNewFile}>
+			<AddFileIcon className="ffs__action-button" />
+		</StyledActionButtonWrapper>
 	);
 };
 

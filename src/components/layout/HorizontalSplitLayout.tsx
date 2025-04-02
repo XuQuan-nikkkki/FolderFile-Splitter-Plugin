@@ -3,13 +3,17 @@ import { useEffect, useState, useRef } from "react";
 import { FFS_FOLDER_PANE_WIDTH_KEY } from "src/assets/constants";
 import { HorizontalDraggableDivider } from "./DraggableDivider";
 import {
-	HorizontalContainer,
-	HorizontalFoldersPane,
-	HorizontalFilesPane,
+	StyledHorizontalSplitLayout,
+	StyledHorizontalFoldersPane,
+	StyledHorizontalFilesPane,
 } from "./Layout";
-import { Actions, BasicFileActions, BasicFolderActions } from "./Actions";
-import Folders from "../Folders";
-import Files from "../Files";
+import {
+	StyledActionsContainer,
+	FileActionSection,
+	FolderActionSection,
+} from "./Actions";
+import FolderTree from "../FolderTree";
+import FileTree from "../FileTree";
 import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
 
 const HorizontalSplitLayout = () => {
@@ -18,7 +22,7 @@ const HorizontalSplitLayout = () => {
 	>();
 
 	const pluginRef = useRef<HTMLDivElement>(null);
-	useChangeActiveLeaf()
+	useChangeActiveLeaf();
 
 	const restoreLayout = () => {
 		try {
@@ -54,24 +58,24 @@ const HorizontalSplitLayout = () => {
 	};
 
 	return (
-		<HorizontalContainer ref={pluginRef}>
-			<HorizontalFoldersPane style={{ width: folderPaneWidth }}>
-				<Actions>
-					<BasicFolderActions />
-				</Actions>
-				<Folders />
-			</HorizontalFoldersPane>
+		<StyledHorizontalSplitLayout ref={pluginRef}>
+			<StyledHorizontalFoldersPane style={{ width: folderPaneWidth }}>
+				<StyledActionsContainer className="ffs__actions-container--folder">
+					<FolderActionSection />
+				</StyledActionsContainer>
+				<FolderTree />
+			</StyledHorizontalFoldersPane>
 			<HorizontalDraggableDivider
 				initialWidth={folderPaneWidth}
 				onChangeWidth={onChangeFolderPaneWidth}
 			/>
-			<HorizontalFilesPane>
-				<Actions>
-					<BasicFileActions />
-				</Actions>
-				<Files />
-			</HorizontalFilesPane>
-		</HorizontalContainer>
+			<StyledHorizontalFilesPane>
+				<StyledActionsContainer className="ffs__actions-container--file">
+					<FileActionSection />
+				</StyledActionsContainer>
+				<FileTree />
+			</StyledHorizontalFilesPane>
+		</StyledHorizontalSplitLayout>
 	);
 };
 

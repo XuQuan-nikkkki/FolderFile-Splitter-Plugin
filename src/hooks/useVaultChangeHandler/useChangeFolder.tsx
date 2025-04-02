@@ -5,7 +5,7 @@ import { TFolder } from "obsidian";
 import { ExplorerStore, FOLDER_MANUAL_SORT_RULE } from "src/store";
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFolder } from "src/utils";
-import { useExplorer } from "src/components/Explorer";
+import { useExplorer } from "../useExplorer";
 
 const useChangeFolder = () => {
 	const { useExplorerStore } = useExplorer();

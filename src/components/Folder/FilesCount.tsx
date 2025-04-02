@@ -1,20 +1,13 @@
 import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
-import styled from "styled-components";
 
 import { ExplorerStore } from "src/store";
 import { useIncludeSubfolderFilesCount } from "src/hooks/useSettingsHandler";
-import { useExplorer } from "./Explorer";
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFile } from "src/utils";
 import { useEffect, useState } from "react";
-
-const StyledCount = styled.div<{ $isFocused?: boolean }>`
-	color: ${({ $isFocused }) =>
-		$isFocused ? "var(--text-on-accent)" : "var(--text-muted)"};
-	font-size: 12px;
-	margin-left: 4px;
-`;
+import { StyledFilesCount } from "./Styled";
+import { useExplorer } from "src/hooks/useExplorer";
 
 type Props = {
 	folder: TFolder;
@@ -58,7 +51,7 @@ const FilesCount = ({ folder, isFocused }: Props) => {
 		setCount(getFilesCountInFolder(folder, includeSubfolderFilesCount));
 	}, [folder.children.length, includeSubfolderFilesCount]);
 
-	return <StyledCount $isFocused={isFocused}>{count}</StyledCount>;
+	return <StyledFilesCount $isFocused={isFocused}>{count}</StyledFilesCount>;
 };
 
 export default FilesCount;

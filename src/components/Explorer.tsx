@@ -1,5 +1,4 @@
-import { createContext, useEffect, useMemo, useState, useContext } from "react";
-import { StoreApi, UseBoundStore } from "zustand";
+import { useEffect, useMemo, useState } from "react";
 import {
 	DndContext,
 	DragEndEvent,
@@ -12,11 +11,10 @@ import {
 } from "@dnd-kit/core";
 import { TAbstractFile, TFolder } from "obsidian";
 import { snapCenterToCursor } from "@dnd-kit/modifiers";
+import { useShallow } from "zustand/react/shallow";
 
 import FolderFileSplitterPlugin from "src/main";
 import { createExplorerStore, ExplorerStore } from "src/store";
-import { useShallow } from "zustand/react/shallow";
-import Loading from "./Loading";
 import {
 	useLayoutMode,
 	useOpenDestinationFolder,
@@ -25,22 +23,11 @@ import {
 	HorizontalSplitLayoutMode,
 	VerticalSplitLayoutMode,
 } from "src/settings";
-import { HorizontalSplitLayout, VerticalSplitLayout } from "./layout";
 import { isFile, isFolder } from "src/utils";
+import { ExplorerContext } from "src/hooks/useExplorer";
 
-type ExplorerContextType = {
-	useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>;
-	plugin: FolderFileSplitterPlugin;
-};
-const ExplorerContext = createContext<ExplorerContextType | null>(null);
-
-export const useExplorer = () => {
-	const context = useContext(ExplorerContext);
-	if (!context) {
-		throw new Error("useExplorer must be used within a ExplorerProvider");
-	}
-	return context;
-};
+import { HorizontalSplitLayout, VerticalSplitLayout } from "./layout";
+import Loading from "./Loading";
 
 type Props = {
 	plugin: FolderFileSplitterPlugin;

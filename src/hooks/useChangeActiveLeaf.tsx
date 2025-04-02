@@ -4,7 +4,7 @@ import { useShallow } from "zustand/react/shallow";
 import { ExplorerStore } from "src/store";
 
 import { ActiveLeafChangeEventName } from "src/assets/constants";
-import { useExplorer } from "src/components/Explorer";
+import { useExplorer } from "./useExplorer";
 
 const useChangeActiveLeaf = () => {
 	const { useExplorerStore, plugin } = useExplorer();

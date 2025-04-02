@@ -3,8 +3,8 @@ import { useShallow } from "zustand/react/shallow";
 
 import { ExpandIcon, CollapseIcon } from "src/assets/icons";
 import { ExplorerStore } from "src/store";
-import StyledActionIconWrapper from "../Styled/ActionIconWrapper";
-import { useExplorer } from "../Explorer";
+import { StyledActionButtonWrapper } from "../layout/Actions";
+import { useExplorer } from "src/hooks/useExplorer";
 
 const ToggleFolders = () => {
 	const { useExplorerStore, plugin } = useExplorer();
@@ -28,9 +28,13 @@ const ToggleFolders = () => {
 	};
 
 	return (
-		<StyledActionIconWrapper onClick={onToggleAllFolders}>
-			{isExpanded ? <CollapseIcon /> : <ExpandIcon />}
-		</StyledActionIconWrapper>
+		<StyledActionButtonWrapper onClick={onToggleAllFolders}>
+			{isExpanded ? (
+				<CollapseIcon className="ffs__action-button" />
+			) : (
+				<ExpandIcon className="ffs__action-button" />
+			)}
+		</StyledActionButtonWrapper>
 	);
 };
 

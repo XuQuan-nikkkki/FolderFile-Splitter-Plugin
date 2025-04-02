@@ -1,11 +1,17 @@
 import { ReactNode, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
+import { TFile } from "obsidian";
 
 import { ExplorerStore } from "src/store";
 import { PinIcon } from "src/assets/icons";
-import { TFile } from "obsidian";
-import { PinnedContent, PinnedSection, PinnedTitle } from "./Styled/Pin";
-import { useExplorer } from "./Explorer";
+import { useExplorer } from "src/hooks/useExplorer";
+
+import {
+	StyledPinnedContent,
+	StyledPinnedContainer,
+	StyledPinnedHeader,
+	StyledPinTitle,
+} from "../Styled/Pin";
 
 type Props = {
 	files: TFile[];
@@ -39,15 +45,15 @@ const PinnedFiles = ({ files, renderFile }: Props) => {
 		.filter(Boolean) as TFile[];
 	if (!pinnedFiles.length) return null;
 	return (
-		<PinnedSection>
-			<PinnedTitle>
+		<StyledPinnedContainer>
+			<StyledPinnedHeader>
 				<PinIcon />
-				Pin
-			</PinnedTitle>
-			<PinnedContent>
+				<StyledPinTitle>Pin</StyledPinTitle>
+			</StyledPinnedHeader>
+			<StyledPinnedContent>
 				{pinnedFiles.map((file) => renderFile(file, pinnedFiles, true))}
-			</PinnedContent>
-		</PinnedSection>
+			</StyledPinnedContent>
+		</StyledPinnedContainer>
 	);
 };
 

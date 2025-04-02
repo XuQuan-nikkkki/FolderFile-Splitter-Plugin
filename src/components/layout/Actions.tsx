@@ -5,7 +5,9 @@ import ToggleFolders from "../FolderActions/ToggleFolders";
 import CreateFile from "../FileActions/CreateFile";
 import SortFiles from "../FileActions/SortFiles";
 
-export const Actions = styled.div`
+export const StyledActionsContainer = styled.div.attrs({
+	className: "ffs__actions-container",
+})`
 	width: 100%;
 	margin-bottom: 8px;
 	padding: 8px 16px;
@@ -16,23 +18,44 @@ export const Actions = styled.div`
 	justify-content: space-between;
 `;
 
-export const ActionsSection = styled.div`
+export const StyledActionsSection = styled.div.attrs({
+	className: "ffs__actions-section",
+})`
 	display: flex;
 	align-items: center;
 	gap: var(--size-4-3);
 `;
 
-export const BasicFolderActions = () => (
-	<ActionsSection>
+
+export const StyledActionButtonWrapper = styled.div.attrs({
+	className: "ffs__action-button-wrapper",
+})`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2px;
+
+	svg {
+		width: 18px;
+		height: 18px;
+		stroke: var(--icon-color);
+	}
+	svg:hover {
+		transform: scale(1.1);
+	}
+`;
+
+export const FolderActionSection = () => (
+	<StyledActionsSection>
 		<CreateFolder />
 		<SortFolders />
 		<ToggleFolders />
-	</ActionsSection>
+	</StyledActionsSection>
 );
 
-export const BasicFileActions = () => (
-	<ActionsSection>
+export const FileActionSection = () => (
+	<StyledActionsSection>
 		<CreateFile />
 		<SortFiles />
-	</ActionsSection>
+	</StyledActionsSection>
 );

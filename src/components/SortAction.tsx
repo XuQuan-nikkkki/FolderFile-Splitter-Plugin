@@ -6,7 +6,7 @@ import {
 	DescendingSortIcon,
 } from "src/assets/icons";
 import FolderFileSplitterPlugin from "src/main";
-import StyledActionIconWrapper from "./Styled/ActionIconWrapper";
+import { StyledActionButtonWrapper } from "./layout/Actions";
 
 type SortRule = {
 	text: string;
@@ -53,20 +53,21 @@ const SortAction = ({
 	};
 
 	const renderIcon = () => {
+		const actionButtonClassName = "ffs__action-button"
 		if (isManualOrder) {
-			return <ArrowUpDownIcon />;
+			return <ArrowUpDownIcon className={actionButtonClassName} />;
 		}
 		return isInAscendingOrder() ? (
-			<AscendingSortIcon />
+			<AscendingSortIcon className={actionButtonClassName} />
 		) : (
-			<DescendingSortIcon />
+			<DescendingSortIcon className={actionButtonClassName} />
 		);
 	};
 
 	return (
-		<StyledActionIconWrapper onClick={onChangeSortRule}>
+		<StyledActionButtonWrapper onClick={onChangeSortRule}>
 			{renderIcon()}
-		</StyledActionIconWrapper>
+		</StyledActionButtonWrapper>
 	);
 };
 

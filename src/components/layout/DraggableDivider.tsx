@@ -3,14 +3,20 @@ import styled from "styled-components";
 
 export type Direction = "horizontal" | "vertical";
 
-const BasicPaneDivider = styled.div`
+const StyledLayoutDivider = styled.div.attrs({
+	className: "ffs__layout-divider",
+})`
 	border: 1px solid var(--divider-color);
 `;
-const HorizontalPaneDivider = styled(BasicPaneDivider)`
+const StyledHorizontalSplitDivider = styled(StyledLayoutDivider).attrs({
+	className: "ffs__layout-divider--horizontal",
+})`
 	cursor: ew-resize;
 	margin: 0 8px;
 `;
-const VerticalPaneDivider = styled(BasicPaneDivider)`
+const StyledVerticalSplitDivider = styled(StyledLayoutDivider).attrs({
+	className: "ffs__layout-divider--vertical",
+})`
 	cursor: ns-resize;
 	margin: 16px 0;
 `;
@@ -44,7 +50,10 @@ export const HorizontalDraggableDivider = ({
 	};
 
 	return (
-		<HorizontalPaneDivider ref={dividerRef} onMouseDown={handleMouseDown} />
+		<StyledHorizontalSplitDivider
+			ref={dividerRef}
+			onMouseDown={handleMouseDown}
+		/>
 	);
 };
 
@@ -77,6 +86,9 @@ export const VerticalDraggableDivider = ({
 	};
 
 	return (
-		<VerticalPaneDivider ref={dividerRef} onMouseDown={handleMouseDown} />
+		<StyledVerticalSplitDivider
+			ref={dividerRef}
+			onMouseDown={handleMouseDown}
+		/>
 	);
 };

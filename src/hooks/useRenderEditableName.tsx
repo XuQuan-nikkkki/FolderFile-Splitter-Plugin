@@ -1,30 +1,12 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
-import { StyledInput } from "src/components/Styled/StyledInput";
-import styled from "styled-components";
 
-const Name = styled.div<{
-	$isBold?: boolean;
-	$isFocused?: boolean;
-	$isLarge?: boolean;
-}>`
-	flex: 1;
-
-	font-size: 13px;
-	font-size: ${({ $isLarge }) => ($isLarge ? "14px" : "13px")};
-	font-weight: ${({ $isBold }) => ($isBold ? 600 : "normal")};
-
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-
-	color: ${({ $isFocused }) =>
-		$isFocused ? "var(--text-on-accent)" : "var(--text-normal)"};
-`;
+import { StyledName, StyledNameInput } from "src/components/Styled/NameInput";
 
 type Options = {
 	isFocused?: boolean;
 	isBold?: boolean;
 	isLarge?: boolean;
+	className?: string;
 };
 const useRenderEditableName = (
 	defaultName: string,
@@ -95,24 +77,25 @@ const useRenderEditableName = (
 	};
 
 	const renderEditableName = () => {
-		const { isBold, isFocused, isLarge } = options ?? {};
+		const { isBold, isFocused, isLarge, className } = options ?? {};
 		return isEditing ? (
-			<StyledInput
+			<StyledNameInput
 				ref={inputRef}
 				value={name}
 				onKeyDown={onKeyDown}
 				onChange={(e) => setName(e.target.value)}
 			/>
 		) : (
-			<Name
+			<StyledName
 				ref={eleRef}
+				className={className}
 				$isBold={isBold}
 				$isFocused={isFocused}
 				$isLarge={isLarge}
 				suppressContentEditableWarning
 			>
 				{name}
-			</Name>
+			</StyledName>
 		);
 	};
 

@@ -3,17 +3,17 @@ import { useShallow } from "zustand/react/shallow";
 import { useEffect, useRef, useState } from "react";
 
 import { ExplorerStore } from "src/store";
-import { FolderListModal } from "./FolderListModal";
+import { FolderListModal } from "../FolderListModal";
 import { useShowFileDetail } from "src/hooks/useSettingsHandler";
-import FileDetail from "./FileDetail";
-import { useExplorer } from "./Explorer";
+import FileDetail from "./Detail";
 import {
 	StyledFileContent,
 	StyledFileExtension,
-	StyledFileNameLine,
-} from "./Styled/StyledFile";
+	StyledFileContentHeader,
+} from "./Styled";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { FILE_OPERATION_COPY } from "src/locales";
+import { useExplorer } from "src/hooks/useExplorer";
 
 export type FileProps = {
 	file: TFile;
@@ -62,6 +62,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 	} = useRenderEditableName(file.basename, onSaveName, {
 		isBold: true,
 		isFocused,
+		className: "ffs__file-name",
 	});
 
 	const fileRef = useRef<HTMLDivElement>(null);
@@ -206,12 +207,12 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			$isLast={isLast}
 			$disableGap={!showFileDetail}
 		>
-			<StyledFileNameLine>
+			<StyledFileContentHeader>
 				{renderFileName()}
 				<StyledFileExtension $isFocused={isFocused}>
 					{file.extension !== "md" && file.extension.toUpperCase()}
 				</StyledFileExtension>
-			</StyledFileNameLine>
+			</StyledFileContentHeader>
 			{maybeRenderFileDetail()}
 		</StyledFileContent>
 	);

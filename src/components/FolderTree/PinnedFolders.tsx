@@ -4,8 +4,14 @@ import { ReactNode, useEffect } from "react";
 
 import { ExplorerStore } from "src/store";
 import PinIcon from "src/assets/icons/PinIcon";
-import { PinnedContent, PinnedSection, PinnedTitle } from "./Styled/Pin";
-import { useExplorer } from "./Explorer";
+import { useExplorer } from "src/hooks/useExplorer";
+
+import {
+	StyledPinnedContent,
+	StyledPinnedContainer,
+	StyledPinnedHeader,
+	StyledPinTitle,
+} from "../Styled/Pin";
 
 export type FolderOptions = {
 	isRoot?: boolean;
@@ -36,12 +42,12 @@ const PinnedFolders = ({ renderFolder }: Props) => {
 
 	if (!pinnedFolderPaths.length) return null;
 	return (
-		<PinnedSection>
-			<PinnedTitle>
+		<StyledPinnedContainer>
+			<StyledPinnedHeader>
 				<PinIcon />
-				Pin
-			</PinnedTitle>
-			<PinnedContent $indent>
+				<StyledPinTitle>Pin</StyledPinTitle>
+			</StyledPinnedHeader>
+			<StyledPinnedContent $indent>
 				{pinnedFolderPaths.map((path) => {
 					const folder = plugin.app.vault.getFolderByPath(path);
 					const options: FolderOptions = {
@@ -51,8 +57,8 @@ const PinnedFolders = ({ renderFolder }: Props) => {
 					};
 					return folder ? renderFolder(folder, options) : null;
 				})}
-			</PinnedContent>
-		</PinnedSection>
+			</StyledPinnedContent>
+		</StyledPinnedContainer>
 	);
 };
 

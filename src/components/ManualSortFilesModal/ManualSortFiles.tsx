@@ -1,7 +1,6 @@
 import { TFile, TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 import { StoreApi, UseBoundStore } from "zustand";
-import styled from "styled-components";
 import { useState } from "react";
 import {
 	SortableContext,
@@ -23,7 +22,11 @@ import {
 import { ExplorerStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
 import FileToSort from "./FileToSort";
-import { StyledList, StyledPanel } from "../Styled/ManualSortModal";
+import {
+	StyledManualSortList,
+	StyledManualSortContainer,
+	StyledSortingItemContainer,
+} from "../Styled/ManualSortModal";
 
 type Props = {
 	parentFolder: TFolder | null;
@@ -80,9 +83,9 @@ const ManualSortFiles = ({ parentFolder, useExplorerStore, plugin }: Props) => {
 	const renderOverlayContent = () => {
 		if (!activeFile) return null;
 		return (
-			<div style={{ opacity: 0.8, transform: "scale(1.05)" }}>
+			<StyledSortingItemContainer>
 				<FileToSort file={activeFile} />
-			</div>
+			</StyledSortingItemContainer>
 		);
 	};
 
@@ -93,18 +96,18 @@ const ManualSortFiles = ({ parentFolder, useExplorerStore, plugin }: Props) => {
 			onDragStart={onDragStart}
 			onDragEnd={onDragEnd}
 		>
-			<StyledPanel>
+			<StyledManualSortContainer>
 				<SortableContext
 					items={items}
 					strategy={verticalListSortingStrategy}
 				>
-					<StyledList>
+					<StyledManualSortList>
 						{getSortedFiles().map((file) => (
 							<FileToSort key={file.path} file={file} />
 						))}
-					</StyledList>
+					</StyledManualSortList>
 				</SortableContext>
-			</StyledPanel>
+			</StyledManualSortContainer>
 			<DragOverlay>{renderOverlayContent()}</DragOverlay>
 		</DndContext>
 	);

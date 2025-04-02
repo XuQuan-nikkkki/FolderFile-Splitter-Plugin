@@ -8,44 +8,47 @@ const PaneWithBorderRadiusStyle = css`
 	background-color: var(--background-secondary);
 `;
 
-export const Container = styled.div`
+export const StyledLayout = styled.div.attrs({
+	className: "ffs__layout",
+})`
 	display: flex;
 	height: 100%;
 	overflow-y: hidden;
 `;
 
-export const BasicPane = styled.div`
+export const StyledLayoutPane = styled.div.attrs({
+	className: "ffs__layout-pane",
+})`
 	display: flex;
 	flex-direction: column;
 `;
 
-export const BasicIconWrapper = styled.div`
-	display: flex;
-	align-items: center;
-	gap: 8px;
-
-	svg {
-		width: 18px;
-		height: 18px;
-		stroke: color-mix(in srgb, var(--icon-color), transparent 30%);
-	}
-`;
-
-export const HorizontalContainer = Container;
-export const HorizontalFoldersPane = BasicPane;
-export const HorizontalFilesPane = styled(BasicPane)`
+export const StyledHorizontalSplitLayout = styled(StyledLayout).attrs({
+	className: "ffs__split-layout--horizontal",
+})``;
+export const StyledHorizontalFoldersPane = styled(StyledLayoutPane).attrs({
+	className: "ffs__folders-pane--horizontal",
+})``;
+export const StyledHorizontalFilesPane = styled(StyledLayoutPane).attrs({
+	className: "ffs__files-pane--horizontal",
+})`
 	flex: 1;
 `;
 
-export const VerticalContainer = styled(Container)`
+export const StyledVerticalSplitLayout = styled(StyledLayout).attrs({
+	className: "ffs__split-layout--vertical",
+})`
 	flex-direction: column;
 `;
-export const VerticalFoldersPane = styled(BasicPane)`
+export const StyledVerticalFoldersPane = styled(StyledLayoutPane).attrs({
+	className: "ffs__folders-pane--vertical",
+})`
 	${PaneWithBorderRadiusStyle}
 `;
-export const VerticalFilesPane = styled(BasicPane)`
+export const StyledVerticalFilesPane = styled(StyledLayoutPane).attrs({
+	className: "ffs__files-pane--vertical",
+})`
 	${PaneWithBorderRadiusStyle}
 	flex: 1;
 	height: 100%;
 `;
-

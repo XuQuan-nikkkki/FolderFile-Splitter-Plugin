@@ -2,21 +2,21 @@ import { useEffect, useState, useRef } from "react";
 
 import { FFS_FOLDER_PANE_HEIGHT_KEY } from "src/assets/constants";
 import {
-	VerticalContainer,
-	VerticalFilesPane,
-	VerticalFoldersPane,
+	StyledVerticalSplitLayout,
+	StyledVerticalFilesPane,
+	StyledVerticalFoldersPane,
 } from "./Layout";
 import { ChevronDown, ChevronRight } from "src/assets/icons";
-import StyledActionIconWrapper from "../Styled/ActionIconWrapper";
 import { VerticalDraggableDivider } from "./DraggableDivider";
 import {
-	Actions,
-	ActionsSection,
-	BasicFileActions,
-	BasicFolderActions,
+	StyledActionsContainer,
+	StyledActionsSection,
+	FileActionSection,
+	FolderActionSection,
+	StyledActionButtonWrapper,
 } from "./Actions";
-import Files from "../Files";
-import Folders from "../Folders";
+import FileTree from "../FileTree";
+import FolderTree from "../FolderTree";
 import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
 
 const VerticalSplitLayout = () => {
@@ -63,76 +63,76 @@ const VerticalSplitLayout = () => {
 		localStorage.setItem(FFS_FOLDER_PANE_HEIGHT_KEY, String(height));
 	};
 
+	const renderOpenPaneButton = (onOpen: () => void) => (
+		<StyledActionButtonWrapper onClick={onOpen}>
+			<ChevronRight className="ffs__action-button" />
+		</StyledActionButtonWrapper>
+	);
+
+	const renderClosePaneButton = (onClose: () => void) => (
+		<StyledActionButtonWrapper onClick={onClose}>
+			<ChevronDown className="ffs__action-button" />
+		</StyledActionButtonWrapper>
+	);
+
 	const renderFoldersPane = () => {
+		const onOpenPane = () => setIsFoldersCollapsed(false);
+		const onClosePane = () => setIsFoldersCollapsed(true);
 		if (isFoldersCollapsed) {
 			return (
-				<Actions>
-					<ActionsSection>Folders</ActionsSection>
-					<ActionsSection>
-						<StyledActionIconWrapper
-							onClick={() => setIsFoldersCollapsed(false)}
-						>
-							<ChevronRight />
-						</StyledActionIconWrapper>
-					</ActionsSection>
-				</Actions>
+				<StyledActionsContainer className="ffs__actions-container--folder">
+					<StyledActionsSection>Folders</StyledActionsSection>
+					<StyledActionsSection>
+						{renderOpenPaneButton(onOpenPane)}
+					</StyledActionsSection>
+				</StyledActionsContainer>
 			);
 		}
 		return (
-			<VerticalFoldersPane
+			<StyledVerticalFoldersPane
 				style={{
 					height: isFilesCollapsed ? "100%" : folderPaneHeight,
 				}}
 			>
-				<Actions>
-					<BasicFolderActions />
-					<ActionsSection>
-						<StyledActionIconWrapper
-							onClick={() => setIsFoldersCollapsed(true)}
-						>
-							<ChevronDown />
-						</StyledActionIconWrapper>
-					</ActionsSection>
-				</Actions>
-				<Folders />
-			</VerticalFoldersPane>
+				<StyledActionsContainer className="ffs__actions-container--folder">
+					<FolderActionSection />
+					<StyledActionsSection>
+						{renderClosePaneButton(onClosePane)}
+					</StyledActionsSection>
+				</StyledActionsContainer>
+				<FolderTree />
+			</StyledVerticalFoldersPane>
 		);
 	};
 
 	const renderFilesPane = () => {
+		const onOpenPane = () => setIsFilesCollapsed(false);
+		const onClosePane = () => setIsFilesCollapsed(true);
 		if (isFilesCollapsed) {
 			return (
-				<Actions>
-					<ActionsSection>Files</ActionsSection>
-					<ActionsSection>
-						<StyledActionIconWrapper
-							onClick={() => setIsFilesCollapsed(false)}
-						>
-							<ChevronRight />
-						</StyledActionIconWrapper>
-					</ActionsSection>
-				</Actions>
+				<StyledActionsContainer className="ffs__actions-container--file">
+					<StyledActionsSection>Files</StyledActionsSection>
+					<StyledActionsSection>
+						{renderOpenPaneButton(onOpenPane)}
+					</StyledActionsSection>
+				</StyledActionsContainer>
 			);
 		}
 		return (
-			<VerticalFilesPane>
-				<Actions>
-					<BasicFileActions />
-					<ActionsSection>
-						<StyledActionIconWrapper
-							onClick={() => setIsFilesCollapsed(true)}
-						>
-							<ChevronDown />
-						</StyledActionIconWrapper>
-					</ActionsSection>
-				</Actions>
-				<Files />
-			</VerticalFilesPane>
+			<StyledVerticalFilesPane>
+				<StyledActionsContainer className="ffs__actions-container--file">
+					<FileActionSection />
+					<StyledActionsSection>
+						{renderClosePaneButton(onClosePane)}
+					</StyledActionsSection>
+				</StyledActionsContainer>
+				<FileTree />
+			</StyledVerticalFilesPane>
 		);
 	};
 
 	return (
-		<VerticalContainer ref={pluginRef}>
+		<StyledVerticalSplitLayout ref={pluginRef}>
 			{renderFoldersPane()}
 			{!isFilesCollapsed && !isFoldersCollapsed && (
 				<VerticalDraggableDivider
@@ -141,7 +141,7 @@ const VerticalSplitLayout = () => {
 				/>
 			)}
 			{renderFilesPane()}
-		</VerticalContainer>
+		</StyledVerticalSplitLayout>
 	);
 };
 

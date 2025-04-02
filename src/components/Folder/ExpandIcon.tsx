@@ -1,27 +1,12 @@
 import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 import { ReactNode } from "react";
-import styled from "styled-components";
 
 import { ArrowDownIcon, ArrowRightIcon } from "src/assets/icons";
 import { ExplorerStore } from "src/store";
 import { useExpandFolderByClickingOnElement } from "src/hooks/useSettingsHandler";
-import { useExplorer } from "./Explorer";
-
-const IconWrapper = styled.div<{ $isFocused: boolean }>`
-	width: 14px;
-	display: flex;
-	align-items: center;
-	margin-right: 2px;
-	padding: 2px;
-
-	svg {
-		width: 8px;
-		height: 8px;
-		fill: ${({ $isFocused }) =>
-			$isFocused ? "var(--text-on-accent)" : "var(--text-normal)"};
-	}
-`;
+import { useExplorer } from "src/hooks/useExplorer";
+import { StyledExpandIconWrapper } from "./Styled";
 
 type Props = {
 	folder: TFolder;
@@ -69,13 +54,21 @@ const FolderExpandIcon = ({ folder, isFocused = false }: Props) => {
 	if (!hasFolderChildren(folder)) {
 		content = null;
 	} else {
-		content = isExpanded ? <ArrowDownIcon /> : <ArrowRightIcon />;
+		const iconClassName = "ffs__expand-icon"
+		content = isExpanded ? (
+			<ArrowDownIcon className={iconClassName} />
+		) : (
+			<ArrowRightIcon className={iconClassName} />
+		);
 	}
 
 	return (
-		<IconWrapper onClick={onClickExpandIcon} $isFocused={isFocused}>
+		<StyledExpandIconWrapper
+			onClick={onClickExpandIcon}
+			$isFocused={isFocused}
+		>
 			{content}
-		</IconWrapper>
+		</StyledExpandIconWrapper>
 	);
 };
 

@@ -6,8 +6,8 @@ import { FILE_MANUAL_SORT_RULE, ExplorerStore } from "src/store";
 
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFile } from "src/utils";
-import { useExplorer } from "src/components/Explorer";
 import { useShowFilesFromSubfolders } from "../useSettingsHandler";
+import { useExplorer } from "../useExplorer";
 
 const useChangeFile = () => {
 	const { useExplorerStore, plugin } = useExplorer();

@@ -12,8 +12,6 @@ import LoadingIcon from "./LoadingIcon";
 import GripIcon from "./GripIcon";
 import ArrowUpDownIcon from "./ArrowUpDownIcon";
 import PinIcon from "./PinIcon";
-import PanelRightOpen from "./PanelRightOpen";
-import PanelRightClose from "./PanelRightClose";
 import ChevronDown from './ChevronDown'
 import ChevronRight from './ChevronRight'
 
@@ -32,8 +30,6 @@ export {
 	GripIcon,
 	ArrowUpDownIcon,
 	PinIcon,
-	PanelRightOpen,
-	PanelRightClose,
 	ChevronDown,
 	ChevronRight
 };

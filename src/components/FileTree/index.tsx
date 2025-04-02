@@ -1,37 +1,18 @@
 import { useShallow } from "zustand/react/shallow";
-import styled from "styled-components";
+import { TFile } from "obsidian";
 
 import { ExplorerStore } from "src/store";
-import { EmptyFolderIcon } from "src/assets/icons";
 import { useChangeFile } from "src/hooks/useVaultChangeHandler";
-import { TFile } from "obsidian";
-import File from "./File";
-import { useExplorer } from "./Explorer";
+import { useExplorer } from "src/hooks/useExplorer";
+
+import File from "../File";
 import PinnedFiles from "./PinnedFiles";
-
-const StyledFiles = styled.div`
-	flex: 1;
-	overflow-y: auto;
-`;
-
-const StyledEmptyIcon = styled(EmptyFolderIcon)`
-	width: 60px;
-	height: 60px;
-	fill: var(--text-faint);
-`;
-
-const NoneFilesTips = styled.div`
-	width: 100%;
-	height: 100%;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-`;
+import { StyledEmptyFileTree, StyledEmptyIcon, StyledFileTree } from "./Styled";
 
 type Props = {
 	onOpenFoldersPane?: () => void;
 };
-const Files = ({ onOpenFoldersPane = () => {} }: Props) => {
+const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 	const { useExplorerStore } = useExplorer();
 
 	const { sortFiles, fileSortRule } = useExplorerStore(
@@ -62,19 +43,19 @@ const Files = ({ onOpenFoldersPane = () => {} }: Props) => {
 
 	if (!files.length) {
 		return (
-			<NoneFilesTips>
+			<StyledEmptyFileTree>
 				<StyledEmptyIcon />
-			</NoneFilesTips>
+			</StyledEmptyFileTree>
 		);
 	}
 
 	const sortedFiles = sortFiles(files, fileSortRule);
 	return (
-		<StyledFiles>
+		<StyledFileTree>
 			<PinnedFiles files={files} renderFile={renderFile} />
 			{sortedFiles.map((file) => renderFile(file, sortedFiles))}
-		</StyledFiles>
+		</StyledFileTree>
 	);
 };
 
-export default Files;
+export default FileTree;

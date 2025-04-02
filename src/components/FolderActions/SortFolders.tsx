@@ -6,9 +6,9 @@ import {
 	FolderSortRule,
 } from "src/store";
 import SortAction from "../SortAction";
-import { useExplorer } from "../Explorer";
 import { ManualSortFoldersModal } from "../ManualSortFoldersModal";
 import { FOLDER_SORT_RULES_COPY } from "src/locales";
+import { useExplorer } from "src/hooks/useExplorer";
 
 type FolderSortRuleItem = {
 	text: string;
@@ -92,7 +92,7 @@ const SortFolders = () => {
 					modal.open();
 				}
 				if (rule !== folderSortRule) {
-					changeFolderSortRule(rule);
+					changeFolderSortRule(rule as FolderSortRule);
 				}
 			}}
 			isInAscendingOrder={isFoldersInAscendingOrder}
