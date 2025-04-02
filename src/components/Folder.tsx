@@ -1,11 +1,11 @@
 import { useShallow } from "zustand/react/shallow";
 import { useEffect } from "react";
 
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import { FFS_DRAG_FILE, FFS_DRAG_FOLDER } from "src/assets/constants";
 import FolderContent, { FolderProps } from "./FolderContent";
 import { Draggable } from "./Styled/Sortable";
-import { useFileTree } from "./FileTree";
+import { useExplorer } from "./Explorer";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
 
 type Props = FolderProps & {
@@ -19,15 +19,15 @@ const Folder = ({
 	hideExpandIcon = false,
 	disableDrag = false,
 }: Props) => {
-	const { useFileTreeStore } = useFileTree();
+	const { useExplorerStore } = useExplorer();
 
 	const {
 		setFocusedFolder,
 		expandFolder,
 		collapseFolder,
 		expandedFolderPaths,
-	} = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	} = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			setFocusedFolder: store.setFocusedFolder,
 			hasFolderChildren: store.hasFolderChildren,
 			expandedFolderPaths: store.expandedFolderPaths,

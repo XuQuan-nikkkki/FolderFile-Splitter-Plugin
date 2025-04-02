@@ -38,7 +38,7 @@ type FolderPath = string;
 type ChildrenPaths = string[];
 export type ManualSortOrder = Record<FolderPath, ChildrenPaths>;
 
-export type FileTreeStore = {
+export type ExplorerStore = {
 	folders: TFolder[];
 	rootFolder: TFolder | null;
 	focusedFolder: TFolder | null;
@@ -161,8 +161,8 @@ export type FileTreeStore = {
 	updateFilePinState: (oldPath: string, newPath: string) => Promise<void>;
 };
 
-export const createFileTreeStore = (plugin: FolderFileSplitterPlugin) =>
-	create((set, get: () => FileTreeStore) => ({
+export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
+	create((set, get: () => ExplorerStore) => ({
 		folders: plugin.app.vault.getAllFolders() || [],
 		rootFolder: plugin.app.vault.getRoot() || null,
 		focusedFolder: null,

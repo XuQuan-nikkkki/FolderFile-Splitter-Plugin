@@ -3,13 +3,13 @@ import { ItemView, WorkspaceLeaf } from "obsidian";
 import styled from "styled-components";
 
 import FolderFileSplitterPlugin from "./main";
-import FileTree from "./components/FileTree";
+import Explorer from "./components/Explorer";
 
-const PluginView = styled.div`
+const StyledExplorerView = styled.div`
 	height: 100%;
 `;
 
-export class FileTreeView extends ItemView {
+export class ExplorerView extends ItemView {
 	root: Root;
 	plugin: FolderFileSplitterPlugin;
 
@@ -43,9 +43,9 @@ export class FileTreeView extends ItemView {
 		this.destroy();
 		this.root = createRoot(this.contentEl);
 		this.root.render(
-			<PluginView>
-				<FileTree plugin={this.plugin} />
-			</PluginView>
+			<StyledExplorerView>
+				<Explorer plugin={this.plugin} />
+			</StyledExplorerView>
 		);
 	}
 }

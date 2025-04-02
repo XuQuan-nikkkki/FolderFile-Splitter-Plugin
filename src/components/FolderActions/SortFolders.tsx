@@ -1,12 +1,12 @@
 import { useShallow } from "zustand/react/shallow";
 
 import {
-	FileTreeStore,
+	ExplorerStore,
 	FOLDER_MANUAL_SORT_RULE,
 	FolderSortRule,
 } from "src/store";
 import SortAction from "../SortAction";
-import { useFileTree } from "../FileTree";
+import { useExplorer } from "../Explorer";
 import { ManualSortFoldersModal } from "../ManualSortFoldersModal";
 import { FOLDER_SORT_RULES_COPY } from "src/locales";
 
@@ -17,7 +17,7 @@ type FolderSortRuleItem = {
 type FolderSortRuleGroup = FolderSortRuleItem[];
 
 const SortFolders = () => {
-	const { useFileTreeStore, plugin } = useFileTree();
+	const { useExplorerStore, plugin } = useExplorer();
 
 	const { language } = plugin;
 
@@ -26,8 +26,8 @@ const SortFolders = () => {
 		changeFolderSortRule,
 		isFoldersInAscendingOrder,
 		initFoldersManualSortOrder,
-	} = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	} = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			folderSortRule: store.folderSortRule,
 			isFoldersInAscendingOrder: store.isFoldersInAscendingOrder,
 			changeFolderSortRule: store.changeFolderSortRule,
@@ -87,7 +87,7 @@ const SortFolders = () => {
 					const modal = new ManualSortFoldersModal(
 						plugin,
 						plugin.app.vault.getRoot(),
-						useFileTreeStore
+						useExplorerStore
 					);
 					modal.open();
 				}

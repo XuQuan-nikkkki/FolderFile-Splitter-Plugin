@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { TFolder } from "obsidian";
 
-import { FileTreeStore, FOLDER_MANUAL_SORT_RULE } from "src/store";
+import { ExplorerStore, FOLDER_MANUAL_SORT_RULE } from "src/store";
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFolder } from "src/utils";
-import { useFileTree } from "src/components/FileTree";
+import { useExplorer } from "src/components/Explorer";
 
 const useChangeFolder = () => {
-	const { useFileTreeStore } = useFileTree();
+	const { useExplorerStore } = useExplorer();
 
 	const {
 		getTopLevelFolders,
@@ -18,8 +18,8 @@ const useChangeFolder = () => {
 		unpinFolder,
 		updateFolderPinState,
 		updateFolderManualOrder,
-	} = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	} = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			getTopLevelFolders: store.getTopLevelFolders,
 			folderSortRule: store.folderSortRule,
 			initOrder: store.initFoldersManualSortOrder,

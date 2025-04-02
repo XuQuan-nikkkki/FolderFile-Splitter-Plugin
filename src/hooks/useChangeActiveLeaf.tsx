@@ -1,16 +1,16 @@
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 
 import { ActiveLeafChangeEventName } from "src/assets/constants";
-import { useFileTree } from "src/components/FileTree";
+import { useExplorer } from "src/components/Explorer";
 
 const useChangeActiveLeaf = () => {
-	const { useFileTreeStore, plugin } = useFileTree();
+	const { useExplorerStore, plugin } = useExplorer();
 
-	const { focusedFile, selectFile, expandFolder } = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	const { focusedFile, selectFile, expandFolder } = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			focusedFile: store.focusedFile,
 			selectFile: store.selectFile,
 			expandFolder: store.expandFolder,

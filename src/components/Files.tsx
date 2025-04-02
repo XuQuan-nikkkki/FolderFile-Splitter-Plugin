@@ -1,12 +1,12 @@
 import { useShallow } from "zustand/react/shallow";
 import styled from "styled-components";
 
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import { EmptyFolderIcon } from "src/assets/icons";
 import { useChangeFile } from "src/hooks/useVaultChangeHandler";
 import { TFile } from "obsidian";
 import File from "./File";
-import { useFileTree } from "./FileTree";
+import { useExplorer } from "./Explorer";
 import PinnedFiles from "./PinnedFiles";
 
 const StyledFiles = styled.div`
@@ -32,10 +32,10 @@ type Props = {
 	onOpenFoldersPane?: () => void;
 };
 const Files = ({ onOpenFoldersPane = () => {} }: Props) => {
-	const { useFileTreeStore } = useFileTree();
+	const { useExplorerStore } = useExplorer();
 
-	const { sortFiles, fileSortRule } = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	const { sortFiles, fileSortRule } = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			sortFiles: store.sortFiles,
 			fileSortRule: store.fileSortRule,
 			focusedFile: store.focusedFile,

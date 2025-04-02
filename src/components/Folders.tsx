@@ -2,11 +2,11 @@ import { useShallow } from "zustand/react/shallow";
 import { TFolder } from "obsidian";
 import styled from "styled-components";
 
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import { useShowHierarchyLines } from "src/hooks/useSettingsHandler";
 import { useChangeFolder } from "src/hooks/useVaultChangeHandler";
 import Folder from "./Folder";
-import { useFileTree } from "./FileTree";
+import { useExplorer } from "./Explorer";
 import PinnedFolders, { FolderOptions } from "./PinnedFolders";
 
 const StyledFolders = styled.div`
@@ -28,7 +28,7 @@ type Props = {
 	onOpenFilesPane?: () => void;
 };
 const Folders = ({ onOpenFilesPane = () => {} }: Props) => {
-	const { useFileTreeStore, plugin } = useFileTree();
+	const { useExplorerStore, plugin } = useExplorer();
 
 	const {
 		rootFolder,
@@ -37,8 +37,8 @@ const Folders = ({ onOpenFilesPane = () => {} }: Props) => {
 		getFoldersByParent,
 		sortFolders,
 		expandedFolderPaths,
-	} = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	} = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			rootFolder: store.rootFolder,
 			folderSortRule: store.folderSortRule,
 			hasFolderChildren: store.hasFolderChildren,

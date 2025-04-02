@@ -20,20 +20,20 @@ import {
 	useSensors,
 } from "@dnd-kit/core";
 
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
 import FileToSort from "./FileToSort";
 import { StyledList, StyledPanel } from "../Styled/ManualSortModal";
 
 type Props = {
 	parentFolder: TFolder | null;
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
+	useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>;
 	plugin: FolderFileSplitterPlugin;
 };
-const ManualSortFiles = ({ parentFolder, useFileTreeStore, plugin }: Props) => {
+const ManualSortFiles = ({ parentFolder, useExplorerStore, plugin }: Props) => {
 	const { getFilesInFolder, sortFiles, fileSortRule, changeOrder } =
-		useFileTreeStore(
-			useShallow((store: FileTreeStore) => ({
+		useExplorerStore(
+			useShallow((store: ExplorerStore) => ({
 				order: store.filesManualSortOrder,
 				getFilesInFolder: store.getFilesInFolder,
 				sortFiles: store.sortFiles,

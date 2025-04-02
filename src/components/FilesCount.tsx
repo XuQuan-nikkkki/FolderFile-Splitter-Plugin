@@ -2,9 +2,9 @@ import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 import styled from "styled-components";
 
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import { useIncludeSubfolderFilesCount } from "src/hooks/useSettingsHandler";
-import { useFileTree } from "./FileTree";
+import { useExplorer } from "./Explorer";
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFile } from "src/utils";
 import { useEffect, useState } from "react";
@@ -21,10 +21,10 @@ type Props = {
 	isFocused: boolean;
 };
 const FilesCount = ({ folder, isFocused }: Props) => {
-	const { useFileTreeStore, plugin } = useFileTree();
+	const { useExplorerStore, plugin } = useExplorer();
 
-	const { getFilesCountInFolder } = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	const { getFilesCountInFolder } = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			getFilesCountInFolder: store.getFilesCountInFolder,
 		}))
 	);

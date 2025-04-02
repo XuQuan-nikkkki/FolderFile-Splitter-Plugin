@@ -4,9 +4,9 @@ import { ReactNode } from "react";
 import styled from "styled-components";
 
 import { ArrowDownIcon, ArrowRightIcon } from "src/assets/icons";
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import { useExpandFolderByClickingOnElement } from "src/hooks/useSettingsHandler";
-import { useFileTree } from "./FileTree";
+import { useExplorer } from "./Explorer";
 
 const IconWrapper = styled.div<{ $isFocused: boolean }>`
 	width: 14px;
@@ -28,14 +28,14 @@ type Props = {
 	isFocused?: boolean;
 };
 const FolderExpandIcon = ({ folder, isFocused = false }: Props) => {
-	const { useFileTreeStore, plugin } = useFileTree();
+	const { useExplorerStore, plugin } = useExplorer();
 
 	const {
 		hasFolderChildren,
 		expandedFolderPaths,
 		changeExpandedFolderPaths,
-	} = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	} = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			hasFolderChildren: store.hasFolderChildren,
 			expandedFolderPaths: store.expandedFolderPaths,
 			changeExpandedFolderPaths: store.changeExpandedFolderPaths,

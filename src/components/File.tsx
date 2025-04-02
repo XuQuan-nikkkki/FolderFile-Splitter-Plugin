@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { useShallow } from "zustand/react/shallow";
 
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import FileContent, { FileProps } from "./FileContent";
 import { FFS_DRAG_FILE } from "src/assets/constants";
 import { Draggable } from "./Styled/Sortable";
-import { useFileTree } from "./FileTree";
+import { useExplorer } from "./Explorer";
 
 type Props = FileProps & {
 	onOpenFoldersPane: () => void;
@@ -19,10 +19,10 @@ const File = ({
 	disableDrag,
 	onOpenFoldersPane,
 }: Props) => {
-	const { useFileTreeStore } = useFileTree();
+	const { useExplorerStore } = useExplorer();
 
-	const { selectFile } = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	const { selectFile } = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			selectFile: store.selectFile,
 		}))
 	);

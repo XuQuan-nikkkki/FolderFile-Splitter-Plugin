@@ -19,7 +19,7 @@ import {
 	useSensors,
 } from "@dnd-kit/core";
 
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
 import FolderToSort, { StyledButton } from "./FolderToSort";
 import {
@@ -30,12 +30,12 @@ import {
 
 type Props = {
 	parentFolder: TFolder | null;
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
+	useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>;
 	plugin: FolderFileSplitterPlugin;
 };
 const ManualSortFolders = ({
 	parentFolder,
-	useFileTreeStore,
+	useExplorerStore,
 	plugin,
 }: Props) => {
 	const {
@@ -43,8 +43,8 @@ const ManualSortFolders = ({
 		sortFolders,
 		folderSortRule,
 		changeFoldersManualOrderAndSave,
-	} = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	} = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			getFoldersByParent: store.getFoldersByParent,
 			sortFolders: store.sortFolders,
 			folderSortRule: store.folderSortRule,
@@ -146,7 +146,7 @@ const ManualSortFolders = ({
 			<div style={{ opacity: 0.8, transform: "scale(1.05)" }}>
 				<FolderToSort
 					folder={folder}
-					useFileTreeStore={useFileTreeStore}
+					useExplorerStore={useExplorerStore}
 					goInToFolder={goInToFolder}
 				/>
 			</div>
@@ -171,7 +171,7 @@ const ManualSortFolders = ({
 							<FolderToSort
 								key={folder.path}
 								folder={folder}
-								useFileTreeStore={useFileTreeStore}
+								useExplorerStore={useExplorerStore}
 								goInToFolder={goInToFolder}
 							/>
 						))}

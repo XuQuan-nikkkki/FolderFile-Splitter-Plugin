@@ -2,15 +2,15 @@ import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { ExpandIcon, CollapseIcon } from "src/assets/icons";
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import StyledActionIconWrapper from "../Styled/ActionIconWrapper";
-import { useFileTree } from "../FileTree";
+import { useExplorer } from "../Explorer";
 
 const ToggleFolders = () => {
-	const { useFileTreeStore, plugin } = useFileTree();
+	const { useExplorerStore, plugin } = useExplorer();
 
-	const { restoreExpandedFolderPaths } = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	const { restoreExpandedFolderPaths } = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			restoreExpandedFolderPaths: store.changeExpandedFolderPaths,
 		}))
 	);

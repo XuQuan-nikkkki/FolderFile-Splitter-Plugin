@@ -1,16 +1,16 @@
 import { useShallow } from "zustand/react/shallow";
 
 import { AddFileIcon } from "src/assets/icons";
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import StyledActionIconWrapper from "../Styled/ActionIconWrapper";
-import { useFileTree } from "../FileTree";
+import { useExplorer } from "../Explorer";
 
 const CreateFile = () => {
-	const { useFileTreeStore } = useFileTree();
+	const { useExplorerStore } = useExplorer();
 
 	const { createFile, focusedFolder, rootFolder, initOrder } =
-		useFileTreeStore(
-			useShallow((store: FileTreeStore) => ({
+		useExplorerStore(
+			useShallow((store: ExplorerStore) => ({
 				createFile: store.createFile,
 				focusedFolder: store.focusedFolder,
 				rootFolder: store.rootFolder,

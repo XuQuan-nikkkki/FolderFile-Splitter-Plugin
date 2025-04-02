@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { TFile } from "obsidian";
 
-import { FILE_MANUAL_SORT_RULE, FileTreeStore } from "src/store";
+import { FILE_MANUAL_SORT_RULE, ExplorerStore } from "src/store";
 
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFile } from "src/utils";
-import { useFileTree } from "src/components/FileTree";
+import { useExplorer } from "src/components/Explorer";
 import { useShowFilesFromSubfolders } from "../useSettingsHandler";
 
 const useChangeFile = () => {
-	const { useFileTreeStore, plugin } = useFileTree();
+	const { useExplorerStore, plugin } = useExplorer();
 
 	const {
 		focusedFolder,
@@ -21,8 +21,8 @@ const useChangeFile = () => {
 		initOrder,
 		isFilePinned,
 		unpinFile,
-	} = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	} = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			focusedFolder: store.focusedFolder,
 			getFilesInFolder: store.getFilesInFolder,
 			updateFilePinState: store.updateFilePinState,

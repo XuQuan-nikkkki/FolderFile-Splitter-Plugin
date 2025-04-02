@@ -2,11 +2,11 @@ import { Menu, TFile } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 import { useEffect, useRef, useState } from "react";
 
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import { FolderListModal } from "./FolderListModal";
 import { useShowFileDetail } from "src/hooks/useSettingsHandler";
 import FileDetail from "./FileDetail";
-import { useFileTree } from "./FileTree";
+import { useExplorer } from "./Explorer";
 import {
 	StyledFileContent,
 	StyledFileExtension,
@@ -21,7 +21,7 @@ export type FileProps = {
 	fileList: TFile[];
 };
 const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
-	const { useFileTreeStore, plugin } = useFileTree();
+	const { useExplorerStore, plugin } = useExplorer();
 
 	const {
 		focusedFile,
@@ -33,8 +33,8 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		unpinFile,
 		trashFile,
 		renameFile,
-	} = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	} = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			focusedFile: store.focusedFile,
 			selectFile: store.selectFile,
 			createFile: store.createFile,
@@ -89,8 +89,8 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		onBeginEdit();
 		setTimeout(() => {
 			selectFileNameText();
-		}, 100);	
-	}
+		}, 100);
+	};
 
 	useEffect(() => {
 		window.addEventListener("keydown", onKeyDown);
@@ -107,7 +107,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		if (now - fileCreateTime < 3000) {
 			onStartEditingName();
 		}
-	}, [])
+	}, []);
 
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
@@ -154,7 +154,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 			item.onClick(() => {
 				const modal = new FolderListModal(
 					plugin,
-					useFileTreeStore,
+					useExplorerStore,
 					file
 				);
 				modal.open();

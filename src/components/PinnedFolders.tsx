@@ -2,10 +2,10 @@ import { useShallow } from "zustand/react/shallow";
 import { TFolder } from "obsidian";
 import { ReactNode, useEffect } from "react";
 
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import PinIcon from "src/assets/icons/PinIcon";
 import { PinnedContent, PinnedSection, PinnedTitle } from "./Styled/Pin";
-import { useFileTree } from "./FileTree";
+import { useExplorer } from "./Explorer";
 
 export type FolderOptions = {
 	isRoot?: boolean;
@@ -16,10 +16,10 @@ type Props = {
 	renderFolder: (folder: TFolder, options: FolderOptions) => ReactNode;
 };
 const PinnedFolders = ({ renderFolder }: Props) => {
-	const { useFileTreeStore, plugin } = useFileTree();
+	const { useExplorerStore, plugin } = useExplorer();
 
-	const { pinnedFolderPaths, _updatePinnedFolderPaths } = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	const { pinnedFolderPaths, _updatePinnedFolderPaths } = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			pinnedFolderPaths: store.pinnedFolderPaths,
 			_updatePinnedFolderPaths: store._updatePinnedFolderPaths,
 		}))

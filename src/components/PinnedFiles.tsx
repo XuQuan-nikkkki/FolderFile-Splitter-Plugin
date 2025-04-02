@@ -1,11 +1,11 @@
 import { ReactNode, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import { PinIcon } from "src/assets/icons";
 import { TFile } from "obsidian";
 import { PinnedContent, PinnedSection, PinnedTitle } from "./Styled/Pin";
-import { useFileTree } from "./FileTree";
+import { useExplorer } from "./Explorer";
 
 type Props = {
 	files: TFile[];
@@ -16,10 +16,10 @@ type Props = {
 	) => ReactNode;
 };
 const PinnedFiles = ({ files, renderFile }: Props) => {
-	const { useFileTreeStore, plugin } = useFileTree();
+	const { useExplorerStore, plugin } = useExplorer();
 
-	const { pinnedFilePaths, _updatePinnedFilePaths } = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	const { pinnedFilePaths, _updatePinnedFilePaths } = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			pinnedFilePaths: store.pinnedFilePaths,
 			_updatePinnedFilePaths: store._updatePinnedFilePaths,
 		}))

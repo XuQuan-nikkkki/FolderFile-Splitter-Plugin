@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import { StyledIcon } from "../Styled/DragIcon";
 import { FFS_SORT_FOLDER } from "src/assets/constants";
 
@@ -40,12 +40,12 @@ export const StyledButton = styled.span<{ $disabled?: boolean }>`
 
 type Props = {
 	folder: TFolder;
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
+	useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>;
 	goInToFolder: (folder: TFolder | null) => void;
 };
-const FolderToSort = ({ folder, useFileTreeStore, goInToFolder }: Props) => {
-	const { getFoldersByParent } = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+const FolderToSort = ({ folder, useExplorerStore, goInToFolder }: Props) => {
+	const { getFoldersByParent } = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			getFoldersByParent: store.getFoldersByParent,
 		}))
 	);

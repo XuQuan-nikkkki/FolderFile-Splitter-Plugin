@@ -14,7 +14,7 @@ import { TAbstractFile, TFolder } from "obsidian";
 import { snapCenterToCursor } from "@dnd-kit/modifiers";
 
 import FolderFileSplitterPlugin from "src/main";
-import { createFileTreeStore, FileTreeStore } from "src/store";
+import { createExplorerStore, ExplorerStore } from "src/store";
 import { useShallow } from "zustand/react/shallow";
 import Loading from "./Loading";
 import {
@@ -29,16 +29,16 @@ import { HorizontalSplitLayout, VerticalSplitLayout } from "./layout";
 import { isFile, isFolder } from "src/utils";
 import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
 
-type FileTreeContextType = {
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
+type ExplorerContextType = {
+	useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>;
 	plugin: FolderFileSplitterPlugin;
 };
-const FileTreeContext = createContext<FileTreeContextType | null>(null);
+const ExplorerContext = createContext<ExplorerContextType | null>(null);
 
-export const useFileTree = () => {
-	const context = useContext(FileTreeContext);
+export const useExplorer = () => {
+	const context = useContext(ExplorerContext);
 	if (!context) {
-		throw new Error("useFileTree must be used within a FileTreeProvider");
+		throw new Error("useExplorer must be used within a ExplorerProvider");
 	}
 	return context;
 };
@@ -46,9 +46,9 @@ export const useFileTree = () => {
 type Props = {
 	plugin: FolderFileSplitterPlugin;
 };
-const FileTree = ({ plugin }: Props) => {
-	const useFileTreeStore = useMemo(
-		() => createFileTreeStore(plugin),
+const Explorer = ({ plugin }: Props) => {
+	const useExplorerStore = useMemo(
+		() => createExplorerStore(plugin),
 		[plugin]
 	);
 
@@ -60,8 +60,8 @@ const FileTree = ({ plugin }: Props) => {
 		expandFolder,
 		setFocusedFolder,
 		selectFile,
-	} = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	} = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			restoreData: store.restoreData,
 			expandedFolderPaths: store.expandedFolderPaths,
 			moveFile: store.moveFile,
@@ -173,9 +173,9 @@ const FileTree = ({ plugin }: Props) => {
 			onDragEnd={onDragEnd}
 			onDragCancel={onDragCancel}
 		>
-			<FileTreeContext.Provider value={{ useFileTreeStore, plugin }}>
+			<ExplorerContext.Provider value={{ useExplorerStore, plugin }}>
 				{renderContent()}
-			</FileTreeContext.Provider>
+			</ExplorerContext.Provider>
 			<DragOverlay modifiers={[snapCenterToCursor]}>
 				{renderOverlayContent()}
 			</DragOverlay>
@@ -183,4 +183,4 @@ const FileTree = ({ plugin }: Props) => {
 	);
 };
 
-export default FileTree;
+export default Explorer;

@@ -2,21 +2,21 @@ import { SuggestModal, TAbstractFile, TFolder } from "obsidian";
 import { StoreApi, UseBoundStore } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
-import { FileTreeStore, FOLDER_MANUAL_SORT_RULE } from "src/store";
+import { ExplorerStore, FOLDER_MANUAL_SORT_RULE } from "src/store";
 import { isFile } from "src/utils";
 
 export class FolderListModal extends SuggestModal<TFolder> {
 	folders: TFolder[];
 	item: TAbstractFile;
-	useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>;
+	useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>;
 
 	constructor(
 		plugin: FolderFileSplitterPlugin,
-		useFileTreeStore: UseBoundStore<StoreApi<FileTreeStore>>,
+		useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>,
 		item: TAbstractFile
 	) {
 		super(plugin.app);
-		this.useFileTreeStore = useFileTreeStore;
+		this.useExplorerStore = useExplorerStore;
 		this.folders = plugin.app.vault.getAllFolders(true);
 		this.item = item;
 		this.setPlaceholder("Type a folder");
@@ -40,7 +40,7 @@ export class FolderListModal extends SuggestModal<TFolder> {
 	}
 
 	async onChooseSuggestion(folder: TFolder) {
-		const { moveFile, moveFolder } = this.useFileTreeStore.getState();
+		const { moveFile, moveFolder } = this.useExplorerStore.getState();
 		try {
 			const newPath = folder.path + "/" + this.item.name;
 			if (isFile(this.item)) {

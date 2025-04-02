@@ -2,7 +2,7 @@ import { Menu, TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 import { useEffect, useRef, useState } from "react";
 
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import { FolderListModal } from "./FolderListModal";
 import {
 	useShowFolderIcon,
@@ -15,7 +15,7 @@ import {
 	StyledFolder,
 	StyledFolderIcon,
 } from "./Styled/StyledFolder";
-import { useFileTree } from "./FileTree";
+import { useExplorer } from "./Explorer";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { FOLDER_OPERATION_COPY } from "src/locales";
 
@@ -35,7 +35,7 @@ const FolderContent = ({
 	isOver = false,
 	onToggleExpandState,
 }: Props) => {
-	const { useFileTreeStore, plugin } = useFileTree();
+	const { useExplorerStore, plugin } = useExplorer();
 
 	const {
 		focusedFolder,
@@ -51,8 +51,8 @@ const FolderContent = ({
 		renameFolder,
 		latestCreatedFolder,
 		latestFolderCreatedTime,
-	} = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	} = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			focusedFolder: store.focusedFolder,
 			setFocusedFolder: store.setFocusedFolder,
 			expandedFolderPaths: store.expandedFolderPaths,
@@ -189,7 +189,7 @@ const FolderContent = ({
 			item.onClick(() => {
 				const modal = new FolderListModal(
 					plugin,
-					useFileTreeStore,
+					useExplorerStore,
 					folder
 				);
 				modal.open();

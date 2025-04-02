@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import styled from "styled-components";
 
-import { FileTreeStore } from "src/store";
-import { useFileTree } from "./FileTree";
+import { ExplorerStore } from "src/store";
+import { useExplorer } from "./Explorer";
 
 const Detail = styled.div`
 	display: grid;
@@ -31,10 +31,10 @@ type Props = {
 	isFocused: boolean;
 };
 const FileDetail = ({ file, isFocused }: Props) => {
-	const { useFileTreeStore } = useFileTree();
+	const { useExplorerStore } = useExplorer();
 
-	const { readFile } = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+	const { readFile } = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			readFile: store.readFile,
 		}))
 	);

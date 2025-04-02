@@ -1,13 +1,13 @@
 import { useShallow } from "zustand/react/shallow";
 
 import { AddFolderIcon } from "src/assets/icons";
-import { FileTreeStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import StyledActionIconWrapper from "../Styled/ActionIconWrapper";
-import { useFileTree } from "../FileTree";
+import { useExplorer } from "../Explorer";
 import { TFolder } from "obsidian";
 
 const CreateFolder = () => {
-	const { useFileTreeStore } = useFileTree();
+	const { useExplorerStore } = useExplorer();
 
 	const {
 		rootFolder,
@@ -16,16 +16,16 @@ const CreateFolder = () => {
 		changeExpandedFolderPaths,
 		setFocusedFolder,
 		expandedFolderPaths,
-		initOrder
-	} = useFileTreeStore(
-		useShallow((store: FileTreeStore) => ({
+		initOrder,
+	} = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
 			rootFolder: store.rootFolder,
 			focusedFolder: store.focusedFolder,
 			createNewFolder: store.createNewFolder,
 			changeExpandedFolderPaths: store.changeExpandedFolderPaths,
 			setFocusedFolder: store.setFocusedFolder,
 			expandedFolderPaths: store.expandedFolderPaths,
-			initOrder: store.initFoldersManualSortOrder
+			initOrder: store.initFoldersManualSortOrder,
 		}))
 	);
 
@@ -53,7 +53,7 @@ const CreateFolder = () => {
 			await expandParentFolders(parentFolder);
 			await setFocusedFolder(newFolder);
 		}
-		await initOrder()
+		await initOrder();
 	};
 
 	return (

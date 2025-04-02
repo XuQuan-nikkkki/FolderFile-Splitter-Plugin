@@ -1,6 +1,6 @@
 import { Plugin, TAbstractFile, WorkspaceLeaf } from "obsidian";
 
-import { FileTreeView } from "./FileTreeView";
+import { ExplorerView } from "./ExplorerView";
 import { SettingTab } from "./SettingTab";
 import { DEFAULT_SETTINGS, FolderFileSplitterPluginSettings } from "./settings";
 import {
@@ -34,7 +34,7 @@ export default class FolderFileSplitterPlugin extends Plugin {
 
 		this.registerView(
 			this.VIEW_TYPE,
-			(leaf) => new FileTreeView(leaf, this)
+			(leaf) => new ExplorerView(leaf, this)
 		);
 
 		await this.loadSettings();
@@ -158,7 +158,7 @@ export default class FolderFileSplitterPlugin extends Plugin {
 	detachFileTreeLeafs = () => {
 		const leafs = this.app.workspace.getLeavesOfType(this.VIEW_TYPE);
 		for (const leaf of leafs) {
-			(leaf.view as FileTreeView).destroy();
+			(leaf.view as ExplorerView).destroy();
 			leaf.detach();
 		}
 	};
