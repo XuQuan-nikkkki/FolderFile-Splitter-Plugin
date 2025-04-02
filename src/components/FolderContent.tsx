@@ -2,7 +2,7 @@ import { Menu, TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 import { useEffect, useRef, useState } from "react";
 
-import { FileTreeStore, FOLDER_MANUAL_SORT_RULE } from "src/store";
+import { FileTreeStore } from "src/store";
 import { FolderListModal } from "./FolderListModal";
 import {
 	useShowFolderIcon,
@@ -49,8 +49,6 @@ const FolderContent = ({
 		isFolderPinned,
 		trashFolder,
 		renameFolder,
-		initOrder,
-		folderSortRule,
 		latestCreatedFolder,
 		latestFolderCreatedTime,
 	} = useFileTreeStore(
@@ -66,8 +64,6 @@ const FolderContent = ({
 			isFolderPinned: store.isFolderPinned,
 			trashFolder: store.trashFolder,
 			renameFolder: store.renameFolder,
-			initOrder: store.initFoldersManualSortOrder,
-			folderSortRule: store.folderSortRule,
 			latestCreatedFolder: store.latestCreatedFolder,
 			latestFolderCreatedTime: store.latestFolderCreatedTime,
 		}))
@@ -117,11 +113,6 @@ const FolderContent = ({
 				selectFileNameText();
 			}, 100);
 		}
-	};
-
-	const maybeInitOrder = async () => {
-		if (folderSortRule !== FOLDER_MANUAL_SORT_RULE) return;
-		await initOrder();
 	};
 
 	const onStartEditingName = () => {
@@ -178,7 +169,6 @@ const FolderContent = ({
 					await setFocusedFolder(folder);
 				}
 				await createFile(folder);
-				await maybeInitOrder();
 			});
 		});
 		menu.addItem((item) => {
