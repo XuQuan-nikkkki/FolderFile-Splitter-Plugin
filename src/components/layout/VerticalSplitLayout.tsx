@@ -17,6 +17,7 @@ import {
 } from "./Actions";
 import Files from "../Files";
 import Folders from "../Folders";
+import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
 
 const VerticalSplitLayout = () => {
 	const [folderPaneHeight, setFolderPaneHeight] = useState<
@@ -27,6 +28,7 @@ const VerticalSplitLayout = () => {
 	const [isFilesCollapsed, setIsFilesCollapsed] = useState(false);
 
 	const pluginRef = useRef<HTMLDivElement>(null);
+	useChangeActiveLeaf();
 
 	const restoreLayout = () => {
 		try {

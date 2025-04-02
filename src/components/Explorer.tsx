@@ -27,7 +27,6 @@ import {
 } from "src/settings";
 import { HorizontalSplitLayout, VerticalSplitLayout } from "./layout";
 import { isFile, isFolder } from "src/utils";
-import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
 
 type ExplorerContextType = {
 	useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>;
