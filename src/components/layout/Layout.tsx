@@ -50,5 +50,6 @@ export const StyledVerticalFilesPane = styled(StyledLayoutPane).attrs({
 })`
 	${PaneWithBorderRadiusStyle}
 	flex: 1;
-	height: 100%;
+	min-height: 0;
+	overflow: hidden;
 `;
