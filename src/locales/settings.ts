@@ -65,6 +65,10 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Open destination folder after move",
 		desc: "When enabled, the destination folder will automatically open after moving a file or folder.",
 	},
+	hideRootFolder: {
+		name: "Hide root folder",
+		desc: "When enabled, the root folder will be hidden from the folder view. Only its subfolders will be shown.",
+	},
 };
 
 export const ZH_SETTINGS: SettingsLocaleResource = {
@@ -111,5 +115,9 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	openDestinationFolder: {
 		name: "移动后打开目标文件夹",
 		desc: "启用后，在移动文件或文件夹后，目标文件夹将自动展开并显示。",
+	},
+	hideRootFolder: {
+		name: "隐藏根文件夹",
+		desc: "启用后，文件夹视图中将隐藏根文件夹，只显示其子文件夹。",
 	},
 };

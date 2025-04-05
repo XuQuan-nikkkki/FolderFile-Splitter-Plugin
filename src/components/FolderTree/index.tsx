@@ -2,7 +2,10 @@ import { useShallow } from "zustand/react/shallow";
 import { TFolder } from "obsidian";
 
 import { ExplorerStore } from "src/store";
-import { useShowHierarchyLines } from "src/hooks/useSettingsHandler";
+import {
+	useHideRootFolder,
+	useShowHierarchyLines,
+} from "src/hooks/useSettingsHandler";
 import { useChangeFolder } from "src/hooks/useVaultChangeHandler";
 import { useExplorer } from "src/hooks/useExplorer";
 
@@ -41,10 +44,13 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		}))
 	);
 
-	const { showHierarchyLines } = useShowHierarchyLines(
-		plugin.settings.showFolderHierarchyLines
-	);
+	const {
+		showFolderHierarchyLines: defaultShowLines,
+		hideRootFolder: defaultHideRootFolder,
+	} = plugin.settings;
+	const { showHierarchyLines } = useShowHierarchyLines(defaultShowLines);
 	const { topFolders } = useChangeFolder();
+	const { hideRootFolder } = useHideRootFolder(defaultHideRootFolder);
 
 	const renderFolder = (folder: TFolder, options?: FolderOptions) => {
 		const { isRoot, hideExpandIcon, disableDrag } = options ?? {};
@@ -83,8 +89,8 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		});
 	};
 
-	const renderRootFolder = () => {
-		if (!rootFolder) return null;
+	const maybeRenderRootFolder = () => {
+		if (!rootFolder || hideRootFolder) return null;
 
 		return (
 			<StyledFolderTreeItem style={{ marginLeft: 4 }}>
@@ -96,7 +102,7 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	return (
 		<StyledFolderTree>
 			<PinnedFolders renderFolder={renderFolder} />
-			{renderRootFolder()}
+			{maybeRenderRootFolder()}
 			{renderFolders(topFolders)}
 		</StyledFolderTree>
 	);

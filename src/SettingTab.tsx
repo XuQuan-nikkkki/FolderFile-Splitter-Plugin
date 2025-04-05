@@ -124,6 +124,21 @@ export class SettingTab extends PluginSettingTab {
 
 		this.createHeader(containerEl, headersCopy.folderAndFileBehavior);
 		new Setting(containerEl)
+			.setName(settingsCopy.hideRootFolder.name)
+			.setDesc(settingsCopy.hideRootFolder.desc)
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.hideRootFolder);
+				cb.onChange(async (val) => {
+					this.plugin.settings.hideRootFolder = val;
+					await this.plugin.saveSettings();
+					this.plugin.triggerSettingsChangeEvent(
+						"hideRootFolder",
+						val
+					);
+				});
+			});
+
+		new Setting(containerEl)
 			.setName(settingsCopy.expandFolderOnClick.name)
 			.setDesc(settingsCopy.expandFolderOnClick.desc)
 			.addDropdown((cb) => {
