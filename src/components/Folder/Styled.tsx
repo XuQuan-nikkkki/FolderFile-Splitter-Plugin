@@ -65,7 +65,7 @@ export const StyledFolderIcon = styled(FolderIcon).attrs({
 	$isFocused?: boolean;
 }>`
 	fill: ${({ $isFocused }) =>
-		$isFocused ? "var(--text-on-accent)" : "#d19600"};
+		$isFocused ? "var(--text-on-accent)" : "var(--text-muted)"};
 	width: ${({ $isRoot }) => ($isRoot ? "16px" : "14px")};
 	height: ${({ $isRoot }) => ($isRoot ? "14px" : "12px")};
 	margin-right: var(--size-4-2);
