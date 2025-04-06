@@ -11,3 +11,39 @@ If your plugin does not need CSS, delete this file.
 .theme-dark {
 	--ffs-border-radius: 4px;
 }
+
+/* plugin layout */
+.ffs__plugin-container {
+	height: 100%;
+}
+
+.ffs__layout,
+.ffs__layout--horizontal,
+.ffs__layout--vertical {
+	display: flex;
+	height: 100%;
+	overflow-y: hidden;
+}
+
+.ffs__layout--vertical {
+	flex-direction: column;
+}
+
+.ffs__layout-pane,
+.ffs__folders-pane--horizontal,
+.ffs__files-pane--horizontal,
+.ffs__folders-pane--vertical,
+.ffs__files-pane--vertical {
+	display: flex;
+	flex-direction: column;
+}
+
+.ffs__files-pane--horizontal {
+	flex: 1;
+}
+
+.ffs__files-pane--vertical {
+	flex: 1;
+	min-height: 0;
+	overflow: hidden;
+}

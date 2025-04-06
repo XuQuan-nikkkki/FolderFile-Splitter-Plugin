@@ -1,15 +1,8 @@
 import { Root, createRoot } from "react-dom/client";
 import { ItemView, WorkspaceLeaf } from "obsidian";
-import styled from "styled-components";
 
 import FolderFileSplitterPlugin from "./main";
 import Explorer from "./components/Explorer";
-
-const StyledExplorerContainer = styled.div.attrs({
-	className: "ffs__plugin-container",
-})`
-	height: 100%;
-`;
 
 export class ExplorerView extends ItemView {
 	root: Root;
@@ -45,9 +38,9 @@ export class ExplorerView extends ItemView {
 		this.destroy();
 		this.root = createRoot(this.contentEl);
 		this.root.render(
-			<StyledExplorerContainer>
+			<div className="ffs__plugin-container">
 				<Explorer plugin={this.plugin} />
-			</StyledExplorerContainer>
+			</div>
 		);
 	}
 }

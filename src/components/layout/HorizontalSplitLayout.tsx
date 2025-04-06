@@ -3,11 +3,6 @@ import { useEffect, useState, useRef } from "react";
 import { FFS_FOLDER_PANE_WIDTH_KEY } from "src/assets/constants";
 import { HorizontalDraggableDivider } from "./DraggableDivider";
 import {
-	StyledHorizontalSplitLayout,
-	StyledHorizontalFoldersPane,
-	StyledHorizontalFilesPane,
-} from "./Layout";
-import {
 	StyledActionsContainer,
 	FileActionSection,
 	FolderActionSection,
@@ -58,24 +53,27 @@ const HorizontalSplitLayout = () => {
 	};
 
 	return (
-		<StyledHorizontalSplitLayout ref={pluginRef}>
-			<StyledHorizontalFoldersPane style={{ width: folderPaneWidth }}>
+		<div className="ffs__layout ffs__layout--horizontal" ref={pluginRef}>
+			<div
+				className="ffs__layout-pane ffs__folders-pane--horizontal"
+				style={{ width: folderPaneWidth }}
+			>
 				<StyledActionsContainer className="ffs__actions-container--folder">
 					<FolderActionSection />
 				</StyledActionsContainer>
 				<FolderTree />
-			</StyledHorizontalFoldersPane>
+			</div>
 			<HorizontalDraggableDivider
 				initialWidth={folderPaneWidth}
 				onChangeWidth={onChangeFolderPaneWidth}
 			/>
-			<StyledHorizontalFilesPane>
+			<div className="ffs__layout-pane ffs__files-pane--horizontal">
 				<StyledActionsContainer className="ffs__actions-container--file">
 					<FileActionSection />
 				</StyledActionsContainer>
 				<FileTree />
-			</StyledHorizontalFilesPane>
-		</StyledHorizontalSplitLayout>
+			</div>
+		</div>
 	);
 };
 

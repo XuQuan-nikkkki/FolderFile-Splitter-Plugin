@@ -1,11 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
 import { FFS_FOLDER_PANE_HEIGHT_KEY } from "src/assets/constants";
-import {
-	StyledVerticalSplitLayout,
-	StyledVerticalFilesPane,
-	StyledVerticalFoldersPane,
-} from "./Layout";
 import { ChevronDown, ChevronRight } from "src/assets/icons";
 import { VerticalDraggableDivider } from "./DraggableDivider";
 import {
@@ -89,7 +84,8 @@ const VerticalSplitLayout = () => {
 			);
 		}
 		return (
-			<StyledVerticalFoldersPane
+			<div
+				className="ffs__layout-pane ffs__folders-pane--vertical"
 				style={{
 					height: isFilesCollapsed ? "100%" : folderPaneHeight,
 				}}
@@ -101,7 +97,7 @@ const VerticalSplitLayout = () => {
 					</StyledActionsSection>
 				</StyledActionsContainer>
 				<FolderTree />
-			</StyledVerticalFoldersPane>
+			</div>
 		);
 	};
 
@@ -119,7 +115,7 @@ const VerticalSplitLayout = () => {
 			);
 		}
 		return (
-			<StyledVerticalFilesPane>
+			<div className="ffs__layout-pane ffs__files-pane--vertical">
 				<StyledActionsContainer className="ffs__actions-container--file">
 					<FileActionSection />
 					<StyledActionsSection>
@@ -127,12 +123,12 @@ const VerticalSplitLayout = () => {
 					</StyledActionsSection>
 				</StyledActionsContainer>
 				<FileTree />
-			</StyledVerticalFilesPane>
+			</div>
 		);
 	};
 
 	return (
-		<StyledVerticalSplitLayout ref={pluginRef}>
+		<div className="ffs__layout ffs__layout--vertical" ref={pluginRef}>
 			{renderFoldersPane()}
 			{!isFilesCollapsed && !isFoldersCollapsed && (
 				<VerticalDraggableDivider
@@ -141,7 +137,7 @@ const VerticalSplitLayout = () => {
 				/>
 			)}
 			{renderFilesPane()}
-		</StyledVerticalSplitLayout>
+		</div>
 	);
 };
 
