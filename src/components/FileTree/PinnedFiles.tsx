@@ -6,13 +6,6 @@ import { ExplorerStore } from "src/store";
 import { PinIcon } from "src/assets/icons";
 import { useExplorer } from "src/hooks/useExplorer";
 
-import {
-	StyledPinnedContent,
-	StyledPinnedContainer,
-	StyledPinnedHeader,
-	StyledPinTitle,
-} from "../Styled/Pin";
-
 type Props = {
 	files: TFile[];
 	renderFile: (
@@ -45,15 +38,15 @@ const PinnedFiles = ({ files, renderFile }: Props) => {
 		.filter(Boolean) as TFile[];
 	if (!pinnedFiles.length) return null;
 	return (
-		<StyledPinnedContainer>
-			<StyledPinnedHeader>
+		<div className="ffs__pin-container">
+			<div className="ffs__pin-header">
 				<PinIcon />
-				<StyledPinTitle>Pin</StyledPinTitle>
-			</StyledPinnedHeader>
-			<StyledPinnedContent>
+				Pin
+			</div>
+			<div className="ffs__pin-content">
 				{pinnedFiles.map((file) => renderFile(file, pinnedFiles, true))}
-			</StyledPinnedContent>
-		</StyledPinnedContainer>
+			</div>
+		</div>
 	);
 };
 

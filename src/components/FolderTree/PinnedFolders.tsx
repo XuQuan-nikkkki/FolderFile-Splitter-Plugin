@@ -6,13 +6,6 @@ import { ExplorerStore } from "src/store";
 import PinIcon from "src/assets/icons/PinIcon";
 import { useExplorer } from "src/hooks/useExplorer";
 
-import {
-	StyledPinnedContent,
-	StyledPinnedContainer,
-	StyledPinnedHeader,
-	StyledPinTitle,
-} from "../Styled/Pin";
-
 export type FolderOptions = {
 	isRoot?: boolean;
 	hideExpandIcon?: boolean;
@@ -42,12 +35,12 @@ const PinnedFolders = ({ renderFolder }: Props) => {
 
 	if (!pinnedFolderPaths.length) return null;
 	return (
-		<StyledPinnedContainer>
-			<StyledPinnedHeader>
+		<div className="ffs__pin-container">
+			<div className="ffs__pin-header">
 				<PinIcon />
-				<StyledPinTitle>Pin</StyledPinTitle>
-			</StyledPinnedHeader>
-			<StyledPinnedContent $indent>
+				Pin
+			</div>
+			<div className="ffs__pin-content" style={{ marginLeft: 4 }}>
 				{pinnedFolderPaths.map((path) => {
 					const folder = plugin.app.vault.getFolderByPath(path);
 					const options: FolderOptions = {
@@ -57,8 +50,8 @@ const PinnedFolders = ({ renderFolder }: Props) => {
 					};
 					return folder ? renderFolder(folder, options) : null;
 				})}
-			</StyledPinnedContent>
-		</StyledPinnedContainer>
+			</div>
+		</div>
 	);
 };
 
