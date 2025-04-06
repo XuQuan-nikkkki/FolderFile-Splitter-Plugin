@@ -130,3 +130,14 @@ If your plugin does not need CSS, delete this file.
 	margin-left: 2px;
 	font-size: 12px;
 }
+
+/* folder */
+.ffs__subfolders-group {
+	position: relative;
+	margin-left: 12px;
+	padding-left: 2px;
+}
+
+.ffs__subfolders-group-with-hierarchy-line {
+	border-left: var(--border-width) solid var(--interactive-hover);
+}

@@ -11,10 +11,6 @@ import { useExplorer } from "src/hooks/useExplorer";
 
 import Folder from "../Folder";
 import PinnedFolders, { FolderOptions } from "./PinnedFolders";
-import {
-	StyledFolderTreeItem,
-	StyledSubfoldersGroup,
-} from "./Styled";
 
 type Props = {
 	onOpenFilesPane?: () => void;
@@ -74,16 +70,21 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		return sortedFolders.map((folder) => {
 			const isExpanded = expandedFolderPaths.includes(folder.path);
 			return (
-				<StyledFolderTreeItem key={folder.name}>
+				<div className="ffs__folder-tree-item" key={folder.name}>
 					{renderFolder(folder)}
 					{isExpanded && hasFolderChildren(folder) && (
-						<StyledSubfoldersGroup
-							$showHierarchyLine={showHierarchyLines}
+						<div
+							className={
+								`ffs__subfolders-group` +
+								(showHierarchyLines
+									? " ffs__subfolders-group--show-lines"
+									: "")
+							}
 						>
 							{renderFolders(getFoldersByParent(folder))}
-						</StyledSubfoldersGroup>
+						</div>
 					)}
-				</StyledFolderTreeItem>
+				</div>
 			);
 		});
 	};
@@ -92,9 +93,9 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		if (!rootFolder || hideRootFolder) return null;
 
 		return (
-			<StyledFolderTreeItem style={{ marginLeft: 4 }}>
+			<div className="ffs__folder-tree-item" style={{ marginLeft: 4 }}>
 				{renderFolder(rootFolder, { isRoot: true })}
-			</StyledFolderTreeItem>
+			</div>
 		);
 	};
 
