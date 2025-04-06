@@ -48,6 +48,21 @@ If your plugin does not need CSS, delete this file.
 	overflow: hidden;
 }
 
+/* layout divider */
+.ffs__layout-divider {
+	border: 1px solid var(--divider-color);
+}
+
+.ffs__layout-divider--horizontal {
+	cursor: ew-resize;
+	margin: 0 8px;
+}
+
+.ffs__layout-divider--vertical {
+	cursor: ns-resize;
+	margin: 16px 0;
+}
+
 /* folders and files action buttons */
 .ffs__actions-container {
 	width: 100%;

@@ -1,25 +1,4 @@
 import { useRef } from "react";
-import styled from "styled-components";
-
-export type Direction = "horizontal" | "vertical";
-
-const StyledLayoutDivider = styled.div.attrs({
-	className: "ffs__layout-divider",
-})`
-	border: 1px solid var(--divider-color);
-`;
-const StyledHorizontalSplitDivider = styled(StyledLayoutDivider).attrs({
-	className: "ffs__layout-divider--horizontal",
-})`
-	cursor: ew-resize;
-	margin: 0 8px;
-`;
-const StyledVerticalSplitDivider = styled(StyledLayoutDivider).attrs({
-	className: "ffs__layout-divider--vertical",
-})`
-	cursor: ns-resize;
-	margin: 16px 0;
-`;
 
 type HorizontalProps = {
 	initialWidth: number | undefined;
@@ -50,7 +29,8 @@ export const HorizontalDraggableDivider = ({
 	};
 
 	return (
-		<StyledHorizontalSplitDivider
+		<div
+			className="ffs__layout-divider ffs__layout-divider--horizontal"
 			ref={dividerRef}
 			onMouseDown={handleMouseDown}
 		/>
@@ -86,7 +66,8 @@ export const VerticalDraggableDivider = ({
 	};
 
 	return (
-		<StyledVerticalSplitDivider
+		<div
+			className="ffs__layout-divider ffs__layout-divider--vertical"
 			ref={dividerRef}
 			onMouseDown={handleMouseDown}
 		/>
