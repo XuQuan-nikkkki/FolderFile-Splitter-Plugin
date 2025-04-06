@@ -4,8 +4,6 @@ import { AddFileIcon } from "src/assets/icons";
 import { ExplorerStore } from "src/store";
 import { useExplorer } from "src/hooks/useExplorer";
 
-import { StyledActionButtonWrapper } from "../layout/Actions";
-
 const CreateFile = () => {
 	const { useExplorerStore } = useExplorer();
 
@@ -27,9 +25,9 @@ const CreateFile = () => {
 	};
 
 	return (
-		<StyledActionButtonWrapper onClick={onCreateNewFile}>
+		<div className="ffs__action-button-wrapper" onClick={onCreateNewFile}>
 			<AddFileIcon className="ffs__action-button" />
-		</StyledActionButtonWrapper>
+		</div>
 	);
 };
 

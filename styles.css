@@ -47,3 +47,38 @@ If your plugin does not need CSS, delete this file.
 	min-height: 0;
 	overflow: hidden;
 }
+
+/* folders and files action buttons */
+.ffs__actions-container {
+	width: 100%;
+	margin-bottom: 8px;
+	padding: 8px 16px;
+	border-radius: var(--ffs-border-radius);
+	background-color: var(--interactive-normal);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.ffs__actions-section {
+	display: flex;
+	align-items: center;
+	gap: var(--size-4-3);
+}
+
+.ffs__action-button-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2px;
+}
+
+.ffs__action-button-wrapper svg {
+	width: 18px;
+	height: 18px;
+	stroke: var(--icon-color);
+}
+
+.ffs__action-button-wrapper svg:hover {
+	transform: scale(1.1);
+}
