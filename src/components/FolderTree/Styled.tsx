@@ -1,12 +1,5 @@
 import styled from "styled-components";
 
-export const StyledFolderTree = styled.div.attrs({
-	className: "ffs__folder-tree",
-})`
-	flex: 1;
-	overflow-y: auto;
-`;
-
 export const StyledFolderTreeItem = styled.div.attrs({
 	className: "ffs__folder-tree-item",
 })``;

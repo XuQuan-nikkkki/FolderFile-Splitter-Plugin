@@ -97,3 +97,12 @@ If your plugin does not need CSS, delete this file.
 .ffs__action-button-wrapper svg:hover {
 	transform: scale(1.1);
 }
+
+/* folder & file tree */
+.ffs__tree,
+.ffs__folder-tree,
+.ffs__file-tree {
+	flex: 1;
+	overflow-y: auto;
+}
+

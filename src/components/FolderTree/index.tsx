@@ -12,7 +12,6 @@ import { useExplorer } from "src/hooks/useExplorer";
 import Folder from "../Folder";
 import PinnedFolders, { FolderOptions } from "./PinnedFolders";
 import {
-	StyledFolderTree,
 	StyledFolderTreeItem,
 	StyledSubfoldersGroup,
 } from "./Styled";
@@ -100,11 +99,11 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	};
 
 	return (
-		<StyledFolderTree>
+		<div className="ffs__tree ffs__folder-tree">
 			<PinnedFolders renderFolder={renderFolder} />
 			{maybeRenderRootFolder()}
 			{renderFolders(topFolders)}
-		</StyledFolderTree>
+		</div>
 	);
 };
 

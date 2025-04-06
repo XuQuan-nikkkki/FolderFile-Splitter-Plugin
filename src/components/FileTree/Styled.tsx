@@ -1,15 +1,6 @@
 import { EmptyFolderIcon } from "src/assets/icons";
 import styled from "styled-components";
 
-export const StyledFileTree = styled.div.attrs({
-	className: "ffs__file-tree",
-})`
-	flex: 1;
-	overflow-y: auto;
-`;
-
-
-
 export const StyledEmptyFileTree = styled.div.attrs({
 	className: "ffs__file-tree--empty",
 })`

@@ -7,7 +7,7 @@ import { useExplorer } from "src/hooks/useExplorer";
 
 import File from "../File";
 import PinnedFiles from "./PinnedFiles";
-import { StyledEmptyFileTree, StyledEmptyIcon, StyledFileTree } from "./Styled";
+import { StyledEmptyFileTree, StyledEmptyIcon } from "./Styled";
 
 type Props = {
 	onOpenFoldersPane?: () => void;
@@ -51,10 +51,10 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 
 	const sortedFiles = sortFiles(files, fileSortRule);
 	return (
-		<StyledFileTree>
+		<div className="ffs__tree ffs__file-tree">
 			<PinnedFiles files={files} renderFile={renderFile} />
 			{sortedFiles.map((file) => renderFile(file, sortedFiles))}
-		</StyledFileTree>
+		</div>
 	);
 };
 
