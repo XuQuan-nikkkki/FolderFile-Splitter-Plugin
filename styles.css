@@ -9,7 +9,5 @@ If your plugin does not need CSS, delete this file.
 
 .theme-light,
 .theme-dark {
-	--ffs-folder-pane-min-width: 140px;
-	--ffs-files-pane-min-width: 200px;
 	--ffs-border-radius: 4px;
 }
