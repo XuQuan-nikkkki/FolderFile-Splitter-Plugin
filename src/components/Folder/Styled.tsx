@@ -78,20 +78,3 @@ export const StyledFilesCount = styled.div.attrs({
 	font-size: 12px;
 	margin-left: 4px;
 `;
-
-export const StyledExpandIconWrapper = styled.div.attrs({
-	className: "ffs__expand-icon-wrapper",
-})<{ $isFocused: boolean }>`
-	width: 14px;
-	display: flex;
-	align-items: center;
-	margin-right: 2px;
-	padding: 2px;
-
-	svg {
-		width: 8px;
-		height: 8px;
-		fill: ${({ $isFocused }) =>
-			$isFocused ? "var(--text-on-accent)" : "var(--text-normal)"};
-	}
-`;

@@ -6,7 +6,6 @@ import { ArrowDownIcon, ArrowRightIcon } from "src/assets/icons";
 import { ExplorerStore } from "src/store";
 import { useExpandFolderByClickingOnElement } from "src/hooks/useSettingsHandler";
 import { useExplorer } from "src/hooks/useExplorer";
-import { StyledExpandIconWrapper } from "./Styled";
 
 type Props = {
 	folder: TFolder;
@@ -54,7 +53,7 @@ const FolderExpandIcon = ({ folder, isFocused = false }: Props) => {
 	if (!hasFolderChildren(folder)) {
 		content = null;
 	} else {
-		const iconClassName = "ffs__expand-icon"
+		const iconClassName = "ffs__expand-icon";
 		content = isExpanded ? (
 			<ArrowDownIcon className={iconClassName} />
 		) : (
@@ -63,12 +62,15 @@ const FolderExpandIcon = ({ folder, isFocused = false }: Props) => {
 	}
 
 	return (
-		<StyledExpandIconWrapper
+		<div
+			className={
+				"ffs__expand-icon-wrapper" +
+				(isFocused ? " ffs__expand-icon-wrapper--active" : "")
+			}
 			onClick={onClickExpandIcon}
-			$isFocused={isFocused}
 		>
 			{content}
-		</StyledExpandIconWrapper>
+		</div>
 	);
 };
 

@@ -142,6 +142,26 @@ If your plugin does not need CSS, delete this file.
 	border-left: var(--border-width) solid var(--interactive-hover);
 }
 
+.ffs__expand-icon-wrapper {
+	width: 14px;
+	display: flex;
+	align-items: center;
+	margin-right: 2px;
+	padding: 2px;
+}
+
+.ffs__expand-icon-wrapper svg {
+	width: 8px;
+	height: 8px;
+	fill: var(--text-normal);
+}
+
+div.ffs__expand-icon-wrapper--active svg {
+	width: 8px;
+	height: 8px;
+	fill: var(--text-on-accent);
+}
+
 .ffs__files-count {
 	font-size: 12px;
 	margin-left: 4px;
