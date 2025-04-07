@@ -1,5 +1,6 @@
 import { useShallow } from "zustand/react/shallow";
 import { TFolder } from "obsidian";
+import classNames from "classnames";
 
 import { ExplorerStore } from "src/store";
 import {
@@ -73,12 +74,10 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 					{renderFolder(folder)}
 					{isExpanded && hasFolderChildren(folder) && (
 						<div
-							className={
-								`ffs__subfolders-group` +
-								(showHierarchyLines
-									? " ffs__subfolders-group--show-lines"
-									: "")
-							}
+							className={classNames("ffs__subfolders-group", {
+								"ffs__subfolders-group--show-lines":
+									showHierarchyLines,
+							})}
 						>
 							{renderFolders(getFoldersByParent(folder))}
 						</div>

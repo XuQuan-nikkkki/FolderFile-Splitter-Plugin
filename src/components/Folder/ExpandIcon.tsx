@@ -1,6 +1,7 @@
 import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 import { ReactNode } from "react";
+import classNames from "classnames";
 
 import { ArrowDownIcon, ArrowRightIcon } from "src/assets/icons";
 import { ExplorerStore } from "src/store";
@@ -63,10 +64,9 @@ const FolderExpandIcon = ({ folder, isFocused = false }: Props) => {
 
 	return (
 		<div
-			className={
-				"ffs__expand-icon-wrapper" +
-				(isFocused ? " ffs__expand-icon-wrapper--active" : "")
-			}
+			className={classNames("ffs__expand-icon-wrapper", {
+				"ffs__expand-icon-wrapper--active": isFocused,
+			})}
 			onClick={onClickExpandIcon}
 		>
 			{content}

@@ -1,12 +1,12 @@
 import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
+import classNames from "classnames";
 
 import { ExplorerStore } from "src/store";
 import { useIncludeSubfolderFilesCount } from "src/hooks/useSettingsHandler";
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFile } from "src/utils";
 import { useEffect, useState } from "react";
-import { StyledFilesCount } from "./Styled";
 import { useExplorer } from "src/hooks/useExplorer";
 
 type Props = {
@@ -53,10 +53,9 @@ const FilesCount = ({ folder, isFocused }: Props) => {
 
 	return (
 		<div
-			className={
-				`ffs__files-count` +
-				(isFocused ? " ffs__files-count--focused" : "")
-			}
+			className={classNames("ffs__files-count", {
+				"ffs__files-count--focused": isFocused,
+			})}
 		>
 			{count}
 		</div>
