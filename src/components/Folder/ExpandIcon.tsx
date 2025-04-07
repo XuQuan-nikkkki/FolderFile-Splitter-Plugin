@@ -3,7 +3,7 @@ import { useShallow } from "zustand/react/shallow";
 import { ReactNode } from "react";
 import classNames from "classnames";
 
-import { ArrowDownIcon, ArrowRightIcon } from "src/assets/icons";
+import { ChevronRight } from "src/assets/icons";
 import { ExplorerStore } from "src/store";
 import { useExpandFolderByClickingOnElement } from "src/hooks/useSettingsHandler";
 import { useExplorer } from "src/hooks/useExplorer";
@@ -49,29 +49,19 @@ const FolderExpandIcon = ({ folder, isFocused = false }: Props) => {
 		onToggleExpandState();
 	};
 
-	const isExpanded = expandedFolderPaths.includes(folder.path);
 	let content: ReactNode;
 	if (!hasFolderChildren(folder)) {
 		content = null;
 	} else {
-		const iconClassName = "ffs__expand-icon";
-		content = isExpanded ? (
-			<ArrowDownIcon className={iconClassName} />
-		) : (
-			<ArrowRightIcon className={iconClassName} />
-		);
+		content = <ChevronRight className="ffs__expand-icon svg-icon" />;
 	}
 
+	const isExpanded = expandedFolderPaths.includes(folder.path);
 	return (
 		<div
-			className={classNames(
-				"ffs__expand-icon-wrapper",
-				"tree-item-icon",
-				"collapse-icon",
-				{
-					"ffs__expand-icon-wrapper--active": isFocused,
-				}
-			)}
+			className={classNames("tree-item-icon", "collapse-icon", {
+				"is-collapsed": !isExpanded,
+			})}
 			onClick={onClickExpandIcon}
 		>
 			{content}

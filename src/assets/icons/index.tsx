@@ -1,5 +1,3 @@
-import ArrowDownIcon from "./ArrowDownIcon";
-import ArrowRightIcon from "./ArrowRightIcon";
 import FolderIcon from "./FolderIcon";
 import EmptyFolderIcon from "./EmptyFolderIcon";
 import AddFolderIcon from "./AddFolderIcon";
@@ -16,8 +14,6 @@ import ChevronDown from './ChevronDown'
 import ChevronRight from './ChevronRight'
 
 export {
-	ArrowDownIcon,
-	ArrowRightIcon,
 	FolderIcon,
 	EmptyFolderIcon,
 	AddFolderIcon,

@@ -8,7 +8,7 @@ export const StyledFolderContent = styled.div.attrs<{
 	$isFocusedOnFolder?: boolean;
 	$isFocusedOnFile?: boolean;
 }>((props) => {
-	const classNames = ["ffs__folder"];
+	const classNames = ["ffs__folder tree-item-self"];
 
 	if (props.$isRoot) classNames.push("ffs__folder--root");
 	if (props.$isOver) classNames.push("ffs__folder--over");

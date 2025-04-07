@@ -16,7 +16,7 @@ const ChevronRight = ({ className, style }: Props) => (
 		className={className}
 		style={style}
 	>
-		<path d="m9 18 6-6-6-6" />
+		<path d="M3 8L12 17L21 8" />
 	</svg>
 );
 
