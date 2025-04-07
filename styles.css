@@ -63,6 +63,42 @@ If your plugin does not need CSS, delete this file.
 	margin: 16px 0;
 }
 
+/* Common Components */
+.ffs__name-input {
+	background-color: transparent;
+	border: none;
+	outline: none;
+	color: var(--text-on-accent);
+	background-color: var(--text-selection);
+
+	flex: 1;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.ffs__name {
+	flex: 1;
+
+	font-size: 13px;
+	color: var(--text-normal);
+
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+div.ffs__name--focused {
+	color: var(--text-on-accent);
+}
+
+div.ffs__name--bold {
+	font-weight: 600;
+}
+
+div.ffs__name--large {
+	font-size: 14px;
+}
+
 /* folders and files action buttons */
 .ffs__actions-container {
 	width: 100%;

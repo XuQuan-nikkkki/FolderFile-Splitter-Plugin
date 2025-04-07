@@ -1,6 +1,5 @@
+import classNames from "classnames";
 import { ReactElement, useEffect, useRef, useState } from "react";
-
-import { StyledName, StyledNameInput } from "src/components/Styled/NameInput";
 
 type Options = {
 	isFocused?: boolean;
@@ -79,23 +78,24 @@ const useRenderEditableName = (
 	const renderEditableName = () => {
 		const { isBold, isFocused, isLarge, className } = options ?? {};
 		return isEditing ? (
-			<StyledNameInput
+			<input
 				ref={inputRef}
+				className="ffs__name-input"
 				value={name}
 				onKeyDown={onKeyDown}
 				onChange={(e) => setName(e.target.value)}
 			/>
 		) : (
-			<StyledName
+			<div
 				ref={eleRef}
-				className={className}
-				$isBold={isBold}
-				$isFocused={isFocused}
-				$isLarge={isLarge}
-				suppressContentEditableWarning
+				className={classNames("ffs__name", className, {
+					"ffs__name--bold": isBold,
+					"ffs__name--focused": isFocused,
+					"ffs__name--large": isLarge,
+				})}
 			>
 				{name}
-			</StyledName>
+			</div>
 		);
 	};
 
