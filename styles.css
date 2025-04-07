@@ -198,6 +198,13 @@ div.ffs__expand-icon-wrapper--active svg {
 	fill: var(--text-on-accent);
 }
 
+.ffs__folder-content--main {
+	display: flex;
+	align-items: center;
+	flex: 1;
+	overflow: hidden;
+}
+
 .ffs__files-count {
 	font-size: 12px;
 	margin-left: 4px;

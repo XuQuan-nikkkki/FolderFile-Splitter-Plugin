@@ -70,11 +70,3 @@ export const StyledFolderMainContent = styled.div.attrs({
 	overflow: hidden;
 `;
 
-export const StyledFilesCount = styled.div.attrs({
-	className: "ffs__files-count",
-})<{ $isFocused?: boolean }>`
-	color: ${({ $isFocused }) =>
-		$isFocused ? "var(--text-on-accent)" : "var(--text-muted)"};
-	font-size: 12px;
-	margin-left: 4px;
-`;

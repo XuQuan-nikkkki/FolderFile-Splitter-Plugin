@@ -69,7 +69,7 @@ const FolderContent = ({
 
 	const { language } = plugin;
 	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
-	const isRoot = folder.isRoot()
+	const isRoot = folder.isRoot();
 
 	const { settings } = plugin;
 	const { showFolderIcon } = useShowFolderIcon(settings.showFolderIcon);
@@ -237,13 +237,16 @@ const FolderContent = ({
 			$isFocusedOnFolder={isFocusedOnFolder}
 			$isFocusedOnFile={isFocusedFileInFolder}
 		>
-			<StyledFolderMainContent onClick={onClickFolderName}>
-				{!isRoot && !hideExpandIcon && (
-					<FolderExpandIcon
-						folder={folder}
-						isFocused={isFocusedOnFolder || isOver}
-					/>
-				)}
+			{!isRoot && !hideExpandIcon && (
+				<FolderExpandIcon
+					folder={folder}
+					isFocused={isFocusedOnFolder || isOver}
+				/>
+			)}
+			<div
+				className="ffs__folder-content--main tree-item-inner nav-folder-title-content"
+				onClick={onClickFolderName}
+			>
 				{showFolderIcon && (
 					<StyledFolderIcon
 						$isRoot={isRoot}
@@ -251,11 +254,11 @@ const FolderContent = ({
 					/>
 				)}
 				{renderFolderName()}
-			</StyledFolderMainContent>
-			<FilesCount
-				folder={folder}
-				isFocused={isFocusedOnFolder || isOver}
-			/>
+				<FilesCount
+					folder={folder}
+					isFocused={isFocusedOnFolder || isOver}
+				/>
+			</div>
 		</StyledFolderContent>
 	);
 };

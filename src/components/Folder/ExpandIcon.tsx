@@ -64,9 +64,14 @@ const FolderExpandIcon = ({ folder, isFocused = false }: Props) => {
 
 	return (
 		<div
-			className={classNames("ffs__expand-icon-wrapper", {
-				"ffs__expand-icon-wrapper--active": isFocused,
-			})}
+			className={classNames(
+				"ffs__expand-icon-wrapper",
+				"tree-item-icon",
+				"collapse-icon",
+				{
+					"ffs__expand-icon-wrapper--active": isFocused,
+				}
+			)}
 			onClick={onClickExpandIcon}
 		>
 			{content}
