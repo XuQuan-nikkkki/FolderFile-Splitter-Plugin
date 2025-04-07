@@ -6,7 +6,6 @@ import { ExplorerStore } from "src/store";
 import { FFS_DRAG_FILE, FFS_DRAG_FOLDER } from "src/assets/constants";
 import FolderContent, { FolderProps } from "./Content";
 import { useExplorer } from "src/hooks/useExplorer";
-import { StyledDraggableContainer, StyledFolderContainer } from "./Styled";
 
 type Props = FolderProps & {
 	onOpenFilesPane: () => void;
@@ -82,9 +81,10 @@ const Folder = ({
 	};
 
 	return (
-		<StyledFolderContainer ref={setDropRef}>
-			<StyledDraggableContainer
-				$isDragging={isDragging}
+		<div className="ffs__folder-container" ref={setDropRef}>
+			<div
+				className="ffs__draggable-container"
+				style={{ opacity: isDragging ? 0 : 1 }}
 				ref={setDragRef}
 				onClick={() => setFocusedFolder(folder)}
 				{...attributes}
@@ -97,8 +97,8 @@ const Folder = ({
 					isOver={isOver}
 					onToggleExpandState={onToggleExpandState}
 				/>
-			</StyledDraggableContainer>
-		</StyledFolderContainer>
+			</div>
+		</div>
 	);
 };
 

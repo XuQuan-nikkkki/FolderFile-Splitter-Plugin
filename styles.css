@@ -141,3 +141,13 @@ If your plugin does not need CSS, delete this file.
 .ffs__subfolders-group-with-hierarchy-line {
 	border-left: var(--border-width) solid var(--interactive-hover);
 }
+
+.ffs__files-count {
+	font-size: 12px;
+	margin-left: 4px;
+	color: var(--text-muted);
+}
+
+div.ffs__files-count--focused {
+	color: var(--text-on-accent);
+}

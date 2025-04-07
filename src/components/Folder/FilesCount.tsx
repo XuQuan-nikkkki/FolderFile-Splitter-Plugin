@@ -51,7 +51,16 @@ const FilesCount = ({ folder, isFocused }: Props) => {
 		setCount(getFilesCountInFolder(folder, includeSubfolderFilesCount));
 	}, [folder.children.length, includeSubfolderFilesCount]);
 
-	return <StyledFilesCount $isFocused={isFocused}>{count}</StyledFilesCount>;
+	return (
+		<div
+			className={
+				`ffs__files-count` +
+				(isFocused ? " ffs__files-count--focused" : "")
+			}
+		>
+			{count}
+		</div>
+	);
 };
 
 export default FilesCount;

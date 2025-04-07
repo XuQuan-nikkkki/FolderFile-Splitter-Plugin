@@ -2,16 +2,6 @@ import styled from "styled-components";
 
 import { FolderIcon } from "src/assets/icons";
 
-export const StyledFolderContainer = styled.div.attrs({
-	className: "ffs__folder-container",
-})``;
-
-export const StyledDraggableContainer = styled.div.attrs({
-	className: "ffs__draggable-container",
-})<{ $isDragging: boolean }>`
-	opacity: ${({ $isDragging }) => ($isDragging ? 0 : 1)};
-`;
-
 export const StyledFolderContent = styled.div.attrs<{
 	$isRoot?: boolean;
 	$isOver?: boolean;
