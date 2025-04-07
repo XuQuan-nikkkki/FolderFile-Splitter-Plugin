@@ -100,7 +100,7 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	};
 
 	return (
-		<div className="ffs__tree ffs__folder-tree">
+		<div className="ffs__tree ffs__folder-tree nav-files-container">
 			<PinnedFolders renderFolder={renderFolder} />
 			{maybeRenderRootFolder()}
 			{renderFolders(topFolders)}

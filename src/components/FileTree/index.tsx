@@ -51,7 +51,7 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 
 	const sortedFiles = sortFiles(files, fileSortRule);
 	return (
-		<div className="ffs__tree ffs__file-tree">
+		<div className="ffs__tree ffs__file-tree nav-files-container	">
 			<PinnedFiles files={files} renderFile={renderFile} />
 			{sortedFiles.map((file) => renderFile(file, sortedFiles))}
 		</div>
