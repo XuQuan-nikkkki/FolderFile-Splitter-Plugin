@@ -21,7 +21,6 @@ import { useExplorer } from "src/hooks/useExplorer";
 
 export type FolderProps = {
 	folder: TFolder;
-	isRoot?: boolean;
 	hideExpandIcon?: boolean;
 	isOver?: boolean;
 };
@@ -30,7 +29,6 @@ type Props = FolderProps & {
 };
 const FolderContent = ({
 	folder,
-	isRoot = false,
 	hideExpandIcon = false,
 	isOver = false,
 	onToggleExpandState,
@@ -71,6 +69,7 @@ const FolderContent = ({
 
 	const { language } = plugin;
 	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
+	const isRoot = folder.isRoot()
 
 	const { settings } = plugin;
 	const { showFolderIcon } = useShowFolderIcon(settings.showFolderIcon);

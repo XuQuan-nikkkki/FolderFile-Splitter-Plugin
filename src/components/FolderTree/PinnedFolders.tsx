@@ -7,7 +7,6 @@ import PinIcon from "src/assets/icons/PinIcon";
 import { useExplorer } from "src/hooks/useExplorer";
 
 export type FolderOptions = {
-	isRoot?: boolean;
 	hideExpandIcon?: boolean;
 	disableDrag?: boolean;
 };
@@ -44,7 +43,6 @@ const PinnedFolders = ({ renderFolder }: Props) => {
 				{pinnedFolderPaths.map((path) => {
 					const folder = plugin.app.vault.getFolderByPath(path);
 					const options: FolderOptions = {
-						isRoot: folder?.isRoot(),
 						hideExpandIcon: true,
 						disableDrag: true,
 					};

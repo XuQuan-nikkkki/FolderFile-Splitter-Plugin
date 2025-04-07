@@ -48,12 +48,11 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	const { hideRootFolder } = useHideRootFolder(defaultHideRootFolder);
 
 	const renderFolder = (folder: TFolder, options?: FolderOptions) => {
-		const { isRoot, hideExpandIcon, disableDrag } = options ?? {};
+		const { hideExpandIcon, disableDrag } = options ?? {};
 		return (
 			<Folder
 				key={folder.path}
 				folder={folder}
-				isRoot={isRoot}
 				hideExpandIcon={hideExpandIcon}
 				disableDrag={disableDrag}
 				onOpenFilesPane={onOpenFilesPane}
@@ -94,7 +93,7 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 
 		return (
 			<div className="ffs__folder-tree-item" style={{ marginLeft: 4 }}>
-				{renderFolder(rootFolder, { isRoot: true })}
+				{renderFolder(rootFolder)}
 			</div>
 		);
 	};

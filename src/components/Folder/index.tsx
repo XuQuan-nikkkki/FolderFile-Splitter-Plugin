@@ -14,7 +14,6 @@ type Props = FolderProps & {
 const Folder = ({
 	folder,
 	onOpenFilesPane,
-	isRoot = false,
 	hideExpandIcon = false,
 	disableDrag = false,
 }: Props) => {
@@ -92,7 +91,6 @@ const Folder = ({
 			>
 				<FolderContent
 					folder={folder}
-					isRoot={isRoot}
 					hideExpandIcon={hideExpandIcon}
 					isOver={isOver}
 					onToggleExpandState={onToggleExpandState}
