@@ -55,7 +55,6 @@ If your plugin does not need CSS, delete this file.
 
 .ffs__layout-divider--horizontal {
 	cursor: ew-resize;
-	margin: 0 8px;
 }
 
 .ffs__layout-divider--vertical {
