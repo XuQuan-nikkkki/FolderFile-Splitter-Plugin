@@ -3,8 +3,6 @@ import { ReactElement, useEffect, useRef, useState } from "react";
 
 type Options = {
 	isFocused?: boolean;
-	isBold?: boolean;
-	isLarge?: boolean;
 	className?: string;
 };
 const useRenderEditableName = (
@@ -76,7 +74,7 @@ const useRenderEditableName = (
 	};
 
 	const renderEditableName = () => {
-		const { isBold, isFocused, isLarge, className } = options ?? {};
+		const { isFocused, className } = options ?? {};
 		return isEditing ? (
 			<input
 				ref={inputRef}
@@ -89,9 +87,7 @@ const useRenderEditableName = (
 			<div
 				ref={eleRef}
 				className={classNames("ffs__name", className, {
-					"ffs__name--bold": isBold,
 					"ffs__name--focused": isFocused,
-					"ffs__name--large": isLarge,
 				})}
 			>
 				{name}

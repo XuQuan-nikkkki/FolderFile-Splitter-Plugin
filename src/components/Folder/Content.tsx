@@ -87,8 +87,6 @@ const FolderContent = ({
 		onBeginEdit,
 	} = useRenderEditableName(folderName, onSaveName, {
 		isFocused: isFocusedOnFolder,
-		isLarge: isRoot,
-		isBold: isRoot,
 		className: "ffs__folder-name",
 	});
 
@@ -234,7 +232,6 @@ const FolderContent = ({
 		return (
 			<FolderIcon
 				className={classNames("ffs__folder-icon", {
-					"ffs__folder-icon--root": isRoot,
 					"ffs__folder-icon--focused": isFocusedOnFolder || isOver,
 				})}
 			/>

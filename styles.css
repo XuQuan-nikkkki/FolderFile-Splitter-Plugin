@@ -90,14 +90,6 @@ div.ffs__name--focused {
 	color: var(--text-on-accent);
 }
 
-div.ffs__name--bold {
-	font-weight: 600;
-}
-
-div.ffs__name--large {
-	font-size: 14px;
-}
-
 /* folders and files action buttons */
 .ffs__actions-container {
 	width: 100%;
@@ -189,11 +181,6 @@ div.ffs__name--large {
 	width: 14px;
 	height: 12px;
 	fill: var(--text-muted);
-}
-
-.ffs__folder-icon--root {
-	width: 16px;
-	height: 14px;
 }
 
 .ffs__folder-icon--focused {
