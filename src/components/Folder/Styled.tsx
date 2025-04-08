@@ -1,7 +1,5 @@
 import styled from "styled-components";
 
-import { FolderIcon } from "src/assets/icons";
-
 export const StyledFolderContent = styled.div.attrs<{
 	$isRoot?: boolean;
 	$isOver?: boolean;
@@ -47,26 +45,3 @@ export const StyledFolderContent = styled.div.attrs<{
 		background-color: var(--interactive-hover);
 	}
 `;
-
-export const StyledFolderIcon = styled(FolderIcon).attrs({
-	className: "ffs__folder-icon",
-})<{
-	$isRoot?: boolean;
-	$isFocused?: boolean;
-}>`
-	fill: ${({ $isFocused }) =>
-		$isFocused ? "var(--text-on-accent)" : "var(--text-muted)"};
-	width: ${({ $isRoot }) => ($isRoot ? "16px" : "14px")};
-	height: ${({ $isRoot }) => ($isRoot ? "14px" : "12px")};
-	margin-right: var(--size-4-2);
-`;
-
-export const StyledFolderMainContent = styled.div.attrs({
-	className: "ffs__folder-content--main",
-})`
-	display: flex;
-	align-items: center;
-	flex: 1;
-	overflow: hidden;
-`;
-

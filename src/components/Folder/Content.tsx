@@ -10,14 +10,12 @@ import {
 } from "src/hooks/useSettingsHandler";
 import FilesCount from "./FilesCount";
 import FolderExpandIcon from "./ExpandIcon";
-import {
-	StyledFolderMainContent,
-	StyledFolderContent,
-	StyledFolderIcon,
-} from "./Styled";
+import { StyledFolderContent } from "./Styled";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { FOLDER_OPERATION_COPY } from "src/locales";
 import { useExplorer } from "src/hooks/useExplorer";
+import classNames from "classnames";
+import { FolderIcon } from "src/assets/icons";
 
 export type FolderProps = {
 	folder: TFolder;
@@ -221,6 +219,42 @@ const FolderContent = ({
 		}
 	};
 
+	const maybeRenderExpandIcon = () => {
+		if (isRoot || hideExpandIcon) return null;
+		return (
+			<FolderExpandIcon
+				folder={folder}
+				isFocused={isFocusedOnFolder || isOver}
+			/>
+		);
+	};
+
+	const maybeRenderFolderIcon = () => {
+		if (!showFolderIcon) return null;
+		return (
+			<FolderIcon
+				className={classNames("ffs__folder-icon", {
+					"ffs__folder-icon--root": isRoot,
+					"ffs__folder-icon--focused": isFocusedOnFolder || isOver,
+				})}
+			/>
+		);
+	};
+
+	const renderTitleContent = () => (
+		<div
+			className="ffs__folder-content--main tree-item-inner nav-folder-title-content"
+			onClick={onClickFolderName}
+		>
+			{maybeRenderFolderIcon()}
+			{renderFolderName()}
+			<FilesCount
+				folder={folder}
+				isFocused={isFocusedOnFolder || isOver}
+			/>
+		</div>
+	);
+
 	return (
 		<StyledFolderContent
 			ref={folderRef}
@@ -237,28 +271,8 @@ const FolderContent = ({
 			$isFocusedOnFolder={isFocusedOnFolder}
 			$isFocusedOnFile={isFocusedFileInFolder}
 		>
-			{!isRoot && !hideExpandIcon && (
-				<FolderExpandIcon
-					folder={folder}
-					isFocused={isFocusedOnFolder || isOver}
-				/>
-			)}
-			<div
-				className="ffs__folder-content--main tree-item-inner nav-folder-title-content"
-				onClick={onClickFolderName}
-			>
-				{showFolderIcon && (
-					<StyledFolderIcon
-						$isRoot={isRoot}
-						$isFocused={isFocusedOnFolder || isOver}
-					/>
-				)}
-				{renderFolderName()}
-				<FilesCount
-					folder={folder}
-					isFocused={isFocusedOnFolder || isOver}
-				/>
-			</div>
+			{maybeRenderExpandIcon()}
+			{renderTitleContent()}
 		</StyledFolderContent>
 	);
 };

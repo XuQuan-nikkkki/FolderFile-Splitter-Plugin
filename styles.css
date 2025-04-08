@@ -184,6 +184,22 @@ div.ffs__name--large {
 	overflow: hidden;
 }
 
+.ffs__folder-icon {
+	margin-right: var(--size-4-2);
+	width: 14px;
+	height: 12px;
+	fill: var(--text-muted);
+}
+
+.ffs__folder-icon--root {
+	width: 16px;
+	height: 14px;
+}
+
+.ffs__folder-icon--focused {
+	fill: var(--text-on-accent);
+}
+
 .ffs__files-count {
 	font-size: 12px;
 	margin-left: 4px;
