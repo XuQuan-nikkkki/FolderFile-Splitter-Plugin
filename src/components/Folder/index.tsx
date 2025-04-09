@@ -6,10 +6,13 @@ import { ExplorerStore } from "src/store";
 import { FFS_DRAG_FILE, FFS_DRAG_FOLDER } from "src/assets/constants";
 import FolderContent, { FolderProps } from "./Content";
 import { useExplorer } from "src/hooks/useExplorer";
+import FolderExpandIcon from "./ExpandIcon";
+import classNames from "classnames";
 
 type Props = FolderProps & {
 	onOpenFilesPane: () => void;
 	disableDrag?: boolean;
+	hideExpandIcon?: boolean;
 };
 const Folder = ({
 	folder,
@@ -24,6 +27,9 @@ const Folder = ({
 		expandFolder,
 		collapseFolder,
 		expandedFolderPaths,
+		focusedFile,
+		focusedFolder,
+		hasFolderChildren,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			setFocusedFolder: store.setFocusedFolder,
@@ -31,6 +37,8 @@ const Folder = ({
 			expandedFolderPaths: store.expandedFolderPaths,
 			expandFolder: store.expandFolder,
 			collapseFolder: store.collapseFolder,
+			focusedFile: store.focusedFile,
+			focusedFolder: store.focusedFolder,
 		}))
 	);
 
@@ -79,10 +87,33 @@ const Folder = ({
 		}
 	};
 
+	const maybeRenderExpandIcon = () => {
+		const isFocused = folder.path == focusedFolder?.path;
+		const isFocusedFileInFolder = focusedFile?.parent?.path === folder.path;
+		const isFocusedOnFile =
+			isFocused && focusedFile && isFocusedFileInFolder;
+		const isFocusedOnFolder = isFocused && !isFocusedOnFile;
+
+		if (folder.isRoot() || hideExpandIcon) return null;
+		return (
+			<FolderExpandIcon
+				folder={folder}
+				isFocused={isFocusedOnFolder || isOver}
+			/>
+		);
+	};
+
 	return (
-		<div className="ffs__folder-container" ref={setDropRef}>
+		<div
+			className={classNames(
+				"ffs__folder-container tree-item-self nav-folder-title is-clickable",
+				{ "mod-collapsible": hasFolderChildren(folder) }
+			)}
+			ref={setDropRef}
+		>
+			{maybeRenderExpandIcon()}
 			<div
-				className="ffs__draggable-container"
+				className="ffs__draggable-container tree-item-inner nav-folder-title-content"
 				style={{ opacity: isDragging ? 0 : 1 }}
 				ref={setDragRef}
 				onClick={() => setFocusedFolder(folder)}
@@ -91,7 +122,6 @@ const Folder = ({
 			>
 				<FolderContent
 					folder={folder}
-					hideExpandIcon={hideExpandIcon}
 					isOver={isOver}
 					onToggleExpandState={onToggleExpandState}
 				/>

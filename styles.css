@@ -76,10 +76,7 @@ If your plugin does not need CSS, delete this file.
 
 .ffs__name {
 	flex: 1;
-
 	font-size: 13px;
-	color: var(--text-normal);
-
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
@@ -158,10 +155,12 @@ div.ffs__name--focused {
 }
 
 /* folder */
+.ffs__draggable-container {
+	flex: 1;
+}
+
 .ffs__subfolders-group {
 	position: relative;
-	margin-left: 12px;
-	padding-left: 2px;
 }
 
 .ffs__subfolders-group-with-hierarchy-line {

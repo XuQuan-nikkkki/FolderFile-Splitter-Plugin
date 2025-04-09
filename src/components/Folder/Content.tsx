@@ -9,8 +9,6 @@ import {
 	useExpandFolderByClickingOnElement,
 } from "src/hooks/useSettingsHandler";
 import FilesCount from "./FilesCount";
-import FolderExpandIcon from "./ExpandIcon";
-import { StyledFolderContent } from "./Styled";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { FOLDER_OPERATION_COPY } from "src/locales";
 import { useExplorer } from "src/hooks/useExplorer";
@@ -19,7 +17,6 @@ import { FolderIcon } from "src/assets/icons";
 
 export type FolderProps = {
 	folder: TFolder;
-	hideExpandIcon?: boolean;
 	isOver?: boolean;
 };
 type Props = FolderProps & {
@@ -27,7 +24,6 @@ type Props = FolderProps & {
 };
 const FolderContent = ({
 	folder,
-	hideExpandIcon = false,
 	isOver = false,
 	onToggleExpandState,
 }: Props) => {
@@ -217,16 +213,6 @@ const FolderContent = ({
 		}
 	};
 
-	const maybeRenderExpandIcon = () => {
-		if (isRoot || hideExpandIcon) return null;
-		return (
-			<FolderExpandIcon
-				folder={folder}
-				isFocused={isFocusedOnFolder || isOver}
-			/>
-		);
-	};
-
 	const maybeRenderFolderIcon = () => {
 		if (!showFolderIcon) return null;
 		return (
@@ -240,7 +226,8 @@ const FolderContent = ({
 
 	const renderTitleContent = () => (
 		<div
-			className="ffs__folder-content--main tree-item-inner nav-folder-title-content"
+			ref={folderRef}
+			className="ffs__folder-content--main"
 			onClick={onClickFolderName}
 		>
 			{maybeRenderFolderIcon()}
@@ -252,9 +239,18 @@ const FolderContent = ({
 		</div>
 	);
 
+	const getBackgroundColor = () => {
+		if (isOver) return "var(--interactive-accent)";
+		if (isFocusedOnFile) return "var(--interactive--hover)";
+		if (isFocusedOnFolder) return "var(--interactive-accent)";
+	};
+
 	return (
-		<StyledFolderContent
-			ref={folderRef}
+		<div
+			className={classNames("ffs__folder")}
+			style={{
+				// backgroundColor: getBackgroundColor(),
+			}}
 			onContextMenu={onShowContextMenu}
 			onClick={(e) => {
 				if (isFocused) {
@@ -263,14 +259,9 @@ const FolderContent = ({
 					setIsFocusing(true);
 				}
 			}}
-			$isRoot={isRoot}
-			$isOver={isOver}
-			$isFocusedOnFolder={isFocusedOnFolder}
-			$isFocusedOnFile={isFocusedFileInFolder}
 		>
-			{maybeRenderExpandIcon()}
 			{renderTitleContent()}
-		</StyledFolderContent>
+		</div>
 	);
 };
 

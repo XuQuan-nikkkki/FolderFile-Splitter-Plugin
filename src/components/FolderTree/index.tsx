@@ -12,6 +12,7 @@ import { useExplorer } from "src/hooks/useExplorer";
 
 import Folder from "../Folder";
 import PinnedFolders, { FolderOptions } from "./PinnedFolders";
+import { ReactNode } from "react";
 
 type Props = {
 	onOpenFilesPane?: () => void;
@@ -61,6 +62,18 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		);
 	};
 
+	const renderSubfolders = (children: ReactNode) => {
+		return (
+			<div
+				className={classNames(
+					"ffs__subfolders-group tree-item-children nav-folder-children"
+				)}
+			>
+				{children}
+			</div>
+		);
+	};
+
 	const renderFolders = (folders: TFolder[]) => {
 		const sortedFolders = sortFolders(
 			folders,
@@ -70,18 +83,18 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		return sortedFolders.map((folder) => {
 			const isExpanded = expandedFolderPaths.includes(folder.path);
 			return (
-				<div className="ffs__folder-tree-item" key={folder.name}>
-					{renderFolder(folder)}
-					{isExpanded && hasFolderChildren(folder) && (
-						<div
-							className={classNames("ffs__subfolders-group", {
-								"ffs__subfolders-group--show-lines":
-									showHierarchyLines,
-							})}
-						>
-							{renderFolders(getFoldersByParent(folder))}
-						</div>
+				<div
+					className={classNames(
+						"ffs__folder-tree-item tree-item nav-folder"
 					)}
+					key={folder.name}
+				>
+					{renderFolder(folder)}
+					{isExpanded &&
+						hasFolderChildren(folder) &&
+						renderSubfolders(
+							renderFolders(getFoldersByParent(folder))
+						)}
 				</div>
 			);
 		});
@@ -91,17 +104,25 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		if (!rootFolder || hideRootFolder) return null;
 
 		return (
-			<div className="ffs__folder-tree-item">
+			<div className="ffs__folder-tree-item tree-item nav-folder">
 				{renderFolder(rootFolder)}
 			</div>
 		);
 	};
 
+	const renderEmptyDiv = () => (
+		// This is a workaround to fix the issue of the first folder not being rendered correctly
+		<div style={{ width: "100%", height: 0.1, marginBottom: 0 }}></div>
+	);
+
 	return (
 		<div className="ffs__tree ffs__folder-tree nav-files-container">
 			<PinnedFolders renderFolder={renderFolder} />
-			{maybeRenderRootFolder()}
-			{renderFolders(topFolders)}
+			<div>
+				{renderEmptyDiv()}
+				{maybeRenderRootFolder()}
+				{renderFolders(topFolders)}
+			</div>
 		</div>
 	);
 };
