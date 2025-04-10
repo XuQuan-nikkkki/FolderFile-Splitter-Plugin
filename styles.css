@@ -86,6 +86,29 @@ div.ffs__name--focused {
 	color: var(--text-on-accent);
 }
 
+/* loading */
+.ffs__loading-container {
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	opacity: 0.5;
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.ffs__loading-icon-wrapper.ffs__loading-icon {
+	animation: spin 3s linear infinite;
+}
+
 /* folders and files action buttons */
 .ffs__actions-container {
 	width: 100%;
@@ -243,4 +266,84 @@ div.ffs__file-content {
 .ffs__file-created-time {
 	letter-spacing: -0.6px;
 	font-weight: 450;
+}
+
+/* Manual sort */
+.ffs__manual-sort-container {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	width: 100%;
+}
+
+.ffs__manual-sort-list {
+	overflow-y: auto;
+	height: 50vh;
+
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.ffs__manual-sort-breadcrumbs {
+	width: 100%;
+	background-color: var(--interactive-normal);
+	border-radius: var(--ffs-border-radius);
+	padding: 8px 16px;
+}
+
+.ffs__manual-sort-item--folder {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 8px;
+	height: 30px;
+	align-items: center;
+	padding: 4px;
+	border-radius: var(--ffs-border-radius);
+	touch-action: none;
+}
+
+.ffs__manual-sort-item--folder:hover {
+	background-color: var(--interactive-hover);
+}
+
+.ffs__draggable-area {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.ffs__enter-folder-button {
+	color: var(--text-accent);
+	text-decoration: underline;
+}
+
+.ffs__enter-folder-button--disabled {
+	color: color-mix(in srgb, var(--text-accent), transparent 50%);
+	cursor: not-allowed;
+}
+
+.ffs__manual-sort-item--file {
+	display: grid;
+	grid-template-columns: 20px 1fr;
+	gap: 8px;
+	height: 30px;
+	align-items: center;
+	padding: 4px;
+	border-radius: var(--ffs-border-radius);
+	touch-action: none;
+}
+
+.ffs__manual-sort-item--file:hover {
+	background-color: var(--interactive-hover);
+}
+
+.ffs__sorting-item-container {
+	opacity: 0.8;
+	transform: scale(1.05);
+}
+
+.ffs__draggable-icon {
+	width: 15px;
+	height: 15px;
 }

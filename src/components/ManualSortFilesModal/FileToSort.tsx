@@ -3,11 +3,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 import { FFS_SORT_FOLDER } from "src/assets/constants";
-import { StyledManualSortFile } from "./Styled";
-import {
-	StyledDraggableIcon,
-	StyledManualSortItemName,
-} from "../Styled/ManualSortModal";
+import { GripIcon } from "src/assets/icons";
 
 type Props = {
 	file: TFile;
@@ -32,16 +28,17 @@ const FileToSort = ({ file }: Props) => {
 	};
 
 	return (
-		<StyledManualSortFile
+		<div
+			className="ffs__manual-sort-item--file"
 			ref={setNodeRef}
 			id={file.path}
 			style={style}
 			{...attributes}
 			{...listeners}
 		>
-			<StyledDraggableIcon />
-			<StyledManualSortItemName>{file.name}</StyledManualSortItemName>
-		</StyledManualSortFile>
+			<GripIcon className="ffs__draggable-icon" />
+			<div className="ffs__manual-sort-item-name">{file.name}</div>
+		</div>
 	);
 };
 

@@ -1,4 +1,10 @@
-const LoadingIcon = () => (
+import { CSSProperties } from "react";
+
+type Props = {
+	className?: string;
+	style?: CSSProperties;
+};
+const LoadingIcon = ({ className, style }: Props) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		viewBox="0 0 24 24"
@@ -6,7 +12,8 @@ const LoadingIcon = () => (
 		strokeWidth="2"
 		strokeLinecap="round"
 		strokeLinejoin="round"
-		className="ffs-icon"
+		className={"ffs-icon" + ` ${className}`}
+		style={style}
 	>
 		<path d="M12 2v4" />
 		<path d="m16.2 7.8 2.9-2.9" />
@@ -19,4 +26,4 @@ const LoadingIcon = () => (
 	</svg>
 );
 
-export default LoadingIcon
+export default LoadingIcon;

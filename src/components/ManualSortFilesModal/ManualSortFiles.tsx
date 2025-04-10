@@ -22,11 +22,6 @@ import {
 import { ExplorerStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
 import FileToSort from "./FileToSort";
-import {
-	StyledManualSortList,
-	StyledManualSortContainer,
-	StyledSortingItemContainer,
-} from "../Styled/ManualSortModal";
 
 type Props = {
 	parentFolder: TFolder | null;
@@ -83,9 +78,9 @@ const ManualSortFiles = ({ parentFolder, useExplorerStore, plugin }: Props) => {
 	const renderOverlayContent = () => {
 		if (!activeFile) return null;
 		return (
-			<StyledSortingItemContainer>
+			<div className="ffs__sorting-item-container">
 				<FileToSort file={activeFile} />
-			</StyledSortingItemContainer>
+			</div>
 		);
 	};
 
@@ -96,18 +91,18 @@ const ManualSortFiles = ({ parentFolder, useExplorerStore, plugin }: Props) => {
 			onDragStart={onDragStart}
 			onDragEnd={onDragEnd}
 		>
-			<StyledManualSortContainer>
+			<div className="ffs__manual-sort-container">
 				<SortableContext
 					items={items}
 					strategy={verticalListSortingStrategy}
 				>
-					<StyledManualSortList>
+					<div className="ffs__manual-sort-list">
 						{getSortedFiles().map((file) => (
 							<FileToSort key={file.path} file={file} />
 						))}
-					</StyledManualSortList>
+					</div>
 				</SortableContext>
-			</StyledManualSortContainer>
+			</div>
 			<DragOverlay>{renderOverlayContent()}</DragOverlay>
 		</DndContext>
 	);

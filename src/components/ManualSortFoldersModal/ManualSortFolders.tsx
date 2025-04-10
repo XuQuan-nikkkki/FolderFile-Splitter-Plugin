@@ -22,13 +22,6 @@ import {
 import { ExplorerStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
 import FolderToSort from "./FolderToSort";
-import {
-	StyledFolderBreadcrumbs,
-	StyledManualSortList,
-	StyledManualSortContainer,
-	StyledSortingItemContainer,
-} from "../Styled/ManualSortModal";
-import { StyledEnterFolderButton } from "./Styled";
 
 type Props = {
 	parentFolder: TFolder | null;
@@ -100,24 +93,31 @@ const ManualSortFolders = ({
 
 	const renderSlashSign = () => <span> / </span>;
 
+	const getEnterFolderBtnClassName = (disabled?: boolean) =>
+		[
+			"ffs__enter-folder-button",
+			disabled ? "ffs__enter-folder-button--disabled" : "",
+		].join(" ");
+
 	const renderBreadcrumbs = () => {
 		if (!folder) return null;
 		if (folder.isRoot()) {
 			return (
-				<StyledEnterFolderButton $disabled>
+				<div className={getEnterFolderBtnClassName(true)}>
 					{plugin.app.vault.getName()}
-				</StyledEnterFolderButton>
+				</div>
 			);
 		}
 		const crumbs = folder.path.split("/");
 		const rootFolder = plugin.app.vault.getRoot();
 		return (
 			<>
-				<StyledEnterFolderButton
+				<div
+					className={getEnterFolderBtnClassName()}
 					onClick={() => goInToFolder(rootFolder)}
 				>
 					{plugin.app.vault.getName()}
-				</StyledEnterFolderButton>
+				</div>
 				{renderSlashSign()}
 				{crumbs.map((crumb, index) => {
 					const path = crumbs.slice(0, index + 1).join("/");
@@ -125,12 +125,14 @@ const ManualSortFolders = ({
 					return (
 						<Fragment key={crumb + index}>
 							{index > 0 && renderSlashSign()}
-							<StyledEnterFolderButton
-								$disabled={index === crumbs.length - 1}
+							<div
+								className={getEnterFolderBtnClassName(
+									index === crumbs.length - 1
+								)}
 								onClick={() => goInToFolder(target)}
 							>
 								{crumb}
-							</StyledEnterFolderButton>
+							</div>
 						</Fragment>
 					);
 				})}
@@ -147,13 +149,13 @@ const ManualSortFolders = ({
 		const folder = getSortedFolders().find((f) => f.path === activeId);
 		if (!folder) return null;
 		return (
-			<StyledSortingItemContainer>
+			<div className="ffs__sorting-item-container">
 				<FolderToSort
 					folder={folder}
 					useExplorerStore={useExplorerStore}
 					goInToFolder={goInToFolder}
 				/>
-			</StyledSortingItemContainer>
+			</div>
 		);
 	};
 
@@ -164,15 +166,15 @@ const ManualSortFolders = ({
 			onDragStart={onDragStart}
 			onDragEnd={onDragEnd}
 		>
-			<StyledManualSortContainer>
-				<StyledFolderBreadcrumbs>
+			<div className="ffs__manual-sort-container">
+				<div className="ffs__manual-sort-breadcrumbs">
 					{renderBreadcrumbs()}
-				</StyledFolderBreadcrumbs>
+				</div>
 				<SortableContext
 					items={items}
 					strategy={verticalListSortingStrategy}
 				>
-					<StyledManualSortList>
+					<div className="ffs__manual-sort-list">
 						{getSortedFolders().map((folder) => (
 							<FolderToSort
 								key={folder.path}
@@ -181,9 +183,9 @@ const ManualSortFolders = ({
 								goInToFolder={goInToFolder}
 							/>
 						))}
-					</StyledManualSortList>
+					</div>
 				</SortableContext>
-			</StyledManualSortContainer>
+			</div>
 			<DragOverlay>{renderOverlayContent()}</DragOverlay>
 		</DndContext>
 	);

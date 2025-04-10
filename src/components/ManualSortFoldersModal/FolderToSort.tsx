@@ -6,15 +6,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 import { ExplorerStore } from "src/store";
 import { FFS_SORT_FOLDER } from "src/assets/constants";
-import {
-	StyledDraggableArea,
-	StyledEnterFolderButton,
-	StyledManualSortFolder,
-} from "./Styled";
-import {
-	StyledDraggableIcon,
-	StyledManualSortItemName,
-} from "../Styled/ManualSortModal";
+import { GripIcon } from "src/assets/icons";
 
 type Props = {
 	folder: TFolder;
@@ -48,24 +40,26 @@ const FolderToSort = ({ folder, useExplorerStore, goInToFolder }: Props) => {
 
 	const subfolders = getFoldersByParent(folder);
 	return (
-		<StyledManualSortFolder
+		<div
+			className="ffs__manual-sort-item--folder"
 			ref={setNodeRef}
 			id={folder.path}
 			style={style}
 			{...attributes}
 		>
-			<StyledDraggableArea {...listeners}>
-				<StyledDraggableIcon />
-				<StyledManualSortItemName>
-					{folder.name}
-				</StyledManualSortItemName>
-			</StyledDraggableArea>
+			<div className="ffs__draggable-area" {...listeners}>
+				<GripIcon className="ffs__draggable-icon" />
+				<div className="ffs__manual-sort-item-name">{folder.name}</div>
+			</div>
 			{subfolders.length > 0 && (
-				<StyledEnterFolderButton onClick={() => goInToFolder(folder)}>
+				<div
+					className="ffs__enter-folder-button"
+					onClick={() => goInToFolder(folder)}
+				>
 					Sort subfolders
-				</StyledEnterFolderButton>
+				</div>
 			)}
-		</StyledManualSortFolder>
+		</div>
 	);
 };
 
