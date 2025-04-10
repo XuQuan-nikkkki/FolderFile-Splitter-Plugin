@@ -129,6 +129,20 @@ div.ffs__name--focused {
 	overflow-y: auto;
 }
 
+.ffs__file-tree--empty {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.ffs__empty-file-tree-icon {
+	width: 60px;
+	height: 60px;
+	fill: var(--text-faint);
+}
+
 /* pin */
 .ffs__pin-container {
 	margin-bottom: 16px;
@@ -193,4 +207,40 @@ div.ffs__name--focused {
 
 div.ffs__files-count--focused {
 	color: var(--text-on-accent);
+}
+
+/* file */
+div.ffs__file-content {
+	padding-left: 16px;
+}
+
+.ffs__file-content-header {
+	display: grid;
+	grid-template-rows: auto auto;
+	gap: 4px;
+	padding: 8px 0px;
+}
+
+.ffs__file-content-title {
+	display: flex;
+	overflow: hidden;
+	align-items: center;
+}
+
+.ffs__file-detail {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	gap: 10px;
+	font-size: 12px;
+}
+
+.ffs__file-content-preview {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.ffs__file-created-time {
+	letter-spacing: -0.6px;
+	font-weight: 450;
 }

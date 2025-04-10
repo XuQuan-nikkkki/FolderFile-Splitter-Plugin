@@ -7,7 +7,6 @@ import { FFS_DRAG_FILE } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
 
 import FileContent, { FileProps } from "./Content";
-import { StyledFileTreeItem } from "./Styled";
 
 type Props = FileProps & {
 	onOpenFoldersPane: () => void;
@@ -42,9 +41,10 @@ const File = ({
 	}, [onOpenFoldersPane]);
 
 	return (
-		<StyledFileTreeItem
+		<div
+			className="ffs__file-tree-item tree-item nav-file"
 			ref={setNodeRef}
-			$isDragging={isDragging}
+			style={{ opacity: isDragging ? 0 : 1 }}
 			onClick={() => selectFile(file)}
 			{...attributes}
 			{...listeners}
@@ -54,7 +54,7 @@ const File = ({
 				deleteFile={deleteFile}
 				fileList={fileList}
 			/>
-		</StyledFileTreeItem>
+		</div>
 	);
 };
 

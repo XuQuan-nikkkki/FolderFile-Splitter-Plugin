@@ -6,14 +6,10 @@ import { ExplorerStore } from "src/store";
 import { FolderListModal } from "../FolderListModal";
 import { useShowFileDetail } from "src/hooks/useSettingsHandler";
 import FileDetail from "./Detail";
-import {
-	StyledFileContent,
-	StyledFileExtension,
-	StyledFileContentHeader,
-} from "./Styled";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { FILE_OPERATION_COPY } from "src/locales";
 import { useExplorer } from "src/hooks/useExplorer";
+import classNames from "classnames";
 
 export type FileProps = {
 	file: TFile;
@@ -60,7 +56,6 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		selectFileNameText,
 		onBeginEdit,
 	} = useRenderEditableName(file.basename, onSaveName, {
-		isBold: true,
 		isFocused,
 		className: "ffs__file-name",
 	});
@@ -191,7 +186,10 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 
 	const isLast = [...fileList].reverse()[0]?.path === file.path;
 	return (
-		<StyledFileContent
+		<div
+			className={classNames(
+				"ffs__file-content tree-item-self nav-file-title tappable is-clickable"
+			)}
 			ref={fileRef}
 			onContextMenu={onShowContextMenu}
 			onClick={(e) => {
@@ -203,18 +201,18 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 					setIsFocusing(true);
 				}
 			}}
-			$isFocused={isFocused}
-			$isLast={isLast}
-			$disableGap={!showFileDetail}
 		>
-			<StyledFileContentHeader>
-				{renderFileName()}
-				<StyledFileExtension $isFocused={isFocused}>
-					{file.extension !== "md" && file.extension.toUpperCase()}
-				</StyledFileExtension>
-			</StyledFileContentHeader>
-			{maybeRenderFileDetail()}
-		</StyledFileContent>
+			<div className="ffs__file-content-header tree-item-inner nav-file-title-content">
+				<div className="ffs__file-content-title">
+					{renderFileName()}
+					<div className="nav-file-tag">
+						{file.extension !== "md" &&
+							file.extension.toUpperCase()}
+					</div>
+				</div>
+				{maybeRenderFileDetail()}
+			</div>
+		</div>
 	);
 };
 

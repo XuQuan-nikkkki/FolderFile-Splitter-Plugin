@@ -7,7 +7,7 @@ import { useExplorer } from "src/hooks/useExplorer";
 
 import File from "../File";
 import PinnedFiles from "./PinnedFiles";
-import { StyledEmptyFileTree, StyledEmptyIcon } from "./Styled";
+import { EmptyFolderIcon } from "src/assets/icons";
 
 type Props = {
 	onOpenFoldersPane?: () => void;
@@ -43,9 +43,9 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 
 	if (!files.length) {
 		return (
-			<StyledEmptyFileTree>
-				<StyledEmptyIcon />
-			</StyledEmptyFileTree>
+			<div className="ffs__file-tree--empty">
+				<EmptyFolderIcon className="ffs__empty-file-tree-icon" />
+			</div>
 		);
 	}
 

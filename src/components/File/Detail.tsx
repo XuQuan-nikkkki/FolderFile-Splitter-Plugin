@@ -43,14 +43,12 @@ const FileDetail = ({ file, isFocused }: Props) => {
 		.toLocaleString()
 		.split(" ")[0];
 	return (
-		<StyledFileDetail>
-			<StyledFileCreatedTime $isFocused={isFocused}>
-				{fileCreatedDate}
-			</StyledFileCreatedTime>
-			<StyledFileContentPreview $isFocused={isFocused}>
+		<div className="ffs__file-detail">
+			<div className="ffs__file-created-time">{fileCreatedDate}</div>
+			<div className="ffs__file-content-preview">
 				{contentPreview}
-			</StyledFileContentPreview>
-		</StyledFileDetail>
+			</div>
+		</div>
 	);
 };
 
