@@ -68,6 +68,9 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 				className={classNames(
 					"ffs__subfolders-group tree-item-children nav-folder-children"
 				)}
+				style={{
+					borderInlineStart: showHierarchyLines ? undefined : "none",
+				}}
 			>
 				{children}
 			</div>
