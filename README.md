@@ -4,7 +4,10 @@
 
 **FolderFile Splitter** is an Obsidian plugin that brings a fresh approach to file management by splitting folders and files into distinct, visually separated lists. Inspired by Apple's elegant design principles, this plugin offers a cleaner, more intuitive way to browse and organize your notes.
 
-🌟 Love this plugin? If **FolderFile Splitter** improves your workflow, consider [**buy me a coffee via KodeCoffee**](https://kodecoffee.com/i/xuquan). Every contribution fuels future updates and features!
+🌟 Love this plugin? If **FolderFile Splitter** has been helpful to you, you can support its development by clicking the button below.
+Every contribution is appreciated and goes toward future improvements.
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/G2G11D99ND)
 
 ## Features
 
