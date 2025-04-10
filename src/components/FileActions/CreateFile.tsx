@@ -25,8 +25,11 @@ const CreateFile = () => {
 	};
 
 	return (
-		<div className="ffs__action-button-wrapper" onClick={onCreateNewFile}>
-			<AddFileIcon className="ffs__action-button" />
+		<div
+			className="ffs__action-button-wrapper clickable-icon nav-action-button"
+			onClick={onCreateNewFile}
+		>
+			<AddFileIcon className="ffs__action-button svg-icon" />
 		</div>
 	);
 };

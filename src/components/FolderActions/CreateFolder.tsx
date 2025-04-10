@@ -56,8 +56,11 @@ const CreateFolder = () => {
 	};
 
 	return (
-		<div className="ffs__action-button-wrapper" onClick={onCreateFolder}>
-			<AddFolderIcon className="ffs__action-button" />
+		<div
+			className="ffs__action-button-wrapper clickable-icon nav-action-button"
+			onClick={onCreateFolder}
+		>
+			<AddFolderIcon className="ffs__action-button svg-icon" />
 		</div>
 	);
 };

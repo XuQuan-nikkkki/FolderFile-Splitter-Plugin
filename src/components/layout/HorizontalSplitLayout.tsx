@@ -2,10 +2,7 @@ import { useEffect, useState, useRef } from "react";
 
 import { FFS_FOLDER_PANE_WIDTH_KEY } from "src/assets/constants";
 import { HorizontalDraggableDivider } from "./DraggableDivider";
-import {
-	FileActionSection,
-	FolderActionSection,
-} from "./Actions";
+import { FileActionSection, FolderActionSection } from "./Actions";
 import FolderTree from "../FolderTree";
 import FileTree from "../FileTree";
 import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
@@ -57,7 +54,7 @@ const HorizontalSplitLayout = () => {
 				className="ffs__layout-pane ffs__folders-pane--horizontal"
 				style={{ width: folderPaneWidth }}
 			>
-				<div className="ffs__actions-container">
+				<div className="ffs__actions-container nav-header">
 					<FolderActionSection />
 				</div>
 				<FolderTree />
@@ -67,7 +64,7 @@ const HorizontalSplitLayout = () => {
 				onChangeWidth={onChangeFolderPaneWidth}
 			/>
 			<div className="ffs__layout-pane ffs__files-pane--horizontal">
-				<div className="ffs__actions-container">
+				<div className="ffs__actions-container nav-header">
 					<FileActionSection />
 				</div>
 				<FileTree />

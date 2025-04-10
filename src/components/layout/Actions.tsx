@@ -5,7 +5,7 @@ import CreateFile from "../FileActions/CreateFile";
 import SortFiles from "../FileActions/SortFiles";
 
 export const FolderActionSection = () => (
-	<div className="ffs__actions-section">
+	<div className="ffs__actions-section nav-buttons-container">
 		<CreateFolder />
 		<SortFolders />
 		<ToggleFolders />
@@ -13,7 +13,7 @@ export const FolderActionSection = () => (
 );
 
 export const FileActionSection = () => (
-	<div className="ffs__actions-section">
+	<div className="ffs__actions-section nav-buttons-container">
 		<CreateFile />
 		<SortFiles />
 	</div>

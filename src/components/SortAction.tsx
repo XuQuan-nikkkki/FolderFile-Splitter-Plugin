@@ -52,7 +52,7 @@ const SortAction = ({
 	};
 
 	const renderIcon = () => {
-		const actionButtonClassName = "ffs__action-button";
+		const actionButtonClassName = "ffs__action-button svg-icon";
 		if (isManualOrder) {
 			return <ArrowUpDownIcon className={actionButtonClassName} />;
 		}
@@ -64,7 +64,10 @@ const SortAction = ({
 	};
 
 	return (
-		<div className="ffs__action-button-wrapper" onClick={onChangeSortRule}>
+		<div
+			className="ffs__action-button-wrapper clickable-icon nav-action-button"
+			onClick={onChangeSortRule}
+		>
 			{renderIcon()}
 		</div>
 	);

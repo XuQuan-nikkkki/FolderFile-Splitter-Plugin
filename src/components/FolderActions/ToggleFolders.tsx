@@ -27,11 +27,14 @@ const ToggleFolders = () => {
 	};
 
 	return (
-		<div className="ffs__action-button-wrapper" onClick={onToggleAllFolders}>
+		<div
+			className="ffs__action-button-wrapper clickable-icon nav-action-button"
+			onClick={onToggleAllFolders}
+		>
 			{isExpanded ? (
-				<CollapseIcon className="ffs__action-button" />
+				<CollapseIcon className="ffs__action-button svg-icon" />
 			) : (
-				<ExpandIcon className="ffs__action-button" />
+				<ExpandIcon className="ffs__action-button svg-icon" />
 			)}
 		</div>
 	);
