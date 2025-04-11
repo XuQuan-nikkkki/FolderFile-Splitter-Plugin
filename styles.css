@@ -7,6 +7,10 @@ If your plugin does not need CSS, delete this file.
 
 */
 
+div.workspace-leaf-content div.view-content {
+	padding: 0
+}
+
 .theme-light,
 .theme-dark {
 	--ffs-border-radius: 4px;
@@ -80,10 +84,6 @@ If your plugin does not need CSS, delete this file.
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-}
-
-div.ffs__name--focused {
-	color: var(--text-on-accent);
 }
 
 /* loading */
@@ -171,8 +171,9 @@ div.ffs__name--focused {
 	position: relative;
 }
 
-.ffs__subfolders-group-with-hierarchy-line {
-	border-left: var(--border-width) solid var(--interactive-hover);
+.ffs__folder-container {
+	display: flex;
+	align-items: center;
 }
 
 .ffs__folder-content--main {
@@ -182,25 +183,27 @@ div.ffs__name--focused {
 	overflow: hidden;
 }
 
-.ffs__folder-icon {
+.ffs__folder-icon-wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: transparent;
+	color: var(--nav-item-color);
+	opacity: var(--icon-opacity);
 	margin-right: var(--size-4-2);
-	width: 14px;
-	height: 12px;
-	fill: var(--text-muted);
 }
 
-.ffs__folder-icon--focused {
-	fill: var(--text-on-accent);
+.ffs__folder-icon {
+	width: 14px;
+	height: 14px;
+	stroke-width: var(--icon-stroke);
+	fill: var(--nav-item-color);
 }
 
 .ffs__files-count {
 	font-size: 12px;
 	margin-left: 4px;
 	color: var(--text-muted);
-}
-
-div.ffs__files-count--focused {
-	color: var(--text-on-accent);
 }
 
 /* file */

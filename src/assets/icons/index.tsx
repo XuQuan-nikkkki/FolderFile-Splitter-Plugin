@@ -1,5 +1,6 @@
 import FolderIcon from "./FolderIcon";
 import EmptyFolderIcon from "./EmptyFolderIcon";
+import RootFolderIcon from "./RootFolderIcon";
 import AddFolderIcon from "./AddFolderIcon";
 import AddFileIcon from "./AddFileIcon";
 import AscendingSortIcon from "./AscendingSortIcon";
@@ -10,12 +11,13 @@ import LoadingIcon from "./LoadingIcon";
 import GripIcon from "./GripIcon";
 import ArrowUpDownIcon from "./ArrowUpDownIcon";
 import PinIcon from "./PinIcon";
-import ChevronDown from './ChevronDown'
-import ChevronRight from './ChevronRight'
+import ChevronDown from "./ChevronDown";
+import ChevronRight from "./ChevronRight";
 
 export {
 	FolderIcon,
 	EmptyFolderIcon,
+	RootFolderIcon,
 	AddFolderIcon,
 	AddFileIcon,
 	AscendingSortIcon,
@@ -27,5 +29,5 @@ export {
 	ArrowUpDownIcon,
 	PinIcon,
 	ChevronDown,
-	ChevronRight
+	ChevronRight,
 };

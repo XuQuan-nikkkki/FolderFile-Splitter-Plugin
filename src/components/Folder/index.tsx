@@ -42,6 +42,13 @@ const Folder = ({
 		}))
 	);
 
+	const isFocused = folder.path == focusedFolder?.path;
+	const isFocusedFileInFolder = focusedFile?.parent?.path === folder.path;
+	const isFocusedOnFile = isFocused && focusedFile && isFocusedFileInFolder;
+	const isFocusedOnFolder = isFocused && !isFocusedOnFile;
+
+	const isRoot = folder.isRoot();
+
 	const {
 		setNodeRef: setDragRef,
 		attributes,
@@ -88,13 +95,7 @@ const Folder = ({
 	};
 
 	const maybeRenderExpandIcon = () => {
-		const isFocused = folder.path == focusedFolder?.path;
-		const isFocusedFileInFolder = focusedFile?.parent?.path === folder.path;
-		const isFocusedOnFile =
-			isFocused && focusedFile && isFocusedFileInFolder;
-		const isFocusedOnFolder = isFocused && !isFocusedOnFile;
-
-		if (folder.isRoot() || hideExpandIcon) return null;
+		if (isRoot || hideExpandIcon) return null;
 		return (
 			<FolderExpandIcon
 				folder={folder}
@@ -103,13 +104,21 @@ const Folder = ({
 		);
 	};
 
+	const folderLevel = isRoot ? 0 : folder.path.split("/").length - 1;
 	return (
 		<div
 			className={classNames(
 				"ffs__folder-container tree-item-self nav-folder-title is-clickable",
-				{ "mod-collapsible": hasFolderChildren(folder) }
+				{
+					"mod-collapsible": hasFolderChildren(folder),
+					"is-active": isFocused,
+				}
 			)}
 			ref={setDropRef}
+			style={{
+				marginInlineStart: -17 * folderLevel,
+				paddingInlineStart: 24 + 17 * folderLevel,
+			}}
 		>
 			{maybeRenderExpandIcon()}
 			<div

@@ -188,7 +188,8 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 	return (
 		<div
 			className={classNames(
-				"ffs__file-content tree-item-self nav-file-title tappable is-clickable"
+				"ffs__file-content tree-item-self nav-file-title tappable is-clickable",
+				{ "is-active": isFocused }
 			)}
 			ref={fileRef}
 			onContextMenu={onShowContextMenu}

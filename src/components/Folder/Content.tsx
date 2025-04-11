@@ -13,7 +13,8 @@ import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { FOLDER_OPERATION_COPY } from "src/locales";
 import { useExplorer } from "src/hooks/useExplorer";
 import classNames from "classnames";
-import { FolderIcon } from "src/assets/icons";
+import { FolderIcon, RootFolderIcon } from "src/assets/icons";
+import RootFolder from "src/assets/icons/RootFolderIcon";
 
 export type FolderProps = {
 	folder: TFolder;
@@ -215,12 +216,19 @@ const FolderContent = ({
 
 	const maybeRenderFolderIcon = () => {
 		if (!showFolderIcon) return null;
+		const className = classNames("ffs__folder-icon", {
+			"ffs__folder-icon--focused": isFocusedOnFolder || isOver,
+			"ffs__folder-icon--root": isRoot
+		});
+
 		return (
-			<FolderIcon
-				className={classNames("ffs__folder-icon", {
-					"ffs__folder-icon--focused": isFocusedOnFolder || isOver,
-				})}
-			/>
+			<div className="ffs__folder-icon-wrapper">
+				{isRoot ? (
+					<RootFolderIcon className={className} />
+				) : (
+					<FolderIcon className={className} />
+				)}
+			</div>
 		);
 	};
 
@@ -239,18 +247,9 @@ const FolderContent = ({
 		</div>
 	);
 
-	const getBackgroundColor = () => {
-		if (isOver) return "var(--interactive-accent)";
-		if (isFocusedOnFile) return "var(--interactive--hover)";
-		if (isFocusedOnFolder) return "var(--interactive-accent)";
-	};
-
 	return (
 		<div
 			className={classNames("ffs__folder")}
-			style={{
-				// backgroundColor: getBackgroundColor(),
-			}}
 			onContextMenu={onShowContextMenu}
 			onClick={(e) => {
 				if (isFocused) {
