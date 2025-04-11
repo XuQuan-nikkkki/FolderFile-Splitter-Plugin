@@ -8,7 +8,7 @@ If your plugin does not need CSS, delete this file.
 */
 
 div.workspace-leaf-content div.view-content {
-	padding: 0
+	padding: 0;
 }
 
 .theme-light,
@@ -63,7 +63,7 @@ div.workspace-leaf-content div.view-content {
 
 .ffs__layout-divider--vertical {
 	cursor: ns-resize;
-	margin: 16px 0;
+	margin-top: 16px;
 }
 
 /* Common Components */
@@ -110,9 +110,33 @@ div.workspace-leaf-content div.view-content {
 }
 
 /* folders and files action buttons */
+.ffs__layout--vertical .ffs__actions-container {
+	display: flex;
+	justify-content: space-between;
+}
+
+.ffs__action-button-wrapper.collapse-icon svg.svg-icon {
+	width: 14px;
+	height: 14px;
+	stroke-width: var(--icon-stroke);
+	color: var(--icon-color);
+}
+
 .ffs__actions-section {
 	display: flex;
 	align-items: center;
+}
+
+.ffs__actions-section {
+	font-weight: 500;
+	color: var(--icon-color);
+	font-size: 13px;
+	/* border: 1px solid red; */
+}
+
+.ffs__collapsed-folders,
+.ffs__collapsed-files {
+	padding: 4px 6px;
 }
 
 /* folder & file tree */

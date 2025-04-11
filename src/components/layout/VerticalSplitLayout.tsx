@@ -1,12 +1,10 @@
 import { useEffect, useState, useRef } from "react";
+import classNames from "classnames";
 
 import { FFS_FOLDER_PANE_HEIGHT_KEY } from "src/assets/constants";
 import { ChevronDown, ChevronRight } from "src/assets/icons";
 import { VerticalDraggableDivider } from "./DraggableDivider";
-import {
-	FileActionSection,
-	FolderActionSection,
-} from "./Actions";
+import { FileActionSection, FolderActionSection } from "./Actions";
 import FileTree from "../FileTree";
 import FolderTree from "../FolderTree";
 import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
@@ -55,26 +53,34 @@ const VerticalSplitLayout = () => {
 		localStorage.setItem(FFS_FOLDER_PANE_HEIGHT_KEY, String(height));
 	};
 
-	const renderOpenPaneButton = (onOpen: () => void) => (
-		<div className="ffs__action-button-wrapper" onClick={onOpen}>
-			<ChevronRight className="ffs__action-button" />
+	const renderIcon = (isCollapsed: boolean, caller: () => void) => (
+		<div
+			className={classNames(
+				"ffs__action-button-wrapper clickable-icon nav-action-button collapse-icon",
+				{ "is-collapsed": isCollapsed }
+			)}
+			onClick={caller}
+		>
+			<ChevronRight className="ffs__action-button svg-icon" />
 		</div>
 	);
 
-	const renderClosePaneButton = (onClose: () => void) => (
-		<div className="ffs__action-button-wrapper" onClick={onClose}>
-			<ChevronDown className="ffs__action-button" />
-		</div>
-	);
+	const renderOpenPaneButton = (onOpen: () => void) =>
+		renderIcon(true, onOpen);
+
+	const renderClosePaneButton = (onClose: () => void) =>
+		renderIcon(false, onClose);
 
 	const renderFoldersPane = () => {
 		const onOpenPane = () => setIsFoldersCollapsed(false);
 		const onClosePane = () => setIsFoldersCollapsed(true);
 		if (isFoldersCollapsed) {
 			return (
-				<div className="ffs__actions-container">
-					<div className="ffs__actions-section">Folders</div>
-					<div className="ffs__actions-section">
+				<div className="ffs__actions-container nav-header">
+					<div className="ffs__actions-section ffs__collapsed-folders nav-buttons-container">
+						Folders
+					</div>
+					<div className="ffs__actions-section nav-buttons-container">
 						{renderOpenPaneButton(onOpenPane)}
 					</div>
 				</div>
@@ -87,9 +93,9 @@ const VerticalSplitLayout = () => {
 					height: isFilesCollapsed ? "100%" : folderPaneHeight,
 				}}
 			>
-				<div className="ffs__actions-container">
+				<div className="ffs__actions-container nav-header">
 					<FolderActionSection />
-					<div className="ffs__actions-section">
+					<div className="ffs__actions-section nav-buttons-container">
 						{renderClosePaneButton(onClosePane)}
 					</div>
 				</div>
@@ -103,9 +109,11 @@ const VerticalSplitLayout = () => {
 		const onClosePane = () => setIsFilesCollapsed(true);
 		if (isFilesCollapsed) {
 			return (
-				<div className="ffs__actions-container">
-					<div className="ffs__actions-section">Files</div>
-					<div className="ffs__actions-section">
+				<div className="ffs__actions-container nav-header">
+					<div className="ffs__actions-section ffs__collapsed-files nav-buttons-container">
+						Files
+					</div>
+					<div className="ffs__actions-section nav-buttons-container">
 						{renderOpenPaneButton(onOpenPane)}
 					</div>
 				</div>
@@ -113,9 +121,9 @@ const VerticalSplitLayout = () => {
 		}
 		return (
 			<div className="ffs__layout-pane ffs__files-pane--vertical">
-				<div className="ffs__actions-container">
+				<div className="ffs__actions-container nav-header">
 					<FileActionSection />
-					<div className="ffs__actions-section">
+					<div className="ffs__actions-section nav-buttons-container">
 						{renderClosePaneButton(onClosePane)}
 					</div>
 				</div>
