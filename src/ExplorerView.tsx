@@ -32,6 +32,7 @@ export class ExplorerView extends ItemView {
 	async onOpen(): Promise<void> {
 		this.destroy();
 		this.constructFileTree(this.app.vault.getRoot().path, "");
+		this.containerEl.dataset.type = "file-explorer";
 	}
 
 	constructFileTree(folderPath: string, vaultChange: string) {
