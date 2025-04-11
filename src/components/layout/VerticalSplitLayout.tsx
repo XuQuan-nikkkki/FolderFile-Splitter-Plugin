@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import classNames from "classnames";
 
 import { FFS_FOLDER_PANE_HEIGHT_KEY } from "src/assets/constants";
-import { ChevronDown, ChevronRight } from "src/assets/icons";
+import { ChevronRight } from "src/assets/icons";
 import { VerticalDraggableDivider } from "./DraggableDivider";
 import { FileActionSection, FolderActionSection } from "./Actions";
 import FileTree from "../FileTree";

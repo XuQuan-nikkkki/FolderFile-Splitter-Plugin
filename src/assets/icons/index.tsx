@@ -1,6 +1,6 @@
 import FolderIcon from "./FolderIcon";
 import EmptyFolderIcon from "./EmptyFolderIcon";
-import RootFolderIcon from "./RootFolderIcon";
+import StarIcon from "./RootFolderIcon";
 import AddFolderIcon from "./AddFolderIcon";
 import AddFileIcon from "./AddFileIcon";
 import AscendingSortIcon from "./AscendingSortIcon";
@@ -17,7 +17,7 @@ import ChevronRight from "./ChevronRight";
 export {
 	FolderIcon,
 	EmptyFolderIcon,
-	RootFolderIcon,
+	StarIcon,
 	AddFolderIcon,
 	AddFileIcon,
 	AscendingSortIcon,

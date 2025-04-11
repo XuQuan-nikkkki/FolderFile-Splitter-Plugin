@@ -13,8 +13,7 @@ import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { FOLDER_OPERATION_COPY } from "src/locales";
 import { useExplorer } from "src/hooks/useExplorer";
 import classNames from "classnames";
-import { FolderIcon, RootFolderIcon } from "src/assets/icons";
-import RootFolder from "src/assets/icons/RootFolderIcon";
+import { FolderIcon, StarIcon } from "src/assets/icons";
 
 export type FolderProps = {
 	folder: TFolder;
@@ -218,13 +217,13 @@ const FolderContent = ({
 		if (!showFolderIcon) return null;
 		const className = classNames("ffs__folder-icon", {
 			"ffs__folder-icon--focused": isFocusedOnFolder || isOver,
-			"ffs__folder-icon--root": isRoot
+			"ffs__folder-icon--root": isRoot,
 		});
 
 		return (
 			<div className="ffs__folder-icon-wrapper">
 				{isRoot ? (
-					<RootFolderIcon className={className} />
+					<StarIcon className={className} />
 				) : (
 					<FolderIcon className={className} />
 				)}
