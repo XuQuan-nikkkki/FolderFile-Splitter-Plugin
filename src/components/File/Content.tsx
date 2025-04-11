@@ -14,9 +14,8 @@ import classNames from "classnames";
 export type FileProps = {
 	file: TFile;
 	deleteFile: () => void;
-	fileList: TFile[];
 };
-const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
+const FileContent = ({ file, deleteFile }: FileProps) => {
 	const { useExplorerStore, plugin } = useExplorer();
 
 	const {
@@ -55,6 +54,7 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		renderEditableName: renderFileName,
 		selectFileNameText,
 		onBeginEdit,
+		isEditing,
 	} = useRenderEditableName(file.basename, onSaveName, {
 		isFocused,
 		className: "ffs__file-name",
@@ -184,12 +184,14 @@ const FileContent = ({ file, deleteFile, fileList }: FileProps) => {
 		return <FileDetail file={file} isFocused={isFocused} />;
 	};
 
-	const isLast = [...fileList].reverse()[0]?.path === file.path;
 	return (
 		<div
 			className={classNames(
 				"ffs__file-content tree-item-self nav-file-title tappable is-clickable",
-				{ "is-active": isFocused }
+				{
+					"is-active": isFocused,
+					"has-focus is-being-renamed": isEditing,
+				}
 			)}
 			ref={fileRef}
 			onContextMenu={onShowContextMenu}

@@ -26,16 +26,11 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 	);
 	const { files, onDeleteFileFromList } = useChangeFile();
 
-	const renderFile = (
-		file: TFile,
-		fileList: TFile[],
-		disableDrag?: boolean
-	) => (
+	const renderFile = (file: TFile, disableDrag?: boolean) => (
 		<File
 			key={file.name}
 			file={file}
 			deleteFile={() => onDeleteFileFromList(file)}
-			fileList={fileList}
 			disableDrag={disableDrag}
 			onOpenFoldersPane={onOpenFoldersPane}
 		/>
@@ -53,7 +48,7 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 	return (
 		<div className="ffs__tree ffs__file-tree nav-files-container">
 			<PinnedFiles files={files} renderFile={renderFile} />
-			{sortedFiles.map((file) => renderFile(file, sortedFiles))}
+			{sortedFiles.map((file) => renderFile(file))}
 		</div>
 	);
 };

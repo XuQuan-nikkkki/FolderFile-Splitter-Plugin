@@ -13,6 +13,7 @@ const useRenderEditableName = (
 	renderEditableName: () => ReactElement;
 	selectFileNameText: () => void;
 	onBeginEdit: () => void;
+	isEditing: boolean;
 } => {
 	const eleRef = useRef<HTMLDivElement>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -99,6 +100,7 @@ const useRenderEditableName = (
 		renderEditableName,
 		selectFileNameText,
 		onBeginEdit,
+		isEditing,
 	};
 };
 

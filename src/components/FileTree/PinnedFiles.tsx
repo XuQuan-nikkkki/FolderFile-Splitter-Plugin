@@ -8,11 +8,7 @@ import { useExplorer } from "src/hooks/useExplorer";
 
 type Props = {
 	files: TFile[];
-	renderFile: (
-		file: TFile,
-		fileList: TFile[],
-		disableDrag?: boolean
-	) => ReactNode;
+	renderFile: (file: TFile, disableDrag?: boolean) => ReactNode;
 };
 const PinnedFiles = ({ files, renderFile }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
@@ -44,7 +40,7 @@ const PinnedFiles = ({ files, renderFile }: Props) => {
 				Pin
 			</div>
 			<div className="ffs__pin-content">
-				{pinnedFiles.map((file) => renderFile(file, pinnedFiles, true))}
+				{pinnedFiles.map((file) => renderFile(file, true))}
 			</div>
 		</div>
 	);

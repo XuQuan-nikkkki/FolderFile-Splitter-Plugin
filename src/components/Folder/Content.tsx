@@ -216,7 +216,6 @@ const FolderContent = ({
 	const maybeRenderFolderIcon = () => {
 		if (!showFolderIcon) return null;
 		const className = classNames("ffs__folder-icon", {
-			"ffs__folder-icon--focused": isFocusedOnFolder || isOver,
 			"ffs__folder-icon--root": isRoot,
 		});
 

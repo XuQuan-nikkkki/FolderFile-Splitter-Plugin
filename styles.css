@@ -71,8 +71,6 @@ div.workspace-leaf-content div.view-content {
 	background-color: transparent;
 	border: none;
 	outline: none;
-	color: var(--text-on-accent);
-	background-color: var(--text-selection);
 
 	flex: 1;
 	overflow: hidden;
@@ -224,15 +222,35 @@ div.workspace-leaf-content div.view-content {
 	fill: var(--nav-item-color);
 }
 
+.nav-folder-title.is-active .ffs__folder-icon {
+	fill: var(--nav-item-color-active);
+}
+
+.nav-folder-title.is-active .ffs__expand-icon {
+	color: var(--nav-item-color-active);
+}
+
 .ffs__files-count {
 	font-size: 12px;
 	margin-left: 4px;
-	color: var(--text-muted);
 }
 
 /* file */
 div.ffs__file-content {
 	padding-left: 16px;
+	position: relative;
+}
+
+.ffs__file-tree
+	.ffs__file-tree-item:not(:last-child)
+	.ffs__file-content:not(:hover):not(.is-active)
+	.ffs__file-content-header::after {
+	content: "";
+	height: 1px;
+	background-color: var(--interactive-hover);
+	width: 90%;
+	position: absolute;
+	bottom: 0;
 }
 
 .ffs__file-content-header {

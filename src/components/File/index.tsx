@@ -14,7 +14,6 @@ type Props = FileProps & {
 };
 const File = ({
 	file,
-	fileList,
 	deleteFile,
 	disableDrag,
 	onOpenFoldersPane,
@@ -49,11 +48,7 @@ const File = ({
 			{...attributes}
 			{...listeners}
 		>
-			<FileContent
-				file={file}
-				deleteFile={deleteFile}
-				fileList={fileList}
-			/>
+			<FileContent file={file} deleteFile={deleteFile} />
 		</div>
 	);
 };
