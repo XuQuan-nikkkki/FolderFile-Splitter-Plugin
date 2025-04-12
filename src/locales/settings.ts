@@ -57,6 +57,10 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 			comfortable: "Comfortable",
 		},
 	},
+	highlightActionBar: {
+		name: "Highlight action bar",
+		desc: "When enabled, the top action buttons will have a background and margin to distinguish them from surrounding elements.",
+	},
 	expandFolderOnClick: {
 		name: "Expand folder on click",
 		desc: "Choose whether to expand a folder by clicking on the toggle icon (▶/▼) or the folder name.",
@@ -119,6 +123,10 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	showFileItemDivider: {
 		name: "显示文件分割线",
 		desc: "启用后，文件列表中每个文件之间将显示一条分割线，使视觉分隔更加清晰。",
+	},
+	highlightActionBar: {
+		name: "高亮操作栏",
+		desc: "启用后，顶部操作按钮区域将添加背景色和边距，以增强与周围内容的区分。",
 	},
 	expandFolderOnClick: {
 		name: "点击展开文件夹",

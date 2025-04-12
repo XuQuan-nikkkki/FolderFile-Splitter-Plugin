@@ -81,21 +81,6 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName(settingsCopy.showFileDetail.name)
-			.setDesc(settingsCopy.showFileDetail.desc)
-			.addToggle((cb) => {
-				cb.setValue(this.plugin.settings.showFileDetail);
-				cb.onChange(async (val) => {
-					this.plugin.settings.showFileDetail = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"showFileDetail",
-						val
-					);
-				});
-			});
-
-		new Setting(containerEl)
 			.setName(settingsCopy.showHierarchyLines.name)
 			.setDesc(settingsCopy.showHierarchyLines.desc)
 			.addToggle((cb) => {
@@ -111,15 +96,15 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName(settingsCopy.showFileItemDivider.name)
-			.setDesc(settingsCopy.showFileItemDivider.desc)
+			.setName(settingsCopy.highlightActionBar.name)
+			.setDesc(settingsCopy.highlightActionBar.desc)
 			.addToggle((cb) => {
-				cb.setValue(this.plugin.settings.showFileItemDivider);
+				cb.setValue(this.plugin.settings.highlightActionBar);
 				cb.onChange(async (val) => {
-					this.plugin.settings.showFileItemDivider= val;
+					this.plugin.settings.highlightActionBar = val;
 					await this.plugin.saveSettings();
 					this.plugin.triggerSettingsChangeEvent(
-						"showFileItemDivider",
+						"highlightActionBar",
 						val
 					);
 				});
@@ -153,6 +138,36 @@ export class SettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 					this.plugin.triggerSettingsChangeEvent(
 						"fileItemSpacing",
+						val
+					);
+				});
+			});
+
+		new Setting(containerEl)
+			.setName(settingsCopy.showFileDetail.name)
+			.setDesc(settingsCopy.showFileDetail.desc)
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.showFileDetail);
+				cb.onChange(async (val) => {
+					this.plugin.settings.showFileDetail = val;
+					await this.plugin.saveSettings();
+					this.plugin.triggerSettingsChangeEvent(
+						"showFileDetail",
+						val
+					);
+				});
+			});
+
+		new Setting(containerEl)
+			.setName(settingsCopy.showFileItemDivider.name)
+			.setDesc(settingsCopy.showFileItemDivider.desc)
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.showFileItemDivider);
+				cb.onChange(async (val) => {
+					this.plugin.settings.showFileItemDivider = val;
+					await this.plugin.saveSettings();
+					this.plugin.triggerSettingsChangeEvent(
+						"showFileItemDivider",
 						val
 					);
 				});

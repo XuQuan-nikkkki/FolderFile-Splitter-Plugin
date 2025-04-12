@@ -108,6 +108,12 @@ div.workspace-leaf-content div.view-content {
 }
 
 /* folders and files action buttons */
+.ffs__actions-container--highlight {
+	background-color: color-mix(in srgb, var(--nav-item-background-hover), transparent 20%);
+	border-radius: var(--ffs-border-radius);
+	margin: 8px 12px 4px;
+}
+
 .ffs__layout--vertical .ffs__actions-container {
 	display: flex;
 	justify-content: space-between;

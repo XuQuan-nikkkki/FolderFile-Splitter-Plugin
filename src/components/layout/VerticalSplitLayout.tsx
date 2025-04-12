@@ -8,8 +8,12 @@ import { FileActionSection, FolderActionSection } from "./Actions";
 import FileTree from "../FileTree";
 import FolderTree from "../FolderTree";
 import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
+import { useExplorer } from "src/hooks/useExplorer";
+import { useHighlightActionBar } from "src/hooks/useSettingsHandler";
 
 const VerticalSplitLayout = () => {
+	const { plugin } = useExplorer();
+
 	const [folderPaneHeight, setFolderPaneHeight] = useState<
 		number | undefined
 	>();
@@ -19,6 +23,10 @@ const VerticalSplitLayout = () => {
 
 	const pluginRef = useRef<HTMLDivElement>(null);
 	useChangeActiveLeaf();
+
+	const { highlightActionBar } = useHighlightActionBar(
+		plugin.settings.highlightActionBar
+	);
 
 	const restoreLayout = () => {
 		try {
@@ -71,12 +79,18 @@ const VerticalSplitLayout = () => {
 	const renderClosePaneButton = (onClose: () => void) =>
 		renderIcon(false, onClose);
 
+
+	const getActionsContainerClassName = () =>
+		classNames("ffs__actions-container nav-header", {
+			"ffs__actions-container--highlight": highlightActionBar,
+		});
+
 	const renderFoldersPane = () => {
 		const onOpenPane = () => setIsFoldersCollapsed(false);
 		const onClosePane = () => setIsFoldersCollapsed(true);
 		if (isFoldersCollapsed) {
 			return (
-				<div className="ffs__actions-container nav-header">
+				<div className={getActionsContainerClassName()}>
 					<div className="ffs__actions-section ffs__collapsed-folders nav-buttons-container">
 						Folders
 					</div>
@@ -93,7 +107,7 @@ const VerticalSplitLayout = () => {
 					height: isFilesCollapsed ? "100%" : folderPaneHeight,
 				}}
 			>
-				<div className="ffs__actions-container nav-header">
+				<div className={getActionsContainerClassName()}>
 					<FolderActionSection />
 					<div className="ffs__actions-section nav-buttons-container">
 						{renderClosePaneButton(onClosePane)}
@@ -109,7 +123,7 @@ const VerticalSplitLayout = () => {
 		const onClosePane = () => setIsFilesCollapsed(true);
 		if (isFilesCollapsed) {
 			return (
-				<div className="ffs__actions-container nav-header">
+				<div className={getActionsContainerClassName()}>
 					<div className="ffs__actions-section ffs__collapsed-files nav-buttons-container">
 						Files
 					</div>
@@ -121,7 +135,7 @@ const VerticalSplitLayout = () => {
 		}
 		return (
 			<div className="ffs__layout-pane ffs__files-pane--vertical">
-				<div className="ffs__actions-container nav-header">
+				<div className={getActionsContainerClassName()}>
 					<FileActionSection />
 					<div className="ffs__actions-section nav-buttons-container">
 						{renderClosePaneButton(onClosePane)}
