@@ -35,7 +35,6 @@ const FolderContent = ({
 		expandedFolderPaths,
 		createNewFolder,
 		createFile,
-		focusedFile,
 		pinFolder,
 		unpinFolder,
 		isFolderPinned,
@@ -50,7 +49,6 @@ const FolderContent = ({
 			expandedFolderPaths: store.expandedFolderPaths,
 			createNewFolder: store.createNewFolder,
 			createFile: store.createFile,
-			focusedFile: store.focusedFile,
 			pinFolder: store.pinFolder,
 			unpinFolder: store.unpinFolder,
 			isFolderPinned: store.isFolderPinned,
@@ -71,9 +69,6 @@ const FolderContent = ({
 		settings.expandFolderByClickingOn
 	);
 	const isFocused = folder.path == focusedFolder?.path;
-	const isFocusedFileInFolder = focusedFile?.parent?.path === folder.path;
-	const isFocusedOnFile = isFocused && focusedFile && isFocusedFileInFolder;
-	const isFocusedOnFolder = isFocused && !isFocusedOnFile;
 
 	const onSaveName = (name: string) => renameFolder(folder, name);
 	const folderName = isRoot ? plugin.app.vault.getName() : folder.name;
@@ -82,7 +77,6 @@ const FolderContent = ({
 		selectFileNameText,
 		onBeginEdit,
 	} = useRenderEditableName(folderName, onSaveName, {
-		isFocused: isFocusedOnFolder,
 		className: "ffs__folder-name",
 	});
 
@@ -238,10 +232,7 @@ const FolderContent = ({
 		>
 			{maybeRenderFolderIcon()}
 			{renderFolderName()}
-			<FilesCount
-				folder={folder}
-				isFocused={isFocusedOnFolder || isOver}
-			/>
+			<FilesCount folder={folder} />
 		</div>
 	);
 

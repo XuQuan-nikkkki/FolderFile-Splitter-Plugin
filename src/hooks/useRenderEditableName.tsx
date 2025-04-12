@@ -2,7 +2,6 @@ import classNames from "classnames";
 import { ReactElement, useEffect, useRef, useState } from "react";
 
 type Options = {
-	isFocused?: boolean;
 	className?: string;
 };
 const useRenderEditableName = (
@@ -75,7 +74,7 @@ const useRenderEditableName = (
 	};
 
 	const renderEditableName = () => {
-		const { isFocused, className } = options ?? {};
+		const { className } = options ?? {};
 		return isEditing ? (
 			<input
 				ref={inputRef}
@@ -85,12 +84,7 @@ const useRenderEditableName = (
 				onChange={(e) => setName(e.target.value)}
 			/>
 		) : (
-			<div
-				ref={eleRef}
-				className={classNames("ffs__name", className, {
-					"ffs__name--focused": isFocused,
-				})}
-			>
+			<div ref={eleRef} className={classNames("ffs__name", className)}>
 				{name}
 			</div>
 		);

@@ -1,6 +1,5 @@
 import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
-import classNames from "classnames";
 
 import { ExplorerStore } from "src/store";
 import { useIncludeSubfolderFilesCount } from "src/hooks/useSettingsHandler";
@@ -11,9 +10,8 @@ import { useExplorer } from "src/hooks/useExplorer";
 
 type Props = {
 	folder: TFolder;
-	isFocused: boolean;
 };
-const FilesCount = ({ folder, isFocused }: Props) => {
+const FilesCount = ({ folder }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
 
 	const { getFilesCountInFolder } = useExplorerStore(
@@ -51,15 +49,7 @@ const FilesCount = ({ folder, isFocused }: Props) => {
 		setCount(getFilesCountInFolder(folder, includeSubfolderFilesCount));
 	}, [folder.children.length, includeSubfolderFilesCount]);
 
-	return (
-		<div
-			className={classNames("ffs__files-count", {
-				"ffs__files-count--focused": isFocused,
-			})}
-		>
-			{count}
-		</div>
-	);
+	return <div className="ffs__files-count">{count}</div>;
 };
 
 export default FilesCount;

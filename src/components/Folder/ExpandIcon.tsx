@@ -10,9 +10,8 @@ import { useExplorer } from "src/hooks/useExplorer";
 
 type Props = {
 	folder: TFolder;
-	isFocused?: boolean;
 };
-const FolderExpandIcon = ({ folder, isFocused = false }: Props) => {
+const FolderExpandIcon = ({ folder }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
 
 	const {

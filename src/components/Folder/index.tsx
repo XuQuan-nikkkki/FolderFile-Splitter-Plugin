@@ -27,7 +27,6 @@ const Folder = ({
 		expandFolder,
 		collapseFolder,
 		expandedFolderPaths,
-		focusedFile,
 		focusedFolder,
 		hasFolderChildren,
 	} = useExplorerStore(
@@ -37,15 +36,11 @@ const Folder = ({
 			expandedFolderPaths: store.expandedFolderPaths,
 			expandFolder: store.expandFolder,
 			collapseFolder: store.collapseFolder,
-			focusedFile: store.focusedFile,
 			focusedFolder: store.focusedFolder,
 		}))
 	);
 
 	const isFocused = folder.path == focusedFolder?.path;
-	const isFocusedFileInFolder = focusedFile?.parent?.path === folder.path;
-	const isFocusedOnFile = isFocused && focusedFile && isFocusedFileInFolder;
-	const isFocusedOnFolder = isFocused && !isFocusedOnFile;
 
 	const isRoot = folder.isRoot();
 
@@ -96,12 +91,7 @@ const Folder = ({
 
 	const maybeRenderExpandIcon = () => {
 		if (isRoot || hideExpandIcon) return null;
-		return (
-			<FolderExpandIcon
-				folder={folder}
-				isFocused={isFocusedOnFolder || isOver}
-			/>
-		);
+		return <FolderExpandIcon folder={folder} />;
 	};
 
 	const folderLevel = isRoot ? 0 : folder.path.split("/").length - 1;
@@ -115,6 +105,7 @@ const Folder = ({
 				}
 			)}
 			ref={setDropRef}
+			onClick={() => setFocusedFolder(folder)}
 			style={{
 				marginInlineStart: -17 * folderLevel,
 				paddingInlineStart: 24 + 17 * folderLevel,
@@ -125,7 +116,6 @@ const Folder = ({
 				className="ffs__draggable-container tree-item-inner nav-folder-title-content"
 				style={{ opacity: isDragging ? 0 : 1 }}
 				ref={setDragRef}
-				onClick={() => setFocusedFolder(folder)}
 				{...attributes}
 				{...listeners}
 			>

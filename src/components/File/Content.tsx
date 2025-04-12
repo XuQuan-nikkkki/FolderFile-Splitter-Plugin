@@ -62,7 +62,6 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 		onBeginEdit,
 		isEditing,
 	} = useRenderEditableName(file.basename, onSaveName, {
-		isFocused,
 		className: "ffs__file-name",
 	});
 
@@ -187,7 +186,7 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 
 	const maybeRenderFileDetail = () => {
 		if (!showFileDetail) return null;
-		return <FileDetail file={file} isFocused={isFocused} />;
+		return <FileDetail file={file} />;
 	};
 
 	return (
