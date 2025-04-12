@@ -79,7 +79,6 @@ const VerticalSplitLayout = () => {
 	const renderClosePaneButton = (onClose: () => void) =>
 		renderIcon(false, onClose);
 
-
 	const getActionsContainerClassName = () =>
 		classNames("ffs__actions-container nav-header", {
 			"ffs__actions-container--highlight": highlightActionBar,
