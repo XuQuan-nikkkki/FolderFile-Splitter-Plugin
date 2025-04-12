@@ -218,6 +218,7 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 					{
 						"ffs__file-content-header--comfortable":
 							fileItemSpacing === "Comfortable",
+						"ffs__file-content-header--with-detail": showFileDetail,
 					}
 				)}
 			>

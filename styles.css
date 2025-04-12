@@ -253,7 +253,7 @@ div.ffs__file-content {
 	bottom: 0;
 }
 
-.ffs__file-content-header {
+.ffs__file-content-header--with-detail {
 	display: grid;
 	grid-template-rows: auto auto;
 	gap: 4px;
