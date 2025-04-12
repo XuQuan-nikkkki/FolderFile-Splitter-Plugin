@@ -4,7 +4,10 @@ import { useEffect, useRef, useState } from "react";
 
 import { ExplorerStore } from "src/store";
 import { FolderListModal } from "../FolderListModal";
-import { useShowFileDetail } from "src/hooks/useSettingsHandler";
+import {
+	useFileItemSpacing,
+	useShowFileDetail,
+} from "src/hooks/useSettingsHandler";
 import FileDetail from "./Detail";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { FILE_OPERATION_COPY } from "src/locales";
@@ -45,6 +48,9 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 	const { language } = plugin;
 	const { showFileDetail } = useShowFileDetail(
 		plugin.settings.showFileDetail
+	);
+	const { fileItemSpacing } = useFileItemSpacing(
+		plugin.settings.fileItemSpacing
 	);
 
 	const isFocused = focusedFile?.path === file.path;
@@ -205,7 +211,15 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 				}
 			}}
 		>
-			<div className="ffs__file-content-header tree-item-inner nav-file-title-content">
+			<div
+				className={classNames(
+					"ffs__file-content-header tree-item-inner nav-file-title-content",
+					{
+						"ffs__file-content-header--comfortable":
+							fileItemSpacing === "Comfortable",
+					}
+				)}
+			>
 				<div className="ffs__file-content-title">
 					{renderFileName()}
 					<div className="nav-file-tag">

@@ -28,7 +28,7 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 
 	const renderFile = (file: TFile, disableDrag?: boolean) => (
 		<File
-			key={file.name}
+			key={file.path}
 			file={file}
 			deleteFile={() => onDeleteFileFromList(file)}
 			disableDrag={disableDrag}

@@ -7,6 +7,7 @@ import { useLayoutMode } from "./useLayoutMode";
 import { useShowFilesFromSubfolders } from "./useShowFilesFromSubfolders";
 import { useOpenDestinationFolder } from "./useOpenDestinationFolder";
 import { useHideRootFolder } from "./useHideRootFolder";
+import { useFileItemSpacing } from "./useFileItemSpacing";
 
 export {
 	useShowFolderIcon,
@@ -18,4 +19,5 @@ export {
 	useShowFilesFromSubfolders,
 	useOpenDestinationFolder,
 	useHideRootFolder,
+	useFileItemSpacing,
 };

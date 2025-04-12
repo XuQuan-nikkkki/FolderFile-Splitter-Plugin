@@ -1,7 +1,10 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
 import FolderFileSplitterPlugin from "./main";
 import {
+	ComfortableSpacing,
+	CompactSpacing,
 	ExpandFolderByClickingOnElement,
+	FileItemSpacing,
 	HorizontalSplitLayoutMode,
 	LayoutMode,
 	VerticalSplitLayoutMode,
@@ -117,6 +120,24 @@ export class SettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 					this.plugin.triggerSettingsChangeEvent(
 						"showFolderIcon",
+						val
+					);
+				});
+			});
+
+		new Setting(containerEl)
+			.setName(settingsCopy.fileItemSpacing.name)
+			.setDesc(settingsCopy.fileItemSpacing.desc)
+			.addDropdown((cb) => {
+				const { options } = settingsCopy.fileItemSpacing;
+				cb.addOption(ComfortableSpacing, options?.comfortable ?? "");
+				cb.addOption(CompactSpacing, options?.compact ?? "");
+				cb.setValue(this.plugin.settings.fileItemSpacing);
+				cb.onChange(async (val: FileItemSpacing) => {
+					this.plugin.settings.fileItemSpacing = val;
+					await this.plugin.saveSettings();
+					this.plugin.triggerSettingsChangeEvent(
+						"fileItemSpacing",
 						val
 					);
 				});

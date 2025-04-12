@@ -45,6 +45,14 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Show folder icon",
 		desc: "Enable this option to display icon next to folder, enhancing visual distinction between folders and files.	",
 	},
+	fileItemSpacing: {
+		name: "File item spacing",
+		desc: "Control the vertical spacing between file items in the list. Choose a compact or comfortable layout.",
+		options: {
+			compact: "Compact",
+			comfortable: "Comfortable",
+		},
+	},
 	expandFolderOnClick: {
 		name: "Expand folder on click",
 		desc: "Choose whether to expand a folder by clicking on the toggle icon (▶/▼) or the folder name.",
@@ -95,6 +103,14 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	showFolderIcon: {
 		name: "显示文件夹图标",
 		desc: "启用后，文件夹旁会显示图标，便于区分文件夹和文件。",
+	},
+	fileItemSpacing: {
+		name: "文件项间距",
+		desc: "控制文件列表中各个文件项之间的垂直间距。可选择紧凑或宽松的布局风格。",
+		options: {
+			compact: "紧凑",
+			comfortable: "宽松",
+		},
 	},
 	expandFolderOnClick: {
 		name: "点击展开文件夹",

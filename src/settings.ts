@@ -11,12 +11,17 @@ export type LayoutMode =
 	| typeof HorizontalSplitLayoutMode
 	| typeof VerticalSplitLayoutMode;
 
+export const CompactSpacing = "Compact";
+export const ComfortableSpacing = "Comfortable";
+export type FileItemSpacing = typeof CompactSpacing | typeof ComfortableSpacing;
+
 export interface FolderFileSplitterPluginSettings {
 	expandFolderByClickingOn: ExpandFolderByClickingOnElement;
 	includeSubfolderFilesCount: boolean;
 	showFolderHierarchyLines: boolean;
 	showFolderIcon: boolean;
 	showFileDetail: boolean;
+	fileItemSpacing: FileItemSpacing;
 	openPluginViewOnStartup: boolean;
 	layoutMode: LayoutMode;
 	showFilesFromSubfolders: boolean;
@@ -30,6 +35,7 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	showFolderHierarchyLines: false,
 	showFolderIcon: true,
 	showFileDetail: true,
+	fileItemSpacing: ComfortableSpacing,
 	openPluginViewOnStartup: true,
 	layoutMode: HorizontalSplitLayoutMode,
 	showFilesFromSubfolders: false,
