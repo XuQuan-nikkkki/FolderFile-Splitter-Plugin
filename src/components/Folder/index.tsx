@@ -52,6 +52,7 @@ const Folder = ({
 	} = useDraggable({
 		id: folder.path,
 		data: { type: FFS_DRAG_FOLDER, item: folder },
+		disabled: disableDrag,
 	});
 
 	const { setNodeRef: setDropRef, isOver } = useDroppable({
