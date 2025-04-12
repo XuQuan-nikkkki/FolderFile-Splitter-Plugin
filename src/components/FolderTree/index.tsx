@@ -50,7 +50,8 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	const { hideRootFolder } = useHideRootFolder(defaultHideRootFolder);
 
 	const renderFolder = (folder: TFolder, options?: FolderOptions) => {
-		const { hideExpandIcon, disableDrag } = options ?? {};
+		const { hideExpandIcon, disableDrag, disableHoverIndent } =
+			options ?? {};
 		return (
 			<Folder
 				key={folder.path}
@@ -58,6 +59,7 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 				hideExpandIcon={hideExpandIcon}
 				disableDrag={disableDrag}
 				onOpenFilesPane={onOpenFilesPane}
+				disableHoverIndent={disableHoverIndent}
 			/>
 		);
 	};

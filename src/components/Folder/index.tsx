@@ -13,12 +13,14 @@ type Props = FolderProps & {
 	onOpenFilesPane: () => void;
 	disableDrag?: boolean;
 	hideExpandIcon?: boolean;
+	disableHoverIndent?: boolean;
 };
 const Folder = ({
 	folder,
 	onOpenFilesPane,
 	hideExpandIcon = false,
 	disableDrag = false,
+	disableHoverIndent = false,
 }: Props) => {
 	const { useExplorerStore } = useExplorer();
 
@@ -108,10 +110,14 @@ const Folder = ({
 			)}
 			ref={setDropRef}
 			onClick={() => setFocusedFolder(folder)}
-			style={{
-				marginInlineStart: -17 * folderLevel,
-				paddingInlineStart: 24 + 17 * folderLevel,
-			}}
+			style={
+				disableHoverIndent
+					? undefined
+					: {
+							marginInlineStart: -17 * folderLevel,
+							paddingInlineStart: 24 + 17 * folderLevel,
+						}
+			}
 		>
 			{maybeRenderExpandIcon()}
 			<div

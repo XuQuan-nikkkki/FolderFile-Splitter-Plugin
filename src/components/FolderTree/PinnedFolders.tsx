@@ -9,6 +9,7 @@ import { useExplorer } from "src/hooks/useExplorer";
 export type FolderOptions = {
 	hideExpandIcon?: boolean;
 	disableDrag?: boolean;
+	disableHoverIndent?: boolean;
 };
 type Props = {
 	renderFolder: (folder: TFolder, options: FolderOptions) => ReactNode;
@@ -45,6 +46,7 @@ const PinnedFolders = ({ renderFolder }: Props) => {
 					const options: FolderOptions = {
 						hideExpandIcon: true,
 						disableDrag: true,
+						disableHoverIndent: true,
 					};
 					return folder ? renderFolder(folder, options) : null;
 				})}
