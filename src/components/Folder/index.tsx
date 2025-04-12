@@ -102,6 +102,7 @@ const Folder = ({
 				{
 					"mod-collapsible": hasFolderChildren(folder),
 					"is-active": isFocused,
+					"ffs__is-over": isOver && !disableDrag,
 				}
 			)}
 			ref={setDropRef}
@@ -114,7 +115,7 @@ const Folder = ({
 			{maybeRenderExpandIcon()}
 			<div
 				className="ffs__draggable-container tree-item-inner nav-folder-title-content"
-				style={{ opacity: isDragging ? 0 : 1 }}
+				style={{ opacity: isDragging ? 0.5 : 1 }}
 				ref={setDragRef}
 				{...attributes}
 				{...listeners}

@@ -43,7 +43,7 @@ const File = ({
 		<div
 			className="ffs__file-tree-item tree-item nav-file"
 			ref={setNodeRef}
-			style={{ opacity: isDragging ? 0 : 1 }}
+			style={{ opacity: isDragging ? 0.5 : 1 }}
 			onClick={() => selectFile(file)}
 			{...attributes}
 			{...listeners}

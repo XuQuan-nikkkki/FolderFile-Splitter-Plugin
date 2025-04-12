@@ -185,6 +185,10 @@ div.workspace-leaf-content div.view-content {
 }
 
 /* folder */
+.tree-item-self.ffs__is-over{
+	background-color: var(--nav-item-background-hover)
+}
+
 .ffs__draggable-container {
 	flex: 1;
 }
