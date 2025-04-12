@@ -111,6 +111,21 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
+			.setName(settingsCopy.showFileItemDivider.name)
+			.setDesc(settingsCopy.showFileItemDivider.desc)
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.showFileItemDivider);
+				cb.onChange(async (val) => {
+					this.plugin.settings.showFileItemDivider= val;
+					await this.plugin.saveSettings();
+					this.plugin.triggerSettingsChangeEvent(
+						"showFileItemDivider",
+						val
+					);
+				});
+			});
+
+		new Setting(containerEl)
 			.setName(settingsCopy.showFolderIcon.name)
 			.setDesc(settingsCopy.showFolderIcon.desc)
 			.addToggle((cb) => {

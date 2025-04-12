@@ -8,6 +8,7 @@ import { useShowFilesFromSubfolders } from "./useShowFilesFromSubfolders";
 import { useOpenDestinationFolder } from "./useOpenDestinationFolder";
 import { useHideRootFolder } from "./useHideRootFolder";
 import { useFileItemSpacing } from "./useFileItemSpacing";
+import { useShowFileItemDivider } from "./useShowFileItemDivider";
 
 export {
 	useShowFolderIcon,
@@ -20,4 +21,5 @@ export {
 	useOpenDestinationFolder,
 	useHideRootFolder,
 	useFileItemSpacing,
+	useShowFileItemDivider,
 };

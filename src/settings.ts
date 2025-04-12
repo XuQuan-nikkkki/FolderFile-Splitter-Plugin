@@ -21,6 +21,7 @@ export interface FolderFileSplitterPluginSettings {
 	showFolderHierarchyLines: boolean;
 	showFolderIcon: boolean;
 	showFileDetail: boolean;
+	showFileItemDivider: boolean;
 	fileItemSpacing: FileItemSpacing;
 	openPluginViewOnStartup: boolean;
 	layoutMode: LayoutMode;
@@ -36,6 +37,7 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	showFolderIcon: true,
 	showFileDetail: true,
 	fileItemSpacing: ComfortableSpacing,
+	showFileItemDivider: true,
 	openPluginViewOnStartup: true,
 	layoutMode: HorizontalSplitLayoutMode,
 	showFilesFromSubfolders: false,

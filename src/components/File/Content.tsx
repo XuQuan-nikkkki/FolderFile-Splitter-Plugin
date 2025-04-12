@@ -7,6 +7,7 @@ import { FolderListModal } from "../FolderListModal";
 import {
 	useFileItemSpacing,
 	useShowFileDetail,
+	useShowFileItemDivider,
 } from "src/hooks/useSettingsHandler";
 import FileDetail from "./Detail";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
@@ -45,12 +46,11 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 		}))
 	);
 
-	const { language } = plugin;
-	const { showFileDetail } = useShowFileDetail(
-		plugin.settings.showFileDetail
-	);
-	const { fileItemSpacing } = useFileItemSpacing(
-		plugin.settings.fileItemSpacing
+	const { language, settings } = plugin;
+	const { showFileDetail } = useShowFileDetail(settings.showFileDetail);
+	const { fileItemSpacing } = useFileItemSpacing(settings.fileItemSpacing);
+	const { showFileItemDivider } = useShowFileItemDivider(
+		settings.showFileItemDivider
 	);
 
 	const isFocused = focusedFile?.path === file.path;
@@ -197,6 +197,7 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 				{
 					"is-active": isFocused,
 					"has-focus is-being-renamed": isEditing,
+					"ffs__file-content--divider": showFileItemDivider,
 				}
 			)}
 			ref={fileRef}

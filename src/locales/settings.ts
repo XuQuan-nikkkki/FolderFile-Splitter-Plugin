@@ -45,6 +45,10 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Show folder icon",
 		desc: "Enable this option to display icon next to folder, enhancing visual distinction between folders and files.	",
 	},
+	showFileItemDivider: {
+		name: "Show file item divider",
+		desc: "When enabled, a divider line will be shown between file items in the list for clearer visual separation.",
+	},
 	fileItemSpacing: {
 		name: "File item spacing",
 		desc: "Control the vertical spacing between file items in the list. Choose a compact or comfortable layout.",
@@ -111,6 +115,10 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 			compact: "紧凑",
 			comfortable: "宽松",
 		},
+	},
+	showFileItemDivider: {
+		name: "显示文件分割线",
+		desc: "启用后，文件列表中每个文件之间将显示一条分割线，使视觉分隔更加清晰。",
 	},
 	expandFolderOnClick: {
 		name: "点击展开文件夹",

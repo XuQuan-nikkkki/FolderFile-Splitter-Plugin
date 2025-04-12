@@ -243,7 +243,7 @@ div.ffs__file-content {
 
 .ffs__file-tree
 	.ffs__file-tree-item:not(:last-child)
-	.ffs__file-content:not(:hover):not(.is-active)
+	.ffs__file-content--divider:not(:hover):not(.is-active)
 	.ffs__file-content-header::after {
 	content: "";
 	height: 1px;
