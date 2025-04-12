@@ -52,13 +52,13 @@ const FolderExpandIcon = ({ folder }: Props) => {
 	if (!hasFolderChildren(folder)) {
 		content = null;
 	} else {
-		content = <ChevronRight className="ffs__expand-icon svg-icon" />;
+		content = <ChevronRight className="ffs__expand-icon svg-icon right-triangle" />;
 	}
 
 	const isExpanded = expandedFolderPaths.includes(folder.path);
 	return (
 		<div
-			className={classNames("tree-item-icon", "collapse-icon", {
+			className={classNames("tree-item-icon collapse-icon", {
 				"is-collapsed": !isExpanded,
 			})}
 			onClick={onClickExpandIcon}
