@@ -418,15 +418,20 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 			);
 		},
 		restoreExpandedFolderPaths: async () => {
-			const { getDataFromLocalStorage } = get();
+			const { getDataFromLocalStorage, hasFolderChildren } = get();
 			const lastExpandedFolderPaths = getDataFromLocalStorage(
 				FFS_EXPANDED_FOLDER_PATHS_KEY
 			);
 			if (!lastExpandedFolderPaths) return;
 			try {
-				const folderPaths = JSON.parse(lastExpandedFolderPaths);
+				const folderPaths: string[] = JSON.parse(
+					lastExpandedFolderPaths
+				);
 				set({
-					expandedFolderPaths: folderPaths,
+					expandedFolderPaths: folderPaths.filter((path) => {
+						const folder = plugin.app.vault.getFolderByPath(path);
+						return folder && hasFolderChildren(folder);
+					}),
 				});
 			} catch (error) {
 				console.error("Invalid Json format: ", error);

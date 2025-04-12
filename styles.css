@@ -7,13 +7,8 @@ If your plugin does not need CSS, delete this file.
 
 */
 
-div.workspace-leaf-content div.view-content {
+div.workspace-leaf-content[data-plugin="FolderFile Splitter"] div.view-content {
 	padding: 0;
-}
-
-.theme-light,
-.theme-dark {
-	--ffs-border-radius: 4px;
 }
 
 /* plugin layout */
@@ -42,6 +37,10 @@ div.workspace-leaf-content div.view-content {
 	flex-direction: column;
 }
 
+.ffs__folders-pane--vertical {
+	overflow-y: hidden;
+}
+
 .ffs__files-pane--horizontal {
 	flex: 1;
 }
@@ -54,14 +53,21 @@ div.workspace-leaf-content div.view-content {
 
 /* layout divider */
 .ffs__layout-divider {
-	border: 1px solid var(--divider-color);
+	padding: 2px 0;
+}
+
+.ffs__layout-divider:hover {
+	border-top-color: var(--background-modifier-border);
+	transition: all 50ms ease-in-out;
 }
 
 .ffs__layout-divider--horizontal {
+	border-left: 1px solid var(--divider-color);
 	cursor: ew-resize;
 }
 
 .ffs__layout-divider--vertical {
+	border-top: 1px solid var(--divider-color);
 	cursor: ns-resize;
 	margin-top: 16px;
 }
@@ -109,8 +115,12 @@ div.workspace-leaf-content div.view-content {
 
 /* folders and files action buttons */
 .ffs__actions-container--highlight {
-	background-color: color-mix(in srgb, var(--nav-item-background-hover), transparent 20%);
-	border-radius: var(--ffs-border-radius);
+	background-color: color-mix(
+		in srgb,
+		var(--nav-item-background-hover),
+		transparent 20%
+	);
+	border-radius: var(--radius-s);
 	margin: 8px 12px 4px;
 }
 
@@ -141,6 +151,10 @@ div.workspace-leaf-content div.view-content {
 .ffs__collapsed-folders,
 .ffs__collapsed-files {
 	padding: 4px 6px;
+}
+
+.ffs__collapse-pane-icon.is-collapsed {
+	transform: rotate(-90deg);
 }
 
 /* folder & file tree */
@@ -202,6 +216,10 @@ div.workspace-leaf-content div.view-content {
 
 .ffs__subfolders-group {
 	position: relative;
+}
+
+.ffs__folder {
+	width: 100%;
 }
 
 .ffs__folder-container {
@@ -298,6 +316,10 @@ div.ffs__file-content {
 	font-weight: 450;
 }
 
+.ffs__file-tree .nav-file-title .nav-file-title-content::before {
+	display: none !important;
+}
+
 /* Manual sort */
 .ffs__manual-sort-container {
 	display: flex;
@@ -318,7 +340,7 @@ div.ffs__file-content {
 .ffs__manual-sort-breadcrumbs {
 	width: 100%;
 	background-color: var(--interactive-normal);
-	border-radius: var(--ffs-border-radius);
+	border-radius: var(--radius-s);
 	padding: 8px 16px;
 	display: flex;
 }
@@ -330,7 +352,7 @@ div.ffs__file-content {
 	height: 30px;
 	align-items: center;
 	padding: 4px;
-	border-radius: var(--ffs-border-radius);
+	border-radius: var(--radius-s);
 	touch-action: none;
 }
 
@@ -361,7 +383,7 @@ div.ffs__file-content {
 	height: 30px;
 	align-items: center;
 	padding: 4px;
-	border-radius: var(--ffs-border-radius);
+	border-radius: var(--radius-s);
 	touch-action: none;
 }
 

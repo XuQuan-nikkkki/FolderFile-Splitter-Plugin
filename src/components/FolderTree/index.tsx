@@ -27,6 +27,7 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		getFoldersByParent,
 		sortFolders,
 		expandedFolderPaths,
+		focusedFolder,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			rootFolder: store.rootFolder,
@@ -90,7 +91,12 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 			return (
 				<div
 					className={classNames(
-						"ffs__folder-tree-item tree-item nav-folder"
+						"ffs__folder-tree-item tree-item nav-folder",
+						{
+							"is-collapsed":
+								!isExpanded &&
+								focusedFolder?.path !== folder.path,
+						}
 					)}
 					key={folder.name}
 				>

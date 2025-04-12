@@ -64,7 +64,7 @@ const VerticalSplitLayout = () => {
 	const renderIcon = (isCollapsed: boolean, caller: () => void) => (
 		<div
 			className={classNames(
-				"ffs__action-button-wrapper clickable-icon nav-action-button collapse-icon",
+				"ffs__action-button-wrapper ffs__collapse-pane-icon clickable-icon nav-action-button",
 				{ "is-collapsed": isCollapsed }
 			)}
 			onClick={caller}
