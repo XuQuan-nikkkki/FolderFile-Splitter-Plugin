@@ -22,7 +22,7 @@ Every contribution is appreciated and goes toward future improvements.
 - **Pin Files and Folders**: Easily pin frequently used files or folders to the top of the list for faster access and better organization.
    ![pin files and folders](./src/assets/images/pin.gif)
 - **Theme Adaptation**: Automatically adapts to the current Obsidian theme, ensuring a cohesive and visually appealing experience.
-  
+   ![theme adaptation](./src/assets/images/theme_adpation.png)
 ## Install
 ### Method 1: Install from Obsidian Community Plugins (Recommended)
 1. **Search for the Plugin**
