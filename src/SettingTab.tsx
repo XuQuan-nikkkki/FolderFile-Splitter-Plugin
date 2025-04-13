@@ -111,6 +111,21 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
+			.setName(settingsCopy.autoHideActionBar.name)
+			.setDesc(settingsCopy.autoHideActionBar.desc)
+			.addToggle((cb) => {
+				cb.setValue(this.plugin.settings.autoHideActionBar);
+				cb.onChange(async (val) => {
+					this.plugin.settings.autoHideActionBar= val;
+					await this.plugin.saveSettings();
+					this.plugin.triggerSettingsChangeEvent(
+						"autoHideActionBar",
+						val
+					);
+				});
+			});
+
+		new Setting(containerEl)
 			.setName(settingsCopy.showFolderIcon.name)
 			.setDesc(settingsCopy.showFolderIcon.desc)
 			.addToggle((cb) => {

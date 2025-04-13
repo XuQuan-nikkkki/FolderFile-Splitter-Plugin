@@ -61,6 +61,10 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Highlight action bar",
 		desc: "When enabled, the top action buttons will have a background and margin to distinguish them from surrounding elements.",
 	},
+	autoHideActionBar: {
+		name: "Auto-hide action bar",
+		desc: "When enabled, the top action bar will be hidden by default and only appear when hovering over it.",
+	},
 	expandFolderOnClick: {
 		name: "Expand folder on click",
 		desc: "Choose whether to expand a folder by clicking on the toggle icon (▶/▼) or the folder name.",
@@ -127,6 +131,10 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	highlightActionBar: {
 		name: "高亮操作栏",
 		desc: "启用后，顶部操作按钮区域将添加背景色和边距，以增强与周围内容的区分。",
+	},
+	autoHideActionBar: {
+		name: "自动隐藏操作栏",
+		desc: "启用后，顶部操作栏默认隐藏，鼠标悬停时才会显示。",
 	},
 	expandFolderOnClick: {
 		name: "点击展开文件夹",

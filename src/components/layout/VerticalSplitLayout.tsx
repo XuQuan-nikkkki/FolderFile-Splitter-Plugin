@@ -9,7 +9,10 @@ import FileTree from "../FileTree";
 import FolderTree from "../FolderTree";
 import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
 import { useExplorer } from "src/hooks/useExplorer";
-import { useHighlightActionBar } from "src/hooks/useSettingsHandler";
+import {
+	useAutoHideActionBar,
+	useHighlightActionBar,
+} from "src/hooks/useSettingsHandler";
 
 const VerticalSplitLayout = () => {
 	const { plugin } = useExplorer();
@@ -24,8 +27,12 @@ const VerticalSplitLayout = () => {
 	const pluginRef = useRef<HTMLDivElement>(null);
 	useChangeActiveLeaf();
 
+	const { settings } = plugin;
 	const { highlightActionBar } = useHighlightActionBar(
-		plugin.settings.highlightActionBar
+		settings.highlightActionBar
+	);
+	const { autoHideActionBar } = useAutoHideActionBar(
+		settings.autoHideActionBar
 	);
 
 	const restoreLayout = () => {
@@ -82,6 +89,7 @@ const VerticalSplitLayout = () => {
 	const getActionsContainerClassName = () =>
 		classNames("ffs__actions-container nav-header", {
 			"ffs__actions-container--highlight": highlightActionBar,
+			"ffs__actions-container--auto-hide": autoHideActionBar,
 		});
 
 	const renderFoldersPane = () => {

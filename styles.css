@@ -52,10 +52,6 @@ div.workspace-leaf-content[data-plugin="FolderFile Splitter"] div.view-content {
 }
 
 /* layout divider */
-.ffs__layout-divider {
-	padding: 2px 0;
-}
-
 .ffs__layout-divider:hover {
 	border-top-color: var(--background-modifier-border);
 	transition: all 50ms ease-in-out;
@@ -64,12 +60,15 @@ div.workspace-leaf-content[data-plugin="FolderFile Splitter"] div.view-content {
 .ffs__layout-divider--horizontal {
 	border-left: 1px solid var(--divider-color);
 	cursor: ew-resize;
+	padding: 0 2px;
+	margin-left: 4px;
 }
 
 .ffs__layout-divider--vertical {
 	border-top: 1px solid var(--divider-color);
 	cursor: ns-resize;
 	margin-top: 16px;
+	padding: 2px 0;
 }
 
 /* Common Components */
@@ -124,6 +123,32 @@ div.workspace-leaf-content[data-plugin="FolderFile Splitter"] div.view-content {
 	margin: 8px 12px 4px;
 }
 
+.ffs__actions-container svg.svg-icon {
+	transition: var(--anim-duration-fast) var(--anim-duration-fast) !important;
+}
+
+.ffs__actions-container--auto-hide:not(:hover)
+	.ffs__actions-section
+	svg.svg-icon {
+	--icon-size: 0px;
+	width: 0px;
+	height: 0px;
+}
+
+.ffs__layout
+	.ffs__actions-container--auto-hide:not(:hover)
+	.ffs__actions-section {
+	background-color: transparent !important;
+}
+
+.ffs__actions-container--auto-hide:not(:hover) .ffs__action-button-wrapper {
+	flex-grow: 0;
+	background-color: var(--background-modifier-border);
+	padding: 2px;
+	width: unset;
+	height: unset;
+}
+
 .ffs__layout--vertical .ffs__actions-container {
 	display: flex;
 	justify-content: space-between;
@@ -139,13 +164,9 @@ div.workspace-leaf-content[data-plugin="FolderFile Splitter"] div.view-content {
 .ffs__actions-section {
 	display: flex;
 	align-items: center;
-}
-
-.ffs__actions-section {
 	font-weight: 500;
 	color: var(--icon-color);
 	font-size: 13px;
-	/* border: 1px solid red; */
 }
 
 .ffs__collapsed-folders,

@@ -10,6 +10,7 @@ import { useHideRootFolder } from "./useHideRootFolder";
 import { useFileItemSpacing } from "./useFileItemSpacing";
 import { useShowFileItemDivider } from "./useShowFileItemDivider";
 import { useHighlightActionBar } from "./useHighlightActionBar";
+import { useAutoHideActionBar } from "./useAutoHideActionBar";
 
 export {
 	useShowFolderIcon,
@@ -23,5 +24,6 @@ export {
 	useHideRootFolder,
 	useFileItemSpacing,
 	useShowFileItemDivider,
-	useHighlightActionBar
+	useHighlightActionBar,
+	useAutoHideActionBar
 };
