@@ -9,13 +9,15 @@ import { useExplorer } from "./useExplorer";
 const useChangeActiveLeaf = () => {
 	const { useExplorerStore, plugin } = useExplorer();
 
-	const { focusedFile, selectFile, expandFolder } = useExplorerStore(
-		useShallow((store: ExplorerStore) => ({
-			focusedFile: store.focusedFile,
-			selectFile: store.selectFile,
-			expandFolder: store.expandFolder,
-		}))
-	);
+	const { focusedFile, selectFile, expandFolder, setFocusedFolder } =
+		useExplorerStore(
+			useShallow((store: ExplorerStore) => ({
+				focusedFile: store.focusedFile,
+				selectFile: store.selectFile,
+				expandFolder: store.expandFolder,
+				setFocusedFolder: store.setFocusedFolder,
+			}))
+		);
 
 	useEffect(() => {
 		window.addEventListener(
@@ -38,6 +40,7 @@ const useChangeActiveLeaf = () => {
 				expandFolder(currentFolder);
 				currentFolder = currentFolder.parent;
 			}
+			setFocusedFolder(currentActiveFile.parent)
 			await selectFile(currentActiveFile);
 		}
 	};
