@@ -41,8 +41,13 @@ div.workspace-leaf-content[data-plugin="FolderFile Splitter"] div.view-content {
 	overflow-y: hidden;
 }
 
+.ffs__folders-pane--horizontal {
+	min-width: 150px;
+}
+
 .ffs__files-pane--horizontal {
 	flex: 1;
+	min-width: 150px;
 }
 
 .ffs__files-pane--vertical {
