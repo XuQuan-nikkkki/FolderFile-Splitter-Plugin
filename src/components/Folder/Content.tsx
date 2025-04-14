@@ -167,6 +167,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item.setTitle(FOLDER_OPERATION_COPY.moveFolder[language]);
+			item.setDisabled(folder.isRoot());
 			item.onClick(() => {
 				const modal = new FolderListModal(
 					plugin,
@@ -179,12 +180,14 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 		menu.addSeparator();
 		menu.addItem((item) => {
 			item.setTitle(FOLDER_OPERATION_COPY.renameFolder[language]);
+			item.setDisabled(folder.isRoot());
 			item.onClick(() => {
 				onStartEditingName();
 			});
 		});
 		menu.addItem((item) => {
 			item.setTitle(FOLDER_OPERATION_COPY.deleteFolder[language]);
+			item.setDisabled(folder.isRoot());
 			item.onClick(async () => {
 				await trashFolder(folder);
 			});
