@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { TFile, TFolder } from "obsidian";
+import { Notice, TFile, TFolder } from "obsidian";
 
 import FolderFileSplitterPlugin from "./main";
 import { isFile, isFolder } from "./utils";
@@ -14,6 +14,13 @@ import {
 	FFS_PINNED_FILE_PATHS_KEY,
 	FFS_PINNED_FOLDER_PATHS_KEY,
 } from "./assets/constants";
+import {
+	FOLDER_NOTE_MISSING_BEHAVIOR,
+	FolderNameFile,
+	IndexFile,
+	UnderscoreFile,
+} from "./settings";
+import { NOTIFICATION_MESSAGE_COPY } from "./locales/message";
 
 export type FolderSortRule =
 	| "FolderNameAscending"
@@ -289,7 +296,16 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 				setFocusedFile,
 				saveDataInLocalStorage,
 				removeDataFromLocalStorage,
+				selectFile,
 			} = get();
+			const { settings, language } = plugin;
+			const {
+				autoOpenFolderNote,
+				folderNoteLocation,
+				customFolderNotePath,
+				folderNoteMissingBehavior,
+			} = settings;
+			const { IGNORE, WARN, CREATE } = FOLDER_NOTE_MISSING_BEHAVIOR;
 			_setFocusedFolder(folder);
 
 			if (folder) {
@@ -300,7 +316,38 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 			} else {
 				removeDataFromLocalStorage(FFS_FOCUSED_FOLDER_PATH_KEY);
 			}
-			if (focusedFile?.parent?.path !== folder?.path) {
+
+			if (autoOpenFolderNote) {
+				let folderNotePath = "";
+				if ([IndexFile, UnderscoreFile].includes(folderNoteLocation)) {
+					folderNotePath = `${folder?.path}/${folderNoteLocation}`;
+				} else if (folderNoteLocation === FolderNameFile) {
+					folderNotePath = `${folder?.path}/${folder?.name}.md`;
+				} else {
+					folderNotePath = customFolderNotePath.replace(
+						"{folder}",
+						folder?.name || ""
+					);
+				}
+				const file = plugin.app.vault.getFileByPath(folderNotePath);
+				if (file) {
+					await selectFile(file);
+				} else {
+					if (folderNoteMissingBehavior === IGNORE) return;
+					if (folderNoteMissingBehavior === WARN) {
+						new Notice(
+							`${NOTIFICATION_MESSAGE_COPY.folderNoteMissing[language]}'${folderNotePath}'`
+						);
+					} else if (folderNoteMissingBehavior === CREATE) {
+						const newFile = await plugin.app.vault.create(
+							folderNotePath,
+							""
+						);
+						await selectFile(newFile);
+					}
+				}
+				console.log("open", folderNotePath);
+			} else if (focusedFile?.parent?.path !== folder?.path) {
 				await setFocusedFile(null);
 			}
 		},

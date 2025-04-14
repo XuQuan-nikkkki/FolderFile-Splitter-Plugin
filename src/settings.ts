@@ -15,6 +15,24 @@ export const CompactSpacing = "Compact";
 export const ComfortableSpacing = "Comfortable";
 export type FileItemSpacing = typeof CompactSpacing | typeof ComfortableSpacing;
 
+export const IndexFile = "index.md";
+export const UnderscoreFile = "_folder.md";
+export const FolderNameFile = "folderName";
+export const CustomLocationFile = "custom";
+export type FolderNoteLocation =
+	| typeof IndexFile
+	| typeof UnderscoreFile
+	| typeof FolderNameFile
+	| typeof CustomLocationFile;
+
+export const FOLDER_NOTE_MISSING_BEHAVIOR = {
+	IGNORE: "ignore",
+	WARN: "warn",
+	CREATE: "create",
+} as const;
+export type FolderNoteMissingBehavior =
+	(typeof FOLDER_NOTE_MISSING_BEHAVIOR)[keyof typeof FOLDER_NOTE_MISSING_BEHAVIOR];
+
 export interface FolderFileSplitterPluginSettings {
 	expandFolderByClickingOn: ExpandFolderByClickingOnElement;
 	includeSubfolderFilesCount: boolean;
@@ -30,6 +48,10 @@ export interface FolderFileSplitterPluginSettings {
 	showFilesFromSubfolders: boolean;
 	openDestinationFolderAfterMove: boolean;
 	hideRootFolder: boolean;
+	autoOpenFolderNote: boolean;
+	folderNoteLocation: FolderNoteLocation;
+	customFolderNotePath: string;
+	folderNoteMissingBehavior: FolderNoteMissingBehavior;
 }
 
 export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
@@ -47,4 +69,8 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	showFilesFromSubfolders: false,
 	openDestinationFolderAfterMove: false,
 	hideRootFolder: false,
+	autoOpenFolderNote: false,
+	folderNoteLocation: IndexFile,
+	customFolderNotePath: "",
+	folderNoteMissingBehavior: FOLDER_NOTE_MISSING_BEHAVIOR.IGNORE,
 };

@@ -25,5 +25,5 @@ export {
 	useFileItemSpacing,
 	useShowFileItemDivider,
 	useHighlightActionBar,
-	useAutoHideActionBar
+	useAutoHideActionBar,
 };

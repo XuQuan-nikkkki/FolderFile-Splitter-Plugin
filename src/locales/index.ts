@@ -1,5 +1,5 @@
 export type Lang = "en" | "zh";
-type Copy = Record<string, Record<Lang, string>>;
+export type Copy = Record<string, Record<Lang, string>>;
 
 export const FOLDER_OPERATION_COPY: Copy = {
 	pinFolder: {

@@ -6,11 +6,13 @@ export const EN_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 	startup: "🔷 Startup",
 	layout: "🧭 Layout",
 	folderAndFileBehavior: "📁 Folder and file behavior",
+	folderNoteSettings: "📄 Folder note settings",
 };
 export const ZH_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 	startup: "🔷 启动设置",
 	layout: "🧭 布局设置",
 	folderAndFileBehavior: "📁 文件夹和文件行为",
+	folderNoteSettings: "📄 Folder note 设置",
 };
 
 export interface SettingsLocaleResource {
@@ -89,6 +91,33 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Hide root folder",
 		desc: "When enabled, the root folder will be hidden from the folder view. Only its subfolders will be shown.",
 	},
+	autoOpenFolderNote: {
+		name: "Auto open folder note",
+		desc: "Automatically open the associated folder note when a folder is selected.",
+	},
+	folderNoteLocation: {
+		name: "Folder note location",
+		desc: "Choose where to look for a folder’s note file.",
+		options: {
+			index: "index.md",
+			underscore: "_folder.md",
+			folderName: "Same name as Folder",
+			customLocation: "Custom path",
+		},
+	},
+	customFolderNotePath: {
+		name: "Custom folder note path",
+		desc: "Define a custom path pattern for folder notes. You can use placeholders like `{folder}` for the folder name. you can use `{folder}/index.md` or `notes/{folder}.md`.This setting only takes effect when 'Custom path' is selected above.",
+	},
+	folderNoteMissingBehavior: {
+		name: "If folder note is not found",
+		desc: "Choose what to do when no folder note is found for a folder.",
+		options: {
+			ignore: "Do nothing",
+			warn: "Show warning",
+			create: "Create new",
+		},
+	}
 };
 
 export const ZH_SETTINGS: SettingsLocaleResource = {
@@ -160,4 +189,31 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 		name: "隐藏根文件夹",
 		desc: "启用后，文件夹视图中将隐藏根文件夹，只显示其子文件夹。",
 	},
+	autoOpenFolderNote: {
+		name: "自动打开 folder note",
+		desc: "选中某个文件夹时，若存在关联的folder note，将自动打开该笔记",
+	},
+	folderNoteLocation: {
+		name: "Folder note 路径",
+		desc: "选择用于匹配 folder note 的路径规则",
+		options: {
+			index: "index.md",
+			underscore: "_folder.md",
+			folderName: "文件夹同名文件",
+			customLocation: "自定义路径",
+		},
+	},
+	customFolderNotePath: {
+		name: "自定义 folder note 路径",
+		desc: "定义 folder note 的自定义路径模式。你可以使用 `{folder}` 占位符来表示当前文件夹名称。例如，你可以使用 `{folder}/index.md` 或 `notes/{folder}.md`。只有在上方选择“自定义路径”时，该设置才会生效。",
+	},
+	folderNoteMissingBehavior: {
+		name: "找不到 folder note 时",
+		desc: "选择当文件夹未找到 folder note 时的处理行为。",
+		options: {
+			ignore: "不处理",
+			warn: "显示提醒",
+			create: "自动创建",
+		},
+	}
 };
