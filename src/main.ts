@@ -16,7 +16,7 @@ export default class FolderFileSplitterPlugin extends Plugin {
 	language: Lang = "en";
 
 	VIEW_TYPE = "ffs-plugin-file-tree-view";
-	VIEW_DISPLAY_TEXT = "FolderFile Splitter Plugin File Tree";
+	VIEW_DISPLAY_TEXT = "FolderFile Splitter";
 	ICON = "dock";
 
 	async onload() {
