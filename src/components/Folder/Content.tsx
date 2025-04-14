@@ -17,16 +17,11 @@ import { FolderIcon, StarIcon } from "src/assets/icons";
 
 export type FolderProps = {
 	folder: TFolder;
-	isOver?: boolean;
 };
 type Props = FolderProps & {
 	onToggleExpandState: () => void;
 };
-const FolderContent = ({
-	folder,
-	isOver = false,
-	onToggleExpandState,
-}: Props) => {
+const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
 
 	const {

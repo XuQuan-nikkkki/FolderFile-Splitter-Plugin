@@ -129,7 +129,6 @@ const Folder = ({
 			>
 				<FolderContent
 					folder={folder}
-					isOver={isOver}
 					onToggleExpandState={onToggleExpandState}
 				/>
 			</div>

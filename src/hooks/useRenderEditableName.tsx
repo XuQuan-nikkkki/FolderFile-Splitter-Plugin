@@ -28,10 +28,12 @@ const useRenderEditableName = (
 	const onSaveNewName = async () => {
 		try {
 			await onSaveName(name);
-			setIsEditing(false);
 		} catch (error) {
 			console.error("Save  failed：", error);
 			alert("Content save failed, please try again!！");
+			setName(defaultName);
+		} finally {
+			setIsEditing(false);
 		}
 	};
 
