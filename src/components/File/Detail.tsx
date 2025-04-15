@@ -4,17 +4,23 @@ import { useShallow } from "zustand/react/shallow";
 
 import { ExplorerStore } from "src/store";
 import { useExplorer } from "src/hooks/useExplorer";
+import { useShowFileCreationDate } from "src/hooks/useSettingsHandler";
 
 type Props = {
 	file: TFile;
 };
 const FileDetail = ({ file }: Props) => {
-	const { useExplorerStore } = useExplorer();
+	const { useExplorerStore, plugin } = useExplorer();
 
 	const { readFile } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			readFile: store.readFile,
 		}))
+	);
+
+	const { settings } = plugin;
+	const { showFileCreationDate } = useShowFileCreationDate(
+		settings.showFileCreationDate
 	);
 
 	const [contentPreview, setContentPreview] = useState<string>("");
@@ -32,12 +38,18 @@ const FileDetail = ({ file }: Props) => {
 		maybeLoadContent();
 	}, []);
 
-	const fileCreatedDate = new Date(file.stat.ctime)
-		.toLocaleString()
-		.split(" ")[0];
+	const maybeRenderCreatedDate = () => {
+		if (!showFileCreationDate) return null;
+		return (
+			<div className="ffs__file-created-time">
+				{new Date(file.stat.ctime).toLocaleString().split(" ")[0]}
+			</div>
+		);
+	};
+
 	return (
 		<div className="ffs__file-detail">
-			<div className="ffs__file-created-time">{fileCreatedDate}</div>
+			{maybeRenderCreatedDate()}
 			<div className="ffs__file-content-preview">{contentPreview}</div>
 		</div>
 	);

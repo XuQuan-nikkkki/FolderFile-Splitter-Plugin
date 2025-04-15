@@ -190,6 +190,21 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
+			.setName(settingsCopy.showFileCreationDate.name)
+			.setDesc(settingsCopy.showFileCreationDate.desc)
+			.addToggle((toggle) => {
+				toggle.setValue(this.plugin.settings.showFileCreationDate);
+				toggle.onChange(async (val) => {
+					this.plugin.settings.showFileCreationDate = val;
+					await this.plugin.saveSettings();
+					this.plugin.triggerSettingsChangeEvent(
+						"showFileCreationDate",
+						val
+					);
+				});
+			});
+
+		new Setting(containerEl)
 			.setName(settingsCopy.showFileItemDivider.name)
 			.setDesc(settingsCopy.showFileItemDivider.desc)
 			.addToggle((toggle) => {

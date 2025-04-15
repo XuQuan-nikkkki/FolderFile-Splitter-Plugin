@@ -39,6 +39,10 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Show file detail",
 		desc: "When enabled, file details such as creation time and a content preview will be displayed below the file name.",
 	},
+	showFileCreationDate: {
+		name: "Show file creation date",
+		desc: "When enabled, the file's creation date will be displayed in its detail section (requires 'Show file detail' to be enabled).",
+	},
 	showHierarchyLines: {
 		name: "Show folder hierarchy lines",
 		desc: "When enabled, a line will be displayed next to folders in the same hierarchy level under an expanded parent folder, visually indicating their nesting relationship.",
@@ -136,6 +140,10 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	showFileDetail: {
 		name: "显示文件详情",
 		desc: "启用后，文件名下方会显示创建时间和内容预览等详细信息。",
+	},
+	showFileCreationDate: {
+		name: "显示创建日期",
+		desc: "启用后，文件详情中将显示文件的创建时间（需开启“显示文件详情”）。",
 	},
 	showHierarchyLines: {
 		name: "显示文件夹层级线",
