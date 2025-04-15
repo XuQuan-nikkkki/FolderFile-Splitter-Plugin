@@ -43,20 +43,6 @@ export class SettingTab extends PluginSettingTab {
 		header.style.marginBottom = "4px";
 	}
 
-	addTextForCustomPath = (setting: Setting) =>
-		setting.addText((text) => {
-			text.setPlaceholder("{folder}/index.md")
-				.setValue(this.plugin.settings.customFolderNotePath)
-				.onChange(async (val: string) => {
-					this.plugin.settings.customFolderNotePath = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"customFolderNotePath",
-						val
-					);
-				});
-		});
-
 	display(): void {
 		const { containerEl } = this;
 
