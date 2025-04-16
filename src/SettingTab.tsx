@@ -43,17 +43,20 @@ export class SettingTab extends PluginSettingTab {
 		header.style.marginBottom = "4px";
 	}
 
+	get headersCopy() {
+		return this.plugin.language === "zh"
+			? ZH_SETTINGS_HEADER
+			: EN_SETTINGS_HEADER;
+	}
+
+	get settingsCopy() {
+		return this.plugin.language === "zh" ? ZH_SETTINGS : EN_SETTINGS;
+	}
+
 	display(): void {
-		const { containerEl } = this;
+		const { containerEl, headersCopy, settingsCopy } = this;
 
 		containerEl.empty();
-
-		const headersCopy =
-			this.plugin.language === "zh"
-				? ZH_SETTINGS_HEADER
-				: EN_SETTINGS_HEADER;
-		const settingsCopy =
-			this.plugin.language === "zh" ? ZH_SETTINGS : EN_SETTINGS;
 
 		this.createHeader2(containerEl, headersCopy.startup);
 		new Setting(containerEl)
