@@ -19,10 +19,7 @@ import {
 	useLayoutMode,
 	useOpenDestinationFolder,
 } from "src/hooks/useSettingsHandler";
-import {
-	HorizontalSplitLayoutMode,
-	VerticalSplitLayoutMode,
-} from "src/settings";
+import { LAYOUT_MODE } from "src/settings";
 import { isFile, isFolder } from "src/utils";
 import { ExplorerContext } from "src/hooks/useExplorer";
 
@@ -123,9 +120,9 @@ const Explorer = ({ plugin }: Props) => {
 
 	const renderContent = () => {
 		switch (layoutMode) {
-			case HorizontalSplitLayoutMode:
+			case LAYOUT_MODE.HORIZONTAL_SPLIT:
 				return <HorizontalSplitLayout />;
-			case VerticalSplitLayoutMode:
+			case LAYOUT_MODE.VERTICAL_SPLIT:
 				return <VerticalSplitLayout />;
 			default:
 				return "unknown layout mode";

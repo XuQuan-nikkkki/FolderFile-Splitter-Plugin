@@ -1,25 +1,10 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, DropdownComponent, PluginSettingTab, Setting } from "obsidian";
 import FolderFileSplitterPlugin from "./main";
-import {
-	ComfortableSpacing,
-	CompactSpacing,
-	CustomLocationFile,
-	ExpandFolderByClickingOnElement,
-	FileItemSpacing,
-	FOLDER_NOTE_MISSING_BEHAVIOR,
-	FolderFileSplitterPluginSettings,
-	FolderNameFile,
-	FolderNoteLocation,
-	FolderNoteMissingBehavior,
-	HorizontalSplitLayoutMode,
-	IndexFile,
-	LayoutMode,
-	UnderscoreFile,
-	VerticalSplitLayoutMode,
-} from "./settings";
+import { FolderFileSplitterPluginSettings } from "./settings";
 import {
 	EN_SETTINGS,
 	EN_SETTINGS_HEADER,
+	SettingOptions,
 	SettingsKey,
 	ZH_SETTINGS,
 	ZH_SETTINGS_HEADER,
@@ -83,6 +68,30 @@ export class SettingTab extends PluginSettingTab {
 		});
 	}
 
+	_initDropdownOptions(
+		dropdown: DropdownComponent,
+		options: SettingOptions[]
+	) {
+		options.forEach((option) => {
+			const { value, text } = option;
+			dropdown.addOption(value, text);
+		});
+	}
+
+	_initDropdownSetting<K extends SettingsKey>(settingKey: K) {
+		const { options = [] } = this.settingsCopy[settingKey];
+		this._initSetting(settingKey).addDropdown((dropdown) => {
+			this._initDropdownOptions(dropdown, options);
+			dropdown.setValue(this.plugin.settings[settingKey] as string);
+			dropdown.onChange(async (val) => {
+				this._updateSetting(
+					settingKey,
+					val as FolderFileSplitterPluginSettings[K]
+				);
+			});
+		});
+	}
+
 	display(): void {
 		const { containerEl, headersCopy, settingsCopy } = this;
 
@@ -92,21 +101,7 @@ export class SettingTab extends PluginSettingTab {
 		this._initToggleSetting("openPluginViewOnStartup");
 
 		this.createHeader2(headersCopy.layout);
-		this._initSetting("layoutMode").addDropdown((dropdown) => {
-			const { options } = settingsCopy.layoutMode;
-			dropdown.addOption(
-				HorizontalSplitLayoutMode,
-				options?.horizontalSplit ?? ""
-			);
-			dropdown.addOption(
-				VerticalSplitLayoutMode,
-				options?.verticalSplit ?? ""
-			);
-			dropdown.setValue(this.plugin.settings.layoutMode);
-			dropdown.onChange(async (val: LayoutMode) => {
-				this._updateSetting("layoutMode", val);
-			});
-		});
+		this._initDropdownSetting("layoutMode");
 
 		this._initToggleSetting("showFolderHierarchyLines");
 
@@ -116,15 +111,7 @@ export class SettingTab extends PluginSettingTab {
 
 		this._initToggleSetting("showFolderIcon");
 
-		this._initSetting("fileItemSpacing").addDropdown((dropdown) => {
-			const { options } = settingsCopy.fileItemSpacing;
-			dropdown.addOption(ComfortableSpacing, options?.comfortable ?? "");
-			dropdown.addOption(CompactSpacing, options?.compact ?? "");
-			dropdown.setValue(this.plugin.settings.fileItemSpacing);
-			dropdown.onChange(async (val: FileItemSpacing) => {
-				this._updateSetting("fileItemSpacing", val);
-			});
-		});
+		this._initDropdownSetting("fileItemSpacing");
 
 		this._initToggleSetting("showFileDetail");
 
@@ -135,21 +122,7 @@ export class SettingTab extends PluginSettingTab {
 		this.createHeader2(headersCopy.folderAndFileBehavior);
 		this._initToggleSetting("hideRootFolder");
 
-		this._initSetting("expandFolderByClickingOn").addDropdown(
-			(dropdown) => {
-				const { options } = settingsCopy.expandFolderByClickingOn;
-				dropdown.addOption("icon", options?.icon ?? "");
-				dropdown.addOption("folder", options?.folder ?? "");
-				dropdown.setValue(
-					this.plugin.settings.expandFolderByClickingOn
-				);
-				dropdown.onChange(
-					async (val: ExpandFolderByClickingOnElement) => {
-						this._updateSetting("expandFolderByClickingOn", val);
-					}
-				);
-			}
-		);
+		this._initDropdownSetting("expandFolderByClickingOn");
 
 		this._initToggleSetting("includeSubfolderFilesCount");
 
@@ -160,20 +133,7 @@ export class SettingTab extends PluginSettingTab {
 		this.createHeader2(headersCopy.folderNoteSettings);
 		this._initToggleSetting("autoOpenFolderNote");
 
-		this._initSetting("folderNoteLocation").addDropdown((dropdown) => {
-			const { options } = settingsCopy.folderNoteLocation;
-			dropdown.addOption(IndexFile, options?.index ?? "");
-			dropdown.addOption(UnderscoreFile, options?.underscore ?? "");
-			dropdown.addOption(FolderNameFile, options?.folderName ?? "");
-			dropdown.addOption(
-				CustomLocationFile,
-				options?.customLocation ?? ""
-			);
-			dropdown.setValue(this.plugin.settings.folderNoteLocation);
-			dropdown.onChange(async (val: FolderNoteLocation) => {
-				this._updateSetting("folderNoteLocation", val);
-			});
-		});
+		this._initDropdownSetting("folderNoteLocation");
 
 		this._initSetting("customFolderNotePath").addText((text) => {
 			text.setPlaceholder("{folder}/index.md")
@@ -183,20 +143,6 @@ export class SettingTab extends PluginSettingTab {
 				});
 		});
 
-		this._initSetting("folderNoteMissingBehavior").addDropdown(
-			(dropdown) => {
-				const { options } = settingsCopy.folderNoteMissingBehavior;
-				const { IGNORE, WARN, CREATE } = FOLDER_NOTE_MISSING_BEHAVIOR;
-				dropdown.addOption(IGNORE, options?.ignore ?? "");
-				dropdown.addOption(WARN, options?.warn ?? "");
-				dropdown.addOption(CREATE, options?.create ?? "");
-				dropdown.setValue(
-					this.plugin.settings.folderNoteMissingBehavior
-				);
-				dropdown.onChange(async (val: FolderNoteMissingBehavior) => {
-					this._updateSetting("folderNoteMissingBehavior", val);
-				});
-			}
-		);
+		this._initDropdownSetting("folderNoteMissingBehavior");
 	}
 }

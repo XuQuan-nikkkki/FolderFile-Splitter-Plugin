@@ -1,4 +1,11 @@
-import { FolderFileSplitterPluginSettings } from "src/settings";
+import {
+	EXPAND_FOLDER_BY_CLICKING_ELEMENT,
+	FILE_ITEM_SPACING,
+	FOLDER_NOTE_LOCATION,
+	FOLDER_NOTE_MISSING_BEHAVIOR,
+	FolderFileSplitterPluginSettings,
+	LAYOUT_MODE,
+} from "src/settings";
 
 export interface SettingsHeaderLocaleResource {
 	[key: string]: string;
@@ -18,12 +25,16 @@ export const ZH_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 };
 
 export type SettingsKey = keyof FolderFileSplitterPluginSettings;
+export type SettingOptions = {
+	value: string;
+	text: string;
+};
 
 export type SettingsLocaleResource = {
 	[key in SettingsKey]: {
 		name: string;
 		desc: string;
-		options?: Record<string, string>;
+		options?: SettingOptions[];
 	};
 };
 
@@ -35,10 +46,16 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 	layoutMode: {
 		name: "Layout mode",
 		desc: "Choose how to display folders and files in the plugin view. You can arrange them side-by-side, stacked vertically, or use a toggle view that switches between folders and files.",
-		options: {
-			horizontalSplit: "Horizontal split",
-			verticalSplit: "Vertical split",
-		},
+		options: [
+			{
+				value: LAYOUT_MODE.HORIZONTAL_SPLIT,
+				text: "Horizontal split",
+			},
+			{
+				value: LAYOUT_MODE.VERTICAL_SPLIT,
+				text: "Vertical split",
+			},
+		],
 	},
 	showFileDetail: {
 		name: "Show file detail",
@@ -63,10 +80,16 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 	fileItemSpacing: {
 		name: "File item spacing",
 		desc: "Control the vertical spacing between file items in the list. Choose a compact or comfortable layout.",
-		options: {
-			compact: "Compact",
-			comfortable: "Comfortable",
-		},
+		options: [
+			{
+				value: FILE_ITEM_SPACING.COMPACT,
+				text: "Compact",
+			},
+			{
+				value: FILE_ITEM_SPACING.COMFORTABLE,
+				text: "Comfortable",
+			},
+		],
 	},
 	highlightActionBar: {
 		name: "Highlight action bar",
@@ -79,10 +102,16 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 	expandFolderByClickingOn: {
 		name: "Expand folder on click",
 		desc: "Choose whether to expand a folder by clicking on the toggle icon (▶/▼) or the folder name.",
-		options: {
-			icon: "Toggle Icon",
-			folder: "Folder Name",
-		},
+		options: [
+			{
+				value: EXPAND_FOLDER_BY_CLICKING_ELEMENT.ICON,
+				text: "Toggle Icon",
+			},
+			{
+				value: EXPAND_FOLDER_BY_CLICKING_ELEMENT.FOLDER,
+				text: "Folder Name",
+			},
+		],
 	},
 	includeSubfolderFilesCount: {
 		name: "Include subfolder files count",
@@ -107,12 +136,24 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 	folderNoteLocation: {
 		name: "Folder note location",
 		desc: "Choose where to look for a folder’s note file.",
-		options: {
-			index: "index.md",
-			underscore: "_folder.md",
-			folderName: "Same name as Folder",
-			customLocation: "Custom path",
-		},
+		options: [
+			{
+				value: FOLDER_NOTE_LOCATION.INDEX_FILE,
+				text: "index.md",
+			},
+			{
+				value: FOLDER_NOTE_LOCATION.UNDERSCORE_FILE,
+				text: "_folder.md",
+			},
+			{
+				value: FOLDER_NOTE_LOCATION.FOLDER_NAME_FILE,
+				text: "Same name as folder",
+			},
+			{
+				value: FOLDER_NOTE_LOCATION.CUSTOM_LOCATION_FILE,
+				text: "Custom path",
+			},
+		],
 	},
 	customFolderNotePath: {
 		name: "Custom folder note path",
@@ -121,11 +162,17 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 	folderNoteMissingBehavior: {
 		name: "If folder note is not found",
 		desc: "Choose what to do when no folder note is found for a folder.",
-		options: {
-			ignore: "Do nothing",
-			warn: "Show warning",
-			create: "Create new",
-		},
+		options: [
+			{
+				value: FOLDER_NOTE_MISSING_BEHAVIOR.IGNORE,
+				text: "Do nothing",
+			},
+			{
+				value: FOLDER_NOTE_MISSING_BEHAVIOR.WARN,
+				text: "Show warning",
+			},
+			{ value: FOLDER_NOTE_MISSING_BEHAVIOR.CREATE, text: "Create new" },
+		],
 	},
 };
 
@@ -137,10 +184,16 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	layoutMode: {
 		name: "布局模式",
 		desc: "选择插件视图中文件夹和文件的显示方式：水平分割（文件夹和文件两列并排）、垂直分割（文件夹和文件列垂直堆叠），或切换视图（通过切换视图在两者间转换）。",
-		options: {
-			horizontalSplit: "水平分割",
-			verticalSplit: "垂直分割",
-		},
+		options: [
+			{
+				value: LAYOUT_MODE.HORIZONTAL_SPLIT,
+				text: "水平分割",
+			},
+			{
+				value: LAYOUT_MODE.VERTICAL_SPLIT,
+				text: "垂直分割",
+			},
+		],
 	},
 	showFileDetail: {
 		name: "显示文件详情",
@@ -161,10 +214,16 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	fileItemSpacing: {
 		name: "文件项间距",
 		desc: "控制文件列表中各个文件项之间的垂直间距。可选择紧凑或宽松的布局风格。",
-		options: {
-			compact: "紧凑",
-			comfortable: "宽松",
-		},
+		options: [
+			{
+				value: FILE_ITEM_SPACING.COMPACT,
+				text: "紧凑",
+			},
+			{
+				value: FILE_ITEM_SPACING.COMFORTABLE,
+				text: "宽松",
+			},
+		],
 	},
 	showFileItemDivider: {
 		name: "显示文件分割线",
@@ -181,10 +240,16 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	expandFolderByClickingOn: {
 		name: "点击展开文件夹",
 		desc: "选择通过点击切换图标（▶/▼）或文件夹名称来展开文件夹。",
-		options: {
-			icon: "切换图标",
-			folder: "文件夹名称",
-		},
+		options: [
+			{
+				value: EXPAND_FOLDER_BY_CLICKING_ELEMENT.ICON,
+				text: "切换图标",
+			},
+			{
+				value: EXPAND_FOLDER_BY_CLICKING_ELEMENT.FOLDER,
+				text: "切换图标",
+			},
+		],
 	},
 	includeSubfolderFilesCount: {
 		name: "包含子文件夹文件计数",
@@ -209,12 +274,24 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	folderNoteLocation: {
 		name: "Folder note 路径",
 		desc: "选择用于匹配 folder note 的路径规则",
-		options: {
-			index: "index.md",
-			underscore: "_folder.md",
-			folderName: "文件夹同名文件",
-			customLocation: "自定义路径",
-		},
+		options: [
+			{
+				value: FOLDER_NOTE_LOCATION.INDEX_FILE,
+				text: "index.md",
+			},
+			{
+				value: FOLDER_NOTE_LOCATION.UNDERSCORE_FILE,
+				text: "_folder.md",
+			},
+			{
+				value: FOLDER_NOTE_LOCATION.FOLDER_NAME_FILE,
+				text: "文件夹同名文件",
+			},
+			{
+				value: FOLDER_NOTE_LOCATION.CUSTOM_LOCATION_FILE,
+				text: "自定义路径",
+			},
+		],
 	},
 	customFolderNotePath: {
 		name: "自定义 folder note 路径",
@@ -223,10 +300,16 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	folderNoteMissingBehavior: {
 		name: "找不到 folder note 时",
 		desc: "选择当文件夹未找到 folder note 时的处理行为。",
-		options: {
-			ignore: "不处理",
-			warn: "显示提醒",
-			create: "自动创建",
-		},
+		options: [
+			{
+				value: FOLDER_NOTE_MISSING_BEHAVIOR.IGNORE,
+				text: "不处理",
+			},
+			{
+				value: FOLDER_NOTE_MISSING_BEHAVIOR.WARN,
+				text: "显示提醒",
+			},
+			{ value: FOLDER_NOTE_MISSING_BEHAVIOR.CREATE, text: "自动创建" },
+		],
 	},
 };

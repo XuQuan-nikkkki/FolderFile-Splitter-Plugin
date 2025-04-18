@@ -1,37 +1,41 @@
-export const ExpandFolderByClickingIcon = "icon";
-export const ExpandFolderByClickingFolder = "folder";
+type ValueOf<T> = T[keyof T];
 
-export type ExpandFolderByClickingOnElement =
-	| typeof ExpandFolderByClickingIcon
-	| typeof ExpandFolderByClickingFolder;
+export const EXPAND_FOLDER_BY_CLICKING_ELEMENT = {
+	ICON: "icon",
+	FOLDER: "folder",
+} as const;
+export type ExpandFolderByClickingOnElement = ValueOf<
+	typeof EXPAND_FOLDER_BY_CLICKING_ELEMENT
+>;
 
-export const HorizontalSplitLayoutMode = "Horizontal split";
-export const VerticalSplitLayoutMode = "Vertical split";
-export type LayoutMode =
-	| typeof HorizontalSplitLayoutMode
-	| typeof VerticalSplitLayoutMode;
+export const LAYOUT_MODE = {
+	HORIZONTAL_SPLIT: "Horizontal split",
+	VERTICAL_SPLIT: "Vertical split",
+} as const;
+export type LayoutMode = ValueOf<typeof LAYOUT_MODE>;
 
-export const CompactSpacing = "Compact";
-export const ComfortableSpacing = "Comfortable";
-export type FileItemSpacing = typeof CompactSpacing | typeof ComfortableSpacing;
+export const FILE_ITEM_SPACING = {
+	COMPACT: "Compact",
+	COMFORTABLE: "Comfortable",
+};
+export type FileItemSpacing = ValueOf<typeof FILE_ITEM_SPACING>;
 
-export const IndexFile = "index.md";
-export const UnderscoreFile = "_folder.md";
-export const FolderNameFile = "folderName";
-export const CustomLocationFile = "custom";
-export type FolderNoteLocation =
-	| typeof IndexFile
-	| typeof UnderscoreFile
-	| typeof FolderNameFile
-	| typeof CustomLocationFile;
+export const FOLDER_NOTE_LOCATION = {
+	INDEX_FILE: "index.md",
+	UNDERSCORE_FILE: "_folder.md",
+	FOLDER_NAME_FILE: "folderName",
+	CUSTOM_LOCATION_FILE: "custom",
+};
+export type FolderNoteLocation = ValueOf<typeof FOLDER_NOTE_LOCATION>;
 
 export const FOLDER_NOTE_MISSING_BEHAVIOR = {
 	IGNORE: "ignore",
 	WARN: "warn",
 	CREATE: "create",
 } as const;
-export type FolderNoteMissingBehavior =
-	(typeof FOLDER_NOTE_MISSING_BEHAVIOR)[keyof typeof FOLDER_NOTE_MISSING_BEHAVIOR];
+export type FolderNoteMissingBehavior = ValueOf<
+	typeof FOLDER_NOTE_MISSING_BEHAVIOR
+>;
 
 export interface FolderFileSplitterPluginSettings {
 	expandFolderByClickingOn: ExpandFolderByClickingOnElement;
@@ -56,23 +60,23 @@ export interface FolderFileSplitterPluginSettings {
 }
 
 export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
-	expandFolderByClickingOn: ExpandFolderByClickingIcon,
+	expandFolderByClickingOn: EXPAND_FOLDER_BY_CLICKING_ELEMENT.ICON,
 	includeSubfolderFilesCount: false,
 	showFolderHierarchyLines: false,
 	showFolderIcon: true,
 	showFileDetail: true,
 	showFileCreationDate: true,
-	fileItemSpacing: ComfortableSpacing,
+	fileItemSpacing: FILE_ITEM_SPACING.COMFORTABLE,
 	showFileItemDivider: true,
 	highlightActionBar: false,
 	autoHideActionBar: false,
 	openPluginViewOnStartup: true,
-	layoutMode: HorizontalSplitLayoutMode,
+	layoutMode: LAYOUT_MODE.HORIZONTAL_SPLIT,
 	showFilesFromSubfolders: false,
 	openDestinationFolderAfterMove: false,
 	hideRootFolder: false,
 	autoOpenFolderNote: false,
-	folderNoteLocation: IndexFile,
+	folderNoteLocation: FOLDER_NOTE_LOCATION.INDEX_FILE,
 	customFolderNotePath: "",
 	folderNoteMissingBehavior: FOLDER_NOTE_MISSING_BEHAVIOR.IGNORE,
 };

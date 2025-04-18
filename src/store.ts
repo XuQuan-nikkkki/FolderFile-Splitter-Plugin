@@ -14,12 +14,7 @@ import {
 	FFS_PINNED_FILE_PATHS_KEY,
 	FFS_PINNED_FOLDER_PATHS_KEY,
 } from "./assets/constants";
-import {
-	FOLDER_NOTE_MISSING_BEHAVIOR,
-	FolderNameFile,
-	IndexFile,
-	UnderscoreFile,
-} from "./settings";
+import { FOLDER_NOTE_LOCATION, FOLDER_NOTE_MISSING_BEHAVIOR } from "./settings";
 import { NOTIFICATION_MESSAGE_COPY } from "./locales/message";
 
 export type FolderSortRule =
@@ -319,9 +314,16 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 
 			if (autoOpenFolderNote) {
 				let folderNotePath = "";
-				if ([IndexFile, UnderscoreFile].includes(folderNoteLocation)) {
+				if (
+					[
+						FOLDER_NOTE_LOCATION.INDEX_FILE,
+						FOLDER_NOTE_LOCATION.UNDERSCORE_FILE,
+					].includes(folderNoteLocation)
+				) {
 					folderNotePath = `${folder?.path}/${folderNoteLocation}`;
-				} else if (folderNoteLocation === FolderNameFile) {
+				} else if (
+					folderNoteLocation === FOLDER_NOTE_LOCATION.FOLDER_NAME_FILE
+				) {
 					folderNotePath = `${folder?.path}/${folder?.name}.md`;
 				} else {
 					folderNotePath = customFolderNotePath.replace(
