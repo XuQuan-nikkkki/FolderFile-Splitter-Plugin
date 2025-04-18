@@ -71,18 +71,25 @@ export class SettingTab extends PluginSettingTab {
 		this.plugin.triggerSettingsChangeEvent(settingKey, value);
 	}
 
+	_initToggleSetting<K extends SettingsKey>(settingKey: K) {
+		this._initSetting(settingKey).addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings[settingKey] as boolean);
+			toggle.onChange(async (val) => {
+				this._updateSetting(
+					settingKey,
+					val as FolderFileSplitterPluginSettings[K]
+				);
+			});
+		});
+	}
+
 	display(): void {
 		const { containerEl, headersCopy, settingsCopy } = this;
 
 		containerEl.empty();
 
 		this.createHeader2(headersCopy.startup);
-		this._initSetting("openPluginViewOnStartup").addToggle((toggle) => {
-			toggle.setValue(this.plugin.settings.openPluginViewOnStartup);
-			toggle.onChange(async (val) => {
-				this._updateSetting("openPluginViewOnStartup", val);
-			});
-		});
+		this._initToggleSetting("openPluginViewOnStartup");
 
 		this.createHeader2(headersCopy.layout);
 		this._initSetting("layoutMode").addDropdown((dropdown) => {
@@ -101,33 +108,13 @@ export class SettingTab extends PluginSettingTab {
 			});
 		});
 
-		this._initSetting("showFolderHierarchyLines").addToggle((toggle) => {
-			toggle.setValue(this.plugin.settings.showFolderHierarchyLines);
-			toggle.onChange(async (val) => {
-				this._updateSetting("showFolderHierarchyLines", val);
-			});
-		});
+		this._initToggleSetting("showFolderHierarchyLines");
 
-		this._initSetting("highlightActionBar").addToggle((toggle) => {
-			toggle.setValue(this.plugin.settings.highlightActionBar);
-			toggle.onChange(async (val) => {
-				this._updateSetting("highlightActionBar", val);
-			});
-		});
+		this._initToggleSetting("highlightActionBar");
 
-		this._initSetting("autoHideActionBar").addToggle((toggle) => {
-			toggle.setValue(this.plugin.settings.autoHideActionBar);
-			toggle.onChange(async (val) => {
-				this._updateSetting("autoHideActionBar", val);
-			});
-		});
+		this._initToggleSetting("autoHideActionBar");
 
-		this._initSetting("showFolderIcon").addToggle((toggle) => {
-			toggle.setValue(this.plugin.settings.showFolderIcon);
-			toggle.onChange(async (val) => {
-				this._updateSetting("showFolderIcon", val);
-			});
-		});
+		this._initToggleSetting("showFolderIcon");
 
 		this._initSetting("fileItemSpacing").addDropdown((dropdown) => {
 			const { options } = settingsCopy.fileItemSpacing;
@@ -139,34 +126,14 @@ export class SettingTab extends PluginSettingTab {
 			});
 		});
 
-		this._initSetting("showFileDetail").addToggle((toggle) => {
-			toggle.setValue(this.plugin.settings.showFileDetail);
-			toggle.onChange(async (val) => {
-				this._updateSetting("showFileDetail", val);
-			});
-		});
+		this._initToggleSetting("showFileDetail");
 
-		this._initSetting("showFileCreationDate").addToggle((toggle) => {
-			toggle.setValue(this.plugin.settings.showFileCreationDate);
-			toggle.onChange(async (val) => {
-				this._updateSetting("showFileCreationDate", val);
-			});
-		});
+		this._initToggleSetting("showFileCreationDate");
 
-		this._initSetting("showFileItemDivider").addToggle((toggle) => {
-			toggle.setValue(this.plugin.settings.showFileItemDivider);
-			toggle.onChange(async (val) => {
-				this._updateSetting("showFileItemDivider", val);
-			});
-		});
+		this._initToggleSetting("showFileItemDivider");
 
 		this.createHeader2(headersCopy.folderAndFileBehavior);
-		this._initSetting("hideRootFolder").addToggle((toggle) => {
-			toggle.setValue(this.plugin.settings.hideRootFolder);
-			toggle.onChange(async (val) => {
-				this._updateSetting("hideRootFolder", val);
-			});
-		});
+		this._initToggleSetting("hideRootFolder");
 
 		this._initSetting("expandFolderByClickingOn").addDropdown(
 			(dropdown) => {
@@ -184,38 +151,14 @@ export class SettingTab extends PluginSettingTab {
 			}
 		);
 
-		this._initSetting("includeSubfolderFilesCount").addToggle((toggle) => {
-			toggle.setValue(this.plugin.settings.includeSubfolderFilesCount);
-			toggle.onChange(async (val) => {
-				this._updateSetting("includeSubfolderFilesCount", val);
-			});
-		});
+		this._initToggleSetting("includeSubfolderFilesCount");
 
-		this._initSetting("showFilesFromSubfolders").addToggle((toggle) => {
-			toggle.setValue(this.plugin.settings.showFilesFromSubfolders);
-			toggle.onChange(async (val) => {
-				this._updateSetting("showFilesFromSubfolders", val);
-			});
-		});
+		this._initToggleSetting("showFilesFromSubfolders");
 
-		this._initSetting("openDestinationFolderAfterMove").addToggle(
-			(toggle) => {
-				toggle.setValue(
-					this.plugin.settings.openDestinationFolderAfterMove
-				);
-				toggle.onChange(async (val) => {
-					this._updateSetting("openDestinationFolderAfterMove", val);
-				});
-			}
-		);
+		this._initToggleSetting("openDestinationFolderAfterMove");
 
 		this.createHeader2(headersCopy.folderNoteSettings);
-		this._initSetting("autoOpenFolderNote").addToggle((toggle) => {
-			toggle.setValue(this.plugin.settings.autoOpenFolderNote);
-			toggle.onChange(async (val) => {
-				this._updateSetting("autoOpenFolderNote", val);
-			});
-		});
+		this._initToggleSetting("autoOpenFolderNote");
 
 		this._initSetting("folderNoteLocation").addDropdown((dropdown) => {
 			const { options } = settingsCopy.folderNoteLocation;
