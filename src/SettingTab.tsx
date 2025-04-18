@@ -31,14 +31,14 @@ export class SettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
-	createHeader2(containerEl: HTMLElement, textContent: string) {
-		const header = containerEl.createEl("h2");
+	createHeader2(textContent: string) {
+		const header = this.containerEl.createEl("h2");
 		header.textContent = textContent;
 		header.style.marginBottom = "8px";
 	}
 
-	createHeader3(containerEl: HTMLElement, textContent: string) {
-		const header = containerEl.createEl("h3");
+	createHeader3(textContent: string) {
+		const header = this.containerEl.createEl("h3");
 		header.textContent = textContent;
 		header.style.marginBottom = "4px";
 	}
@@ -58,7 +58,7 @@ export class SettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		this.createHeader2(containerEl, headersCopy.startup);
+		this.createHeader2(headersCopy.startup);
 		new Setting(containerEl)
 			.setName(settingsCopy.openOnStartup.name)
 			.setDesc(settingsCopy.openOnStartup.desc)
@@ -74,7 +74,7 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
-		this.createHeader2(containerEl, headersCopy.layout);
+		this.createHeader2(headersCopy.layout);
 		new Setting(containerEl)
 			.setName(settingsCopy.layoutMode.name)
 			.setDesc(settingsCopy.layoutMode.desc)
@@ -222,7 +222,7 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
-		this.createHeader2(containerEl, headersCopy.folderAndFileBehavior);
+		this.createHeader2(headersCopy.folderAndFileBehavior);
 		new Setting(containerEl)
 			.setName(settingsCopy.hideRootFolder.name)
 			.setDesc(settingsCopy.hideRootFolder.desc)
@@ -309,7 +309,7 @@ export class SettingTab extends PluginSettingTab {
 				});
 			});
 
-		this.createHeader2(containerEl, headersCopy.folderNoteSettings);
+		this.createHeader2(headersCopy.folderNoteSettings);
 		new Setting(containerEl)
 			.setName(settingsCopy.autoOpenFolderNote.name)
 			.setDesc(settingsCopy.autoOpenFolderNote.desc)
