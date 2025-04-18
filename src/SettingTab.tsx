@@ -7,6 +7,7 @@ import {
 	ExpandFolderByClickingOnElement,
 	FileItemSpacing,
 	FOLDER_NOTE_MISSING_BEHAVIOR,
+	FolderFileSplitterPluginSettings,
 	FolderNameFile,
 	FolderNoteLocation,
 	FolderNoteMissingBehavior,
@@ -61,6 +62,15 @@ export class SettingTab extends PluginSettingTab {
 			.setDesc(settingsCopy[settingKey].desc);
 	}
 
+	async _updateSetting<K extends SettingsKey>(
+		settingKey: K,
+		value: FolderFileSplitterPluginSettings[K]
+	) {
+		this.plugin.settings[settingKey] = value;
+		await this.plugin.saveSettings();
+		this.plugin.triggerSettingsChangeEvent(settingKey, value);
+	}
+
 	display(): void {
 		const { containerEl, headersCopy, settingsCopy } = this;
 
@@ -70,12 +80,7 @@ export class SettingTab extends PluginSettingTab {
 		this._initSetting("openPluginViewOnStartup").addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings.openPluginViewOnStartup);
 			toggle.onChange(async (val) => {
-				this.plugin.settings.openPluginViewOnStartup = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent(
-					"openPluginViewOnStartup",
-					val
-				);
+				this._updateSetting("openPluginViewOnStartup", val);
 			});
 		});
 
@@ -92,54 +97,35 @@ export class SettingTab extends PluginSettingTab {
 			);
 			dropdown.setValue(this.plugin.settings.layoutMode);
 			dropdown.onChange(async (val: LayoutMode) => {
-				this.plugin.settings.layoutMode = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent("layoutMode", val);
+				this._updateSetting("layoutMode", val);
 			});
 		});
 
 		this._initSetting("showFolderHierarchyLines").addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings.showFolderHierarchyLines);
 			toggle.onChange(async (val) => {
-				this.plugin.settings.showFolderHierarchyLines = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent(
-					"showFolderHierarchyLines",
-					val
-				);
+				this._updateSetting("showFolderHierarchyLines", val);
 			});
 		});
 
 		this._initSetting("highlightActionBar").addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings.highlightActionBar);
 			toggle.onChange(async (val) => {
-				this.plugin.settings.highlightActionBar = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent(
-					"highlightActionBar",
-					val
-				);
+				this._updateSetting("highlightActionBar", val);
 			});
 		});
 
 		this._initSetting("autoHideActionBar").addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings.autoHideActionBar);
 			toggle.onChange(async (val) => {
-				this.plugin.settings.autoHideActionBar = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent(
-					"autoHideActionBar",
-					val
-				);
+				this._updateSetting("autoHideActionBar", val);
 			});
 		});
 
 		this._initSetting("showFolderIcon").addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings.showFolderIcon);
 			toggle.onChange(async (val) => {
-				this.plugin.settings.showFolderIcon = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent("showFolderIcon", val);
+				this._updateSetting("showFolderIcon", val);
 			});
 		});
 
@@ -149,42 +135,28 @@ export class SettingTab extends PluginSettingTab {
 			dropdown.addOption(CompactSpacing, options?.compact ?? "");
 			dropdown.setValue(this.plugin.settings.fileItemSpacing);
 			dropdown.onChange(async (val: FileItemSpacing) => {
-				this.plugin.settings.fileItemSpacing = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent("fileItemSpacing", val);
+				this._updateSetting("fileItemSpacing", val);
 			});
 		});
 
 		this._initSetting("showFileDetail").addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings.showFileDetail);
 			toggle.onChange(async (val) => {
-				this.plugin.settings.showFileDetail = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent("showFileDetail", val);
+				this._updateSetting("showFileDetail", val);
 			});
 		});
 
 		this._initSetting("showFileCreationDate").addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings.showFileCreationDate);
 			toggle.onChange(async (val) => {
-				this.plugin.settings.showFileCreationDate = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent(
-					"showFileCreationDate",
-					val
-				);
+				this._updateSetting("showFileCreationDate", val);
 			});
 		});
 
 		this._initSetting("showFileItemDivider").addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings.showFileItemDivider);
 			toggle.onChange(async (val) => {
-				this.plugin.settings.showFileItemDivider = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent(
-					"showFileItemDivider",
-					val
-				);
+				this._updateSetting("showFileItemDivider", val);
 			});
 		});
 
@@ -192,9 +164,7 @@ export class SettingTab extends PluginSettingTab {
 		this._initSetting("hideRootFolder").addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings.hideRootFolder);
 			toggle.onChange(async (val) => {
-				this.plugin.settings.hideRootFolder = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent("hideRootFolder", val);
+				this._updateSetting("hideRootFolder", val);
 			});
 		});
 
@@ -208,12 +178,7 @@ export class SettingTab extends PluginSettingTab {
 				);
 				dropdown.onChange(
 					async (val: ExpandFolderByClickingOnElement) => {
-						this.plugin.settings.expandFolderByClickingOn = val;
-						await this.plugin.saveSettings();
-						this.plugin.triggerSettingsChangeEvent(
-							"expandFolderByClickingOn",
-							val
-						);
+						this._updateSetting("expandFolderByClickingOn", val);
 					}
 				);
 			}
@@ -222,24 +187,14 @@ export class SettingTab extends PluginSettingTab {
 		this._initSetting("includeSubfolderFilesCount").addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings.includeSubfolderFilesCount);
 			toggle.onChange(async (val) => {
-				this.plugin.settings.includeSubfolderFilesCount = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent(
-					"includeSubfolderFilesCount",
-					val
-				);
+				this._updateSetting("includeSubfolderFilesCount", val);
 			});
 		});
 
 		this._initSetting("showFilesFromSubfolders").addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings.showFilesFromSubfolders);
 			toggle.onChange(async (val) => {
-				this.plugin.settings.showFilesFromSubfolders = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent(
-					"showFilesFromSubfolders",
-					val
-				);
+				this._updateSetting("showFilesFromSubfolders", val);
 			});
 		});
 
@@ -249,12 +204,7 @@ export class SettingTab extends PluginSettingTab {
 					this.plugin.settings.openDestinationFolderAfterMove
 				);
 				toggle.onChange(async (val) => {
-					this.plugin.settings.openDestinationFolderAfterMove = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"openDestinationFolderAfterMove",
-						val
-					);
+					this._updateSetting("openDestinationFolderAfterMove", val);
 				});
 			}
 		);
@@ -263,12 +213,7 @@ export class SettingTab extends PluginSettingTab {
 		this._initSetting("autoOpenFolderNote").addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings.autoOpenFolderNote);
 			toggle.onChange(async (val) => {
-				this.plugin.settings.autoOpenFolderNote = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent(
-					"autoOpenFolderNote",
-					val
-				);
+				this._updateSetting("autoOpenFolderNote", val);
 			});
 		});
 
@@ -283,12 +228,7 @@ export class SettingTab extends PluginSettingTab {
 			);
 			dropdown.setValue(this.plugin.settings.folderNoteLocation);
 			dropdown.onChange(async (val: FolderNoteLocation) => {
-				this.plugin.settings.folderNoteLocation = val;
-				await this.plugin.saveSettings();
-				this.plugin.triggerSettingsChangeEvent(
-					"folderNoteLocation",
-					val
-				);
+				this._updateSetting("folderNoteLocation", val);
 			});
 		});
 
@@ -296,12 +236,7 @@ export class SettingTab extends PluginSettingTab {
 			text.setPlaceholder("{folder}/index.md")
 				.setValue(this.plugin.settings.customFolderNotePath)
 				.onChange(async (val: string) => {
-					this.plugin.settings.customFolderNotePath = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"customFolderNotePath",
-						val
-					);
+					this._updateSetting("customFolderNotePath", val);
 				});
 		});
 
@@ -316,12 +251,7 @@ export class SettingTab extends PluginSettingTab {
 					this.plugin.settings.folderNoteMissingBehavior
 				);
 				dropdown.onChange(async (val: FolderNoteMissingBehavior) => {
-					this.plugin.settings.folderNoteMissingBehavior = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"folderNoteMissingBehavior",
-						val
-					);
+					this._updateSetting("folderNoteMissingBehavior", val);
 				});
 			}
 		);
