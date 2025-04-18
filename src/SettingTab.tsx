@@ -19,6 +19,7 @@ import {
 import {
 	EN_SETTINGS,
 	EN_SETTINGS_HEADER,
+	SettingsKey,
 	ZH_SETTINGS,
 	ZH_SETTINGS_HEADER,
 } from "./locales/settings";
@@ -53,195 +54,152 @@ export class SettingTab extends PluginSettingTab {
 		return this.plugin.language === "zh" ? ZH_SETTINGS : EN_SETTINGS;
 	}
 
+	_initSetting(settingKey: SettingsKey) {
+		const { settingsCopy } = this;
+		return new Setting(this.containerEl)
+			.setName(settingsCopy[settingKey].name)
+			.setDesc(settingsCopy[settingKey].desc);
+	}
+
 	display(): void {
 		const { containerEl, headersCopy, settingsCopy } = this;
 
 		containerEl.empty();
 
 		this.createHeader2(headersCopy.startup);
-		new Setting(containerEl)
-			.setName(settingsCopy.openPluginViewOnStartup.name)
-			.setDesc(settingsCopy.openPluginViewOnStartup.desc)
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.openPluginViewOnStartup);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.openPluginViewOnStartup = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"openPluginViewOnStartup",
-						val
-					);
-				});
+		this._initSetting("openPluginViewOnStartup").addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.openPluginViewOnStartup);
+			toggle.onChange(async (val) => {
+				this.plugin.settings.openPluginViewOnStartup = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent(
+					"openPluginViewOnStartup",
+					val
+				);
 			});
+		});
 
 		this.createHeader2(headersCopy.layout);
-		new Setting(containerEl)
-			.setName(settingsCopy.layoutMode.name)
-			.setDesc(settingsCopy.layoutMode.desc)
-			.addDropdown((dropdown) => {
-				const { options } = settingsCopy.layoutMode;
-				dropdown.addOption(
-					HorizontalSplitLayoutMode,
-					options?.horizontalSplit ?? ""
+		this._initSetting("layoutMode").addDropdown((dropdown) => {
+			const { options } = settingsCopy.layoutMode;
+			dropdown.addOption(
+				HorizontalSplitLayoutMode,
+				options?.horizontalSplit ?? ""
+			);
+			dropdown.addOption(
+				VerticalSplitLayoutMode,
+				options?.verticalSplit ?? ""
+			);
+			dropdown.setValue(this.plugin.settings.layoutMode);
+			dropdown.onChange(async (val: LayoutMode) => {
+				this.plugin.settings.layoutMode = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent("layoutMode", val);
+			});
+		});
+
+		this._initSetting("showFolderHierarchyLines").addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.showFolderHierarchyLines);
+			toggle.onChange(async (val) => {
+				this.plugin.settings.showFolderHierarchyLines = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent(
+					"showFolderHierarchyLines",
+					val
 				);
-				dropdown.addOption(
-					VerticalSplitLayoutMode,
-					options?.verticalSplit ?? ""
+			});
+		});
+
+		this._initSetting("highlightActionBar").addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.highlightActionBar);
+			toggle.onChange(async (val) => {
+				this.plugin.settings.highlightActionBar = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent(
+					"highlightActionBar",
+					val
 				);
-				dropdown.setValue(this.plugin.settings.layoutMode);
-				dropdown.onChange(async (val: LayoutMode) => {
-					this.plugin.settings.layoutMode = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent("layoutMode", val);
-				});
 			});
+		});
 
-		new Setting(containerEl)
-			.setName(settingsCopy.showFolderHierarchyLines.name)
-			.setDesc(settingsCopy.showFolderHierarchyLines.desc)
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.showFolderHierarchyLines);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.showFolderHierarchyLines = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"showFolderHierarchyLines",
-						val
-					);
-				});
-			});
-
-		new Setting(containerEl)
-			.setName(settingsCopy.highlightActionBar.name)
-			.setDesc(settingsCopy.highlightActionBar.desc)
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.highlightActionBar);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.highlightActionBar = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"highlightActionBar",
-						val
-					);
-				});
-			});
-
-		new Setting(containerEl)
-			.setName(settingsCopy.autoHideActionBar.name)
-			.setDesc(settingsCopy.autoHideActionBar.desc)
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.autoHideActionBar);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.autoHideActionBar = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"autoHideActionBar",
-						val
-					);
-				});
-			});
-
-		new Setting(containerEl)
-			.setName(settingsCopy.showFolderIcon.name)
-			.setDesc(settingsCopy.showFolderIcon.desc)
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.showFolderIcon);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.showFolderIcon = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"showFolderIcon",
-						val
-					);
-				});
-			});
-
-		new Setting(containerEl)
-			.setName(settingsCopy.fileItemSpacing.name)
-			.setDesc(settingsCopy.fileItemSpacing.desc)
-			.addDropdown((dropdown) => {
-				const { options } = settingsCopy.fileItemSpacing;
-				dropdown.addOption(
-					ComfortableSpacing,
-					options?.comfortable ?? ""
+		this._initSetting("autoHideActionBar").addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.autoHideActionBar);
+			toggle.onChange(async (val) => {
+				this.plugin.settings.autoHideActionBar = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent(
+					"autoHideActionBar",
+					val
 				);
-				dropdown.addOption(CompactSpacing, options?.compact ?? "");
-				dropdown.setValue(this.plugin.settings.fileItemSpacing);
-				dropdown.onChange(async (val: FileItemSpacing) => {
-					this.plugin.settings.fileItemSpacing = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"fileItemSpacing",
-						val
-					);
-				});
 			});
+		});
 
-		new Setting(containerEl)
-			.setName(settingsCopy.showFileDetail.name)
-			.setDesc(settingsCopy.showFileDetail.desc)
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.showFileDetail);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.showFileDetail = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"showFileDetail",
-						val
-					);
-				});
+		this._initSetting("showFolderIcon").addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.showFolderIcon);
+			toggle.onChange(async (val) => {
+				this.plugin.settings.showFolderIcon = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent("showFolderIcon", val);
 			});
+		});
 
-		new Setting(containerEl)
-			.setName(settingsCopy.showFileCreationDate.name)
-			.setDesc(settingsCopy.showFileCreationDate.desc)
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.showFileCreationDate);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.showFileCreationDate = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"showFileCreationDate",
-						val
-					);
-				});
+		this._initSetting("fileItemSpacing").addDropdown((dropdown) => {
+			const { options } = settingsCopy.fileItemSpacing;
+			dropdown.addOption(ComfortableSpacing, options?.comfortable ?? "");
+			dropdown.addOption(CompactSpacing, options?.compact ?? "");
+			dropdown.setValue(this.plugin.settings.fileItemSpacing);
+			dropdown.onChange(async (val: FileItemSpacing) => {
+				this.plugin.settings.fileItemSpacing = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent("fileItemSpacing", val);
 			});
+		});
 
-		new Setting(containerEl)
-			.setName(settingsCopy.showFileItemDivider.name)
-			.setDesc(settingsCopy.showFileItemDivider.desc)
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.showFileItemDivider);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.showFileItemDivider = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"showFileItemDivider",
-						val
-					);
-				});
+		this._initSetting("showFileDetail").addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.showFileDetail);
+			toggle.onChange(async (val) => {
+				this.plugin.settings.showFileDetail = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent("showFileDetail", val);
 			});
+		});
+
+		this._initSetting("showFileCreationDate").addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.showFileCreationDate);
+			toggle.onChange(async (val) => {
+				this.plugin.settings.showFileCreationDate = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent(
+					"showFileCreationDate",
+					val
+				);
+			});
+		});
+
+		this._initSetting("showFileItemDivider").addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.showFileItemDivider);
+			toggle.onChange(async (val) => {
+				this.plugin.settings.showFileItemDivider = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent(
+					"showFileItemDivider",
+					val
+				);
+			});
+		});
 
 		this.createHeader2(headersCopy.folderAndFileBehavior);
-		new Setting(containerEl)
-			.setName(settingsCopy.hideRootFolder.name)
-			.setDesc(settingsCopy.hideRootFolder.desc)
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.hideRootFolder);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.hideRootFolder = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"hideRootFolder",
-						val
-					);
-				});
+		this._initSetting("hideRootFolder").addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.hideRootFolder);
+			toggle.onChange(async (val) => {
+				this.plugin.settings.hideRootFolder = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent("hideRootFolder", val);
 			});
+		});
 
-		new Setting(containerEl)
-			.setName(settingsCopy.expandFolderByClickingOn.name)
-			.setDesc(settingsCopy.expandFolderByClickingOn.desc)
-			.addDropdown((dropdown) => {
+		this._initSetting("expandFolderByClickingOn").addDropdown(
+			(dropdown) => {
 				const { options } = settingsCopy.expandFolderByClickingOn;
 				dropdown.addOption("icon", options?.icon ?? "");
 				dropdown.addOption("folder", options?.folder ?? "");
@@ -258,44 +216,35 @@ export class SettingTab extends PluginSettingTab {
 						);
 					}
 				);
-			});
+			}
+		);
 
-		new Setting(containerEl)
-			.setName(settingsCopy.includeSubfolderFilesCount.name)
-			.setDesc(settingsCopy.includeSubfolderFilesCount.desc)
-			.addToggle((toggle) => {
-				toggle.setValue(
-					this.plugin.settings.includeSubfolderFilesCount
+		this._initSetting("includeSubfolderFilesCount").addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.includeSubfolderFilesCount);
+			toggle.onChange(async (val) => {
+				this.plugin.settings.includeSubfolderFilesCount = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent(
+					"includeSubfolderFilesCount",
+					val
 				);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.includeSubfolderFilesCount = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"includeSubfolderFilesCount",
-						val
-					);
-				});
 			});
+		});
 
-		new Setting(containerEl)
-			.setName(settingsCopy.showFilesFromSubfolders.name)
-			.setDesc(settingsCopy.showFilesFromSubfolders.desc)
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.showFilesFromSubfolders);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.showFilesFromSubfolders = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"showFilesFromSubfolders",
-						val
-					);
-				});
+		this._initSetting("showFilesFromSubfolders").addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.showFilesFromSubfolders);
+			toggle.onChange(async (val) => {
+				this.plugin.settings.showFilesFromSubfolders = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent(
+					"showFilesFromSubfolders",
+					val
+				);
 			});
+		});
 
-		new Setting(containerEl)
-			.setName(settingsCopy.openDestinationFolderAfterMove.name)
-			.setDesc(settingsCopy.openDestinationFolderAfterMove.desc)
-			.addToggle((toggle) => {
+		this._initSetting("openDestinationFolderAfterMove").addToggle(
+			(toggle) => {
 				toggle.setValue(
 					this.plugin.settings.openDestinationFolderAfterMove
 				);
@@ -307,67 +256,57 @@ export class SettingTab extends PluginSettingTab {
 						val
 					);
 				});
-			});
+			}
+		);
 
 		this.createHeader2(headersCopy.folderNoteSettings);
-		new Setting(containerEl)
-			.setName(settingsCopy.autoOpenFolderNote.name)
-			.setDesc(settingsCopy.autoOpenFolderNote.desc)
-			.addToggle((toggle) => {
-				toggle.setValue(this.plugin.settings.autoOpenFolderNote);
-				toggle.onChange(async (val) => {
-					this.plugin.settings.autoOpenFolderNote = val;
-					await this.plugin.saveSettings();
-					this.plugin.triggerSettingsChangeEvent(
-						"autoOpenFolderNote",
-						val
-					);
-				});
-			});
-
-		new Setting(containerEl)
-			.setName(settingsCopy.folderNoteLocation.name)
-			.setDesc(settingsCopy.folderNoteLocation.desc)
-			.addDropdown((dropdown) => {
-				const { options } = settingsCopy.folderNoteLocation;
-				dropdown.addOption(IndexFile, options?.index ?? "");
-				dropdown.addOption(UnderscoreFile, options?.underscore ?? "");
-				dropdown.addOption(FolderNameFile, options?.folderName ?? "");
-				dropdown.addOption(
-					CustomLocationFile,
-					options?.customLocation ?? ""
+		this._initSetting("autoOpenFolderNote").addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.autoOpenFolderNote);
+			toggle.onChange(async (val) => {
+				this.plugin.settings.autoOpenFolderNote = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent(
+					"autoOpenFolderNote",
+					val
 				);
-				dropdown.setValue(this.plugin.settings.folderNoteLocation);
-				dropdown.onChange(async (val: FolderNoteLocation) => {
-					this.plugin.settings.folderNoteLocation = val;
+			});
+		});
+
+		this._initSetting("folderNoteLocation").addDropdown((dropdown) => {
+			const { options } = settingsCopy.folderNoteLocation;
+			dropdown.addOption(IndexFile, options?.index ?? "");
+			dropdown.addOption(UnderscoreFile, options?.underscore ?? "");
+			dropdown.addOption(FolderNameFile, options?.folderName ?? "");
+			dropdown.addOption(
+				CustomLocationFile,
+				options?.customLocation ?? ""
+			);
+			dropdown.setValue(this.plugin.settings.folderNoteLocation);
+			dropdown.onChange(async (val: FolderNoteLocation) => {
+				this.plugin.settings.folderNoteLocation = val;
+				await this.plugin.saveSettings();
+				this.plugin.triggerSettingsChangeEvent(
+					"folderNoteLocation",
+					val
+				);
+			});
+		});
+
+		this._initSetting("customFolderNotePath").addText((text) => {
+			text.setPlaceholder("{folder}/index.md")
+				.setValue(this.plugin.settings.customFolderNotePath)
+				.onChange(async (val: string) => {
+					this.plugin.settings.customFolderNotePath = val;
 					await this.plugin.saveSettings();
 					this.plugin.triggerSettingsChangeEvent(
-						"folderNoteLocation",
+						"customFolderNotePath",
 						val
 					);
 				});
-			});
+		});
 
-		new Setting(containerEl)
-			.setName(settingsCopy.customFolderNotePath.name)
-			.setDesc(settingsCopy.customFolderNotePath.desc)
-			.addText((text) => {
-				text.setPlaceholder("{folder}/index.md")
-					.setValue(this.plugin.settings.customFolderNotePath)
-					.onChange(async (val: string) => {
-						this.plugin.settings.customFolderNotePath = val;
-						await this.plugin.saveSettings();
-						this.plugin.triggerSettingsChangeEvent(
-							"customFolderNotePath",
-							val
-						);
-					});
-			});
-
-		new Setting(containerEl)
-			.setName(settingsCopy.folderNoteMissingBehavior.name)
-			.setDesc(settingsCopy.folderNoteMissingBehavior.desc)
-			.addDropdown((dropdown) => {
+		this._initSetting("folderNoteMissingBehavior").addDropdown(
+			(dropdown) => {
 				const { options } = settingsCopy.folderNoteMissingBehavior;
 				const { IGNORE, WARN, CREATE } = FOLDER_NOTE_MISSING_BEHAVIOR;
 				dropdown.addOption(IGNORE, options?.ignore ?? "");
@@ -384,6 +323,7 @@ export class SettingTab extends PluginSettingTab {
 						val
 					);
 				});
-			});
+			}
+		);
 	}
 }
