@@ -1,3 +1,5 @@
+import { FolderFileSplitterPluginSettings } from "src/settings";
+
 export interface SettingsHeaderLocaleResource {
 	[key: string]: string;
 }
@@ -15,15 +17,18 @@ export const ZH_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 	folderNoteSettings: "📄 Folder note 设置",
 };
 
-export interface SettingsLocaleResource {
-	[key: string]: {
+export type SettingsKey = keyof FolderFileSplitterPluginSettings;
+
+export type SettingsLocaleResource = {
+	[key in SettingsKey]: {
 		name: string;
 		desc: string;
 		options?: Record<string, string>;
 	};
-}
+};
+
 export const EN_SETTINGS: SettingsLocaleResource = {
-	openOnStartup: {
+	openPluginViewOnStartup: {
 		name: "Open plugin view on startup",
 		desc: "When enabled, the plugin view will be opened automatically when Obsidian starts.",
 	},
@@ -43,7 +48,7 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Show file creation date",
 		desc: "When enabled, the file's creation date will be displayed in its detail section (requires 'Show file detail' to be enabled).",
 	},
-	showHierarchyLines: {
+	showFolderHierarchyLines: {
 		name: "Show folder hierarchy lines",
 		desc: "When enabled, a line will be displayed next to folders in the same hierarchy level under an expanded parent folder, visually indicating their nesting relationship.",
 	},
@@ -71,7 +76,7 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Auto-hide action bar",
 		desc: "When enabled, the top action bar will be hidden by default and only appear when hovering over it.",
 	},
-	expandFolderOnClick: {
+	expandFolderByClickingOn: {
 		name: "Expand folder on click",
 		desc: "Choose whether to expand a folder by clicking on the toggle icon (▶/▼) or the folder name.",
 		options: {
@@ -87,7 +92,7 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Show files from subfolders",
 		desc: "When enabled, the file list will include files from subfolders of the selected folder.",
 	},
-	openDestinationFolder: {
+	openDestinationFolderAfterMove: {
 		name: "Open destination folder after move",
 		desc: "When enabled, the destination folder will automatically open after moving a file or folder.",
 	},
@@ -121,11 +126,11 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 			warn: "Show warning",
 			create: "Create new",
 		},
-	}
+	},
 };
 
 export const ZH_SETTINGS: SettingsLocaleResource = {
-	openOnStartup: {
+	openPluginViewOnStartup: {
 		name: "启动时自动打开插件视图",
 		desc: "启用后，Obsidian 启动时会自动打开插件视图。",
 	},
@@ -145,7 +150,7 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 		name: "显示创建日期",
 		desc: "启用后，文件详情中将显示文件的创建时间（需开启“显示文件详情”）。",
 	},
-	showHierarchyLines: {
+	showFolderHierarchyLines: {
 		name: "显示文件夹层级线",
 		desc: "启用后，展开的父文件夹下会显示同级文件夹的层级线，直观展示嵌套关系。",
 	},
@@ -173,7 +178,7 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 		name: "自动隐藏操作栏",
 		desc: "启用后，顶部操作栏默认隐藏，鼠标悬停时才会显示。",
 	},
-	expandFolderOnClick: {
+	expandFolderByClickingOn: {
 		name: "点击展开文件夹",
 		desc: "选择通过点击切换图标（▶/▼）或文件夹名称来展开文件夹。",
 		options: {
@@ -189,7 +194,7 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 		name: "显示子文件夹中的文件",
 		desc: "启用后，文件列表会包含所选文件夹的子文件夹中的文件。",
 	},
-	openDestinationFolder: {
+	openDestinationFolderAfterMove: {
 		name: "移动后打开目标文件夹",
 		desc: "启用后，在移动文件或文件夹后，目标文件夹将自动展开并显示。",
 	},
@@ -223,5 +228,5 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 			warn: "显示提醒",
 			create: "自动创建",
 		},
-	}
+	},
 };

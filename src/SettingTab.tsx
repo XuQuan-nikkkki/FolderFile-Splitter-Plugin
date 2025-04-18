@@ -60,8 +60,8 @@ export class SettingTab extends PluginSettingTab {
 
 		this.createHeader2(headersCopy.startup);
 		new Setting(containerEl)
-			.setName(settingsCopy.openOnStartup.name)
-			.setDesc(settingsCopy.openOnStartup.desc)
+			.setName(settingsCopy.openPluginViewOnStartup.name)
+			.setDesc(settingsCopy.openPluginViewOnStartup.desc)
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.settings.openPluginViewOnStartup);
 				toggle.onChange(async (val) => {
@@ -97,8 +97,8 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName(settingsCopy.showHierarchyLines.name)
-			.setDesc(settingsCopy.showHierarchyLines.desc)
+			.setName(settingsCopy.showFolderHierarchyLines.name)
+			.setDesc(settingsCopy.showFolderHierarchyLines.desc)
 			.addToggle((toggle) => {
 				toggle.setValue(this.plugin.settings.showFolderHierarchyLines);
 				toggle.onChange(async (val) => {
@@ -239,10 +239,10 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName(settingsCopy.expandFolderOnClick.name)
-			.setDesc(settingsCopy.expandFolderOnClick.desc)
+			.setName(settingsCopy.expandFolderByClickingOn.name)
+			.setDesc(settingsCopy.expandFolderByClickingOn.desc)
 			.addDropdown((dropdown) => {
-				const { options } = settingsCopy.expandFolderOnClick;
+				const { options } = settingsCopy.expandFolderByClickingOn;
 				dropdown.addOption("icon", options?.icon ?? "");
 				dropdown.addOption("folder", options?.folder ?? "");
 				dropdown.setValue(
@@ -293,8 +293,8 @@ export class SettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName(settingsCopy.openDestinationFolder.name)
-			.setDesc(settingsCopy.openDestinationFolder.desc)
+			.setName(settingsCopy.openDestinationFolderAfterMove.name)
+			.setDesc(settingsCopy.openDestinationFolderAfterMove.desc)
 			.addToggle((toggle) => {
 				toggle.setValue(
 					this.plugin.settings.openDestinationFolderAfterMove
