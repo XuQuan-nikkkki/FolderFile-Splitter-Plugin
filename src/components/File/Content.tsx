@@ -1,6 +1,7 @@
 import { Menu, TFile } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 import { useEffect, useRef, useState } from "react";
+import classNames from "classnames";
 
 import { ExplorerStore } from "src/store";
 import { FolderListModal } from "../FolderListModal";
@@ -13,7 +14,6 @@ import FileDetail from "./Detail";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { FILE_OPERATION_COPY } from "src/locales";
 import { useExplorer } from "src/hooks/useExplorer";
-import classNames from "classnames";
 
 export type FileProps = {
 	file: TFile;
@@ -117,6 +117,7 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 		const menu = new Menu();
 		menu.addItem((item) => {
 			const isPinned = isFilePinned(file);
+			item.setIcon(isPinned ? "pin-off" : "pin");
 			const title = isPinned
 				? FILE_OPERATION_COPY.unpinFile[language]
 				: FILE_OPERATION_COPY.pinFile[language];
@@ -131,6 +132,7 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
+			item.setIcon("file-plus");
 			item.setTitle(FILE_OPERATION_COPY.openInNewTab[language]);
 			item.onClick(() => {
 				openFileInNewTab(file);
@@ -138,6 +140,7 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
+			item.setIcon("square-pen");
 			item.setTitle(FILE_OPERATION_COPY.newNote[language]);
 			item.onClick(async () => {
 				const folder = file.parent || plugin.app.vault.getRoot();
@@ -146,11 +149,13 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 		});
 		menu.addItem((item) => {
 			item.setTitle(FILE_OPERATION_COPY.duplicate[language]);
+			item.setIcon("copy");
 			item.onClick(async () => {
 				await duplicateFile(file);
 			});
 		});
 		menu.addItem((item) => {
+			item.setIcon("folder-tree");
 			item.setTitle(FILE_OPERATION_COPY.moveFile[language]);
 			item.onClick(() => {
 				const modal = new FolderListModal(
@@ -163,13 +168,21 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
+			item.setIcon("pencil-line");
 			item.setTitle(FILE_OPERATION_COPY.rename[language]);
 			item.onClick(() => {
 				onStartEditingName();
 			});
 		});
 		menu.addItem((item) => {
-			item.setTitle(FILE_OPERATION_COPY.delete[language]);
+			const fragment = document.createDocumentFragment();
+			const title = document.createElement("span");
+			title.style.color = "#D04255";
+			title.textContent = FILE_OPERATION_COPY.delete[language];
+			fragment.append(title);
+			item.setTitle(fragment);
+
+			item.setIcon("trash-2");
 			item.onClick(async () => {
 				deleteFile();
 				await trashFile(file);

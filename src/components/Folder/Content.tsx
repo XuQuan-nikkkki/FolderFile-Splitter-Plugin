@@ -130,6 +130,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 		const menu = new Menu();
 		menu.addItem((item) => {
 			const isPinned = isFolderPinned(folder);
+			item.setIcon(isPinned ? "pin-off" : "pin");
 			const title = isPinned
 				? FOLDER_OPERATION_COPY.unpinFolder[language]
 				: FOLDER_OPERATION_COPY.pinFolder[language];
@@ -144,6 +145,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
+			item.setIcon("square-pen");
 			item.setTitle(FOLDER_OPERATION_COPY.createFile[language]);
 			item.onClick(async () => {
 				if (folder.path !== focusedFolder?.path) {
@@ -153,6 +155,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 			});
 		});
 		menu.addItem((item) => {
+			item.setIcon("folder-open");
 			item.setTitle(FOLDER_OPERATION_COPY.createFolder[language]);
 			item.onClick(async () => {
 				const newFolder = await createNewFolder(folder);
@@ -166,6 +169,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
+			item.setIcon("folder-tree");
 			item.setTitle(FOLDER_OPERATION_COPY.moveFolder[language]);
 			item.setDisabled(folder.isRoot());
 			item.onClick(() => {
@@ -179,6 +183,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 		});
 		menu.addSeparator();
 		menu.addItem((item) => {
+			item.setIcon("pencil-line");
 			item.setTitle(FOLDER_OPERATION_COPY.renameFolder[language]);
 			item.setDisabled(folder.isRoot());
 			item.onClick(() => {
@@ -186,7 +191,14 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 			});
 		});
 		menu.addItem((item) => {
-			item.setTitle(FOLDER_OPERATION_COPY.deleteFolder[language]);
+			const fragment = document.createDocumentFragment();
+			const title = document.createElement("span");
+			title.style.color = "#D04255";
+			title.textContent = FOLDER_OPERATION_COPY.deleteFolder[language];
+			fragment.append(title);
+			item.setTitle(fragment);
+
+			item.setIcon("trash-2");
 			item.setDisabled(folder.isRoot());
 			item.onClick(async () => {
 				await trashFolder(folder);
