@@ -24,12 +24,6 @@ export class SettingTab extends PluginSettingTab {
 		header.style.marginBottom = "8px";
 	}
 
-	createHeader3(textContent: string) {
-		const header = this.containerEl.createEl("h3");
-		header.textContent = textContent;
-		header.style.marginBottom = "4px";
-	}
-
 	get headersCopy() {
 		return this.plugin.language === "zh"
 			? ZH_SETTINGS_HEADER
@@ -92,57 +86,84 @@ export class SettingTab extends PluginSettingTab {
 		});
 	}
 
-	display(): void {
-		const { containerEl, headersCopy, settingsCopy } = this;
-
-		containerEl.empty();
-
-		this.createHeader2(headersCopy.startup);
-		this._initToggleSetting("openPluginViewOnStartup");
-
-		this.createHeader2(headersCopy.layout);
-		this._initDropdownSetting("layoutMode");
-
-		this._initToggleSetting("showFolderHierarchyLines");
-
-		this._initToggleSetting("highlightActionBar");
-
-		this._initToggleSetting("autoHideActionBar");
-
-		this._initToggleSetting("showFolderIcon");
-
-		this._initDropdownSetting("fileItemSpacing");
-
-		this._initToggleSetting("showFileDetail");
-
-		this._initToggleSetting("showFileCreationDate");
-
-		this._initToggleSetting("showFileItemDivider");
-
-		this.createHeader2(headersCopy.folderAndFileBehavior);
-		this._initToggleSetting("hideRootFolder");
-
-		this._initDropdownSetting("expandFolderByClickingOn");
-
-		this._initToggleSetting("includeSubfolderFilesCount");
-
-		this._initToggleSetting("showFilesFromSubfolders");
-
-		this._initToggleSetting("openDestinationFolderAfterMove");
-
-		this.createHeader2(headersCopy.folderNoteSettings);
-		this._initToggleSetting("autoOpenFolderNote");
-
-		this._initDropdownSetting("folderNoteLocation");
-
-		this._initSetting("customFolderNotePath").addText((text) => {
-			text.setPlaceholder("{folder}/index.md")
-				.setValue(this.plugin.settings.customFolderNotePath)
-				.onChange(async (val: string) => {
-					this._updateSetting("customFolderNotePath", val);
-				});
+	_initTextSetting<K extends SettingsKey>(
+		settingKey: K,
+		placeholder?: string
+	) {
+		this._initSetting(settingKey).addText((text) => {
+			if (placeholder) {
+				text.setPlaceholder(placeholder);
+			}
+			text.setValue(this.plugin.settings[settingKey] as string);
+			text.onChange(async (val) => {
+				this._updateSetting(
+					settingKey,
+					val as FolderFileSplitterPluginSettings[K]
+				);
+			});
 		});
+	}
 
+	initStartupSettings() {
+		this.createHeader2(this.headersCopy.startup);
+		this._initToggleSetting("openPluginViewOnStartup");
+	}
+
+	initLayoutSettings() {
+		this.createHeader2(this.headersCopy.layout);
+		this._initDropdownSetting("layoutMode");
+	}
+
+	initFolderAndFileBehaviorSettings() {
+		this.createHeader2(this.headersCopy.folderAndFileBehavior);
+		this._initToggleSetting("hideRootFolder");
+		this._initToggleSetting("showFolderIcon");
+		this._initToggleSetting("showFolderHierarchyLines");
+		this._initDropdownSetting("expandFolderByClickingOn");
+		this._initToggleSetting("openDestinationFolderAfterMove");
+	}
+
+	initFileDetailSettings() {
+		this.createHeader2(this.headersCopy.fileDetail);
+		this._initToggleSetting("showFileDetail");
+		this._initToggleSetting("showFileCreationDate");
+	}
+
+	initFileDisplaySettings() {
+		this.createHeader2(this.headersCopy.fileDisplay);
+		this._initDropdownSetting("fileItemSpacing");
+		this._initToggleSetting("showFileItemDivider");
+	}
+
+	initFileDisplayScopeSettings() {
+		this.createHeader2(this.headersCopy.fileDisplayScope);
+		this._initToggleSetting("showFilesFromSubfolders");
+		this._initToggleSetting("includeSubfolderFilesCount");
+	}
+
+	initActionBarSettings() {
+		this.createHeader2(this.headersCopy.actionBar);
+		this._initToggleSetting("highlightActionBar");
+		this._initToggleSetting("autoHideActionBar");
+	}
+
+	initFolderNoteSettings() {
+		this.createHeader2(this.headersCopy.folderNoteSettings);
+		this._initToggleSetting("autoOpenFolderNote");
+		this._initDropdownSetting("folderNoteLocation");
+		this._initTextSetting("customFolderNotePath", "{folder}/index.md");
 		this._initDropdownSetting("folderNoteMissingBehavior");
+	}
+
+	display(): void {
+		this.containerEl.empty();
+		this.initStartupSettings();
+		this.initLayoutSettings();
+		this.initActionBarSettings();
+		this.initFolderAndFileBehaviorSettings();
+		this.initFileDetailSettings();
+		this.initFileDisplaySettings();
+		this.initFileDisplayScopeSettings();
+		this.initFolderNoteSettings();
 	}
 }
