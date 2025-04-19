@@ -1,10 +1,14 @@
 import { TFile } from "obsidian";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
+import dayjs from "dayjs";
 
 import { ExplorerStore } from "src/store";
 import { useExplorer } from "src/hooks/useExplorer";
-import { useShowFileCreationDate } from "src/hooks/useSettingsHandler";
+import {
+	useFileCreationDateFormat,
+	useShowFileCreationDate,
+} from "src/hooks/useSettingsHandler";
 
 type Props = {
 	file: TFile;
@@ -21,6 +25,9 @@ const FileDetail = ({ file }: Props) => {
 	const { settings } = plugin;
 	const { showFileCreationDate } = useShowFileCreationDate(
 		settings.showFileCreationDate
+	);
+	const { fileCreationDateFormat } = useFileCreationDateFormat(
+		settings.fileCreationDateFormat
 	);
 
 	const [contentPreview, setContentPreview] = useState<string>("");
@@ -42,7 +49,7 @@ const FileDetail = ({ file }: Props) => {
 		if (!showFileCreationDate) return null;
 		return (
 			<div className="ffs__file-created-time">
-				{new Date(file.stat.ctime).toLocaleString().split(" ")[0]}
+				{dayjs(file.stat.ctime).format(fileCreationDateFormat)}
 			</div>
 		);
 	};

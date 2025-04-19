@@ -1,6 +1,9 @@
 import { App, DropdownComponent, PluginSettingTab, Setting } from "obsidian";
 import FolderFileSplitterPlugin from "./main";
-import { FolderFileSplitterPluginSettings } from "./settings";
+import {
+	DEFAULT_FILE_CREATION_DATE_FORMAT,
+	FolderFileSplitterPluginSettings,
+} from "./settings";
 import {
 	EN_SETTINGS,
 	EN_SETTINGS_HEADER,
@@ -9,6 +12,7 @@ import {
 	ZH_SETTINGS,
 	ZH_SETTINGS_HEADER,
 } from "./locales/settings";
+import dayjs from "dayjs";
 
 export class SettingTab extends PluginSettingTab {
 	plugin: FolderFileSplitterPlugin;
@@ -123,10 +127,56 @@ export class SettingTab extends PluginSettingTab {
 		this._initToggleSetting("openDestinationFolderAfterMove");
 	}
 
+	generateFileCreationDateFormatDesc(setting: Setting, format: string) {
+		const { settingsCopy, plugin } = this;
+		const { language } = plugin;
+		const fragment = document.createDocumentFragment();
+		fragment.append(settingsCopy.fileCreationDateFormat.desc);
+
+		const anchor = document.createElement("a");
+		const link =
+			language === "zh"
+				? "https://day.js.org/docs/zh-CN/display/format"
+				: "https://day.js.org/docs/en/display/format";
+		anchor.href = link;
+		anchor.textContent = link;
+		anchor.target = "_blank";
+		anchor.rel = "noopener";
+		fragment.append(anchor);
+
+		const previewTips =
+			language === "zh" ? "当前格式预览：" : "Current preview: ";
+		const preview = dayjs(1730650047220).format(format);
+		fragment.append(" (" + previewTips + preview + ")");
+		setting.setDesc(fragment);
+	}
+
+	_initFileCreationDateFormatSetting() {
+		const { containerEl, settingsCopy, plugin } = this;
+		const { settings } = plugin;
+		const setting = new Setting(containerEl).setName(
+			settingsCopy.fileCreationDateFormat.name
+		);
+
+		this.generateFileCreationDateFormatDesc(
+			setting,
+			settings.fileCreationDateFormat
+		);
+
+		setting.addText((text) => {
+			text.setValue(this.plugin.settings.fileCreationDateFormat);
+			text.onChange(async (val) => {
+				this._updateSetting("fileCreationDateFormat", val);
+				this.generateFileCreationDateFormatDesc(setting, val);
+			});
+		});
+	}
+
 	initFileDetailSettings() {
 		this.createHeader2(this.headersCopy.fileDetail);
 		this._initToggleSetting("showFileDetail");
 		this._initToggleSetting("showFileCreationDate");
+		this._initFileCreationDateFormatSetting();
 	}
 
 	initFileDisplaySettings() {

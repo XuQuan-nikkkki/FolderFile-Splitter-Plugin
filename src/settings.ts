@@ -37,12 +37,15 @@ export type FolderNoteMissingBehavior = ValueOf<
 	typeof FOLDER_NOTE_MISSING_BEHAVIOR
 >;
 
+export const DEFAULT_FILE_CREATION_DATE_FORMAT = "YYYY/MM/DD";
+
 export interface FolderFileSplitterPluginSettings {
 	expandFolderByClickingOn: ExpandFolderByClickingOnElement;
 	includeSubfolderFilesCount: boolean;
 	showFolderHierarchyLines: boolean;
 	showFolderIcon: boolean;
 	showFileDetail: boolean;
+	fileCreationDateFormat: string;
 	showFileCreationDate: boolean;
 	showFileItemDivider: boolean;
 	fileItemSpacing: FileItemSpacing;
@@ -66,6 +69,7 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	showFolderIcon: true,
 	showFileDetail: true,
 	showFileCreationDate: true,
+	fileCreationDateFormat: DEFAULT_FILE_CREATION_DATE_FORMAT,
 	fileItemSpacing: FILE_ITEM_SPACING.COMFORTABLE,
 	showFileItemDivider: true,
 	highlightActionBar: false,

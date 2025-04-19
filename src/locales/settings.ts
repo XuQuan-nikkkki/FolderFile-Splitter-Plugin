@@ -1,4 +1,3 @@
-import FileDetail from "src/components/File/Detail";
 import {
 	EXPAND_FOLDER_BY_CLICKING_ELEMENT,
 	FILE_ITEM_SPACING,
@@ -73,6 +72,10 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 	showFileCreationDate: {
 		name: "Show file creation date",
 		desc: "When enabled, the file's creation date will be displayed in its detail section (requires 'Show file detail' to be enabled).",
+	},
+	fileCreationDateFormat: {
+		name: "File creation date format",
+		desc: "Customize the format for displaying file creation dates. Uses dayjs format patterns. The default format is YYYY/MM/DD. See the format guide: ",
 	},
 	showFolderHierarchyLines: {
 		name: "Show folder hierarchy lines",
@@ -211,6 +214,10 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	showFileCreationDate: {
 		name: "显示创建日期",
 		desc: "启用后，文件详情中将显示文件的创建时间（需开启“显示文件详情”）。",
+	},
+	fileCreationDateFormat: {
+		name: "文件创建日期格式",
+		desc: "自定义文件创建日期的显示格式。使用 dayjs 库的格式化语法。默认格式为 YYYY/MM/DD。格式参考文档：",
 	},
 	showFolderHierarchyLines: {
 		name: "显示文件夹层级线",

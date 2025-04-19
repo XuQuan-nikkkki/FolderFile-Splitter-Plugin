@@ -12,6 +12,7 @@ import { useShowFileItemDivider } from "./useShowFileItemDivider";
 import { useHighlightActionBar } from "./useHighlightActionBar";
 import { useAutoHideActionBar } from "./useAutoHideActionBar";
 import { useShowFileCreationDate } from "./useShowFileCreationDate";
+import { useFileCreationDateFormat } from "./useFileCreationDateFormat";
 
 export {
 	useShowFolderIcon,
@@ -28,4 +29,5 @@ export {
 	useHighlightActionBar,
 	useAutoHideActionBar,
 	useShowFileCreationDate,
+	useFileCreationDateFormat,
 };
