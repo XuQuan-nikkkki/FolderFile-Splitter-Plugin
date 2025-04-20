@@ -10,6 +10,7 @@ import {
 	useShowFileCreationDate,
 	useStripMarkdownSyntaxInPreview,
 } from "src/hooks/useSettingsHandler";
+import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 
 type Props = {
 	file: TFile;
@@ -59,6 +60,22 @@ const FileDetail = ({ file }: Props) => {
 	useEffect(() => {
 		maybeLoadContent();
 	}, []);
+
+	const onUpdatePreviewChange = (e: VaultChangeEvent) => {
+		const { file: f, changeType } = e.detail;
+		if (f.path !== file.path || changeType !== "modify") return;
+		maybeLoadContent();
+	};
+
+	useEffect(() => {
+		window.addEventListener(VaultChangeEventName, onUpdatePreviewChange);
+		return () => {
+			window.removeEventListener(
+				VaultChangeEventName,
+				onUpdatePreviewChange
+			);
+		};
+	}, [onUpdatePreviewChange]);
 
 	const maybeRenderCreatedDate = () => {
 		if (!showFileCreationDate) return null;
