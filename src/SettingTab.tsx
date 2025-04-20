@@ -1,9 +1,6 @@
 import { App, DropdownComponent, PluginSettingTab, Setting } from "obsidian";
 import FolderFileSplitterPlugin from "./main";
-import {
-	DEFAULT_FILE_CREATION_DATE_FORMAT,
-	FolderFileSplitterPluginSettings,
-} from "./settings";
+import { FolderFileSplitterPluginSettings } from "./settings";
 import {
 	EN_SETTINGS,
 	EN_SETTINGS_HEADER,
@@ -36,7 +33,7 @@ export class SettingTab extends PluginSettingTab {
 	createHeader2(textContent: string) {
 		const index = Object.values(this.headersCopy).indexOf(textContent);
 		if (index < 0) {
-			console.error("Header does not exist")
+			console.error("Header does not exist");
 		}
 		const { emoji, text } = this.splitEmojiFromText(textContent);
 
@@ -194,6 +191,7 @@ export class SettingTab extends PluginSettingTab {
 		this._initToggleSetting("showFileDetail");
 		this._initToggleSetting("showFileCreationDate");
 		this._initFileCreationDateFormatSetting();
+		this._initToggleSetting("stripMarkdownSyntaxInPreview");
 	}
 
 	initFileDisplaySettings() {

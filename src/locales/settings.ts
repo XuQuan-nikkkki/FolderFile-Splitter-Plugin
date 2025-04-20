@@ -77,6 +77,10 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "File creation date format",
 		desc: "Customize the format for displaying file creation dates. Uses dayjs format patterns. The default format is YYYY/MM/DD. See the format guide: ",
 	},
+	stripMarkdownSyntaxInPreview: {
+		name: "Strip Markdown syntax in preview",
+		desc: "When enabled, Markdown formatting symbols will be removed from the file content preview (e.g., `**bold**` → `bold`, `### heading` → `heading`).",
+	},
 	showFolderHierarchyLines: {
 		name: "Show folder hierarchy lines",
 		desc: "When enabled, a line will be displayed next to folders in the same hierarchy level under an expanded parent folder, visually indicating their nesting relationship.",
@@ -218,6 +222,10 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	fileCreationDateFormat: {
 		name: "文件创建日期格式",
 		desc: "自定义文件创建日期的显示格式。使用 dayjs 库的格式化语法。默认格式为 YYYY/MM/DD。格式参考文档：",
+	},
+	stripMarkdownSyntaxInPreview: {
+		name: "预览中隐藏 Markdown 符号",
+		desc: "启用后，文件内容预览中的 Markdown 格式符号将被移除（例如：`**加粗**` → `加粗`， `### 标题` → `标题`）。",
 	},
 	showFolderHierarchyLines: {
 		name: "显示文件夹层级线",

@@ -1,4 +1,4 @@
-import { TFile } from "obsidian";
+import { MarkdownRenderer, TFile } from "obsidian";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import dayjs from "dayjs";
@@ -8,6 +8,7 @@ import { useExplorer } from "src/hooks/useExplorer";
 import {
 	useFileCreationDateFormat,
 	useShowFileCreationDate,
+	useStripMarkdownSyntaxInPreview,
 } from "src/hooks/useSettingsHandler";
 
 type Props = {
@@ -29,15 +30,29 @@ const FileDetail = ({ file }: Props) => {
 	const { fileCreationDateFormat } = useFileCreationDateFormat(
 		settings.fileCreationDateFormat
 	);
+	const { stripMarkdownSyntaxInPreview } = useStripMarkdownSyntaxInPreview(
+		settings.stripMarkdownSyntaxInPreview
+	);
 
 	const [contentPreview, setContentPreview] = useState<string>("");
 
 	const maybeLoadContent = async () => {
 		if (file.extension !== "md") return;
 		const content = await readFile(file);
-		const cleanContent = content
-			.replace(/^---\n[\s\S]*?\n---\n/, "")
-			.trim();
+		let cleanContent = content.replace(/^---\n[\s\S]*?\n---\n/, "").trim();
+		if (stripMarkdownSyntaxInPreview) {
+			const container = document.createElement("div");
+			await MarkdownRenderer.render(
+				plugin.app,
+				cleanContent,
+				container,
+				"",
+				plugin
+			);
+
+			const plainText = container.textContent;
+			cleanContent = plainText ?? "";
+		}
 		setContentPreview(cleanContent);
 	};
 
