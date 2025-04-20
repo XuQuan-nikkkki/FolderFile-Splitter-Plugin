@@ -22,9 +22,26 @@ export class SettingTab extends PluginSettingTab {
 		this.plugin = plugin;
 	}
 
+	splitEmojiFromText(text: string): { emoji: string; text: string } {
+		const emojiRegex =
+			/^(\p{Emoji_Presentation}|\p{Extended_Pictographic})+/u;
+		const match = text.match(emojiRegex);
+
+		return {
+			emoji: match ? match[0] : "",
+			text: match ? text.slice(match[0].length).trim() : text,
+		};
+	}
+
 	createHeader2(textContent: string) {
+		const index = Object.values(this.headersCopy).indexOf(textContent);
+		if (index < 0) {
+			console.error("Header does not exist")
+		}
+		const { emoji, text } = this.splitEmojiFromText(textContent);
+
 		const header = this.containerEl.createEl("h2");
-		header.textContent = textContent;
+		header.textContent = `${emoji} ${index + 1}. ${text}`;
 		header.style.marginBottom = "8px";
 	}
 

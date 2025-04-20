@@ -12,24 +12,24 @@ export interface SettingsHeaderLocaleResource {
 }
 
 export const EN_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
-	startup: "🔷 1. Startup",
-	layout: "🧭 2. Layout",
-	actionBar: "🎛️ 3. Action Bar",
-	folderAndFileBehavior: "📁 4. Folder and file behavior",
-	fileDetail: "📄 5. File Detail",
-	fileDisplay: "🧷 6. File Display",
-	fileDisplayScope: "🧮 7. File Display Scope",
-	folderNoteSettings: "🗂️ 8. Folder note settings",
+	startup: "🔷 Startup",
+	layout: "🧭 Layout",
+	actionBar: "🎛️ Action Bar",
+	folderAndFileBehavior: "📁 Folder and file behavior",
+	fileDetail: "📄 File Detail",
+	fileDisplay: "🧷 File Display",
+	fileDisplayScope: "🧮 File Display Scope",
+	folderNoteSettings: "🗂️ Folder note settings",
 };
 export const ZH_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
-	startup: "🔷 1. 启动与布局",
-	layout: "🧭 2. 布局样式",
-	actionBar: "🎛️ 3. 操作栏设置",
-	folderAndFileBehavior: "📁 4. 文件夹和文件行为",
-	fileDetail: "📄 5. 文件详情",
-	fileDisplay: "🧷 6. 文件显示",
-	fileDisplayScope: "🧮 7. 文件显示范围",
-	folderNoteSettings: "🗂️ 8. Folder note 设置",
+	startup: "🔷 启动与布局",
+	layout: "🧭 布局样式",
+	actionBar: "🎛️ 操作栏设置",
+	folderAndFileBehavior: "📁 文件夹和文件行为",
+	fileDetail: "📄 文件详情",
+	fileDisplay: "🧷 文件显示",
+	fileDisplayScope: "🧮 文件显示范围",
+	folderNoteSettings: "🗂️ Folder note 设置",
 };
 
 export type SettingsKey = keyof FolderFileSplitterPluginSettings;
