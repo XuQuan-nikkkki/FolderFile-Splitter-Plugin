@@ -9,13 +9,13 @@ import { useExplorer } from "./useExplorer";
 const useChangeActiveLeaf = () => {
 	const { useExplorerStore, plugin } = useExplorer();
 
-	const { focusedFile, selectFile, expandFolder, setFocusedFolder } =
+	const { focusedFile, setFocusedFile, expandFolder, setFocusedFolder } =
 		useExplorerStore(
 			useShallow((store: ExplorerStore) => ({
 				focusedFile: store.focusedFile,
-				selectFile: store.selectFile,
 				expandFolder: store.expandFolder,
 				setFocusedFolder: store.setFocusedFolder,
+				setFocusedFile: store.setFocusedFile
 			}))
 		);
 
@@ -41,7 +41,7 @@ const useChangeActiveLeaf = () => {
 				currentFolder = currentFolder.parent;
 			}
 			setFocusedFolder(currentActiveFile.parent)
-			await selectFile(currentActiveFile);
+			await setFocusedFile(currentActiveFile);
 		}
 	};
 };
