@@ -348,7 +348,6 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 						await selectFile(newFile);
 					}
 				}
-				console.log("open", folderNotePath);
 			} else if (focusedFile?.parent?.path !== folder?.path) {
 				await setFocusedFile(null);
 			}
