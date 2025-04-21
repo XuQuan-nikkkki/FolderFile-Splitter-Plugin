@@ -85,6 +85,10 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Strip Markdown syntax in preview",
 		desc: "When enabled, Markdown formatting symbols will be removed from the file content preview (e.g., `**bold**` → `bold`, `### heading` → `heading`).",
 	},
+	removeFirstHeadingInPreview: {
+		name: "Remove first heading in preview",
+		desc: "When enabled, the first heading (e.g., # Title) will be removed from the file content preview.",
+	},
 	showFolderHierarchyLines: {
 		name: "Show folder hierarchy lines",
 		desc: "When enabled, a line will be displayed next to folders in the same hierarchy level under an expanded parent folder, visually indicating their nesting relationship.",
@@ -234,6 +238,10 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	stripMarkdownSyntaxInPreview: {
 		name: "预览中隐藏 Markdown 符号",
 		desc: "启用后，文件内容预览中的 Markdown 格式符号将被移除（例如：`**加粗**` → `加粗`， `### 标题` → `标题`）。",
+	},
+	removeFirstHeadingInPreview: {
+		name: "移除预览中的首个标题行",
+		desc: "启用后，将从文件内容预览中移除首个标题（例如 # 标题）",
 	},
 	showFolderHierarchyLines: {
 		name: "显示文件夹层级线",

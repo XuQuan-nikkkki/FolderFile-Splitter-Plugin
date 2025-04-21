@@ -189,14 +189,15 @@ export class SettingTab extends PluginSettingTab {
 	initFileDetailSettings() {
 		this.createHeader2(this.headersCopy.fileDetail);
 		this._initToggleSetting("showFileDetail");
+		this._initToggleSetting("stripMarkdownSyntaxInPreview");
+		this._initToggleSetting("removeFirstHeadingInPreview");
 		this._initToggleSetting("showFileCreationDate");
 		this._initFileCreationDateFormatSetting();
-		this._initToggleSetting("stripMarkdownSyntaxInPreview");
 	}
 
 	initFileDisplaySettings() {
 		this.createHeader2(this.headersCopy.fileDisplay);
-		this._initToggleSetting("boldFileTitle")
+		this._initToggleSetting("boldFileTitle");
 		this._initDropdownSetting("fileItemSpacing");
 		this._initToggleSetting("showFileItemDivider");
 	}

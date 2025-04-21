@@ -7,6 +7,7 @@ import { ExplorerStore } from "src/store";
 import { useExplorer } from "src/hooks/useExplorer";
 import {
 	useFileCreationDateFormat,
+	useRemoveFirstHeadingInPreview,
 	useShowFileCreationDate,
 	useStripMarkdownSyntaxInPreview,
 } from "src/hooks/useSettingsHandler";
@@ -34,32 +35,57 @@ const FileDetail = ({ file }: Props) => {
 	const { stripMarkdownSyntaxInPreview } = useStripMarkdownSyntaxInPreview(
 		settings.stripMarkdownSyntaxInPreview
 	);
+	const { removeFirstHeadingInPreview } = useRemoveFirstHeadingInPreview(
+		settings.removeFirstHeadingInPreview
+	);
 
 	const [contentPreview, setContentPreview] = useState<string>("");
+
+	const removeFrontMatter = (content: string): string =>
+		content.replace(/^---\n[\s\S]*?\n---\n/, "").trim();
+
+	const removeFirstHeading = (content: string): string => {
+		const lines = content.split("\n");
+		const firstNonEmptyLineIndex = lines.findIndex(
+			(line) => line.trim() !== ""
+		);
+		if (
+			firstNonEmptyLineIndex !== -1 &&
+			/^#{1,6}\s/.test(lines[firstNonEmptyLineIndex])
+		) {
+			lines.splice(firstNonEmptyLineIndex, 1);
+		}
+		return lines.join("\n").trim();
+	};
+
+	const stripMarkdownSyntax = async (content: string): Promise<string> => {
+		const container = document.createElement("div");
+		await MarkdownRenderer.render(
+			plugin.app,
+			content,
+			container,
+			"",
+			plugin
+		);
+		return container.textContent ?? "";
+	};
 
 	const maybeLoadContent = async () => {
 		if (file.extension !== "md") return;
 		const content = await readFile(file);
-		let cleanContent = content.replace(/^---\n[\s\S]*?\n---\n/, "").trim();
+		let cleanContent = removeFrontMatter(content);
+		if (removeFirstHeadingInPreview) {
+			cleanContent = removeFirstHeading(cleanContent);
+		}
 		if (stripMarkdownSyntaxInPreview) {
-			const container = document.createElement("div");
-			await MarkdownRenderer.render(
-				plugin.app,
-				cleanContent,
-				container,
-				"",
-				plugin
-			);
-
-			const plainText = container.textContent;
-			cleanContent = plainText ?? "";
+			cleanContent = await stripMarkdownSyntax(cleanContent);
 		}
 		setContentPreview(cleanContent);
 	};
 
 	useEffect(() => {
 		maybeLoadContent();
-	}, []);
+	}, [stripMarkdownSyntaxInPreview, removeFirstHeadingInPreview]);
 
 	const onUpdatePreviewChange = (e: VaultChangeEvent) => {
 		const { file: f, changeType } = e.detail;

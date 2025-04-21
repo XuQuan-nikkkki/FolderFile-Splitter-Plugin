@@ -15,6 +15,7 @@ import { useShowFileCreationDate } from "./useShowFileCreationDate";
 import { useFileCreationDateFormat } from "./useFileCreationDateFormat";
 import { useStripMarkdownSyntaxInPreview } from "./useStripMarkdownSyntax";
 import { useBoldFileTitle } from "./useBoldFileTitle";
+import { useRemoveFirstHeadingInPreview } from "./useRemoveFirstHeadingInPreview";
 
 export {
 	useShowFolderIcon,
@@ -34,4 +35,5 @@ export {
 	useFileCreationDateFormat,
 	useStripMarkdownSyntaxInPreview,
 	useBoldFileTitle,
+	useRemoveFirstHeadingInPreview,
 };
