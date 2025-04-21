@@ -6,6 +6,7 @@ import classNames from "classnames";
 import { ExplorerStore } from "src/store";
 import { FolderListModal } from "../FolderListModal";
 import {
+	useBoldFileTitle,
 	useFileItemSpacing,
 	useShowFileDetail,
 	useShowFileItemDivider,
@@ -52,6 +53,7 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 	const { showFileItemDivider } = useShowFileItemDivider(
 		settings.showFileItemDivider
 	);
+	const { boldFileTitle } = useBoldFileTitle(settings.boldFileTitle);
 
 	const isFocused = focusedFile?.path === file.path;
 	const onSaveName = (name: string) => renameFile(file, name);
@@ -63,6 +65,7 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 		isEditing,
 	} = useRenderEditableName(file.basename, onSaveName, {
 		className: "ffs__file-name",
+		bold: boldFileTitle,
 	});
 
 	const fileRef = useRef<HTMLDivElement>(null);

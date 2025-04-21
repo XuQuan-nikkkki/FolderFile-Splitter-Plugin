@@ -3,6 +3,7 @@ import { ReactElement, useEffect, useRef, useState } from "react";
 
 type Options = {
 	className?: string;
+	bold?: boolean;
 };
 const useRenderEditableName = (
 	defaultName: string,
@@ -76,7 +77,7 @@ const useRenderEditableName = (
 	};
 
 	const renderEditableName = () => {
-		const { className } = options ?? {};
+		const { className, bold } = options ?? {};
 		return isEditing ? (
 			<input
 				ref={inputRef}
@@ -86,7 +87,12 @@ const useRenderEditableName = (
 				onChange={(e) => setName(e.target.value)}
 			/>
 		) : (
-			<div ref={eleRef} className={classNames("ffs__name", className)}>
+			<div
+				ref={eleRef}
+				className={classNames("ffs__name", className, {
+					"ffs__name--bold": bold,
+				})}
+			>
 				{name}
 			</div>
 		);

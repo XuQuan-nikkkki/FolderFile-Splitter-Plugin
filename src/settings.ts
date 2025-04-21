@@ -44,6 +44,7 @@ export interface FolderFileSplitterPluginSettings {
 	includeSubfolderFilesCount: boolean;
 	showFolderHierarchyLines: boolean;
 	showFolderIcon: boolean;
+	boldFileTitle: boolean;
 	showFileDetail: boolean;
 	fileCreationDateFormat: string;
 	showFileCreationDate: boolean;
@@ -68,6 +69,7 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	includeSubfolderFilesCount: false,
 	showFolderHierarchyLines: false,
 	showFolderIcon: true,
+	boldFileTitle: true,
 	showFileDetail: true,
 	stripMarkdownSyntaxInPreview: false,
 	showFileCreationDate: true,

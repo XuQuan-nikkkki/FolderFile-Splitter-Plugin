@@ -14,6 +14,7 @@ import { useAutoHideActionBar } from "./useAutoHideActionBar";
 import { useShowFileCreationDate } from "./useShowFileCreationDate";
 import { useFileCreationDateFormat } from "./useFileCreationDateFormat";
 import { useStripMarkdownSyntaxInPreview } from "./useStripMarkdownSyntax";
+import { useBoldFileTitle } from "./useBoldFileTitle";
 
 export {
 	useShowFolderIcon,
@@ -32,4 +33,5 @@ export {
 	useShowFileCreationDate,
 	useFileCreationDateFormat,
 	useStripMarkdownSyntaxInPreview,
+	useBoldFileTitle,
 };

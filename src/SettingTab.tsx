@@ -196,6 +196,7 @@ export class SettingTab extends PluginSettingTab {
 
 	initFileDisplaySettings() {
 		this.createHeader2(this.headersCopy.fileDisplay);
+		this._initToggleSetting("boldFileTitle")
 		this._initDropdownSetting("fileItemSpacing");
 		this._initToggleSetting("showFileItemDivider");
 	}

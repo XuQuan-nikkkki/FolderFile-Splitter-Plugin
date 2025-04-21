@@ -94,6 +94,10 @@ div.workspace-leaf-content[data-plugin="FolderFile Splitter"] div.view-content {
 	white-space: nowrap;
 }
 
+div.ffs__name--bold {
+	font-weight: 500;
+}
+
 /* loading */
 .ffs__loading-container {
 	height: 100%;

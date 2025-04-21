@@ -65,6 +65,10 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 			},
 		],
 	},
+	boldFileTitle: {
+		name: "Bold file title",
+		desc: "When enabled, file titles will be displayed in bold for better emphasis and readability.",
+	},
 	showFileDetail: {
 		name: "Show file detail",
 		desc: "When enabled, file details such as creation time and a content preview will be displayed below the file name.",
@@ -210,6 +214,10 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 				text: "垂直分割",
 			},
 		],
+	},
+	boldFileTitle: {
+		name: "加粗文件标题",
+		desc: "启用后，文件标题将以加粗样式显示，以增强强调和可读性。",
 	},
 	showFileDetail: {
 		name: "显示文件详情",
