@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { ExpandIcon, CollapseIcon } from "src/assets/icons";
@@ -8,13 +8,19 @@ import { useExplorer } from "src/hooks/useExplorer";
 const ToggleFolders = () => {
 	const { useExplorerStore, plugin } = useExplorer();
 
-	const { restoreExpandedFolderPaths } = useExplorerStore(
-		useShallow((store: ExplorerStore) => ({
-			restoreExpandedFolderPaths: store.changeExpandedFolderPaths,
-		}))
-	);
+	const { restoreExpandedFolderPaths, expandedFolderPaths } =
+		useExplorerStore(
+			useShallow((store: ExplorerStore) => ({
+				restoreExpandedFolderPaths: store.changeExpandedFolderPaths,
+				expandedFolderPaths: store.expandedFolderPaths,
+			}))
+		);
 
 	const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
+	useEffect(() => {
+		setIsExpanded(expandedFolderPaths.length > 0);
+	}, [expandedFolderPaths]);
 
 	const onToggleAllFolders = () => {
 		const folders = plugin.app.vault.getAllFolders();
