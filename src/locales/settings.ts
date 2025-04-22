@@ -287,7 +287,7 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 			},
 			{
 				value: EXPAND_FOLDER_BY_CLICKING_ELEMENT.FOLDER,
-				text: "切换图标",
+				text: "文件夹名称",
 			},
 		],
 	},
