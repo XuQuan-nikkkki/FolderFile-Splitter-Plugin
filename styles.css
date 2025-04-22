@@ -95,7 +95,7 @@ div.workspace-leaf-content[data-plugin="FolderFile Splitter"] div.view-content {
 }
 
 div.ffs__name--bold {
-	font-weight: 500;
+	font-weight: var(--font-semibold);
 }
 
 /* loading */
