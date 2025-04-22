@@ -209,11 +209,10 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 	};
 
 	const onClickFolderName = (e: React.MouseEvent<HTMLDivElement>): void => {
-		e.stopPropagation()
-		if (expandFolderByClickingOn !== "folder") return;
+		e.stopPropagation();
 		if (focusedFolder?.path !== folder.path) {
 			setFocusedFolder(folder);
-		} else {
+		} else if (expandFolderByClickingOn === "folder") {
 			onToggleExpandState();
 		}
 	};
