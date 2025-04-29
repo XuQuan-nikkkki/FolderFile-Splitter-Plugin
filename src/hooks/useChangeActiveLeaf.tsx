@@ -15,7 +15,7 @@ const useChangeActiveLeaf = () => {
 				focusedFile: store.focusedFile,
 				expandFolder: store.expandFolder,
 				setFocusedFolder: store.setFocusedFolder,
-				setFocusedFile: store.setFocusedFile
+				setFocusedFile: store.setFocusedFile,
 			}))
 		);
 
@@ -33,6 +33,7 @@ const useChangeActiveLeaf = () => {
 	}, [focusedFile]);
 
 	const onHandleActiveLeafChange = async () => {
+		if (!plugin.settings.revealFileInExplorer) return
 		const currentActiveFile = plugin.app.workspace.getActiveFile();
 		if (currentActiveFile && currentActiveFile.path !== focusedFile?.path) {
 			let currentFolder = currentActiveFile.parent;
@@ -40,7 +41,7 @@ const useChangeActiveLeaf = () => {
 				expandFolder(currentFolder);
 				currentFolder = currentFolder.parent;
 			}
-			setFocusedFolder(currentActiveFile.parent)
+			setFocusedFolder(currentActiveFile.parent);
 			await setFocusedFile(currentActiveFile);
 		}
 	};

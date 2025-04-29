@@ -63,6 +63,7 @@ export interface FolderFileSplitterPluginSettings {
 	folderNoteLocation: FolderNoteLocation;
 	customFolderNotePath: string;
 	folderNoteMissingBehavior: FolderNoteMissingBehavior;
+	revealFileInExplorer: boolean;
 }
 
 export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
@@ -89,4 +90,5 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	folderNoteLocation: FOLDER_NOTE_LOCATION.INDEX_FILE,
 	customFolderNotePath: "",
 	folderNoteMissingBehavior: FOLDER_NOTE_MISSING_BEHAVIOR.IGNORE,
+	revealFileInExplorer: false,
 };

@@ -139,6 +139,7 @@ export class SettingTab extends PluginSettingTab {
 		this._initToggleSetting("showFolderHierarchyLines");
 		this._initDropdownSetting("expandFolderByClickingOn");
 		this._initToggleSetting("openDestinationFolderAfterMove");
+		this._initToggleSetting("revealFileInExplorer");
 	}
 
 	generateFileCreationDateFormatDesc(setting: Setting, format: string) {

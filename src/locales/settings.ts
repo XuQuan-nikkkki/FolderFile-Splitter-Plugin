@@ -198,6 +198,10 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 			{ value: FOLDER_NOTE_MISSING_BEHAVIOR.CREATE, text: "Create new" },
 		],
 	},
+	revealFileInExplorer: {
+		name: "Reveal file in file explorer",
+		desc: "When enabled, the selected file will be automatically revealed in plugin's file explorer when switching between files.",
+	},
 };
 
 export const ZH_SETTINGS: SettingsLocaleResource = {
@@ -351,5 +355,9 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 			},
 			{ value: FOLDER_NOTE_MISSING_BEHAVIOR.CREATE, text: "自动创建" },
 		],
+	},
+	revealFileInExplorer: {
+		name: "在文件管理器中定位文件",
+		desc: "启用后，切换文件时会自动在插件的文件管理器中定位该文件。",
 	},
 };
