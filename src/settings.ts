@@ -66,7 +66,7 @@ export interface FolderFileSplitterPluginSettings {
 }
 
 export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
-	expandFolderByClickingOn: EXPAND_FOLDER_BY_CLICKING_ELEMENT.ICON,
+	expandFolderByClickingOn: EXPAND_FOLDER_BY_CLICKING_ELEMENT.FOLDER,
 	includeSubfolderFilesCount: false,
 	showFolderHierarchyLines: false,
 	showFolderIcon: true,
