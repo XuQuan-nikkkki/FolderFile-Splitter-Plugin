@@ -16,6 +16,8 @@ import { useFileCreationDateFormat } from "./useFileCreationDateFormat";
 import { useStripMarkdownSyntaxInPreview } from "./useStripMarkdownSyntax";
 import { useBoldFileTitle } from "./useBoldFileTitle";
 import { useRemoveFirstHeadingInPreview } from "./useRemoveFirstHeadingInPreview";
+import { useShowFolderView } from "./useShowFolderView";
+import { useShowTagView } from "./useShowTagView";
 
 export {
 	useShowFolderIcon,
@@ -36,4 +38,6 @@ export {
 	useStripMarkdownSyntaxInPreview,
 	useBoldFileTitle,
 	useRemoveFirstHeadingInPreview,
+	useShowFolderView,
+	useShowTagView,
 };

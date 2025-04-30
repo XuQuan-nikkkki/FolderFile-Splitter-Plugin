@@ -207,6 +207,8 @@ export class SettingTab extends PluginSettingTab {
 		this.createHeader2(this.headersCopy.fileDisplayScope);
 		this._initToggleSetting("showFilesFromSubfolders");
 		this._initToggleSetting("includeSubfolderFilesCount");
+		this._initToggleSetting("showFolderView");
+		this._initToggleSetting("showTagView");
 	}
 
 	initActionBarSettings() {

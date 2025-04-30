@@ -202,6 +202,14 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Reveal file in file explorer",
 		desc: "When enabled, the selected file will be automatically revealed in plugin's file explorer when switching between files.",
 	},
+	showFolderView: {
+		name: "Show folder view",
+		desc: "Display files by folder. Can be used together with tag view.",
+	},
+	showTagView: {
+		name: "Show tag view",
+		desc: "Display files by tag. Can be used together with folder view.",
+	},
 };
 
 export const ZH_SETTINGS: SettingsLocaleResource = {
@@ -359,5 +367,13 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	revealFileInExplorer: {
 		name: "在文件管理器中定位文件",
 		desc: "启用后，切换文件时会自动在插件的文件管理器中定位该文件。",
+	},
+	showFolderView: {
+		name: "显示文件夹视图",
+		desc: "按文件夹显示文件。可以与标签视图一起使用。",
+	},
+	showTagView: {
+		name: "显示标签视图",
+		desc: "按标签显示文件。可以与文件夹视图一起使用。",
 	},
 };
