@@ -13,6 +13,7 @@ import ArrowUpDownIcon from "./ArrowUpDownIcon";
 import PinIcon from "./PinIcon";
 import ChevronDown from "./ChevronDown";
 import ChevronRight from "./ChevronRight";
+import TagIcon from "./TagIcon";
 
 export {
 	FolderIcon,
@@ -30,4 +31,5 @@ export {
 	PinIcon,
 	ChevronDown,
 	ChevronRight,
+	TagIcon,
 };

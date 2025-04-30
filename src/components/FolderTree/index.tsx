@@ -5,7 +5,9 @@ import classNames from "classnames";
 import { ExplorerStore } from "src/store";
 import {
 	useHideRootFolder,
+	useShowFolderView,
 	useShowHierarchyLines,
+	useShowTagView,
 } from "src/hooks/useSettingsHandler";
 import { useChangeFolder } from "src/hooks/useVaultChangeHandler";
 import { useExplorer } from "src/hooks/useExplorer";
@@ -45,10 +47,14 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	const {
 		showFolderHierarchyLines: defaultShowLines,
 		hideRootFolder: defaultHideRootFolder,
+		showFolderView: defaultShowFolderView,
+		showTagView: defaultShowTagView,
 	} = plugin.settings;
 	const { showHierarchyLines } = useShowHierarchyLines(defaultShowLines);
 	const { topFolders } = useChangeFolder();
 	const { hideRootFolder } = useHideRootFolder(defaultHideRootFolder);
+	const { showFolderView } = useShowFolderView(defaultShowFolderView);
+	const { showTagView } = useShowTagView(defaultShowTagView);
 
 	const renderFolder = (folder: TFolder, options?: FolderOptions) => {
 		const { hideExpandIcon, disableDrag, disableHoverIndent } =
@@ -81,6 +87,8 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	};
 
 	const renderFolders = (folders: TFolder[]) => {
+		if (!showFolderView) return;
+
 		const sortedFolders = sortFolders(
 			folders,
 			folderSortRule,
@@ -121,6 +129,13 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		);
 	};
 
+	const renderTags = () => {
+		if (!showTagView) return;
+
+		// TODO: to be implemented
+		return <div>tags</div>;
+	};
+
 	const renderEmptyDiv = () => (
 		// This is a workaround to fix the issue of the first folder not being rendered correctly
 		<div style={{ width: "100%", height: 0.1, marginBottom: 0 }}></div>
@@ -133,6 +148,7 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 				{renderEmptyDiv()}
 				{maybeRenderRootFolder()}
 				{renderFolders(topFolders)}
+				{renderTags()}
 			</div>
 		</div>
 	);

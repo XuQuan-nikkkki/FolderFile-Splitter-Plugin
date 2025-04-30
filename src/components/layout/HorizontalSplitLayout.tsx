@@ -12,6 +12,7 @@ import {
 	useHighlightActionBar,
 } from "src/hooks/useSettingsHandler";
 import { useExplorer } from "src/hooks/useExplorer";
+import ToggleManagementView from "../FolderActions/ToggleManagementView";
 
 const HorizontalSplitLayout = () => {
 	const { plugin } = useExplorer();
@@ -78,6 +79,7 @@ const HorizontalSplitLayout = () => {
 			>
 				<div className={getActionsContainerClassName()}>
 					<FolderActionSection />
+					<ToggleManagementView />
 				</div>
 				<FolderTree />
 			</div>

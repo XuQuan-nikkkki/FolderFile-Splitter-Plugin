@@ -122,6 +122,15 @@ div.ffs__name--bold {
 }
 
 /* folders and files action buttons */
+.ffs__actions-container {
+	display: flex;
+	justify-content: space-between;
+}
+
+.ffs_action-button-wrapper--disabled {
+	opacity: 0.4;
+}
+
 .ffs__actions-container--highlight {
 	background-color: color-mix(
 		in srgb,

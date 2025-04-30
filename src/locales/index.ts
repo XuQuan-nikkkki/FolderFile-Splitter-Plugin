@@ -76,6 +76,22 @@ export const TIPS_COPY: Copy = {
 		en: "Drag to sort files",
 		zh: "拖动笔记排序",
 	},
+	showFolders: {
+		en: "Show folder list",
+		zh: "显示文件夹列表",
+	},
+	hideFolders: {
+		en: "Hide folder list",
+		zh: "隐藏文件夹列表",
+	},
+	showTags: {
+		en: "Show tag list",
+		zh: "显示标签列表",
+	},
+	hideTags: {
+		en: "Hide tag list",
+		zh: "隐藏标签列表",
+	},
 };
 
 export const FOLDER_SORT_RULES_COPY: Copy = {
