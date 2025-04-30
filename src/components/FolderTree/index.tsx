@@ -2,7 +2,7 @@ import { useShallow } from "zustand/react/shallow";
 import { TFolder } from "obsidian";
 import classNames from "classnames";
 
-import { ExplorerStore } from "src/store";
+import { ExplorerStore, TagNode } from "src/store";
 import {
 	useHideRootFolder,
 	useShowFolderView,
@@ -30,6 +30,7 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		sortFolders,
 		expandedFolderPaths,
 		focusedFolder,
+		getTopLevelTags,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			rootFolder: store.rootFolder,
@@ -41,6 +42,7 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 			focusedFolder: store.focusedFolder,
 			pinnedFolders: store.pinnedFolderPaths,
 			order: store.foldersManualSortOrder,
+			getTopLevelTags: store.getTopLevelTags,
 		}))
 	);
 
@@ -129,11 +131,16 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		);
 	};
 
-	const renderTags = () => {
+	const renderTags = (tags: TagNode[]) => {
 		if (!showTagView) return;
-
 		// TODO: to be implemented
-		return <div>tags</div>;
+		return (
+			<div>
+				{tags.map((tag) => (
+					<div key={tag.name}>{tag.name}</div>
+				))}
+			</div>
+		);
 	};
 
 	const renderEmptyDiv = () => (
@@ -148,7 +155,7 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 				{renderEmptyDiv()}
 				{maybeRenderRootFolder()}
 				{renderFolders(topFolders)}
-				{renderTags()}
+				{renderTags(getTopLevelTags())}
 			</div>
 		</div>
 	);

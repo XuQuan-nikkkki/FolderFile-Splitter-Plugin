@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Notice, TFile, TFolder } from "obsidian";
+import { getAllTags, Notice, TFile, TFolder } from "obsidian";
 
 import FolderFileSplitterPlugin from "./main";
 import { isFile, isFolder } from "./utils";
@@ -40,6 +40,14 @@ type FolderPath = string;
 type ChildrenPaths = string[];
 export type ManualSortOrder = Record<FolderPath, ChildrenPaths>;
 
+export type TagNode = {
+	name: string;
+	files: TFile[];
+	parent: string | null;
+	children: Set<string>;
+};
+export type TagTree = Map<string, TagNode>;
+
 export type ExplorerStore = {
 	folders: TFolder[];
 	rootFolder: TFolder | null;
@@ -54,6 +62,7 @@ export type ExplorerStore = {
 	foldersManualSortOrder: ManualSortOrder;
 	latestCreatedFolder: TFolder | null;
 	latestFolderCreatedTime: number | null;
+	tagTree: TagTree;
 
 	getDataFromLocalStorage: (key: string) => string | null;
 	saveDataInLocalStorage: (key: string, value: string) => void;
@@ -121,6 +130,10 @@ export type ExplorerStore = {
 	collapseFolder: (folder: TFolder) => void;
 	updateFolderPinState: (oldPath: string, newPath: string) => Promise<void>;
 
+	// Tags related
+	generateTagTree: () => TagTree;
+	getTopLevelTags: () => TagNode[];
+
 	// Files related
 	findFileByPath: (path: string) => TFile | null;
 	isFilesInAscendingOrder: () => boolean;
@@ -178,6 +191,7 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 		foldersManualSortOrder: {},
 		latestCreatedFolder: null,
 		latestFolderCreatedTime: null,
+		tagTree: new Map(),
 
 		saveDataInLocalStorage: (key: string, value: string) => {
 			localStorage.setItem(key, value);
@@ -215,6 +229,7 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 				restoreExpandedFolderPaths,
 				restorePinnedFolders,
 				restorePinnedFiles,
+				generateTagTree,
 			} = get();
 			await Promise.all([
 				restoreLastFocusedFolder(),
@@ -224,6 +239,7 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 				restoreExpandedFolderPaths(),
 				restorePinnedFolders(),
 				restorePinnedFiles(),
+				generateTagTree()
 			]);
 		},
 
@@ -736,6 +752,76 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 			if (!hasFolderChildren(folder) || folder.isRoot()) return;
 			changeExpandedFolderPaths(
 				expandedFolderPaths.filter((path) => path !== folder.path)
+			);
+		},
+
+		// Tags related
+		generateTagTree: () => {
+			const tagTree: TagTree = new Map();
+			const files = plugin.app.vault.getMarkdownFiles();
+			if (!files || files.length === 0) return tagTree;
+
+			files.forEach((file) => {
+				const cache = plugin.app.metadataCache.getFileCache(file);
+				if (!cache) return;
+
+				const tags = getAllTags(cache);
+				if (!tags || tags.length === 0) return;
+
+				const getOrCreateTagNode = (
+					tagName: string,
+					parent: string | null = null
+				): TagNode => {
+					if (!tagTree.has(tagName)) {
+						tagTree.set(tagName, {
+							name: tagName,
+							files: [],
+							parent,
+							children: new Set(),
+						});
+					}
+					return tagTree.get(tagName) as TagNode;
+				};
+
+				tags.forEach((tag) => {
+					const tagParts = tag.replace("#", "").split("/");
+					let parentTag: string | null = null;
+
+					tagParts.forEach((part, index) => {
+						const fullTagPath = tagParts
+							.slice(0, index + 1)
+							.join("/");
+						const tagNode = getOrCreateTagNode(
+							fullTagPath,
+							parentTag
+						);
+
+						if (index === tagParts.length - 1) {
+							tagNode.files.push(file);
+						}
+
+						if (parentTag) {
+							const parentNode = tagTree.get(parentTag);
+							if (parentNode) {
+								parentNode.children.add(fullTagPath);
+							}
+						}
+
+						parentTag = fullTagPath;
+					});
+				});
+			});
+
+			set({
+				tagTree,
+			});
+			return tagTree;
+		},
+
+		getTopLevelTags: () => {
+			const { tagTree } = get();
+			return Array.from(tagTree.values()).filter(
+				(tagNode) => !tagNode.parent
 			);
 		},
 
