@@ -26,18 +26,21 @@ const ToggleManagementMode = () => {
 		plugin.triggerSettingsChangeEvent(key, value);
 	};
 
+	const getButtonClassNames = (disabled: boolean) =>
+		classNames(
+			"ffs__action-button-wrapper clickable-icon nav-action-button",
+			{
+				"ffs_action-button-wrapper--disabled": disabled,
+			}
+		);
+
 	const renderFolderButton = () => {
 		const copy = !showFolderView
 			? TIPS_COPY.showFolders
 			: TIPS_COPY.hideFolders;
 		return (
 			<div
-				className={classNames(
-					"ffs__action-button-wrapper clickable-icon nav-action-button",
-					{
-						"ffs_action-button-wrapper--disabled": !showFolderView,
-					}
-				)}
+				className={getButtonClassNames(!showFolderView)}
 				aria-label={copy[copy_lang]}
 				data-tooltip-position="bottom"
 				onClick={() => updateView("showFolderView", !showFolderView)}
@@ -51,12 +54,7 @@ const ToggleManagementMode = () => {
 		const copy = !showTagView ? TIPS_COPY.showTags : TIPS_COPY.hideTags;
 		return (
 			<div
-				className={classNames(
-					"ffs__action-button-wrapper clickable-icon nav-action-button",
-					{
-						"ffs_action-button-wrapper--disabled": !showTagView,
-					}
-				)}
+				className={getButtonClassNames(!showTagView)}
 				aria-label={copy[copy_lang]}
 				data-tooltip-position="bottom"
 				onClick={() => updateView("showTagView", !showTagView)}
