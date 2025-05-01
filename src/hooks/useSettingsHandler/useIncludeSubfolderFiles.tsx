@@ -2,20 +2,20 @@ import { useState } from "react";
 
 import { useWatchSettingsChange } from "./useWatchSettingsChange";
 
-export const useIncludeSubfolderFilesCount = (
+export const useIncludeSubfolderFiles = (
 	defaultInclude: boolean
-): { includeSubfolderFilesCount: boolean } => {
-	const [includeSubfolderFilesCount, setIncludeSubfolderFilesCount] =
+): { includeSubfolderFiles: boolean } => {
+	const [includeSubfolderFiles, setIncludeSubfolderFiles] =
 		useState(defaultInclude);
 
 	const onChangeShowFolderIcon = (event: CustomEvent) => {
 		const { changeKey, changeValue } = event.detail;
-		if (changeKey == "includeSubfolderFilesCount") {
-			setIncludeSubfolderFilesCount(changeValue);
+		if (changeKey == "includeSubfolderFiles") {
+			setIncludeSubfolderFiles(changeValue);
 		}
 	};
 
 	useWatchSettingsChange(onChangeShowFolderIcon);
 
-	return { includeSubfolderFilesCount };
+	return { includeSubfolderFiles };
 };

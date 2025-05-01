@@ -41,7 +41,7 @@ export const DEFAULT_FILE_CREATION_DATE_FORMAT = "YYYY/MM/DD";
 
 export interface FolderFileSplitterPluginSettings {
 	expandFolderByClickingOn: ExpandFolderByClickingOnElement;
-	includeSubfolderFilesCount: boolean;
+	includeSubfolderFiles: boolean;
 	showFolderHierarchyLines: boolean;
 	showFolderIcon: boolean;
 	boldFileTitle: boolean;
@@ -56,7 +56,6 @@ export interface FolderFileSplitterPluginSettings {
 	autoHideActionBar: boolean;
 	openPluginViewOnStartup: boolean;
 	layoutMode: LayoutMode;
-	showFilesFromSubfolders: boolean;
 	openDestinationFolderAfterMove: boolean;
 	hideRootFolder: boolean;
 	autoOpenFolderNote: boolean;
@@ -70,7 +69,7 @@ export interface FolderFileSplitterPluginSettings {
 
 export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	expandFolderByClickingOn: EXPAND_FOLDER_BY_CLICKING_ELEMENT.FOLDER,
-	includeSubfolderFilesCount: false,
+	includeSubfolderFiles: false,
 	showFolderHierarchyLines: false,
 	showFolderIcon: true,
 	boldFileTitle: true,
@@ -85,7 +84,6 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	autoHideActionBar: false,
 	openPluginViewOnStartup: true,
 	layoutMode: LAYOUT_MODE.HORIZONTAL_SPLIT,
-	showFilesFromSubfolders: false,
 	openDestinationFolderAfterMove: false,
 	hideRootFolder: false,
 	autoOpenFolderNote: false,

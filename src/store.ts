@@ -75,7 +75,7 @@ export type ExplorerStore = {
 	getTopLevelFolders: () => TFolder[];
 	getFilesCountInFolder: (
 		folder: TFolder,
-		includeSubfolderFilesCount: boolean
+		includeSubfolderFiles: boolean
 	) => number;
 	getFoldersByParent: (parentFolder: TFolder) => TFolder[];
 	getFilesInFolder: (folder: TFolder, getFilesInFolder?: boolean) => TFile[];
@@ -88,7 +88,7 @@ export type ExplorerStore = {
 	sortFolders: (
 		folders: TFolder[],
 		rule: FolderSortRule,
-		includeSubfolderFilesCount: boolean
+		includeSubfolderFiles: boolean
 	) => TFolder[];
 	changeFolderSortRule: (rule: FolderSortRule) => Promise<void>;
 	restoreFolderSortRule: () => Promise<void>;
@@ -239,7 +239,7 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 				restoreExpandedFolderPaths(),
 				restorePinnedFolders(),
 				restorePinnedFiles(),
-				generateTagTree()
+				generateTagTree(),
 			]);
 		},
 
@@ -254,7 +254,7 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 		},
 		getFilesCountInFolder: (
 			folder: TFolder,
-			includeSubfolderFilesCount: boolean
+			includeSubfolderFiles: boolean
 		): number => {
 			const getFilesCount = (folder: TFolder): number => {
 				if (!folder || !folder.children) return 0;
@@ -262,7 +262,7 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 					if (isFile(child)) {
 						return total + 1;
 					}
-					if (includeSubfolderFilesCount && isFolder(child)) {
+					if (includeSubfolderFiles && isFolder(child)) {
 						return total + getFilesCount(child);
 					}
 					return total;
@@ -571,7 +571,7 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 						const sortedFolders = sortFolders(
 							folders,
 							folderSortRule,
-							plugin.settings.includeSubfolderFilesCount
+							plugin.settings.includeSubfolderFiles
 						);
 						order[folder.path] = sortedFolders.map(
 							(folder) => folder.path
@@ -596,7 +596,7 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 					const sortedFolders = sortFolders(
 						folders,
 						folderSortRule,
-						plugin.settings.includeSubfolderFilesCount
+						plugin.settings.includeSubfolderFiles
 					);
 					order[folder.path] = sortedFolders.map(
 						(folder) => folder.path

@@ -137,13 +137,9 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 			},
 		],
 	},
-	includeSubfolderFilesCount: {
-		name: "Include subfolder files count",
-		desc: "When enabled, the file count will include files inside subfolders. Otherwise, only direct child files are counted.",
-	},
-	showFilesFromSubfolders: {
-		name: "Show files from subfolders",
-		desc: "When enabled, the file list will include files from subfolders of the selected folder.",
+	includeSubfolderFiles: {
+		name: "Include subfolder files",
+		desc: "When enabled, files inside subfolders will be included in the file list and their count will be reflected in the folder’s file count.",
 	},
 	openDestinationFolderAfterMove: {
 		name: "Open destination folder after move",
@@ -303,13 +299,9 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 			},
 		],
 	},
-	includeSubfolderFilesCount: {
-		name: "包含子文件夹文件计数",
-		desc: "启用后，文件计数会包含子文件夹内的文件；否则仅统计直接子文件。",
-	},
-	showFilesFromSubfolders: {
-		name: "显示子文件夹中的文件",
-		desc: "启用后，文件列表会包含所选文件夹的子文件夹中的文件。",
+	includeSubfolderFiles: {
+		name: "包含子文件夹文件",
+		desc: "启用后，子文件夹中的文件将会显示在文件列表中，并计入所属文件夹的文件数量。",
 	},
 	openDestinationFolderAfterMove: {
 		name: "移动后打开目标文件夹",

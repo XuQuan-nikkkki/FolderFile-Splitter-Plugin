@@ -95,7 +95,7 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		const sortedFolders = sortFolders(
 			folders,
 			folderSortRule,
-			plugin.settings.includeSubfolderFilesCount
+			plugin.settings.includeSubfolderFiles
 		);
 		return sortedFolders.map((folder) => {
 			const isExpanded = expandedFolderPaths.includes(folder.path);

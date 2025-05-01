@@ -1,10 +1,9 @@
 import { useShowFolderIcon } from "./useShowFolderIcon";
 import { useExpandFolderByClickingOnElement } from "./useExpandFolderByClickingOnEle";
-import { useIncludeSubfolderFilesCount } from "./useIncludeSubfolderFilesCount";
+import { useIncludeSubfolderFiles } from "./useIncludeSubfolderFiles";
 import { useShowFileDetail } from "./useShowFileDetail";
 import { useShowHierarchyLines } from "./useShowHierarchyLines";
 import { useLayoutMode } from "./useLayoutMode";
-import { useShowFilesFromSubfolders } from "./useShowFilesFromSubfolders";
 import { useOpenDestinationFolder } from "./useOpenDestinationFolder";
 import { useHideRootFolder } from "./useHideRootFolder";
 import { useFileItemSpacing } from "./useFileItemSpacing";
@@ -22,11 +21,10 @@ import { useShowTagView } from "./useShowTagView";
 export {
 	useShowFolderIcon,
 	useExpandFolderByClickingOnElement,
-	useIncludeSubfolderFilesCount,
+	useIncludeSubfolderFiles,
 	useShowFileDetail,
 	useShowHierarchyLines,
 	useLayoutMode,
-	useShowFilesFromSubfolders,
 	useOpenDestinationFolder,
 	useHideRootFolder,
 	useFileItemSpacing,

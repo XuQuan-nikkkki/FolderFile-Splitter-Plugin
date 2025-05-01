@@ -2,7 +2,7 @@ import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 
 import { ExplorerStore } from "src/store";
-import { useIncludeSubfolderFilesCount } from "src/hooks/useSettingsHandler";
+import { useIncludeSubfolderFiles } from "src/hooks/useSettingsHandler";
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFile } from "src/utils";
 import { useEffect, useState } from "react";
@@ -22,20 +22,20 @@ const FilesCount = ({ folder }: Props) => {
 	const [count, setCount] = useState<number | null>(null);
 
 	const { settings } = plugin;
-	const { includeSubfolderFilesCount } = useIncludeSubfolderFilesCount(
-		settings.includeSubfolderFilesCount
+	const { includeSubfolderFiles } = useIncludeSubfolderFiles(
+		settings.includeSubfolderFiles
 	);
 
 	const onHandleVaultChange = (event: VaultChangeEvent) => {
 		const { file, changeType } = event.detail;
 		if (!isFile(file)) return;
 		if (changeType === "delete" || changeType === "rename") {
-			setCount(getFilesCountInFolder(folder, includeSubfolderFilesCount));
+			setCount(getFilesCountInFolder(folder, includeSubfolderFiles));
 		}
 	};
 
 	useEffect(() => {
-		setCount(getFilesCountInFolder(folder, includeSubfolderFilesCount));
+		setCount(getFilesCountInFolder(folder, includeSubfolderFiles));
 		window.addEventListener(VaultChangeEventName, onHandleVaultChange);
 		return () => {
 			window.removeEventListener(
@@ -46,8 +46,8 @@ const FilesCount = ({ folder }: Props) => {
 	}, [folder]);
 
 	useEffect(() => {
-		setCount(getFilesCountInFolder(folder, includeSubfolderFilesCount));
-	}, [folder.children.length, includeSubfolderFilesCount]);
+		setCount(getFilesCountInFolder(folder, includeSubfolderFiles));
+	}, [folder.children.length, includeSubfolderFiles]);
 
 	return <div className="ffs__files-count">{count}</div>;
 };

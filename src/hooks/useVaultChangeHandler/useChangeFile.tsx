@@ -6,8 +6,8 @@ import { FILE_MANUAL_SORT_RULE, ExplorerStore } from "src/store";
 
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFile } from "src/utils";
-import { useShowFilesFromSubfolders } from "../useSettingsHandler";
 import { useExplorer } from "../useExplorer";
+import { useIncludeSubfolderFiles } from "../useSettingsHandler";
 
 const useChangeFile = () => {
 	const { useExplorerStore, plugin } = useExplorer();
@@ -34,11 +34,11 @@ const useChangeFile = () => {
 		}))
 	);
 
-	const { showFilesFromSubfolders } = useShowFilesFromSubfolders(
-		plugin.settings.showFilesFromSubfolders
+	const { includeSubfolderFiles } = useIncludeSubfolderFiles(
+		plugin.settings.includeSubfolderFiles
 	);
 	const defaultFiles: TFile[] = focusedFolder
-		? getFilesInFolder(focusedFolder, showFilesFromSubfolders)
+		? getFilesInFolder(focusedFolder, includeSubfolderFiles)
 		: [];
 	const [files, setFiles] = useState<TFile[]>(defaultFiles);
 
@@ -51,7 +51,7 @@ const useChangeFile = () => {
 				onHandleVaultChange
 			);
 		};
-	}, [focusedFolder, showFilesFromSubfolders]);
+	}, [focusedFolder, includeSubfolderFiles]);
 
 	const onDeleteFileFromList = (file: TFile) => {
 		setFiles((prevFiles) =>
