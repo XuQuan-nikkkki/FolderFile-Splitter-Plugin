@@ -1,11 +1,11 @@
 import { create } from "zustand";
 
-import FolderFileSplitterPlugin from "./main";
+import FolderFileSplitterPlugin from "../main";
 
-import { CommonExplorerStore, createCommonExplorerStore } from "./store/common";
-import { createFolderExplorerStore, FolderExplorerStore } from "./store/folder";
-import { createFileExplorerStore, FileExplorerStore } from "./store/file";
-import { createTagExplorerStore, TagExplorerStore } from "./store/tag";
+import { CommonExplorerStore, createCommonExplorerStore } from "./common";
+import { createFolderExplorerStore, FolderExplorerStore } from "./folder";
+import { createFileExplorerStore, FileExplorerStore } from "./file";
+import { createTagExplorerStore, TagExplorerStore } from "./tag";
 
 type FolderPath = string;
 type ChildrenPaths = string[];
