@@ -10,8 +10,9 @@ import { TagIcon } from "src/assets/icons";
 
 type Props = {
 	tag: TagNode;
+	disableHoverIndent?: boolean;
 };
-const Tag = ({ tag }: Props) => {
+const Tag = ({ tag, disableHoverIndent = false }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
 
 	const { hasTagChildren } = useExplorerStore(
@@ -33,6 +34,7 @@ const Tag = ({ tag }: Props) => {
 		);
 	};
 
+	const tagLevel = tag.fullPath.split("/").length - 1;
 	return (
 		<div
 			className={classNames(
@@ -41,6 +43,14 @@ const Tag = ({ tag }: Props) => {
 					"mod-collapsible": hasTagChildren(tag),
 				}
 			)}
+			style={
+				disableHoverIndent
+					? undefined
+					: {
+							marginInlineStart: -17 * tagLevel,
+							paddingInlineStart: 24 + 17 * tagLevel,
+						}
+			}
 		>
 			<TagExpandIcon tag={tag} />
 			{maybeRenderTagIcon()}
