@@ -1,11 +1,12 @@
 import { useShallow } from "zustand/react/shallow";
 
-import { FILE_MANUAL_SORT_RULE, FileSortRule, ExplorerStore } from "src/store";
+import { ExplorerStore } from "src/store";
 import { FILE_SORT_RULES_COPY } from "src/locales";
 import { useExplorer } from "src/hooks/useExplorer";
 
 import { ManualSortFilesModal } from "../ManualSortFilesModal";
 import SortAction from "../SortAction";
+import { FILE_MANUAL_SORT_RULE, FileSortRule } from "src/store/file";
 
 type FileSortRuleItem = {
 	text: string;
