@@ -134,12 +134,24 @@ export class SettingTab extends PluginSettingTab {
 
 	initFolderAndFileBehaviorSettings() {
 		this.createHeader2(this.headersCopy.folderAndFileBehavior);
-		this._initToggleSetting("hideRootFolder");
-		this._initToggleSetting("showFolderIcon");
-		this._initToggleSetting("showFolderHierarchyLines");
 		this._initDropdownSetting("expandFolderByClickingOn");
+		this._initToggleSetting("hideRootFolder");
+		this._initToggleSetting("showFolderHierarchyLines");
 		this._initToggleSetting("openDestinationFolderAfterMove");
 		this._initToggleSetting("revealFileInExplorer");
+	}
+
+	initFolderSettings() {
+		this.createHeader2(this.headersCopy.folderSettings);
+		this._initToggleSetting("showFolderView");
+		this._initToggleSetting("showFolderIcon");
+		this._initToggleSetting("includeSubfolderFiles");
+	}
+
+	initTagSettings() {
+		this.createHeader2(this.headersCopy.tagSettings);
+		this._initToggleSetting("showTagView");
+		this._initToggleSetting("includeSubTagFiles");
 	}
 
 	generateFileCreationDateFormatDesc(setting: Setting, format: string) {
@@ -203,13 +215,6 @@ export class SettingTab extends PluginSettingTab {
 		this._initToggleSetting("showFileItemDivider");
 	}
 
-	initFileDisplayScopeSettings() {
-		this.createHeader2(this.headersCopy.fileDisplayScope);
-		this._initToggleSetting("includeSubfolderFiles");
-		this._initToggleSetting("showFolderView");
-		this._initToggleSetting("showTagView");
-	}
-
 	initActionBarSettings() {
 		this.createHeader2(this.headersCopy.actionBar);
 		this._initToggleSetting("highlightActionBar");
@@ -230,9 +235,10 @@ export class SettingTab extends PluginSettingTab {
 		this.initLayoutSettings();
 		this.initActionBarSettings();
 		this.initFolderAndFileBehaviorSettings();
+		this.initFolderSettings();
+		this.initTagSettings();
 		this.initFileDetailSettings();
 		this.initFileDisplaySettings();
-		this.initFileDisplayScopeSettings();
 		this.initFolderNoteSettings();
 	}
 }

@@ -32,6 +32,7 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		expandedFolderPaths,
 		focusedFolder,
 		getTopLevelTags,
+		sortTags,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			rootFolder: store.rootFolder,
@@ -44,6 +45,7 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 			pinnedFolders: store.pinnedFolderPaths,
 			order: store.foldersManualSortOrder,
 			getTopLevelTags: store.getTopLevelTags,
+			sortTags: store.sortTags,
 		}))
 	);
 
@@ -139,7 +141,7 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	const renderTags = (tags: TagNode[]) => {
 		if (!showTagView) return;
 		// TODO: to be implemented
-		const sortedTags = tags;
+		const sortedTags = sortTags(tags);
 		return <div>{sortedTags.map(renderTag)}</div>;
 	};
 

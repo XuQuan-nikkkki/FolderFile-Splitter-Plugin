@@ -8,14 +8,14 @@ export const useIncludeSubfolderFiles = (
 	const [includeSubfolderFiles, setIncludeSubfolderFiles] =
 		useState(defaultInclude);
 
-	const onChangeShowFolderIcon = (event: CustomEvent) => {
+	const onChangeIncludeSubfolderFiles = (event: CustomEvent) => {
 		const { changeKey, changeValue } = event.detail;
 		if (changeKey == "includeSubfolderFiles") {
 			setIncludeSubfolderFiles(changeValue);
 		}
 	};
 
-	useWatchSettingsChange(onChangeShowFolderIcon);
+	useWatchSettingsChange(onChangeIncludeSubfolderFiles);
 
 	return { includeSubfolderFiles };
 };

@@ -24,6 +24,12 @@ export type FolderSortRule =
 	| "FilesCountDescending"
 	| "FolderManualOrder";
 export const DEFAULT_FOLDER_SORT_RULE: FolderSortRule = "FolderNameAscending";
+export type TagSortRule =
+	| "TagNameAscending"
+	| "TagNameDescending"
+	| "FileCountAscending"
+	| "FileCountDescending";
+export const DEFAULT_TAG_SORT_RULE: TagSortRule = "TagNameAscending";
 export type FileSortRule =
 	| "FileNameAscending"
 	| "FileNameDescending"
@@ -63,6 +69,7 @@ export type ExplorerStore = {
 	latestCreatedFolder: TFolder | null;
 	latestFolderCreatedTime: number | null;
 	tagTree: TagTree;
+	tagSortRule: TagSortRule;
 
 	getDataFromLocalStorage: (key: string) => string | null;
 	saveDataInLocalStorage: (key: string, value: string) => void;
@@ -133,6 +140,8 @@ export type ExplorerStore = {
 	// Tags related
 	generateTagTree: () => TagTree;
 	getTopLevelTags: () => TagNode[];
+	getFilesCountInTag: (tagNode: TagNode) => number;
+	sortTags: (tags: TagNode[]) => TagNode[];
 
 	// Files related
 	findFileByPath: (path: string) => TFile | null;
@@ -192,6 +201,7 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 		latestCreatedFolder: null,
 		latestFolderCreatedTime: null,
 		tagTree: new Map(),
+		tagSortRule: DEFAULT_TAG_SORT_RULE,
 
 		saveDataInLocalStorage: (key: string, value: string) => {
 			localStorage.setItem(key, value);
@@ -823,6 +833,43 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 			return Array.from(tagTree.values()).filter(
 				(tagNode) => !tagNode.parent
 			);
+		},
+
+		getFilesCountInTag: (tagNode: TagNode): number => {
+			if (!tagNode || !tagNode.files) return 0;
+
+			const { tagTree } = get();
+			const { includeSubTagFiles } = plugin.settings;
+			let totalCount = tagNode.files.length;
+			if (!includeSubTagFiles) return totalCount;
+
+			tagNode.children.forEach((childTagName) => {
+				const childNode = tagTree.get(childTagName);
+				if (childNode) {
+					totalCount += childNode.files.length;
+				}
+			});
+			return totalCount;
+		},
+
+		sortTags: (tags: TagNode[]): TagNode[] => {
+			const { getFilesCountInTag, tagSortRule: rule } = get();
+			switch (rule) {
+				case "TagNameAscending":
+					return tags.sort((a, b) => a.name.localeCompare(b.name));
+				case "TagNameDescending":
+					return tags.sort((a, b) => b.name.localeCompare(a.name));
+				case "FileCountAscending":
+					return tags.sort(
+						(a, b) => getFilesCountInTag(a) - getFilesCountInTag(b)
+					);
+				case "FileCountDescending":
+					return tags.sort(
+						(a, b) => getFilesCountInTag(b) - getFilesCountInTag(a)
+					);
+				default:
+					return tags;
+			}
 		},
 
 		// Files related

@@ -65,6 +65,7 @@ export interface FolderFileSplitterPluginSettings {
 	revealFileInExplorer: boolean;
 	showFolderView: boolean;
 	showTagView: boolean;
+	includeSubTagFiles: boolean;
 }
 
 export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
@@ -93,4 +94,5 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	revealFileInExplorer: false,
 	showFolderView: true,
 	showTagView: false,
+	includeSubTagFiles: false,
 };

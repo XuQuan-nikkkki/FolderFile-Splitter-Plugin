@@ -15,20 +15,22 @@ export const EN_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 	startup: "🔷 Startup",
 	layout: "🧭 Layout",
 	actionBar: "🎛️ Action Bar",
-	folderAndFileBehavior: "📁 Folder and file behavior",
+	folderAndFileBehavior: "🧾 Folder and file behavior",
+	folderSettings: "📂 Folder settings",
+	tagSettings: "🏷️ Tag settings",
 	fileDetail: "📄 File Detail",
 	fileDisplay: "🧷 File Display",
-	fileDisplayScope: "🧮 File Display Scope",
 	folderNoteSettings: "🗂️ Folder note settings",
 };
 export const ZH_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 	startup: "🔷 启动与布局",
 	layout: "🧭 布局样式",
 	actionBar: "🎛️ 操作栏设置",
-	folderAndFileBehavior: "📁 文件夹和文件行为",
+	folderAndFileBehavior: "🧾 文件夹和文件行为",
+	folderSettings: "📂 文件夹设置",
+	tagSettings: "🏷️ 标签设置",
 	fileDetail: "📄 文件详情",
 	fileDisplay: "🧷 文件显示",
-	fileDisplayScope: "🧮 文件显示范围",
 	folderNoteSettings: "🗂️ Folder note 设置",
 };
 
@@ -206,6 +208,10 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Show tag view",
 		desc: "Display files by tag. Can be used together with folder view.",
 	},
+	includeSubTagFiles: {
+		name: "Include tag files",
+		desc: "When enabled, files inside subtags will be included in the file list and their count will be reflected in the tag file count.",
+	},
 };
 
 export const ZH_SETTINGS: SettingsLocaleResource = {
@@ -367,5 +373,9 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	showTagView: {
 		name: "显示标签视图",
 		desc: "按标签显示文件。可以与文件夹视图一起使用。",
+	},
+	includeSubTagFiles: {
+		name: "包含子标签文件",
+		desc: "启用后，子标签中的文件将会显示在文件列表中，并计入所属标签的文件数量。",
 	},
 };

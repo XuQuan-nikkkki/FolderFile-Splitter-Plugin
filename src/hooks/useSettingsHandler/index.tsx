@@ -17,6 +17,7 @@ import { useBoldFileTitle } from "./useBoldFileTitle";
 import { useRemoveFirstHeadingInPreview } from "./useRemoveFirstHeadingInPreview";
 import { useShowFolderView } from "./useShowFolderView";
 import { useShowTagView } from "./useShowTagView";
+import { useIncludeSubTagFiles } from "./useIncludeSubTagFiles";
 
 export {
 	useShowFolderIcon,
@@ -38,4 +39,5 @@ export {
 	useRemoveFirstHeadingInPreview,
 	useShowFolderView,
 	useShowTagView,
+	useIncludeSubTagFiles,
 };
