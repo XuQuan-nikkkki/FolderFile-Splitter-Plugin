@@ -16,6 +16,7 @@ import {
 } from "./assets/constants";
 import { FOLDER_NOTE_LOCATION, FOLDER_NOTE_MISSING_BEHAVIOR } from "./settings";
 import { NOTIFICATION_MESSAGE_COPY } from "./locales/message";
+import { CommonExplorerStore, createCommonExplorerStore } from "./store/common";
 
 export type FolderSortRule =
 	| "FolderNameAscending"
@@ -55,7 +56,7 @@ export type TagNode = {
 };
 export type TagTree = Map<string, TagNode>;
 
-export type ExplorerStore = {
+export type ExplorerStore = CommonExplorerStore & {
 	folders: TFolder[];
 	rootFolder: TFolder | null;
 	focusedFolder: TFolder | null;
@@ -74,11 +75,6 @@ export type ExplorerStore = {
 	expandedTagPaths: string[];
 	focusedTag: TagNode | null;
 
-	getDataFromLocalStorage: (key: string) => string | null;
-	saveDataInLocalStorage: (key: string, value: string) => void;
-	removeDataFromLocalStorage: (key: string) => void;
-	getDataFromPlugin: <T>(key: string) => Promise<T | undefined>;
-	saveDataInPlugin: (data: Record<string, unknown>) => Promise<void>;
 	restoreData: () => Promise<void>;
 
 	// Folders related
@@ -191,7 +187,8 @@ export type ExplorerStore = {
 };
 
 export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
-	create((set, get: () => ExplorerStore) => ({
+	create<ExplorerStore>((set, get, store) => ({
+		...createCommonExplorerStore(plugin)(set, get, store),
 		folders: plugin.app.vault.getAllFolders() || [],
 		rootFolder: plugin.app.vault.getRoot() || null,
 		focusedFolder: null,
@@ -210,33 +207,6 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 		expandedTagPaths: [],
 		focusedTag: null,
 
-		saveDataInLocalStorage: (key: string, value: string) => {
-			localStorage.setItem(key, value);
-		},
-		getDataFromLocalStorage: (key: string) => {
-			return localStorage.getItem(key);
-		},
-		removeDataFromLocalStorage: (key: string) => {
-			localStorage.removeItem(key);
-		},
-		saveDataInPlugin: async (
-			data: Record<string, unknown>
-		): Promise<void> => {
-			const previousData = await plugin.loadData();
-			await plugin.saveData({
-				...previousData,
-				...data,
-			});
-		},
-		getDataFromPlugin: async <T>(key: string): Promise<T | undefined> => {
-			try {
-				const data = await plugin.loadData();
-				return data[key];
-			} catch (e) {
-				console.error(e);
-				return undefined;
-			}
-		},
 		restoreData: async () => {
 			const {
 				restoreLastFocusedFolder,
@@ -473,7 +443,9 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 			set({
 				folderSortRule: rule,
 			});
-			await get().saveDataInPlugin({ [FFS_FOLDER_SORT_RULE_KEY]: rule });
+			await get().saveDataInPlugin({
+				[FFS_FOLDER_SORT_RULE_KEY]: rule,
+			});
 		},
 		restoreFolderSortRule: async () => {
 			const { restoreFoldersManualSortOrder, getDataFromPlugin } = get();
