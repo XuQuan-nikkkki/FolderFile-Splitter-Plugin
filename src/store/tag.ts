@@ -3,6 +3,7 @@ import { getAllTags, TFile } from "obsidian";
 
 import FolderFileSplitterPlugin from "../main";
 import { ExplorerStore } from "src/store";
+import { FFS_EXPANDED_TAG_PATHS_KEY } from "src/assets/constants";
 
 export type TagSortRule =
 	| "TagNameAscending"
@@ -36,6 +37,8 @@ export type TagExplorerStore = {
 	sortTags: (tags: TagNode[]) => TagNode[];
 	getTagsByParent: (parentTag: string) => TagNode[];
 	hasTagChildren: (tagNode: TagNode) => boolean;
+	changeExpandedTagPaths: (paths: string[]) => Promise<void>;
+	restoreExpandedTagPaths: () => Promise<void>;
 };
 
 export const createTagExplorerStore =
@@ -167,5 +170,37 @@ export const createTagExplorerStore =
 
 		hasTagChildren: (tag: TagNode): boolean => {
 			return tag.children && tag.children.size > 0;
+		},
+
+		changeExpandedTagPaths: async (tagPaths: string[]) => {
+			const { saveDataInLocalStorage } = get();
+			set({
+				expandedTagPaths: tagPaths,
+			});
+			saveDataInLocalStorage(
+				FFS_EXPANDED_TAG_PATHS_KEY,
+				JSON.stringify(tagPaths)
+			);
+		},
+
+		restoreExpandedTagPaths: async () => {
+			const { getDataFromLocalStorage, hasTagChildren, tagTree } = get();
+			const lastExpandedTagPaths = getDataFromLocalStorage(
+				FFS_EXPANDED_TAG_PATHS_KEY
+			);
+			if (!lastExpandedTagPaths) return;
+			try {
+				const tagPaths: string[] = JSON.parse(
+					lastExpandedTagPaths
+				);
+				set({
+					expandedTagPaths: tagPaths.filter((path) => {
+						const tag = tagTree.get(path);
+						return tag && hasTagChildren(tag);
+					}),
+				});
+			} catch (error) {
+				console.error("Invalid Json format: ", error);
+			}
 		},
 	});

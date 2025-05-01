@@ -1,30 +1,32 @@
-import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 
 import { ExplorerStore } from "src/store";
 import { useExpandFolderByClickingOnElement } from "src/hooks/useSettingsHandler";
 import { useExplorer } from "src/hooks/useExplorer";
 import ExpandIcon from "../ExpandIcon";
+import { TagNode } from "src/store/tag";
 
 type Props = {
-	folder: TFolder;
+	tag: TagNode;
 };
-const FolderExpandIcon = ({ folder }: Props) => {
+const TagExpandIcon = ({ tag }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
 
 	const {
-		hasFolderChildren,
+		hasTagChildren,
 		expandedFolderPaths,
-		changeExpandedFolderPaths,
+		expandedTagPaths,
+		changeExpandedTagPaths,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			hasFolderChildren: store.hasFolderChildren,
+			hasTagChildren: store.hasTagChildren,
 			expandedFolderPaths: store.expandedFolderPaths,
-			changeExpandedFolderPaths: store.changeExpandedFolderPaths,
+			expandedTagPaths: store.expandedTagPaths,
+			changeExpandedTagPaths: store.changeExpandedTagPaths,
 		}))
 	);
 
-	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
+	const isTagExpanded = expandedTagPaths.includes(tag.fullPath);
 
 	const { settings } = plugin;
 	const { expandFolderByClickingOn } = useExpandFolderByClickingOnElement(
@@ -32,11 +34,11 @@ const FolderExpandIcon = ({ folder }: Props) => {
 	);
 
 	const onToggleExpandState = (): void => {
-		if (hasFolderChildren(folder)) {
-			const folderPaths = isFolderExpanded
-				? expandedFolderPaths.filter((path) => path !== folder.path)
-				: [...expandedFolderPaths, folder.path];
-			changeExpandedFolderPaths(folderPaths);
+		if (hasTagChildren(tag)) {
+			const tagPaths = isTagExpanded
+				? expandedTagPaths.filter((path) => path !== tag.fullPath)
+				: [...expandedFolderPaths, tag.fullPath];
+				changeExpandedTagPaths(tagPaths);
 		}
 	};
 
@@ -48,11 +50,11 @@ const FolderExpandIcon = ({ folder }: Props) => {
 
 	return (
 		<ExpandIcon
-			isExpanded={isFolderExpanded}
-			hideIcon={!hasFolderChildren(folder)}
+			isExpanded={isTagExpanded}
+			hideIcon={!hasTagChildren(tag)}
 			onClickExpandIcon={onClickExpandIcon}
 		/>
 	);
 };
 
-export default FolderExpandIcon;
+export default TagExpandIcon;

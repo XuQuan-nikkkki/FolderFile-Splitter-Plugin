@@ -35,6 +35,7 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 				restorePinnedFolders,
 				restorePinnedFiles,
 				generateTagTree,
+				restoreExpandedTagPaths,
 			} = get();
 			await Promise.all([
 				restoreLastFocusedFolder(),
@@ -45,6 +46,7 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 				restorePinnedFolders(),
 				restorePinnedFiles(),
 				generateTagTree(),
+				restoreExpandedTagPaths(),
 			]);
 		},
 	}));
