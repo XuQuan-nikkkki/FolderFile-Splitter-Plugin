@@ -33,6 +33,10 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		focusedFolder,
 		getTopLevelTags,
 		sortTags,
+		expandedTagPaths,
+		getTagsByParent,
+		hasTagChildren,
+		focusedTag,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			rootFolder: store.rootFolder,
@@ -46,6 +50,10 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 			order: store.foldersManualSortOrder,
 			getTopLevelTags: store.getTopLevelTags,
 			sortTags: store.sortTags,
+			expandedTagPaths: store.expandedTagPaths,
+			getTagsByParent: store.getTagsByParent,
+			hasTagChildren: store.hasTagChildren,
+			focusedTag: store.focusedTag,
 		}))
 	);
 
@@ -138,11 +146,48 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		return <Tag key={tag.name} tag={tag} />;
 	};
 
+	const renderSubTags = (children: ReactNode) => {
+		return (
+			<div
+				className={classNames(
+					"ffs__sub-tags-group tree-item-children nav-folder-children"
+				)}
+				style={{
+					borderInlineStart: showHierarchyLines ? undefined : "none",
+				}}
+			>
+				{children}
+			</div>
+		);
+	};
+
 	const renderTags = (tags: TagNode[]) => {
 		if (!showTagView) return;
-		// TODO: to be implemented
+
 		const sortedTags = sortTags(tags);
-		return <div>{sortedTags.map(renderTag)}</div>;
+		return sortedTags.map((tag) => {
+			const isExpanded = expandedTagPaths.includes(tag.fullPath);
+			return (
+				<div
+					key={tag.name}
+					className={classNames(
+						"ffs__tag-tree-item tree-item nav-folder",
+						{
+							"is-collapsed":
+								!isExpanded &&
+								focusedTag?.fullPath !== tag.fullPath,
+						}
+					)}
+				>
+					{renderTag(tag)}
+					{isExpanded &&
+						hasTagChildren(tag) &&
+						renderSubTags(
+							renderTags(getTagsByParent(tag.fullPath))
+						)}
+				</div>
+			);
+		});
 	};
 
 	const renderEmptyDiv = () => (

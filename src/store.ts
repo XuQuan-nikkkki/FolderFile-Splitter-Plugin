@@ -50,6 +50,7 @@ export type TagNode = {
 	name: string;
 	files: TFile[];
 	parent: string | null;
+	fullPath: string;
 	children: Set<string>;
 };
 export type TagTree = Map<string, TagNode>;
@@ -70,6 +71,8 @@ export type ExplorerStore = {
 	latestFolderCreatedTime: number | null;
 	tagTree: TagTree;
 	tagSortRule: TagSortRule;
+	expandedTagPaths: string[];
+	focusedTag: TagNode | null;
 
 	getDataFromLocalStorage: (key: string) => string | null;
 	saveDataInLocalStorage: (key: string, value: string) => void;
@@ -142,6 +145,8 @@ export type ExplorerStore = {
 	getTopLevelTags: () => TagNode[];
 	getFilesCountInTag: (tagNode: TagNode) => number;
 	sortTags: (tags: TagNode[]) => TagNode[];
+	getTagsByParent: (parentTag: string) => TagNode[];
+	hasTagChildren: (tagNode: TagNode) => boolean;
 
 	// Files related
 	findFileByPath: (path: string) => TFile | null;
@@ -202,6 +207,8 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 		latestFolderCreatedTime: null,
 		tagTree: new Map(),
 		tagSortRule: DEFAULT_TAG_SORT_RULE,
+		expandedTagPaths: [],
+		focusedTag: null,
 
 		saveDataInLocalStorage: (key: string, value: string) => {
 			localStorage.setItem(key, value);
@@ -780,17 +787,19 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 
 				const getOrCreateTagNode = (
 					tagName: string,
+					fullPath: string,
 					parent: string | null = null
 				): TagNode => {
-					if (!tagTree.has(tagName)) {
-						tagTree.set(tagName, {
+					if (!tagTree.has(fullPath)) {
+						tagTree.set(fullPath, {
 							name: tagName,
 							files: [],
 							parent,
+							fullPath,
 							children: new Set(),
 						});
 					}
-					return tagTree.get(tagName) as TagNode;
+					return tagTree.get(fullPath) as TagNode;
 				};
 
 				tags.forEach((tag) => {
@@ -802,6 +811,7 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 							.slice(0, index + 1)
 							.join("/");
 						const tagNode = getOrCreateTagNode(
+							part,
 							fullTagPath,
 							parentTag
 						);
@@ -870,6 +880,18 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 				default:
 					return tags;
 			}
+		},
+
+		getTagsByParent: (parentTag: string): TagNode[] => {
+			const { tagTree } = get();
+			const tags = Array.from(tagTree.values()).filter(
+				(tagNode) => tagNode.parent === parentTag
+			);
+			return tags;
+		},
+
+		hasTagChildren: (tag: TagNode): boolean => {
+			return tag.children && tag.children.size > 0;
 		},
 
 		// Files related
