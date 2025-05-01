@@ -97,7 +97,7 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 	},
 	showFolderIcon: {
 		name: "Show folder icon",
-		desc: "Enable this option to display icon next to folder, enhancing visual distinction between folders and files.	",
+		desc: "Display an icon next to folders to improve visual clarity and structure.",
 	},
 	showFileItemDivider: {
 		name: "Show file item divider",
@@ -212,6 +212,10 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Include tag files",
 		desc: "When enabled, files inside subtags will be included in the file list and their count will be reflected in the tag file count.",
 	},
+	showTagIcon: {
+		name: "Show tag icon",
+		desc: "Display an icon next to tags to improve visual clarity and structure.",
+	},
 };
 
 export const ZH_SETTINGS: SettingsLocaleResource = {
@@ -263,7 +267,7 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	},
 	showFolderIcon: {
 		name: "显示文件夹图标",
-		desc: "启用后，文件夹旁会显示图标，便于区分文件夹和文件。",
+		desc: "启用后，文件夹旁会显示图标，以增强视觉层级感和结构清晰度。",
 	},
 	fileItemSpacing: {
 		name: "文件项间距",
@@ -377,5 +381,9 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	includeSubTagFiles: {
 		name: "包含子标签文件",
 		desc: "启用后，子标签中的文件将会显示在文件列表中，并计入所属标签的文件数量。",
+	},
+	showTagIcon: {
+		name: "显示标签图标",
+		desc: "启用后，标签旁会显示图标，以增强视觉层级感和结构清晰度。",
 	},
 };

@@ -273,7 +273,8 @@ div.ffs__name--bold {
 	overflow: hidden;
 }
 
-.ffs__folder-icon-wrapper {
+.ffs__folder-icon-wrapper,
+.ffs__tag-icon-wrapper {
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -283,10 +284,14 @@ div.ffs__name--bold {
 	margin-right: var(--size-4-2);
 }
 
-.ffs__folder-icon {
+.ffs__folder-icon,
+.ffs__tag-icon {
 	width: 14px;
 	height: 14px;
 	stroke-width: var(--icon-stroke);
+}
+
+.ffs__folder-icon {
 	fill: var(--nav-item-color);
 }
 

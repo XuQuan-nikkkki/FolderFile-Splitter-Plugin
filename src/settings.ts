@@ -66,6 +66,7 @@ export interface FolderFileSplitterPluginSettings {
 	showFolderView: boolean;
 	showTagView: boolean;
 	includeSubTagFiles: boolean;
+	showTagIcon: boolean;
 }
 
 export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
@@ -95,4 +96,5 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	showFolderView: true,
 	showTagView: false,
 	includeSubTagFiles: false,
+	showTagIcon: true,
 };

@@ -18,6 +18,7 @@ import { useRemoveFirstHeadingInPreview } from "./useRemoveFirstHeadingInPreview
 import { useShowFolderView } from "./useShowFolderView";
 import { useShowTagView } from "./useShowTagView";
 import { useIncludeSubTagFiles } from "./useIncludeSubTagFiles";
+import { useShowTagIcon } from "./useShowTagIcon";
 
 export {
 	useShowFolderIcon,
@@ -40,4 +41,5 @@ export {
 	useShowFolderView,
 	useShowTagView,
 	useIncludeSubTagFiles,
+	useShowTagIcon,
 };
