@@ -39,6 +39,7 @@ export type TagExplorerStore = {
 	hasTagChildren: (tagNode: TagNode) => boolean;
 	changeExpandedTagPaths: (paths: string[]) => Promise<void>;
 	restoreExpandedTagPaths: () => Promise<void>;
+	renameTag: (tag: TagNode, newName: string) => Promise<void>;
 };
 
 export const createTagExplorerStore =
@@ -190,9 +191,7 @@ export const createTagExplorerStore =
 			);
 			if (!lastExpandedTagPaths) return;
 			try {
-				const tagPaths: string[] = JSON.parse(
-					lastExpandedTagPaths
-				);
+				const tagPaths: string[] = JSON.parse(lastExpandedTagPaths);
 				set({
 					expandedTagPaths: tagPaths.filter((path) => {
 						const tag = tagTree.get(path);
@@ -201,6 +200,34 @@ export const createTagExplorerStore =
 				});
 			} catch (error) {
 				console.error("Invalid Json format: ", error);
+			}
+		},
+
+		renameTag: async (tag: TagNode, newName: string) => {
+			const files = plugin.app.vault.getMarkdownFiles();
+			const oldTag = tag.fullPath;
+			const parts = oldTag.split("/");
+			parts[parts.length - 1] = newName;
+			const newTag = parts.join("/");
+
+			const oldTagWithHash = oldTag.startsWith("#")
+				? oldTag
+				: `#${oldTag}`;
+			const newTagWithHash = newTag.startsWith("#")
+				? newTag
+				: `#${newTag}`;
+
+			for (const file of files) {
+				const content = await plugin.app.vault.read(file);
+
+				const updated = content.replace(
+					new RegExp(`(?<=\\s|^)${oldTagWithHash}(?=\\s|$)`, "g"),
+					newTagWithHash
+				);
+
+				if (updated !== content) {
+					await plugin.app.vault.modify(file, updated);
+				}
 			}
 		},
 	});
