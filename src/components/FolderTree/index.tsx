@@ -2,7 +2,7 @@ import { useShallow } from "zustand/react/shallow";
 import { TFolder } from "obsidian";
 import classNames from "classnames";
 
-import { ExplorerStore, TagNode } from "src/store";
+import { ExplorerStore } from "src/store";
 import {
 	useHideRootFolder,
 	useShowFolderView,
@@ -16,6 +16,7 @@ import Folder from "../Folder";
 import PinnedFolders, { FolderOptions } from "./PinnedFolders";
 import { ReactNode } from "react";
 import Tag from "../Tag";
+import { TagNode } from "src/store/tag";
 
 type Props = {
 	onOpenFilesPane?: () => void;

@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { TagNode } from "src/store";
+import { TagNode } from "src/store/tag";
 
 type Props = {
 	tag: TagNode;
