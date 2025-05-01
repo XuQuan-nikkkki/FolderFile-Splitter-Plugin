@@ -15,6 +15,7 @@ import { useExplorer } from "src/hooks/useExplorer";
 import Folder from "../Folder";
 import PinnedFolders, { FolderOptions } from "./PinnedFolders";
 import { ReactNode } from "react";
+import Tag from "../Tag";
 
 type Props = {
 	onOpenFilesPane?: () => void;
@@ -131,16 +132,15 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		);
 	};
 
+	const renderTag = (tag: TagNode) => {
+		return <Tag key={tag.name} tag={tag} />;
+	};
+
 	const renderTags = (tags: TagNode[]) => {
 		if (!showTagView) return;
 		// TODO: to be implemented
-		return (
-			<div>
-				{tags.map((tag) => (
-					<div key={tag.name}>{tag.name}</div>
-				))}
-			</div>
-		);
+		const sortedTags = tags;
+		return <div>{sortedTags.map(renderTag)}</div>;
 	};
 
 	const renderEmptyDiv = () => (
