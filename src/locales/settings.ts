@@ -209,7 +209,7 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		desc: "Display files by tag. Can be used together with folder view.",
 	},
 	includeSubTagFiles: {
-		name: "Include tag files",
+		name: "Include subtag files",
 		desc: "When enabled, files inside subtags will be included in the file list and their count will be reflected in the tag file count.",
 	},
 	showTagIcon: {
