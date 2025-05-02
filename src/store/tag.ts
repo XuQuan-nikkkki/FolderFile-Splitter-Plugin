@@ -5,13 +5,6 @@ import FolderFileSplitterPlugin from "../main";
 import { ExplorerStore } from "src/store";
 import { FFS_EXPANDED_TAG_PATHS_KEY } from "src/assets/constants";
 
-export type TagSortRule =
-	| "TagNameAscending"
-	| "TagNameDescending"
-	| "FileCountAscending"
-	| "FileCountDescending";
-export const DEFAULT_TAG_SORT_RULE: TagSortRule = "TagNameAscending";
-
 type FolderPath = string;
 type ChildrenPaths = string[];
 export type ManualSortOrder = Record<FolderPath, ChildrenPaths>;
@@ -27,7 +20,6 @@ export type TagTree = Map<string, TagNode>;
 
 export type TagExplorerStore = {
 	tagTree: TagTree;
-	tagSortRule: TagSortRule;
 	expandedTagPaths: string[];
 	focusedTag: TagNode | null;
 
@@ -48,7 +40,6 @@ export const createTagExplorerStore =
 	): StateCreator<ExplorerStore, [], [], TagExplorerStore> =>
 	(set, get) => ({
 		tagTree: new Map(),
-		tagSortRule: DEFAULT_TAG_SORT_RULE,
 		expandedTagPaths: [],
 		focusedTag: null,
 
@@ -142,17 +133,17 @@ export const createTagExplorerStore =
 		},
 
 		sortTags: (tags: TagNode[]): TagNode[] => {
-			const { getFilesCountInTag, tagSortRule: rule } = get();
+			const { getFilesCountInTag, folderSortRule: rule } = get();
 			switch (rule) {
-				case "TagNameAscending":
+				case "FolderNameAscending":
 					return tags.sort((a, b) => a.name.localeCompare(b.name));
-				case "TagNameDescending":
+				case "FolderNameDescending":
 					return tags.sort((a, b) => b.name.localeCompare(a.name));
-				case "FileCountAscending":
+				case "FilesCountAscending":
 					return tags.sort(
 						(a, b) => getFilesCountInTag(a) - getFilesCountInTag(b)
 					);
-				case "FileCountDescending":
+				case "FilesCountDescending":
 					return tags.sort(
 						(a, b) => getFilesCountInTag(b) - getFilesCountInTag(a)
 					);

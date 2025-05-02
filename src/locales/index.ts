@@ -96,12 +96,12 @@ export const TIPS_COPY: Copy = {
 
 export const FOLDER_SORT_RULES_COPY: Copy = {
 	folderNameAscending: {
-		en: "Folder name(A to Z)",
-		zh: "按文件夹名升序",
+		en: "Folder/Tag name(A to Z)",
+		zh: "按文件夹/标签名升序",
 	},
 	folderNameDescending: {
-		en: "Folder name(Z to A)",
-		zh: "按文件夹名降序",
+		en: "Folder/Tag name(Z to A)",
+		zh: "按文件夹/标签名降序",
 	},
 	filesCountAscending: {
 		en: "Files count(small to large)",
