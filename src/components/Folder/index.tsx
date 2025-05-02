@@ -8,6 +8,7 @@ import FolderContent, { FolderProps } from "./Content";
 import { useExplorer } from "src/hooks/useExplorer";
 import FolderExpandIcon from "./ExpandIcon";
 import classNames from "classnames";
+import { ITEM_INFO_COPY, PUNCTUATION_COPY } from "src/locales";
 
 type Props = FolderProps & {
 	onOpenFilesPane: () => void;
@@ -22,7 +23,7 @@ const Folder = ({
 	disableDrag = false,
 	disableHoverIndent = false,
 }: Props) => {
-	const { useExplorerStore } = useExplorer();
+	const { useExplorerStore, plugin } = useExplorer();
 
 	const {
 		setFocusedFolder,
@@ -31,6 +32,8 @@ const Folder = ({
 		expandedFolderPaths,
 		focusedFolder,
 		hasFolderChildren,
+		getFilesinFolder,
+		getFoldersByParent,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			setFocusedFolder: store.setFocusedFolder,
@@ -39,11 +42,14 @@ const Folder = ({
 			expandFolder: store.expandFolder,
 			collapseFolder: store.collapseFolder,
 			focusedFolder: store.focusedFolder,
+			getFilesinFolder: store.getFilesInFolder,
+			getFoldersByParent: store.getFoldersByParent,
 		}))
 	);
 
-	const isFocused = folder.path == focusedFolder?.path;
+	const { language } = plugin;
 
+	const isFocused = folder.path == focusedFolder?.path;
 	const isRoot = folder.isRoot();
 
 	const {
@@ -97,6 +103,25 @@ const Folder = ({
 		return <FolderExpandIcon folder={folder} />;
 	};
 
+	const getAriaLabel = () => {
+		const filesCount = getFilesinFolder(folder).length;
+		const foldersCount = getFoldersByParent(folder).length;
+		const { filesCountInFolder, foldersCountInFolder } = ITEM_INFO_COPY;
+
+		const filesCountInfo =
+			filesCount +
+			" " +
+			filesCountInFolder[language] +
+			(filesCount > 1 ? "s" : "");
+		const foldersCountInfo =
+			foldersCount +
+			" " +
+			foldersCountInFolder[language] +
+			(foldersCount > 1 ? "s" : "");
+
+		return `${folder.name}\n${filesCountInfo}${PUNCTUATION_COPY.comma[language]}${foldersCountInfo}`;
+	};
+
 	const folderLevel = isRoot ? 0 : folder.path.split("/").length - 1;
 	return (
 		<div
@@ -116,8 +141,10 @@ const Folder = ({
 					: {
 							marginInlineStart: -17 * folderLevel,
 							paddingInlineStart: 24 + 17 * folderLevel,
-						}
+					  }
 			}
+			data-tooltip-position="right"
+			aria-label={getAriaLabel()}
 		>
 			{maybeRenderExpandIcon()}
 			<div

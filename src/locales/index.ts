@@ -147,3 +147,37 @@ export const FILE_SORT_RULES_COPY: Copy = {
 		zh: "手动排序",
 	},
 };
+
+export const PUNCTUATION_COPY: Copy = {
+	comma: {
+		en: ", ",
+		zh: "，",
+	},
+};
+
+export const ITEM_INFO_COPY: Copy = {
+	filesCountInFolder: {
+		en: "file",
+		zh: "条笔记",
+	},
+	foldersCountInFolder: {
+		en: "folder",
+		zh: "个文件夹",
+	},
+	filesCountInTag: {
+		en: "file",
+		zh: "条笔记",
+	},
+	tagsCountInTag: {
+		en: "tag",
+		zh: "个标签",
+	},
+	fileModifiedTime: {
+		en: "Last modified at ",
+		zh: "最后修改于 ",
+	},
+	fileCreatedTime: {
+		en: "Created at ",
+		zh: "创建于 ",
+	},
+};
