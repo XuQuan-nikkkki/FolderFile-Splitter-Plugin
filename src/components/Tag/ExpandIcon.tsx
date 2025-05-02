@@ -14,13 +14,11 @@ const TagExpandIcon = ({ tag }: Props) => {
 
 	const {
 		hasTagChildren,
-		expandedFolderPaths,
 		expandedTagPaths,
 		changeExpandedTagPaths,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			hasTagChildren: store.hasTagChildren,
-			expandedFolderPaths: store.expandedFolderPaths,
 			expandedTagPaths: store.expandedTagPaths,
 			changeExpandedTagPaths: store.changeExpandedTagPaths,
 		}))
@@ -37,7 +35,7 @@ const TagExpandIcon = ({ tag }: Props) => {
 		if (hasTagChildren(tag)) {
 			const tagPaths = isTagExpanded
 				? expandedTagPaths.filter((path) => path !== tag.fullPath)
-				: [...expandedFolderPaths, tag.fullPath];
+				: [...expandedTagPaths, tag.fullPath];
 				changeExpandedTagPaths(tagPaths);
 		}
 	};

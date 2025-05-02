@@ -14,9 +14,10 @@ type Props = {
 const TagContent = ({ tag }: Props) => {
 	const { plugin, useExplorerStore } = useExplorer();
 
-	const { renameTag } = useExplorerStore(
+	const { renameTag, focusedTag } = useExplorerStore(
 		useShallow((store) => ({
 			renameTag: store.renameTag,
+			focusedTag: store.focusedTag,
 		}))
 	);
 
@@ -25,8 +26,7 @@ const TagContent = ({ tag }: Props) => {
 
 	const { showTagIcon } = useShowTagIcon(plugin.settings.showTagIcon);
 
-	// const isFocused = folder.path == focusedFolder?.path;
-	const isFocused = false;
+	const isFocused = tag.fullPath == focusedTag?.fullPath;
 
 	const onSaveName = (name: string) => renameTag(tag, name);
 	const {
