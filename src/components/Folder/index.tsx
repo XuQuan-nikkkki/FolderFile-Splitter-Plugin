@@ -122,7 +122,15 @@ const Folder = ({
 		return `${folder.name}\n${filesCountInfo}${PUNCTUATION_COPY.comma[language]}${foldersCountInfo}`;
 	};
 
-	const folderLevel = isRoot ? 0 : folder.path.split("/").length - 1;
+	const getIndentStyle = () => {
+		if (disableHoverIndent) return undefined;
+		const folderLevel = isRoot ? 0 : folder.path.split("/").length - 1;
+		return {
+			marginInlineStart: -17 * folderLevel,
+			paddingInlineStart: 24 + 17 * folderLevel,
+		};
+	};
+
 	return (
 		<div
 			className={classNames(
@@ -135,14 +143,7 @@ const Folder = ({
 			)}
 			ref={setDropRef}
 			onClick={() => setFocusedFolder(folder)}
-			style={
-				disableHoverIndent
-					? undefined
-					: {
-							marginInlineStart: -17 * folderLevel,
-							paddingInlineStart: 24 + 17 * folderLevel,
-					  }
-			}
+			style={getIndentStyle()}
 			data-tooltip-position="right"
 			aria-label={getAriaLabel()}
 		>

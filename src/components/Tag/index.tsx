@@ -57,7 +57,15 @@ const Tag = ({
 		return `${tag.name}\n${filesCountInfo}${PUNCTUATION_COPY.comma[language]}${tagsCountInfo}`;
 	};
 
-	const tagLevel = tag.fullPath.split("/").length - 1;
+	const getIndentStyle = () => {
+		if (disableHoverIndent) return undefined;
+		const tagLevel = tag.fullPath.split("/").length - 1;
+		return {
+			marginInlineStart: -17 * tagLevel,
+			paddingInlineStart: 24 + 17 * tagLevel,
+		};
+	};
+
 	return (
 		<div
 			className={classNames(
@@ -67,14 +75,7 @@ const Tag = ({
 					"is-active": isFocused,
 				}
 			)}
-			style={
-				disableHoverIndent
-					? undefined
-					: {
-							marginInlineStart: -17 * tagLevel,
-							paddingInlineStart: 24 + 17 * tagLevel,
-					  }
-			}
+			style={getIndentStyle()}
 			onClick={() => setFocusedTag(tag)}
 			data-tooltip-position="right"
 			aria-label={getAriaLabel()}
