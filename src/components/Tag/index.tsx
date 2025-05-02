@@ -6,7 +6,7 @@ import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
 import TagExpandIcon from "./ExpandIcon";
 import TagContent from "./Content";
-import { ITEM_INFO_COPY, PUNCTUATION_COPY } from "src/locales";
+import { pluralize } from "src/utils";
 
 type Props = {
 	tag: TagNode;
@@ -39,22 +39,14 @@ const Tag = ({
 	const isFocused = tag.fullPath == focusedTag?.fullPath;
 
 	const getAriaLabel = () => {
+		const { name } = tag
 		const filesCount = getFilesInTag(tag).length;
 		const tagsCount = getTagsByParent(tag.fullPath).length;
-		const { filesCountInTag, tagsCountInTag } = ITEM_INFO_COPY;
 
-		const filesCountInfo =
-			filesCount +
-			" " +
-			filesCountInTag[language] +
-			(filesCount > 1 ? "s" : "");
-		const tagsCountInfo =
-			tagsCount +
-			" " +
-			tagsCountInTag[language] +
-			(tagsCount > 1 ? "s" : "");
-
-		return `${tag.name}\n${filesCountInfo}${PUNCTUATION_COPY.comma[language]}${tagsCountInfo}`;
+		if (language === "en") {
+			return `${name}\n${pluralize(filesCount, "file")}, ${pluralize(tagsCount, "tag")}`;
+		}
+		return `${name}\n${filesCount} 条笔记，${tagsCount} 个标签`;
 	};
 
 	const getIndentStyle = () => {

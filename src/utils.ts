@@ -13,3 +13,7 @@ export const isAbstractFileIncluded = (
 	files: TAbstractFile[],
 	file: TAbstractFile
 ): boolean => files.some((f) => f.path === file.path);
+
+export const pluralize = (count: number, word: string): string => {
+	return `${count} ${word}${count > 1 ? "s" : ""}`;
+};

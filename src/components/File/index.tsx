@@ -7,7 +7,6 @@ import { FFS_DRAG_FILE } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
 
 import FileContent, { FileProps } from "./Content";
-import { ITEM_INFO_COPY } from "src/locales";
 import dayjs from "dayjs";
 
 type Props = FileProps & {
@@ -38,16 +37,17 @@ const File = ({ file, deleteFile, disableDrag, onOpenFoldersPane }: Props) => {
 	}, [onOpenFoldersPane]);
 
 	const getAriaLabel = () => {
-		const { fileModifiedTime, fileCreatedTime } = ITEM_INFO_COPY;
-		const { ctime, mtime } = file.stat;
+		const { basename, stat } = file;
+		const { ctime, mtime } = stat;
 		const format = "YYYY-MM-DD HH:mm";
 
-		const modifiedInfo =
-			fileModifiedTime[language] + dayjs(mtime).format(format);
-		const createdInfo =
-			fileCreatedTime[language] + dayjs(ctime).format(format);
+		const modifiedInfo = dayjs(mtime).format(format);
+		const createdInfo = dayjs(ctime).format(format);
 
-		return `${file.basename}\n${modifiedInfo}\n${createdInfo}`;
+		if (language === "en") {
+			return `${basename}\nLast modified at ${modifiedInfo}\nCreated at ${createdInfo}`;
+		}
+		return `${basename}\n最后修改于 ${modifiedInfo}\n创建于 ${createdInfo}`;
 	};
 
 	return (

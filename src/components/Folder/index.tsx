@@ -8,7 +8,7 @@ import FolderContent, { FolderProps } from "./Content";
 import { useExplorer } from "src/hooks/useExplorer";
 import FolderExpandIcon from "./ExpandIcon";
 import classNames from "classnames";
-import { ITEM_INFO_COPY, PUNCTUATION_COPY } from "src/locales";
+import { pluralize } from "src/utils";
 
 type Props = FolderProps & {
 	onOpenFilesPane: () => void;
@@ -104,22 +104,17 @@ const Folder = ({
 	};
 
 	const getAriaLabel = () => {
+		const { name } = folder;
 		const filesCount = getFilesinFolder(folder).length;
 		const foldersCount = getFoldersByParent(folder).length;
-		const { filesCountInFolder, foldersCountInFolder } = ITEM_INFO_COPY;
 
-		const filesCountInfo =
-			filesCount +
-			" " +
-			filesCountInFolder[language] +
-			(filesCount > 1 ? "s" : "");
-		const foldersCountInfo =
-			foldersCount +
-			" " +
-			foldersCountInFolder[language] +
-			(foldersCount > 1 ? "s" : "");
+		const filesCountInfo = pluralize(filesCount, "file");
+		const foldersCountInfo = pluralize(foldersCount, "folder");
 
-		return `${folder.name}\n${filesCountInfo}${PUNCTUATION_COPY.comma[language]}${foldersCountInfo}`;
+		if (language === "en") {
+			return `${name}\n${filesCountInfo}, ${foldersCountInfo}`;
+		}
+		return `${name}\n${filesCount} 条笔记，${foldersCount} 个文件夹`;
 	};
 
 	const getIndentStyle = () => {
