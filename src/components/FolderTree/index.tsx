@@ -134,7 +134,7 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	};
 
 	const maybeRenderRootFolder = () => {
-		if (!rootFolder || hideRootFolder) return null;
+		if (!rootFolder || hideRootFolder || !showFolderView) return null;
 
 		return (
 			<div className="ffs__folder-tree-item tree-item nav-folder">
