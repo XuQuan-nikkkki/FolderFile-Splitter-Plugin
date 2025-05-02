@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { TFile } from "obsidian";
 
-import {  ExplorerStore } from "src/store";
+import { ExplorerStore } from "src/store";
 
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFile } from "src/utils";
 import { useExplorer } from "../useExplorer";
-import { useIncludeSubfolderFiles } from "../useSettingsHandler";
+import {
+	useIncludeSubfolderFiles,
+	useIncludeSubTagFiles,
+} from "../useSettingsHandler";
 import { FILE_MANUAL_SORT_RULE } from "src/store/file";
 
 const useChangeFile = () => {
@@ -16,6 +19,8 @@ const useChangeFile = () => {
 	const {
 		focusedFolder,
 		getFilesInFolder,
+		focusedTag,
+		getFilesInTag,
 		updateFilePinState,
 		updateFileManualOrder,
 		fileSortRule,
@@ -26,6 +31,8 @@ const useChangeFile = () => {
 		useShallow((store: ExplorerStore) => ({
 			focusedFolder: store.focusedFolder,
 			getFilesInFolder: store.getFilesInFolder,
+			focusedTag: store.focusedTag,
+			getFilesInTag: store.getFilesInTag,
 			updateFilePinState: store.updateFilePinState,
 			updateFileManualOrder: store.updateFileManualOrder,
 			fileSortRule: store.fileSortRule,
@@ -35,16 +42,24 @@ const useChangeFile = () => {
 		}))
 	);
 
+	const { settings } = plugin;
 	const { includeSubfolderFiles } = useIncludeSubfolderFiles(
-		plugin.settings.includeSubfolderFiles
+		settings.includeSubfolderFiles
 	);
-	const defaultFiles: TFile[] = focusedFolder
-		? getFilesInFolder(focusedFolder, includeSubfolderFiles)
-		: [];
+	const { includeSubTagFiles } = useIncludeSubTagFiles(
+		settings.includeSubTagFiles
+	);
+
+	let defaultFiles: TFile[] = [];
+	if (focusedFolder) {
+		defaultFiles = getFilesInFolder(focusedFolder, includeSubfolderFiles);
+	} else if (focusedTag) {
+		defaultFiles = getFilesInTag(focusedTag);
+	}
+
 	const [files, setFiles] = useState<TFile[]>(defaultFiles);
 
 	useEffect(() => {
-		setFiles(defaultFiles);
 		window.addEventListener(VaultChangeEventName, onHandleVaultChange);
 		return () => {
 			window.removeEventListener(
@@ -52,7 +67,11 @@ const useChangeFile = () => {
 				onHandleVaultChange
 			);
 		};
-	}, [focusedFolder, includeSubfolderFiles]);
+	}, []);
+
+	useEffect(() => {
+		setFiles(defaultFiles);
+	}, [focusedFolder, includeSubfolderFiles, focusedTag, includeSubTagFiles]);
 
 	const onDeleteFileFromList = (file: TFile) => {
 		setFiles((prevFiles) =>

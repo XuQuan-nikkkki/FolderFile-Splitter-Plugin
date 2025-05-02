@@ -19,11 +19,14 @@ const Tag = ({
 }: Props) => {
 	const { useExplorerStore } = useExplorer();
 
-	const { hasTagChildren } = useExplorerStore(
+	const { hasTagChildren, setFocusedTag, focusedTag } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			hasTagChildren: store.hasTagChildren,
+			setFocusedTag: store.setFocusedTag,
+			focusedTag: store.focusedTag,
 		}))
 	);
+	const isFocused = tag.fullPath == focusedTag?.fullPath;
 
 	const tagLevel = tag.fullPath.split("/").length - 1;
 	return (
@@ -32,6 +35,7 @@ const Tag = ({
 				"ffs__folder-container tree-item-self nav-tag-title is-clickable",
 				{
 					"mod-collapsible": hasTagChildren(tag),
+					"is-active": isFocused,
 				}
 			)}
 			style={
@@ -42,6 +46,7 @@ const Tag = ({
 							paddingInlineStart: 24 + 17 * tagLevel,
 						}
 			}
+			onClick={() => setFocusedTag(tag)}
 		>
 			{!hideExpandIcon && <TagExpandIcon tag={tag} />}
 			<TagContent tag={tag} />

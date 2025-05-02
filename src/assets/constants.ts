@@ -1,6 +1,7 @@
 import { TAbstractFile, WorkspaceLeaf } from "obsidian";
 
 export const FFS_FOCUSED_FOLDER_PATH_KEY = "FocusedFolderPath";
+export const FFS_FOCUSED_TAG_PATH_KEY = "FocusedTagPath";
 export const FFS_EXPANDED_FOLDER_PATHS_KEY = "ExpandedFolderPaths";
 export const FFS_EXPANDED_TAG_PATHS_KEY = "ExpandedTagPaths";
 export const FFS_FOCUSED_FILE_PATH_KEY = "FocusedFilePath";

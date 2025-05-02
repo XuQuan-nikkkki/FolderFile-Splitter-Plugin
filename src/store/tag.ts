@@ -3,7 +3,10 @@ import { getAllTags, TFile } from "obsidian";
 
 import FolderFileSplitterPlugin from "../main";
 import { ExplorerStore } from "src/store";
-import { FFS_EXPANDED_TAG_PATHS_KEY } from "src/assets/constants";
+import {
+	FFS_EXPANDED_TAG_PATHS_KEY,
+	FFS_FOCUSED_TAG_PATH_KEY,
+} from "src/assets/constants";
 
 type FolderPath = string;
 type ChildrenPaths = string[];
@@ -23,8 +26,17 @@ export type TagExplorerStore = {
 	expandedTagPaths: string[];
 	focusedTag: TagNode | null;
 
+	markdownFiles: TFile[];
+	_getOrCreateTagNode: (
+		tagTree: TagTree,
+		tagName: string,
+		fullPath: string,
+		parent: string | null
+	) => TagNode;
+	getTagsOfFile: (file: TFile) => string[];
 	generateTagTree: () => TagTree;
 	getTopLevelTags: () => TagNode[];
+	getFilesInTag: (tagNode: TagNode) => TFile[];
 	getFilesCountInTag: (tagNode: TagNode) => number;
 	sortTags: (tags: TagNode[]) => TagNode[];
 	getTagsByParent: (parentTag: string) => TagNode[];
@@ -32,6 +44,8 @@ export type TagExplorerStore = {
 	changeExpandedTagPaths: (paths: string[]) => Promise<void>;
 	restoreExpandedTagPaths: () => Promise<void>;
 	renameTag: (tag: TagNode, newName: string) => Promise<void>;
+	_setFocusedTag: (tag: TagNode | null) => void;
+	setFocusedTag: (folder: TagNode | null) => Promise<void>;
 };
 
 export const createTagExplorerStore =
@@ -43,34 +57,43 @@ export const createTagExplorerStore =
 		expandedTagPaths: [],
 		focusedTag: null,
 
+		get markdownFiles() {
+			return plugin.app.vault.getMarkdownFiles();
+		},
+
+		_getOrCreateTagNode: (
+			tagTree: TagTree,
+			tagName: string,
+			fullPath: string,
+			parent: string | null = null
+		) => {
+			if (!tagTree.has(fullPath)) {
+				tagTree.set(fullPath, {
+					name: tagName,
+					files: [],
+					parent,
+					fullPath,
+					children: new Set(),
+				});
+			}
+			return tagTree.get(fullPath) as TagNode;
+		},
+
+		getTagsOfFile: (file: TFile) => {
+			const cache = plugin.app.metadataCache.getFileCache(file);
+			if (!cache) return [];
+			return [...new Set(getAllTags(cache))];
+		},
+
 		generateTagTree: () => {
+			const { _getOrCreateTagNode, markdownFiles, getTagsOfFile } = get();
+
 			const tagTree: TagTree = new Map();
-			const files = plugin.app.vault.getMarkdownFiles();
-			if (!files || files.length === 0) return tagTree;
+			if (!markdownFiles || markdownFiles.length === 0) return tagTree;
 
-			files.forEach((file) => {
-				const cache = plugin.app.metadataCache.getFileCache(file);
-				if (!cache) return;
-
-				const tags = getAllTags(cache);
+			markdownFiles.forEach((file) => {
+				const tags = getTagsOfFile(file);
 				if (!tags || tags.length === 0) return;
-
-				const getOrCreateTagNode = (
-					tagName: string,
-					fullPath: string,
-					parent: string | null = null
-				): TagNode => {
-					if (!tagTree.has(fullPath)) {
-						tagTree.set(fullPath, {
-							name: tagName,
-							files: [],
-							parent,
-							fullPath,
-							children: new Set(),
-						});
-					}
-					return tagTree.get(fullPath) as TagNode;
-				};
 
 				tags.forEach((tag) => {
 					const tagParts = tag.replace("#", "").split("/");
@@ -80,7 +103,8 @@ export const createTagExplorerStore =
 						const fullTagPath = tagParts
 							.slice(0, index + 1)
 							.join("/");
-						const tagNode = getOrCreateTagNode(
+						const tagNode = _getOrCreateTagNode(
+							tagTree,
 							part,
 							fullTagPath,
 							parentTag
@@ -115,21 +139,32 @@ export const createTagExplorerStore =
 			);
 		},
 
-		getFilesCountInTag: (tagNode: TagNode): number => {
-			if (!tagNode || !tagNode.files) return 0;
+		getFilesInTag: (tagNode: TagNode): TFile[] => {
+			if (!tagNode || !tagNode.files) return [];
 
 			const { tagTree } = get();
 			const { includeSubTagFiles } = plugin.settings;
-			let totalCount = tagNode.files.length;
-			if (!includeSubTagFiles) return totalCount;
 
-			tagNode.children.forEach((childTagName) => {
-				const childNode = tagTree.get(childTagName);
-				if (childNode) {
-					totalCount += childNode.files.length;
-				}
-			});
-			return totalCount;
+			const files = [...tagNode.files];
+			if (!includeSubTagFiles) return files;
+
+			const getAllChildFiles = (node: TagNode): TFile[] => {
+				const childFiles: TFile[] = [];
+				node.children.forEach((childPath) => {
+					const childNode = tagTree.get(childPath);
+					if (childNode) {
+						childFiles.push(...childNode.files);
+					}
+				});
+				return childFiles;
+			};
+
+			return [...new Set([...files, ...getAllChildFiles(tagNode)])];
+		},
+
+		getFilesCountInTag: (tagNode: TagNode): number => {
+			const { getFilesInTag } = get();
+			return getFilesInTag(tagNode).length;
 		},
 
 		sortTags: (tags: TagNode[]): TagNode[] => {
@@ -219,6 +254,36 @@ export const createTagExplorerStore =
 				if (updated !== content) {
 					await plugin.app.vault.modify(file, updated);
 				}
+			}
+		},
+		_setFocusedTag: (tag: TagNode | null) =>
+			set({
+				focusedTag: tag,
+			}),
+		setFocusedTag: async (tag: TagNode | null) => {
+			const {
+				_setFocusedTag,
+				focusedFile,
+				setFocusedFile,
+				setFocusedFolder,
+				saveDataInLocalStorage,
+				removeDataFromLocalStorage,
+			} = get();
+			_setFocusedTag(tag);
+
+			if (tag) {
+				setFocusedFolder(null);
+				saveDataInLocalStorage(FFS_FOCUSED_TAG_PATH_KEY, tag.fullPath);
+
+				if (!focusedFile) return;
+				const tagsOfFocusedFile =
+					plugin.app.metadataCache.getFileCache(focusedFile)?.tags ??
+					[];
+				if (tagsOfFocusedFile.every((t) => t.tag !== tag?.fullPath)) {
+					await setFocusedFile(null);
+				}
+			} else {
+				removeDataFromLocalStorage(FFS_FOCUSED_TAG_PATH_KEY);
 			}
 		},
 	});
