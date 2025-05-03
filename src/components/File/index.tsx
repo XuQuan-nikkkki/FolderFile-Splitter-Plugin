@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { useDraggable } from "@dnd-kit/core";
 import { useShallow } from "zustand/react/shallow";
+import dayjs from "dayjs";
 
 import { ExplorerStore } from "src/store";
 import { FFS_DRAG_FILE } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
 
 import FileContent, { FileProps } from "./Content";
-import dayjs from "dayjs";
 
 type Props = FileProps & {
 	onOpenFoldersPane: () => void;
@@ -44,10 +44,10 @@ const File = ({ file, deleteFile, disableDrag, onOpenFoldersPane }: Props) => {
 		const modifiedInfo = dayjs(mtime).format(format);
 		const createdInfo = dayjs(ctime).format(format);
 
-		if (language === "en") {
-			return `${basename}\nLast modified at ${modifiedInfo}\nCreated at ${createdInfo}`;
+		if (language === "zh") {
+			return `${basename}\n最后修改于 ${modifiedInfo}\n创建于 ${createdInfo}`;
 		}
-		return `${basename}\n最后修改于 ${modifiedInfo}\n创建于 ${createdInfo}`;
+		return `${basename}\nLast modified at ${modifiedInfo}\nCreated at ${createdInfo}`;
 	};
 
 	return (
@@ -56,10 +56,10 @@ const File = ({ file, deleteFile, disableDrag, onOpenFoldersPane }: Props) => {
 			ref={setNodeRef}
 			style={{ opacity: isDragging ? 0.5 : 1 }}
 			onClick={() => selectFile(file)}
-			{...attributes}
-			{...listeners}
 			data-tooltip-position="right"
 			aria-label={getAriaLabel()}
+			{...attributes}
+			{...listeners}
 		>
 			<FileContent file={file} deleteFile={deleteFile} />
 		</div>
