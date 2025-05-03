@@ -408,11 +408,13 @@ export const createFolderExplorerStore =
 		},
 		pinFolder: async (folder: TFolder) => {
 			const { pinnedFolderPaths, _updatePinnedFolderPaths } = get();
+			if (pinnedFolderPaths.includes(folder.path)) return;
 			const folderPaths = [...pinnedFolderPaths, folder.path];
 			await _updatePinnedFolderPaths(folderPaths);
 		},
 		unpinFolder: async (folder: TFolder) => {
 			const { pinnedFolderPaths, _updatePinnedFolderPaths } = get();
+			if (!pinnedFolderPaths.includes(folder.path)) return;
 			const folderPaths = pinnedFolderPaths.filter(
 				(path) => path !== folder.path
 			);

@@ -17,3 +17,7 @@ export const isAbstractFileIncluded = (
 export const pluralize = (count: number, word: string): string => {
 	return `${count} ${word}${count > 1 ? "s" : ""}`;
 };
+
+export const uniq = <T>(array: T[]): T[] => {
+	return Array.from(new Set(array));
+}

@@ -6,6 +6,7 @@ import { ExplorerStore } from "src/store";
 import {
 	FFS_EXPANDED_TAG_PATHS_KEY,
 	FFS_FOCUSED_TAG_PATH_KEY,
+	FFS_PINNED_TAG_PATHS_KEY,
 } from "src/assets/constants";
 
 type FolderPath = string;
@@ -25,6 +26,9 @@ export type TagExplorerStore = {
 	tagTree: TagTree;
 	expandedTagPaths: string[];
 	focusedTag: TagNode | null;
+	pinnedTagPaths: string[];
+
+	generateTagTree: () => TagTree;
 
 	markdownFiles: TFile[];
 	_getOrCreateTagNode: (
@@ -34,19 +38,27 @@ export type TagExplorerStore = {
 		parent: string | null
 	) => TagNode;
 	getTagsOfFile: (file: TFile) => string[];
-	generateTagTree: () => TagTree;
 	getTopLevelTags: () => TagNode[];
 	getFilesInTag: (tagNode: TagNode) => TFile[];
 	getFilesCountInTag: (tagNode: TagNode) => number;
-	sortTags: (tags: TagNode[]) => TagNode[];
 	getTagsByParent: (parentTag: string) => TagNode[];
 	hasTagChildren: (tagNode: TagNode) => boolean;
+
+	sortTags: (tags: TagNode[]) => TagNode[];
+	renameTag: (tag: TagNode, newName: string) => Promise<void>;
+
 	changeExpandedTagPaths: (paths: string[]) => Promise<void>;
 	restoreExpandedTagPaths: () => Promise<void>;
-	renameTag: (tag: TagNode, newName: string) => Promise<void>;
+
 	_setFocusedTag: (tag: TagNode | null) => void;
 	setFocusedTag: (folder: TagNode | null) => Promise<void>;
 	restoreLastFocusedTag: () => Promise<void>;
+
+	isTagPinned: (tagPath: string) => boolean;
+	pinTag: (tagPath: string) => Promise<void>;
+	unpinTag: (tagPath: string) => Promise<void>;
+	_updatePinnedTagPaths: (tagPaths: string[]) => Promise<void>;
+	restorePinnedTags: () => Promise<void>;
 };
 
 export const createTagExplorerStore =
@@ -57,6 +69,7 @@ export const createTagExplorerStore =
 		tagTree: new Map(),
 		expandedTagPaths: [],
 		focusedTag: null,
+		pinnedTagPaths: [],
 
 		get markdownFiles() {
 			return plugin.app.vault.getMarkdownFiles();
@@ -297,6 +310,49 @@ export const createTagExplorerStore =
 			const tag = tagTree.get(lastFocusedTagPath);
 			if (tag) {
 				setFocusedTag(tag);
+			}
+		},
+
+		isTagPinned: (tagPath: string) => {
+			const { pinnedTagPaths } = get();
+			return pinnedTagPaths.includes(tagPath);
+		},
+		_updatePinnedTagPaths: async (tagPaths: string[]) => {
+			const { saveDataInPlugin } = get();
+			set({
+				pinnedTagPaths: tagPaths,
+			});
+			saveDataInPlugin({
+				[FFS_PINNED_TAG_PATHS_KEY]: JSON.stringify(tagPaths),
+			});
+		},
+
+		pinTag: async (tagPath: string) => {
+			const { pinnedTagPaths, _updatePinnedTagPaths } = get();
+			if (pinnedTagPaths.includes(tagPath)) return;
+			await _updatePinnedTagPaths([...pinnedTagPaths, tagPath]);
+		},
+		unpinTag: async (tagPath: string) => {
+			const { pinnedTagPaths, _updatePinnedTagPaths } = get();
+			if (!pinnedTagPaths.includes(tagPath)) return;
+			await _updatePinnedTagPaths(
+				pinnedTagPaths.filter((path) => path !== tagPath)
+			);
+		},
+		restorePinnedTags: async () => {
+			const { getDataFromPlugin: getData } = get();
+			const pinnedTagPaths = await getData<string>(
+				FFS_PINNED_TAG_PATHS_KEY
+			);
+			console.log("pinnedTagPaths", pinnedTagPaths);
+			if (!pinnedTagPaths) return;
+			try {
+				const tagPaths: string[] = JSON.parse(pinnedTagPaths);
+				set({
+					pinnedTagPaths: tagPaths,
+				});
+			} catch (error) {
+				console.error("Invalid Json format: ", error);
 			}
 		},
 	});

@@ -7,19 +7,26 @@ import FilesCount from "./FilesCount";
 import { useShallow } from "zustand/react/shallow";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { useEffect, useRef, useState } from "react";
+import { Menu } from "obsidian";
+import { TAG_OPERATION_COPY } from "src/locales";
 
 type Props = {
 	tag: TagNode;
 };
 const TagContent = ({ tag }: Props) => {
 	const { plugin, useExplorerStore } = useExplorer();
+	const { language } = plugin;
 
-	const { renameTag, focusedTag } = useExplorerStore(
-		useShallow((store) => ({
-			renameTag: store.renameTag,
-			focusedTag: store.focusedTag,
-		}))
-	);
+	const { renameTag, focusedTag, isTagPinned, pinTag, unpinTag } =
+		useExplorerStore(
+			useShallow((store) => ({
+				renameTag: store.renameTag,
+				focusedTag: store.focusedTag,
+				isTagPinned: store.isTagPinned,
+				pinTag: store.pinTag,
+				unpinTag: store.unpinTag,
+			}))
+		);
 
 	const tagRef = useRef<HTMLDivElement>(null);
 	const [isFocusing, setIsFocusing] = useState<boolean>(false);
@@ -68,6 +75,30 @@ const TagContent = ({ tag }: Props) => {
 		};
 	}, [isFocusing]);
 
+	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+
+		const menu = new Menu();
+		menu.addItem((item) => {
+			const isPinned = isTagPinned(tag.fullPath);
+			item.setIcon(isPinned ? "pin-off" : "pin");
+			const title = isPinned
+				? TAG_OPERATION_COPY.unpinTag[language]
+				: TAG_OPERATION_COPY.pinTag[language];
+			item.setTitle(title);
+			item.onClick(() => {
+				if (isPinned) {
+					unpinTag(tag.fullPath);
+				} else {
+					pinTag(tag.fullPath);
+				}
+			});
+		});
+		plugin.app.workspace.trigger("tag-context-menu", menu);
+		menu.showAtPosition({ x: e.clientX, y: e.clientY });
+	};
+
 	const maybeRenderTagIcon = () => {
 		if (!showTagIcon) return null;
 		const className = classNames("ffs__tag-icon");
@@ -90,6 +121,7 @@ const TagContent = ({ tag }: Props) => {
 	return (
 		<div
 			className={classNames("ffs__tag")}
+			onContextMenu={onShowContextMenu}
 			onClick={(e) => {
 				if (isFocused) {
 					e.stopPropagation();

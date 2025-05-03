@@ -32,6 +32,29 @@ export const FOLDER_OPERATION_COPY: Copy = {
 	},
 };
 
+export const TAG_OPERATION_COPY: Copy = {
+	pinTag: {
+		en: "Pin tag",
+		zh: "置顶",
+	},
+	unpinTag: {
+		en: "Unpin tag",
+		zh: "取消置顶",
+	},
+	moveTag: {
+		en: "Move tag to...",
+		zh: "移动到...",
+	},
+	renameTag: {
+		en: "Rename tag",
+		zh: "重命名",
+	},
+	deleteTag: {
+		en: "Delete",
+		zh: "删除",
+	},
+};
+
 export const FILE_OPERATION_COPY: Copy = {
 	pinFile: {
 		en: "Pin file",

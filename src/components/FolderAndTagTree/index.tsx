@@ -13,7 +13,7 @@ import { useChangeFolder } from "src/hooks/useVaultChangeHandler";
 import { useExplorer } from "src/hooks/useExplorer";
 
 import Folder from "../Folder";
-import PinnedFolders, { FolderOptions } from "./PinnedFolders";
+import PinnedFoldersAndTags, { RenderOptions } from "./PinnedFoldersAndTags";
 import { ReactNode } from "react";
 import Tag from "../Tag";
 import { TagNode } from "src/store/tag";
@@ -70,7 +70,7 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	const { showFolderView } = useShowFolderView(defaultShowFolderView);
 	const { showTagView } = useShowTagView(defaultShowTagView);
 
-	const renderFolder = (folder: TFolder, options?: FolderOptions) => {
+	const renderFolder = (folder: TFolder, options?: RenderOptions) => {
 		const { hideExpandIcon, disableDrag, disableHoverIndent } =
 			options ?? {};
 		return (
@@ -143,8 +143,16 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		);
 	};
 
-	const renderTag = (tag: TagNode) => {
-		return <Tag key={tag.name} tag={tag} />;
+	const renderTag = (tag: TagNode, options: RenderOptions) => {
+		const { disableHoverIndent, hideExpandIcon } = options ?? {};
+		return (
+			<Tag
+				key={tag.name}
+				tag={tag}
+				hideExpandIcon={hideExpandIcon}
+				disableHoverIndent={disableHoverIndent}
+			/>
+		);
 	};
 
 	const renderSubTags = (children: ReactNode) => {
@@ -198,7 +206,10 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 
 	return (
 		<div className="ffs__tree ffs__folder-tree nav-files-container">
-			<PinnedFolders renderFolder={renderFolder} />
+			<PinnedFoldersAndTags
+				renderFolder={renderFolder}
+				renderTag={renderTag}
+			/>
 			<div>
 				{renderEmptyDiv()}
 				{maybeRenderRootFolder()}
