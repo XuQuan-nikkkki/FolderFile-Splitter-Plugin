@@ -1,10 +1,10 @@
-import CreateFolder from "../FolderActions/CreateFolder";
-import SortFolders from "../FolderActions/SortFolders";
-import ToggleFolders from "../FolderActions/ToggleFolders";
+import CreateFolder from "../FolderAndTagActions/CreateFolder";
+import SortFolders from "../FolderAndTagActions/SortFoldersAndTags";
+import ToggleFolders from "../FolderAndTagActions/ToggleFolders";
 import CreateFile from "../FileActions/CreateFile";
 import SortFiles from "../FileActions/SortFiles";
 
-export const FolderActionSection = () => (
+export const FolderAndTagActionSection = () => (
 	<div className="ffs__actions-section nav-buttons-container">
 		<CreateFolder />
 		<SortFolders />

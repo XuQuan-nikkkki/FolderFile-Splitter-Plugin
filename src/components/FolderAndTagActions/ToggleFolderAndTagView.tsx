@@ -7,7 +7,7 @@ import {
 } from "src/hooks/useSettingsHandler";
 import { TIPS_COPY } from "src/locales";
 
-const ToggleManagementMode = () => {
+const ToggleFolderAndTagMode = () => {
 	const { plugin } = useExplorer();
 
 	const { language, settings } = plugin;
@@ -72,4 +72,4 @@ const ToggleManagementMode = () => {
 	);
 };
 
-export default ToggleManagementMode;
+export default ToggleFolderAndTagMode;

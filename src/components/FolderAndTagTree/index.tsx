@@ -21,7 +21,7 @@ import { TagNode } from "src/store/tag";
 type Props = {
 	onOpenFilesPane?: () => void;
 };
-const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
+const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
 
 	const {
@@ -209,4 +209,4 @@ const FolderTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	);
 };
 
-export default FolderTree;
+export default FolderAndTagTree;

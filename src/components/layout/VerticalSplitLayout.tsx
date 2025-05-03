@@ -4,9 +4,9 @@ import classNames from "classnames";
 import { FFS_FOLDER_PANE_HEIGHT_KEY } from "src/assets/constants";
 import { ChevronRight } from "src/assets/icons";
 import { VerticalDraggableDivider } from "./DraggableDivider";
-import { FileActionSection, FolderActionSection } from "./Actions";
+import { FileActionSection, FolderAndTagActionSection } from "./Actions";
 import FileTree from "../FileTree";
-import FolderTree from "../FolderTree";
+import FolderAndTagTree from "../FolderAndTagTree";
 import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
 import { useExplorer } from "src/hooks/useExplorer";
 import {
@@ -115,12 +115,12 @@ const VerticalSplitLayout = () => {
 				}}
 			>
 				<div className={getActionsContainerClassName()}>
-					<FolderActionSection />
+					<FolderAndTagActionSection />
 					<div className="ffs__actions-section nav-buttons-container">
 						{renderClosePaneButton(onClosePane)}
 					</div>
 				</div>
-				<FolderTree />
+				<FolderAndTagTree />
 			</div>
 		);
 	};

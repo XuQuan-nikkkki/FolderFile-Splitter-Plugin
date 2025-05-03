@@ -3,8 +3,8 @@ import classNames from "classnames";
 
 import { FFS_FOLDER_PANE_WIDTH_KEY } from "src/assets/constants";
 import { HorizontalDraggableDivider } from "./DraggableDivider";
-import { FileActionSection, FolderActionSection } from "./Actions";
-import FolderTree from "../FolderTree";
+import { FileActionSection, FolderAndTagActionSection } from "./Actions";
+import FolderAndTagTree from "../FolderAndTagTree";
 import FileTree from "../FileTree";
 import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
 import {
@@ -12,7 +12,7 @@ import {
 	useHighlightActionBar,
 } from "src/hooks/useSettingsHandler";
 import { useExplorer } from "src/hooks/useExplorer";
-import ToggleManagementView from "../FolderActions/ToggleManagementView";
+import ToggleFolderAndTagMode from "../FolderAndTagActions/ToggleFolderAndTagView";
 
 const HorizontalSplitLayout = () => {
 	const { plugin } = useExplorer();
@@ -78,10 +78,10 @@ const HorizontalSplitLayout = () => {
 				style={{ width: folderPaneWidth }}
 			>
 				<div className={getActionsContainerClassName()}>
-					<FolderActionSection />
-					<ToggleManagementView />
+					<FolderAndTagActionSection />
+					<ToggleFolderAndTagMode />
 				</div>
-				<FolderTree />
+				<FolderAndTagTree />
 			</div>
 			<HorizontalDraggableDivider
 				initialWidth={folderPaneWidth}
