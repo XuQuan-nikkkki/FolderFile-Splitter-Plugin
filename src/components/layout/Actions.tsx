@@ -1,6 +1,6 @@
 import CreateFolder from "../FolderAndTagActions/CreateFolder";
 import SortFolders from "../FolderAndTagActions/SortFoldersAndTags";
-import ToggleFolders from "../FolderAndTagActions/ToggleFolders";
+import ToggleFolders from "../FolderAndTagActions/ToggleFoldersAndTags";
 import CreateFile from "../FileActions/CreateFile";
 import SortFiles from "../FileActions/SortFiles";
 

@@ -92,6 +92,14 @@ export const TIPS_COPY: Copy = {
 		en: "Hide tag list",
 		zh: "隐藏标签列表",
 	},
+	collapseFoldersAndTags: {
+		en: "Collapse all folders and tags",
+		zh: "折叠所有的文件夹和标签",
+	},
+	expandFoldersAndTags: {
+		en: "Expand all folders and tags",
+		zh: "展开所有的文件夹和标签",
+	},
 };
 
 export const FOLDER_SORT_RULES_COPY: Copy = {
