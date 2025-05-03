@@ -28,10 +28,10 @@ const TagContent = ({ tag }: Props) => {
 			}))
 		);
 
+	const { showTagIcon } = useShowTagIcon(plugin.settings.showTagIcon);
+
 	const tagRef = useRef<HTMLDivElement>(null);
 	const [isFocusing, setIsFocusing] = useState<boolean>(false);
-
-	const { showTagIcon } = useShowTagIcon(plugin.settings.showTagIcon);
 
 	const isFocused = tag.fullPath == focusedTag?.fullPath;
 

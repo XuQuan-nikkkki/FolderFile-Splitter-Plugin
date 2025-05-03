@@ -15,7 +15,6 @@ type FolderSortRuleGroup = FolderSortRuleItem[];
 
 const SortFolders = () => {
 	const { useExplorerStore, plugin } = useExplorer();
-
 	const { language } = plugin;
 
 	const {
@@ -73,25 +72,27 @@ const SortFolders = () => {
 		];
 	};
 
+	const onChangeSortRule = (rule: FolderSortRule) => {
+		if (rule === FOLDER_MANUAL_SORT_RULE) {
+			initFoldersManualSortOrder();
+			const modal = new ManualSortFoldersModal(
+				plugin,
+				plugin.app.vault.getRoot(),
+				useExplorerStore
+			);
+			modal.open();
+		}
+		if (rule !== folderSortRule) {
+			changeFolderSortRule(rule as FolderSortRule);
+		}
+	};
+
 	return (
 		<SortAction
 			plugin={plugin}
 			ruleGroups={getRuleGroups()}
 			menuName="sort-folders-menu"
-			changeSortRule={(rule) => {
-				if (rule === FOLDER_MANUAL_SORT_RULE) {
-					initFoldersManualSortOrder();
-					const modal = new ManualSortFoldersModal(
-						plugin,
-						plugin.app.vault.getRoot(),
-						useExplorerStore
-					);
-					modal.open();
-				}
-				if (rule !== folderSortRule) {
-					changeFolderSortRule(rule as FolderSortRule);
-				}
-			}}
+			changeSortRule={onChangeSortRule}
 			isInAscendingOrder={isFoldersInAscendingOrder}
 			currentSortRule={folderSortRule}
 			isManualOrder={folderSortRule === FOLDER_MANUAL_SORT_RULE}

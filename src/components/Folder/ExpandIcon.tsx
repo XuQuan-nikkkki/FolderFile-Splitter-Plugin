@@ -5,12 +5,14 @@ import { ExplorerStore } from "src/store";
 import { useExpandFolderByClickingOnElement } from "src/hooks/useSettingsHandler";
 import { useExplorer } from "src/hooks/useExplorer";
 import ExpandIcon from "../ExpandIcon";
+import { uniq } from "src/utils";
 
 type Props = {
 	folder: TFolder;
 };
 const FolderExpandIcon = ({ folder }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
+	const { settings } = plugin;
 
 	const {
 		hasFolderChildren,
@@ -24,18 +26,17 @@ const FolderExpandIcon = ({ folder }: Props) => {
 		}))
 	);
 
-	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
-
-	const { settings } = plugin;
 	const { expandFolderByClickingOn } = useExpandFolderByClickingOnElement(
 		settings.expandFolderByClickingOn
 	);
+
+	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
 
 	const onToggleExpandState = (): void => {
 		if (hasFolderChildren(folder)) {
 			const folderPaths = isFolderExpanded
 				? expandedFolderPaths.filter((path) => path !== folder.path)
-				: [...expandedFolderPaths, folder.path];
+				: uniq([...expandedFolderPaths, folder.path]);
 			changeExpandedFolderPaths(folderPaths);
 		}
 	};

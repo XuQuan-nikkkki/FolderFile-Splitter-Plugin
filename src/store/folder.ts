@@ -2,7 +2,7 @@ import { StateCreator } from "zustand";
 import { Notice, TFile, TFolder } from "obsidian";
 
 import FolderFileSplitterPlugin from "../main";
-import { isFile, isFolder } from "../utils";
+import { isFile, isFolder, uniq } from "../utils";
 import {
 	FFS_EXPANDED_FOLDER_PATHS_KEY,
 	FFS_FOCUSED_FOLDER_PATH_KEY,
@@ -616,9 +616,9 @@ export const createFolderExplorerStore =
 				hasFolderChildren,
 			} = get();
 			if (!hasFolderChildren(folder) || folder.isRoot()) return;
-			changeExpandedFolderPaths([
-				...new Set([...expandedFolderPaths, folder.path]),
-			]);
+			changeExpandedFolderPaths(
+				uniq([...expandedFolderPaths, folder.path])
+			);
 		},
 		collapseFolder: (folder: TFolder) => {
 			const {

@@ -5,6 +5,7 @@ import { TFile } from "obsidian";
 import { ExplorerStore } from "src/store";
 import { PinIcon } from "src/assets/icons";
 import { useExplorer } from "src/hooks/useExplorer";
+import { uniq } from "src/utils";
 
 type Props = {
 	files: TFile[];
@@ -21,7 +22,7 @@ const PinnedFiles = ({ files, renderFile }: Props) => {
 	);
 
 	useEffect(() => {
-		const uniquePaths = [...new Set(pinnedFilePaths)].filter((path) =>
+		const uniquePaths = uniq(pinnedFilePaths).filter((path) =>
 			Boolean(plugin.app.vault.getFileByPath(path))
 		);
 		if (uniquePaths.length !== pinnedFilePaths.length) {
@@ -32,7 +33,9 @@ const PinnedFiles = ({ files, renderFile }: Props) => {
 	const pinnedFiles = pinnedFilePaths
 		.map((path) => files.find((f) => f.path === path))
 		.filter(Boolean) as TFile[];
+
 	if (!pinnedFiles.length) return null;
+
 	return (
 		<div className="ffs__pin-container">
 			<div className="ffs__pin-header">

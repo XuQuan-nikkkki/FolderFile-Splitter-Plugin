@@ -39,12 +39,15 @@ const Tag = ({
 	const isFocused = tag.fullPath == focusedTag?.fullPath;
 
 	const getAriaLabel = () => {
-		const { name } = tag
+		const { name } = tag;
 		const filesCount = getFilesInTag(tag).length;
 		const tagsCount = getTagsByParent(tag.fullPath).length;
 
 		if (language === "en") {
-			return `${name}\n${pluralize(filesCount, "file")}, ${pluralize(tagsCount, "tag")}`;
+			return `${name}\n${pluralize(filesCount, "file")}, ${pluralize(
+				tagsCount,
+				"tag"
+			)}`;
 		}
 		return `${name}\n${filesCount} 条笔记，${tagsCount} 个标签`;
 	};
@@ -58,15 +61,19 @@ const Tag = ({
 		};
 	};
 
+	const getClassNames = () => {
+		return classNames(
+			"ffs__folder-container tree-item-self nav-tag-title is-clickable",
+			{
+				"mod-collapsible": hasTagChildren(tag),
+				"is-active": isFocused,
+			}
+		);
+	};
+
 	return (
 		<div
-			className={classNames(
-				"ffs__folder-container tree-item-self nav-tag-title is-clickable",
-				{
-					"mod-collapsible": hasTagChildren(tag),
-					"is-active": isFocused,
-				}
-			)}
+			className={getClassNames()}
 			style={getIndentStyle()}
 			onClick={() => setFocusedTag(tag)}
 			data-tooltip-position="right"

@@ -13,18 +13,19 @@ type Props = {
 };
 const FilesCount = ({ folder }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
+	const { settings } = plugin;
 
 	const { getFilesCountInFolder } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			getFilesCountInFolder: store.getFilesCountInFolder,
 		}))
 	);
-	const [count, setCount] = useState<number | null>(null);
 
-	const { settings } = plugin;
 	const { includeSubfolderFiles } = useIncludeSubfolderFiles(
 		settings.includeSubfolderFiles
 	);
+
+	const [count, setCount] = useState<number | null>(null);
 
 	const onHandleVaultChange = (event: VaultChangeEvent) => {
 		const { file, changeType } = event.detail;

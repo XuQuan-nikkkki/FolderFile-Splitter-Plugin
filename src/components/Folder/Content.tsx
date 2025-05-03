@@ -23,6 +23,7 @@ type Props = FolderProps & {
 };
 const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
+	const { language } = plugin;
 
 	const {
 		focusedFolder,
@@ -37,6 +38,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 		renameFolder,
 		latestCreatedFolder,
 		latestFolderCreatedTime,
+		getNameOfFolder
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			focusedFolder: store.focusedFolder,
@@ -51,10 +53,10 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 			renameFolder: store.renameFolder,
 			latestCreatedFolder: store.latestCreatedFolder,
 			latestFolderCreatedTime: store.latestFolderCreatedTime,
+			getNameOfFolder: store.getNameOfFolder
 		}))
 	);
 
-	const { language } = plugin;
 	const isFolderExpanded = expandedFolderPaths.includes(folder.path);
 	const isRoot = folder.isRoot();
 
@@ -66,7 +68,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 	const isFocused = folder.path == focusedFolder?.path;
 
 	const onSaveName = (name: string) => renameFolder(folder, name);
-	const folderName = isRoot ? plugin.app.vault.getName() : folder.name;
+	const folderName = getNameOfFolder(folder);
 	const {
 		renderEditableName: renderFolderName,
 		selectFileNameText,

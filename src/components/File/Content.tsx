@@ -4,17 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
 
 import { ExplorerStore } from "src/store";
-import { FolderListModal } from "../FolderListModal";
+import useRenderEditableName from "src/hooks/useRenderEditableName";
+import { useExplorer } from "src/hooks/useExplorer";
+import { FILE_OPERATION_COPY } from "src/locales";
 import {
 	useBoldFileTitle,
 	useFileItemSpacing,
 	useShowFileDetail,
 	useShowFileItemDivider,
 } from "src/hooks/useSettingsHandler";
+import { FolderListModal } from "../FolderListModal";
 import FileDetail from "./Detail";
-import useRenderEditableName from "src/hooks/useRenderEditableName";
-import { FILE_OPERATION_COPY } from "src/locales";
-import { useExplorer } from "src/hooks/useExplorer";
 
 export type FileProps = {
 	file: TFile;
@@ -22,6 +22,7 @@ export type FileProps = {
 };
 const FileContent = ({ file, deleteFile }: FileProps) => {
 	const { useExplorerStore, plugin } = useExplorer();
+	const { language, settings } = plugin;
 
 	const {
 		focusedFile,
@@ -47,15 +48,17 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 		}))
 	);
 
-	const { language, settings } = plugin;
-	const { showFileDetail } = useShowFileDetail(settings.showFileDetail);
-	const { fileItemSpacing } = useFileItemSpacing(settings.fileItemSpacing);
-	const { showFileItemDivider } = useShowFileItemDivider(
-		settings.showFileItemDivider
-	);
-	const { boldFileTitle } = useBoldFileTitle(settings.boldFileTitle);
+	const {
+		showFileDetail: showDetail,
+		fileItemSpacing: spacing,
+		showFileItemDivider: showDivider,
+		boldFileTitle: boldTitle,
+	} = settings;
+	const { showFileDetail } = useShowFileDetail(showDetail);
+	const { fileItemSpacing } = useFileItemSpacing(spacing);
+	const { showFileItemDivider } = useShowFileItemDivider(showDivider);
+	const { boldFileTitle } = useBoldFileTitle(boldTitle);
 
-	const isFocused = focusedFile?.path === file.path;
 	const onSaveName = (name: string) => renameFile(file, name);
 
 	const {
@@ -68,6 +71,7 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 		bold: boldFileTitle,
 	});
 
+	const isFocused = focusedFile?.path === file.path;
 	const fileRef = useRef<HTMLDivElement>(null);
 	const [isFocusing, setIsFocusing] = useState<boolean>(false);
 
@@ -205,38 +209,46 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 		return <FileDetail file={file} />;
 	};
 
+	const getClassNames = () => {
+		return classNames(
+			"ffs__file-content tree-item-self nav-file-title tappable is-clickable",
+			{
+				"is-active": isFocused,
+				"has-focus is-being-renamed": isEditing,
+				"ffs__file-content--divider": showFileItemDivider,
+			}
+		);
+	};
+
+	const getHeaderClassNames = () => {
+		return classNames(
+			"ffs__file-content-header tree-item-inner nav-file-title-content",
+			{
+				"ffs__file-content-header--comfortable":
+					fileItemSpacing === "Comfortable",
+				"ffs__file-content-header--with-detail": showFileDetail,
+			}
+		);
+	};
+
+	const onClickFile = (e: React.MouseEvent<HTMLDivElement>) => {
+		if (e.ctrlKey || e.metaKey) {
+			openFileInNewTab(file);
+		} else if (isFocused) {
+			e.stopPropagation();
+			fileRef.current?.focus();
+			setIsFocusing(true);
+		}
+	};
+
 	return (
 		<div
-			className={classNames(
-				"ffs__file-content tree-item-self nav-file-title tappable is-clickable",
-				{
-					"is-active": isFocused,
-					"has-focus is-being-renamed": isEditing,
-					"ffs__file-content--divider": showFileItemDivider,
-				}
-			)}
+			className={getClassNames()}
 			ref={fileRef}
 			onContextMenu={onShowContextMenu}
-			onClick={(e) => {
-				if (e.ctrlKey || e.metaKey) {
-					openFileInNewTab(file);
-				} else if (isFocused) {
-					e.stopPropagation();
-					fileRef.current?.focus();
-					setIsFocusing(true);
-				}
-			}}
+			onClick={onClickFile}
 		>
-			<div
-				className={classNames(
-					"ffs__file-content-header tree-item-inner nav-file-title-content",
-					{
-						"ffs__file-content-header--comfortable":
-							fileItemSpacing === "Comfortable",
-						"ffs__file-content-header--with-detail": showFileDetail,
-					}
-				)}
-			>
+			<div className={getHeaderClassNames()}>
 				<div className="ffs__file-content-title">
 					{renderFileName()}
 					<div className="nav-file-tag">

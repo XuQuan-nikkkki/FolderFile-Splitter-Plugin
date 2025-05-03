@@ -32,17 +32,18 @@ const CreateFile = () => {
 		await initOrder();
 	};
 
+	const getClassNames = () => {
+		return classNames(
+			"ffs__action-button-wrapper clickable-icon nav-action-button",
+			{
+				"ffs__action-button-wrapper--disabled":
+					focusedTag || !showFolderView,
+			}
+		);
+	};
+
 	return (
-		<div
-			className={classNames(
-				"ffs__action-button-wrapper clickable-icon nav-action-button",
-				{
-					"ffs__action-button-wrapper--disabled":
-						focusedTag || !showFolderView,
-				}
-			)}
-			onClick={onCreateNewFile}
-		>
+		<div className={getClassNames()} onClick={onCreateNewFile}>
 			<AddFileIcon className="ffs__action-button svg-icon" />
 		</div>
 	);

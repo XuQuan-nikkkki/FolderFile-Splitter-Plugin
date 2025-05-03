@@ -13,6 +13,7 @@ type Props = {
 };
 const FilesCount = ({ tag }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
+	const { settings } = plugin;
 
 	const { getFilesCountInTag } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
@@ -21,7 +22,6 @@ const FilesCount = ({ tag }: Props) => {
 	);
 	const [count, setCount] = useState<number | null>(null);
 
-	const { settings } = plugin;
 	const { includeSubTagFiles } = useIncludeSubTagFiles(
 		settings.includeSubTagFiles
 	);

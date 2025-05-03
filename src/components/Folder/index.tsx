@@ -24,6 +24,7 @@ const Folder = ({
 	disableHoverIndent = false,
 }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
+	const { language } = plugin;
 
 	const {
 		setFocusedFolder,
@@ -46,8 +47,6 @@ const Folder = ({
 			getFoldersByParent: store.getFoldersByParent,
 		}))
 	);
-
-	const { language } = plugin;
 
 	const isFocused = folder.path == focusedFolder?.path;
 	const isRoot = folder.isRoot();
@@ -111,10 +110,10 @@ const Folder = ({
 		const filesCountInfo = pluralize(filesCount, "file");
 		const foldersCountInfo = pluralize(foldersCount, "folder");
 
-		if (language === "en") {
-			return `${name}\n${filesCountInfo}, ${foldersCountInfo}`;
+		if (language === "zh") {
+			return `${name}\n${filesCount} 条笔记，${foldersCount} 个文件夹`;
 		}
-		return `${name}\n${filesCount} 条笔记，${foldersCount} 个文件夹`;
+		return `${name}\n${filesCountInfo}, ${foldersCountInfo}`;
 	};
 
 	const getIndentStyle = () => {
@@ -126,16 +125,20 @@ const Folder = ({
 		};
 	};
 
+	const getClassNames = () => {
+		return classNames(
+			"ffs__folder-container tree-item-self nav-folder-title is-clickable",
+			{
+				"mod-collapsible": hasFolderChildren(folder),
+				"is-active": isFocused,
+				"ffs__is-over": isOver && !disableDrag,
+			}
+		);
+	};
+
 	return (
 		<div
-			className={classNames(
-				"ffs__folder-container tree-item-self nav-folder-title is-clickable",
-				{
-					"mod-collapsible": hasFolderChildren(folder),
-					"is-active": isFocused,
-					"ffs__is-over": isOver && !disableDrag,
-				}
-			)}
+			className={getClassNames()}
 			ref={setDropRef}
 			onClick={() => setFocusedFolder(folder)}
 			style={getIndentStyle()}

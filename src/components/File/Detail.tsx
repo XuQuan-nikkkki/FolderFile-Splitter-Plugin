@@ -18,6 +18,7 @@ type Props = {
 };
 const FileDetail = ({ file }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
+	const { settings } = plugin;
 
 	const { readFile } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
@@ -25,19 +26,18 @@ const FileDetail = ({ file }: Props) => {
 		}))
 	);
 
-	const { settings } = plugin;
-	const { showFileCreationDate } = useShowFileCreationDate(
-		settings.showFileCreationDate
-	);
-	const { fileCreationDateFormat } = useFileCreationDateFormat(
-		settings.fileCreationDateFormat
-	);
-	const { stripMarkdownSyntaxInPreview } = useStripMarkdownSyntaxInPreview(
-		settings.stripMarkdownSyntaxInPreview
-	);
-	const { removeFirstHeadingInPreview } = useRemoveFirstHeadingInPreview(
-		settings.removeFirstHeadingInPreview
-	);
+	const {
+		showFileCreationDate: showDate,
+		fileCreationDateFormat: dateFormat,
+		stripMarkdownSyntaxInPreview: stripSyntax,
+		removeFirstHeadingInPreview: removeHeading,
+	} = settings;
+	const { showFileCreationDate } = useShowFileCreationDate(showDate);
+	const { fileCreationDateFormat } = useFileCreationDateFormat(dateFormat);
+	const { stripMarkdownSyntaxInPreview } =
+		useStripMarkdownSyntaxInPreview(stripSyntax);
+	const { removeFirstHeadingInPreview } =
+		useRemoveFirstHeadingInPreview(removeHeading);
 
 	const [contentPreview, setContentPreview] = useState<string>("");
 

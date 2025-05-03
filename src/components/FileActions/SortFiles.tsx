@@ -16,7 +16,6 @@ type FileSortRuleGroup = FileSortRuleItem[];
 
 const SortFiles = () => {
 	const { useExplorerStore, plugin } = useExplorer();
-
 	const { language } = plugin;
 
 	const {
@@ -84,25 +83,27 @@ const SortFiles = () => {
 		];
 	};
 
+	const onChangeSortRule = async (rule: FileSortRule) => {
+		if (rule === FILE_MANUAL_SORT_RULE) {
+			await initFilesManualSortOrder();
+			if (focusedFolder) {
+				const modal = new ManualSortFilesModal(
+					plugin,
+					focusedFolder,
+					useExplorerStore
+				);
+				modal.open();
+			}
+		}
+		changeFileSortRule(rule as FileSortRule);
+	}
+
 	return (
 		<SortAction
 			plugin={plugin}
 			ruleGroups={getRuleGroups()}
 			menuName="sort-files-menu"
-			changeSortRule={async (rule) => {
-				if (rule === FILE_MANUAL_SORT_RULE) {
-					await initFilesManualSortOrder();
-					if (focusedFolder) {
-						const modal = new ManualSortFilesModal(
-							plugin,
-							focusedFolder,
-							useExplorerStore
-						);
-						modal.open();
-					}
-				}
-				changeFileSortRule(rule as FileSortRule);
-			}}
+			changeSortRule={onChangeSortRule}
 			isInAscendingOrder={isFilesInAscendingOrder}
 			currentSortRule={fileSortRule}
 			isManualOrder={fileSortRule === FILE_MANUAL_SORT_RULE}

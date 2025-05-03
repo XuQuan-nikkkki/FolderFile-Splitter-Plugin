@@ -9,7 +9,6 @@ import { TIPS_COPY } from "src/locales";
 
 const ToggleFolderAndTagMode = () => {
 	const { plugin } = useExplorer();
-
 	const { language, settings } = plugin;
 
 	const { showFolderView } = useShowFolderView(settings.showFolderView);

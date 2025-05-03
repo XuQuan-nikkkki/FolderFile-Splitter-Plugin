@@ -143,7 +143,7 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		);
 	};
 
-	const renderTag = (tag: TagNode, options: RenderOptions) => {
+	const renderTag = (tag: TagNode, options?: RenderOptions) => {
 		const { disableHoverIndent, hideExpandIcon } = options ?? {};
 		return (
 			<Tag

@@ -5,38 +5,36 @@ import { useExpandFolderByClickingOnElement } from "src/hooks/useSettingsHandler
 import { useExplorer } from "src/hooks/useExplorer";
 import ExpandIcon from "../ExpandIcon";
 import { TagNode } from "src/store/tag";
+import { uniq } from "src/utils";
 
 type Props = {
 	tag: TagNode;
 };
 const TagExpandIcon = ({ tag }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
-
-	const {
-		hasTagChildren,
-		expandedTagPaths,
-		changeExpandedTagPaths,
-	} = useExplorerStore(
-		useShallow((store: ExplorerStore) => ({
-			hasTagChildren: store.hasTagChildren,
-			expandedTagPaths: store.expandedTagPaths,
-			changeExpandedTagPaths: store.changeExpandedTagPaths,
-		}))
-	);
-
-	const isTagExpanded = expandedTagPaths.includes(tag.fullPath);
-
 	const { settings } = plugin;
+
+	const { hasTagChildren, expandedTagPaths, changeExpandedTagPaths } =
+		useExplorerStore(
+			useShallow((store: ExplorerStore) => ({
+				hasTagChildren: store.hasTagChildren,
+				expandedTagPaths: store.expandedTagPaths,
+				changeExpandedTagPaths: store.changeExpandedTagPaths,
+			}))
+		);
+
 	const { expandFolderByClickingOn } = useExpandFolderByClickingOnElement(
 		settings.expandFolderByClickingOn
 	);
+
+	const isTagExpanded = expandedTagPaths.includes(tag.fullPath);
 
 	const onToggleExpandState = (): void => {
 		if (hasTagChildren(tag)) {
 			const tagPaths = isTagExpanded
 				? expandedTagPaths.filter((path) => path !== tag.fullPath)
-				: [...expandedTagPaths, tag.fullPath];
-				changeExpandedTagPaths(tagPaths);
+				: uniq([...expandedTagPaths, tag.fullPath]);
+			changeExpandedTagPaths(tagPaths);
 		}
 	};
 
