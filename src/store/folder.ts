@@ -98,6 +98,7 @@ export type FolderExplorerStore = {
 	expandFolder: (folder: TFolder) => void;
 	collapseFolder: (folder: TFolder) => void;
 	updateFolderPinState: (oldPath: string, newPath: string) => Promise<void>;
+	getNameOfFolder: (folder: TFolder) => string;
 };
 
 export const createFolderExplorerStore =
@@ -629,5 +630,8 @@ export const createFolderExplorerStore =
 			changeExpandedFolderPaths(
 				expandedFolderPaths.filter((path) => path !== folder.path)
 			);
+		},
+		getNameOfFolder: (folder: TFolder) => {
+			return folder.isRoot() ? plugin.app.vault.getName() : folder.name;
 		},
 	});

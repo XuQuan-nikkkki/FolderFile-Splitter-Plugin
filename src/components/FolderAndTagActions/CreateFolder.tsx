@@ -6,10 +6,13 @@ import { AddFolderIcon } from "src/assets/icons";
 import { ExplorerStore } from "src/store";
 import { useExplorer } from "src/hooks/useExplorer";
 import { useShowFolderView } from "src/hooks/useSettingsHandler";
+import { uniq } from "src/utils";
 
 const CreateFolder = () => {
 	const { useExplorerStore, plugin } = useExplorer();
+	const { settings, language } = plugin;
 
+	const { showFolderView } = useShowFolderView(settings.showFolderView);
 	const {
 		rootFolder,
 		focusedFolder,
@@ -18,6 +21,7 @@ const CreateFolder = () => {
 		setFocusedFolder,
 		expandedFolderPaths,
 		initOrder,
+		getNameOfFolder,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			rootFolder: store.rootFolder,
@@ -27,11 +31,8 @@ const CreateFolder = () => {
 			setFocusedFolder: store.setFocusedFolder,
 			expandedFolderPaths: store.expandedFolderPaths,
 			initOrder: store.initFoldersManualSortOrder,
+			getNameOfFolder: store.getNameOfFolder,
 		}))
-	);
-
-	const { showFolderView } = useShowFolderView(
-		plugin.settings.showFolderView
 	);
 
 	const expandParentFolders = async (folder: TFolder) => {
@@ -44,9 +45,7 @@ const CreateFolder = () => {
 				parentPaths.push(pathToExpand);
 			}
 		}
-		const pathsToExpand = [
-			...new Set([...expandedFolderPaths, ...parentPaths]),
-		];
+		const pathsToExpand = uniq([...expandedFolderPaths, ...parentPaths]);
 		await changeExpandedFolderPaths(pathsToExpand);
 	};
 
@@ -61,15 +60,31 @@ const CreateFolder = () => {
 		await initOrder();
 	};
 
+	const getClassNames = () => {
+		return classNames(
+			"ffs__action-button-wrapper clickable-icon nav-action-button",
+			{
+				"ffs__action-button-wrapper--disabled": !showFolderView,
+			}
+		);
+	};
+
+	const getAriaLabel = () => {
+		const parentFolder = focusedFolder ? focusedFolder : rootFolder;
+		if (!parentFolder) return "";
+		const folderName = getNameOfFolder(parentFolder);
+		if (language === "zh") {
+			return `在 ${folderName} 中创建新文件夹`;
+		}
+		return `Create a new folder in ${folderName}`;
+	};
+
 	return (
 		<div
-			className={classNames(
-				"ffs__action-button-wrapper clickable-icon nav-action-button",
-				{
-					"ffs__action-button-wrapper--disabled": !showFolderView,
-				}
-			)}
+			className={getClassNames()}
 			onClick={onCreateFolder}
+			data-tooltip-position="bottom"
+			aria-label={getAriaLabel()}
 		>
 			<AddFolderIcon className="ffs__action-button svg-icon" />
 		</div>
