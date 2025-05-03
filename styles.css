@@ -127,8 +127,16 @@ div.ffs__name--bold {
 	justify-content: space-between;
 }
 
-.ffs_action-button-wrapper--disabled {
+.ffs__action-button-wrapper--disabled {
 	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+.clickable-icon.ffs__action-button-wrapper--disabled:hover,
+.ffs__action-button-wrapper--disabled.clickable-icon:hover {
+    background-color: transparent !important;
+		color: inherit !important;
+		opacity: 0.4 !important;
 }
 
 .ffs__actions-container--highlight {
