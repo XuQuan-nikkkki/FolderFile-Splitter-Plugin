@@ -12,28 +12,34 @@ import { useExplorer } from "src/hooks/useExplorer";
 import {
 	useAutoHideActionBar,
 	useHighlightActionBar,
+	useShowFolderView,
+	useShowTagView,
 } from "src/hooks/useSettingsHandler";
+import ToggleFolderAndTagMode from "../FolderAndTagActions/ToggleFolderAndTagView";
 
 const VerticalSplitLayout = () => {
 	const { plugin } = useExplorer();
+	const { settings } = plugin;
 
 	const [folderPaneHeight, setFolderPaneHeight] = useState<
 		number | undefined
 	>();
-
 	const [isFoldersCollapsed, setIsFoldersCollapsed] = useState(false);
 	const [isFilesCollapsed, setIsFilesCollapsed] = useState(false);
 
 	const pluginRef = useRef<HTMLDivElement>(null);
 	useChangeActiveLeaf();
 
-	const { settings } = plugin;
-	const { highlightActionBar } = useHighlightActionBar(
-		settings.highlightActionBar
-	);
-	const { autoHideActionBar } = useAutoHideActionBar(
-		settings.autoHideActionBar
-	);
+	const {
+		highlightActionBar: highlight,
+		autoHideActionBar: autoHide,
+		showFolderView: showFolder,
+		showTagView: showTag,
+	} = settings;
+	const { highlightActionBar } = useHighlightActionBar(highlight);
+	const { autoHideActionBar } = useAutoHideActionBar(autoHide);
+	const { showFolderView } = useShowFolderView(showFolder);
+	const { showTagView } = useShowTagView(showTag);
 
 	const restoreLayout = () => {
 		try {
@@ -92,14 +98,18 @@ const VerticalSplitLayout = () => {
 			"ffs__actions-container--auto-hide": autoHideActionBar,
 		});
 
-	const renderFoldersPane = () => {
+	const renderFoldersAndTagsPane = () => {
 		const onOpenPane = () => setIsFoldersCollapsed(false);
 		const onClosePane = () => setIsFoldersCollapsed(true);
+		const copy = [showFolderView && "Folders", showTagView && "Tags"]
+			.filter(Boolean)
+			.join(" & ");
+			console.log("copy", copy);
 		if (isFoldersCollapsed) {
 			return (
 				<div className={getActionsContainerClassName()}>
 					<div className="ffs__actions-section ffs__collapsed-folders nav-buttons-container">
-						Folders
+						{copy}
 					</div>
 					<div className="ffs__actions-section nav-buttons-container">
 						{renderOpenPaneButton(onOpenPane)}
@@ -116,6 +126,7 @@ const VerticalSplitLayout = () => {
 			>
 				<div className={getActionsContainerClassName()}>
 					<FolderAndTagActionSection />
+					<ToggleFolderAndTagMode />
 					<div className="ffs__actions-section nav-buttons-container">
 						{renderClosePaneButton(onClosePane)}
 					</div>
@@ -155,7 +166,7 @@ const VerticalSplitLayout = () => {
 
 	return (
 		<div className="ffs__layout ffs__layout--vertical" ref={pluginRef}>
-			{renderFoldersPane()}
+			{renderFoldersAndTagsPane()}
 			{!isFilesCollapsed && !isFoldersCollapsed && (
 				<VerticalDraggableDivider
 					initialHeight={folderPaneHeight}

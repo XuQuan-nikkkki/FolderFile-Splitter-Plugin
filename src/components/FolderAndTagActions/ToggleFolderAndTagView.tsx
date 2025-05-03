@@ -29,7 +29,7 @@ const ToggleFolderAndTagMode = () => {
 		classNames(
 			"ffs__action-button-wrapper clickable-icon nav-action-button",
 			{
-				"ffs_action-button-wrapper--disabled": disabled,
+				"ffs__action-button-wrapper--inactive": disabled,
 			}
 		);
 

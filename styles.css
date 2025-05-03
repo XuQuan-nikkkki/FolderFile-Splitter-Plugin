@@ -132,6 +132,10 @@ div.ffs__name--bold {
 	cursor: not-allowed;
 }
 
+.ffs__action-button-wrapper--inactive {
+	opacity: 0.4;
+}
+
 .clickable-icon.ffs__action-button-wrapper--disabled:hover,
 .ffs__action-button-wrapper--disabled.clickable-icon:hover {
 	background-color: transparent !important;
