@@ -1,12 +1,14 @@
 import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
+import classNames from "classnames";
 
 import { AddFolderIcon } from "src/assets/icons";
 import { ExplorerStore } from "src/store";
 import { useExplorer } from "src/hooks/useExplorer";
+import { useShowFolderView } from "src/hooks/useSettingsHandler";
 
 const CreateFolder = () => {
-	const { useExplorerStore } = useExplorer();
+	const { useExplorerStore, plugin } = useExplorer();
 
 	const {
 		rootFolder,
@@ -26,6 +28,10 @@ const CreateFolder = () => {
 			expandedFolderPaths: store.expandedFolderPaths,
 			initOrder: store.initFoldersManualSortOrder,
 		}))
+	);
+
+	const { showFolderView } = useShowFolderView(
+		plugin.settings.showFolderView
 	);
 
 	const expandParentFolders = async (folder: TFolder) => {
@@ -57,7 +63,12 @@ const CreateFolder = () => {
 
 	return (
 		<div
-			className="ffs__action-button-wrapper clickable-icon nav-action-button"
+			className={classNames(
+				"ffs__action-button-wrapper clickable-icon nav-action-button",
+				{
+					"ffs__action-button-wrapper--disabled": !showFolderView,
+				}
+			)}
 			onClick={onCreateFolder}
 		>
 			<AddFolderIcon className="ffs__action-button svg-icon" />
