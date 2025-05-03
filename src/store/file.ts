@@ -32,6 +32,7 @@ export type FileExplorerStore = {
 	fileSortRule: FileSortRule;
 	filesManualSortOrder: ManualSortOrder;
 
+	getFocusedFiles: () => TFile[];
 	findFileByPath: (path: string) => TFile | null;
 	isFilesInAscendingOrder: () => boolean;
 	setFocusedFile: (file: TFile | null) => Promise<void>;
@@ -83,6 +84,21 @@ export const createFileExplorerStore =
 		fileSortRule: DEFAULT_FILE_SORT_RULE,
 		filesManualSortOrder: {},
 
+		getFocusedFiles: () => {
+			const {
+				focusedFolder,
+				focusedTag,
+				getFilesInFolder,
+				getFilesInTag,
+			} = get();
+			if (focusedFolder) {
+				return getFilesInFolder(focusedFolder);
+			}
+			if (focusedTag) {
+				return getFilesInTag(focusedTag);
+			}
+			return [];
+		},
 		findFileByPath: (path: string): TFile | null => {
 			return plugin.app.vault.getFileByPath(path);
 		},

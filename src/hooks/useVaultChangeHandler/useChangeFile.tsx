@@ -18,27 +18,25 @@ const useChangeFile = () => {
 
 	const {
 		focusedFolder,
-		getFilesInFolder,
 		focusedTag,
-		getFilesInTag,
 		updateFilePinState,
 		updateFileManualOrder,
 		fileSortRule,
 		initOrder,
 		isFilePinned,
 		unpinFile,
+		getFocusedFiles,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			focusedFolder: store.focusedFolder,
-			getFilesInFolder: store.getFilesInFolder,
 			focusedTag: store.focusedTag,
-			getFilesInTag: store.getFilesInTag,
 			updateFilePinState: store.updateFilePinState,
 			updateFileManualOrder: store.updateFileManualOrder,
 			fileSortRule: store.fileSortRule,
 			initOrder: store.initFilesManualSortOrder,
 			isFilePinned: store.isFilePinned,
 			unpinFile: store.unpinFile,
+			getFocusedFiles: store.getFocusedFiles,
 		}))
 	);
 
@@ -50,14 +48,7 @@ const useChangeFile = () => {
 		settings.includeSubTagFiles
 	);
 
-	let defaultFiles: TFile[] = [];
-	if (focusedFolder) {
-		defaultFiles = getFilesInFolder(focusedFolder, includeSubfolderFiles);
-	} else if (focusedTag) {
-		defaultFiles = getFilesInTag(focusedTag);
-	}
-
-	const [files, setFiles] = useState<TFile[]>(defaultFiles);
+	const [files, setFiles] = useState<TFile[]>(getFocusedFiles());
 
 	useEffect(() => {
 		window.addEventListener(VaultChangeEventName, onHandleVaultChange);
@@ -70,7 +61,7 @@ const useChangeFile = () => {
 	}, []);
 
 	useEffect(() => {
-		setFiles(defaultFiles);
+		setFiles(getFocusedFiles());
 	}, [focusedFolder, includeSubfolderFiles, focusedTag, includeSubTagFiles]);
 
 	const onDeleteFileFromList = (file: TFile) => {
