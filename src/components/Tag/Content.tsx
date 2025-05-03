@@ -59,12 +59,12 @@ const TagContent = ({ tag }: Props) => {
 		}
 	};
 
-	// const onStartEditingName = () => {
-	// 	onBeginEdit();
-	// 	setTimeout(() => {
-	// 		selectFileNameText();
-	// 	}, 100);
-	// };
+	const onStartEditingName = () => {
+		onBeginEdit();
+		setTimeout(() => {
+			selectFileNameText();
+		}, 100);
+	};
 
 	useEffect(() => {
 		window.addEventListener("keydown", onKeyDown);
@@ -93,6 +93,14 @@ const TagContent = ({ tag }: Props) => {
 				} else {
 					pinTag(tag.fullPath);
 				}
+			});
+		});
+		menu.addSeparator();
+		menu.addItem((item) => {
+			item.setIcon("pencil-line");
+			item.setTitle(TAG_OPERATION_COPY.renameTag[language]);
+			item.onClick(() => {
+				onStartEditingName();
 			});
 		});
 		plugin.app.workspace.trigger("tag-context-menu", menu);
