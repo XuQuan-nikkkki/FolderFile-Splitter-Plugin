@@ -344,7 +344,6 @@ export const createTagExplorerStore =
 			const pinnedTagPaths = await getData<string>(
 				FFS_PINNED_TAG_PATHS_KEY
 			);
-			console.log("pinnedTagPaths", pinnedTagPaths);
 			if (!pinnedTagPaths) return;
 			try {
 				const tagPaths: string[] = JSON.parse(pinnedTagPaths);
