@@ -4,9 +4,10 @@ import { AddFileIcon } from "src/assets/icons";
 import { ExplorerStore } from "src/store";
 import { useExplorer } from "src/hooks/useExplorer";
 import classNames from "classnames";
+import { useShowFolderView } from "src/hooks/useSettingsHandler";
 
 const CreateFile = () => {
-	const { useExplorerStore } = useExplorer();
+	const { useExplorerStore, plugin } = useExplorer();
 
 	const { createFile, focusedFolder, rootFolder, initOrder, focusedTag } =
 		useExplorerStore(
@@ -18,6 +19,10 @@ const CreateFile = () => {
 				focusedTag: store.focusedTag,
 			}))
 		);
+
+	const { showFolderView } = useShowFolderView(
+		plugin.settings.showFolderView
+	);
 
 	const onCreateNewFile = async () => {
 		if (focusedTag) return;
@@ -32,7 +37,8 @@ const CreateFile = () => {
 			className={classNames(
 				"ffs__action-button-wrapper clickable-icon nav-action-button",
 				{
-					"ffs__action-button-wrapper--disabled": focusedTag,
+					"ffs__action-button-wrapper--disabled":
+						focusedTag || !showFolderView,
 				}
 			)}
 			onClick={onCreateNewFile}
