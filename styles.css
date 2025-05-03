@@ -134,9 +134,9 @@ div.ffs__name--bold {
 
 .clickable-icon.ffs__action-button-wrapper--disabled:hover,
 .ffs__action-button-wrapper--disabled.clickable-icon:hover {
-    background-color: transparent !important;
-		color: inherit !important;
-		opacity: 0.4 !important;
+	background-color: transparent !important;
+	color: inherit !important;
+	opacity: 0.4 !important;
 }
 
 .ffs__actions-container--highlight {
@@ -453,4 +453,10 @@ div.ffs__file-content {
 .ffs__draggable-icon {
 	width: 15px;
 	height: 15px;
+}
+
+.ffs__tag-tree--start {
+	margin-top: 10px;
+	padding-top: 10px;
+	border-top: var(--border-width) solid var(--background-modifier-border);
 }

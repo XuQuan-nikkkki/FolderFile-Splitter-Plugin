@@ -38,6 +38,7 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		getTagsByParent,
 		hasTagChildren,
 		focusedTag,
+		isTopLevelTag,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			rootFolder: store.rootFolder,
@@ -55,6 +56,7 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 			getTagsByParent: store.getTagsByParent,
 			hasTagChildren: store.hasTagChildren,
 			focusedTag: store.focusedTag,
+			isTopLevelTag: store.isTopLevelTag,
 		}))
 	);
 
@@ -174,7 +176,7 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		if (!showTagView) return;
 
 		const sortedTags = sortTags(tags);
-		return sortedTags.map((tag) => {
+		return sortedTags.map((tag, index) => {
 			const isExpanded = expandedTagPaths.includes(tag.fullPath);
 			return (
 				<div
@@ -185,6 +187,10 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 							"is-collapsed":
 								!isExpanded &&
 								focusedTag?.fullPath !== tag.fullPath,
+							"ffs__tag-tree--start":
+								index === 0 &&
+								showFolderView &&
+								isTopLevelTag(tag),
 						}
 					)}
 				>

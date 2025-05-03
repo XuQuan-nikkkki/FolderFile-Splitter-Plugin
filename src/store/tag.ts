@@ -39,6 +39,7 @@ export type TagExplorerStore = {
 	) => TagNode;
 	getTagsOfFile: (file: TFile) => string[];
 	getTopLevelTags: () => TagNode[];
+	isTopLevelTag: (tagNode: TagNode) => boolean;
 	getFilesInTag: (tagNode: TagNode) => TFile[];
 	getFilesCountInTag: (tagNode: TagNode) => number;
 	getTagsByParent: (parentTag: string) => TagNode[];
@@ -151,6 +152,11 @@ export const createTagExplorerStore =
 			return Array.from(tagTree.values()).filter(
 				(tagNode) => !tagNode.parent
 			);
+		},
+
+		isTopLevelTag: (tagNode: TagNode): boolean => {
+			const { tagTree } = get();
+			return tagNode && !tagNode.parent && tagTree.has(tagNode.fullPath);
 		},
 
 		getFilesInTag: (tagNode: TagNode): TFile[] => {
