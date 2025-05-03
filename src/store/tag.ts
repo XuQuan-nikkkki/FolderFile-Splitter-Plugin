@@ -46,6 +46,7 @@ export type TagExplorerStore = {
 	renameTag: (tag: TagNode, newName: string) => Promise<void>;
 	_setFocusedTag: (tag: TagNode | null) => void;
 	setFocusedTag: (folder: TagNode | null) => Promise<void>;
+	restoreLastFocusedTag: () => Promise<void>;
 };
 
 export const createTagExplorerStore =
@@ -284,6 +285,18 @@ export const createTagExplorerStore =
 				}
 			} else {
 				removeDataFromLocalStorage(FFS_FOCUSED_TAG_PATH_KEY);
+			}
+		},
+
+		restoreLastFocusedTag: async () => {
+			const { getDataFromLocalStorage, tagTree, setFocusedTag } = get();
+			const lastFocusedTagPath = getDataFromLocalStorage(
+				FFS_FOCUSED_TAG_PATH_KEY
+			);
+			if (!lastFocusedTagPath) return;
+			const tag = tagTree.get(lastFocusedTagPath);
+			if (tag) {
+				setFocusedTag(tag);
 			}
 		},
 	});
