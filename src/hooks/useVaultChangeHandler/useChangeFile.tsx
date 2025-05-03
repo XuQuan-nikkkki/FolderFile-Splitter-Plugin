@@ -51,6 +51,7 @@ const useChangeFile = () => {
 	const [files, setFiles] = useState<TFile[]>(getFocusedFiles());
 
 	useEffect(() => {
+		setFiles(getFocusedFiles());
 		window.addEventListener(VaultChangeEventName, onHandleVaultChange);
 		return () => {
 			window.removeEventListener(
@@ -58,10 +59,6 @@ const useChangeFile = () => {
 				onHandleVaultChange
 			);
 		};
-	}, []);
-
-	useEffect(() => {
-		setFiles(getFocusedFiles());
 	}, [focusedFolder, includeSubfolderFiles, focusedTag, includeSubTagFiles]);
 
 	const onDeleteFileFromList = (file: TFile) => {
