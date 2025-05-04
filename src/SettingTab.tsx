@@ -130,6 +130,8 @@ export class SettingTab extends PluginSettingTab {
 	initLayoutSettings() {
 		this.createHeader2(this.headersCopy.layout);
 		this._initDropdownSetting("layoutMode");
+		this._initToggleSetting("highlightActionBar");
+		this._initToggleSetting("autoHideActionBar");
 	}
 
 	initFolderAndFileBehaviorSettings() {
@@ -216,12 +218,6 @@ export class SettingTab extends PluginSettingTab {
 		this._initToggleSetting("showFileItemDivider");
 	}
 
-	initActionBarSettings() {
-		this.createHeader2(this.headersCopy.actionBar);
-		this._initToggleSetting("highlightActionBar");
-		this._initToggleSetting("autoHideActionBar");
-	}
-
 	initFolderNoteSettings() {
 		this.createHeader2(this.headersCopy.folderNoteSettings);
 		this._initToggleSetting("autoOpenFolderNote");
@@ -234,7 +230,6 @@ export class SettingTab extends PluginSettingTab {
 		this.containerEl.empty();
 		this.initStartupSettings();
 		this.initLayoutSettings();
-		this.initActionBarSettings();
 		this.initFolderAndFileBehaviorSettings();
 		this.initFolderSettings();
 		this.initTagSettings();

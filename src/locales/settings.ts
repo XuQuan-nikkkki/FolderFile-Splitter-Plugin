@@ -14,7 +14,6 @@ export interface SettingsHeaderLocaleResource {
 export const EN_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 	startup: "🔷 Startup",
 	layout: "🧭 Layout",
-	actionBar: "🎛️ Action Bar",
 	folderAndFileBehavior: "🧾 Folder and file behavior",
 	folderSettings: "📂 Folder settings",
 	tagSettings: "🏷️ Tag settings",
@@ -25,7 +24,6 @@ export const EN_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 export const ZH_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 	startup: "🔷 启动与布局",
 	layout: "🧭 布局样式",
-	actionBar: "🎛️ 操作栏设置",
 	folderAndFileBehavior: "🧾 文件夹和文件行为",
 	folderSettings: "📂 文件夹设置",
 	tagSettings: "🏷️ 标签设置",
