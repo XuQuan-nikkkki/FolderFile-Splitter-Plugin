@@ -14,7 +14,7 @@ export interface SettingsHeaderLocaleResource {
 export const EN_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 	startup: "🔷 Startup",
 	layout: "🧭 Layout",
-	folderAndFileBehavior: "🧾 Folder and file behavior",
+	folderAndFileBehavior: "🧾 Folder/Tag and file behavior",
 	folderSettings: "📂 Folder settings",
 	tagSettings: "🏷️ Tag settings",
 	fileDetail: "📄 File Detail",
@@ -24,7 +24,7 @@ export const EN_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 export const ZH_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 	startup: "🔷 启动与布局",
 	layout: "🧭 布局样式",
-	folderAndFileBehavior: "🧾 文件夹和文件行为",
+	folderAndFileBehavior: "🧾 文件夹/标签和文件行为",
 	folderSettings: "📂 文件夹设置",
 	tagSettings: "🏷️ 标签设置",
 	fileDetail: "📄 文件详情",
@@ -90,8 +90,8 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		desc: "When enabled, the first heading (e.g., # Title) will be removed from the file content preview.",
 	},
 	showFolderHierarchyLines: {
-		name: "Show folder hierarchy lines",
-		desc: "When enabled, a line will be displayed next to folders in the same hierarchy level under an expanded parent folder, visually indicating their nesting relationship.",
+		name: "Show hierarchy lines",
+		desc: "When enabled, a line will be displayed next to folders/tags in the same hierarchy level under an expanded parent folder/tag, visually indicating their nesting relationship.",
 	},
 	showFolderIcon: {
 		name: "Show folder icon",
@@ -124,8 +124,8 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		desc: "When enabled, the top action bar will be hidden by default and only appear when hovering over it.",
 	},
 	expandFolderByClickingOn: {
-		name: "Expand folder on click",
-		desc: "Choose whether to expand a folder by clicking on the toggle icon (▶/▼) or the folder name.",
+		name: "Expand folder/tag on click",
+		desc: "Choose whether to expand a folder/tag by clicking on the toggle icon (▶/▼) or the folder/tag name.",
 		options: [
 			{
 				value: EXPAND_FOLDER_BY_CLICKING_ELEMENT.ICON,
@@ -133,7 +133,7 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 			},
 			{
 				value: EXPAND_FOLDER_BY_CLICKING_ELEMENT.FOLDER,
-				text: "Folder Name",
+				text: "Folder/Tag Name",
 			},
 		],
 	},
@@ -260,8 +260,8 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 		desc: "启用后，将从文件内容预览中移除首个标题（例如 # 标题）",
 	},
 	showFolderHierarchyLines: {
-		name: "显示文件夹层级线",
-		desc: "启用后，展开的父文件夹下会显示同级文件夹的层级线，直观展示嵌套关系。",
+		name: "显示层级线",
+		desc: "启用后，展开的父文件夹/标签下会显示同级文件夹/标签的层级线，直观展示嵌套关系。",
 	},
 	showFolderIcon: {
 		name: "显示文件夹图标",
@@ -294,8 +294,8 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 		desc: "启用后，顶部操作栏默认隐藏，鼠标悬停时才会显示。",
 	},
 	expandFolderByClickingOn: {
-		name: "点击展开文件夹",
-		desc: "选择通过点击切换图标（▶/▼）或文件夹名称来展开文件夹。",
+		name: "点击展开文件夹/标签",
+		desc: "选择通过点击切换图标（▶/▼）或文件夹/标签名称来展开文件夹/标签。",
 		options: [
 			{
 				value: EXPAND_FOLDER_BY_CLICKING_ELEMENT.ICON,
@@ -303,7 +303,7 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 			},
 			{
 				value: EXPAND_FOLDER_BY_CLICKING_ELEMENT.FOLDER,
-				text: "文件夹名称",
+				text: "文件夹/标签名称",
 			},
 		],
 	},

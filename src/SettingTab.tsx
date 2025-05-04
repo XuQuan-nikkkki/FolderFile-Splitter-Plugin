@@ -153,8 +153,8 @@ export class SettingTab extends PluginSettingTab {
 	initTagSettings() {
 		this.createHeader2(this.headersCopy.tagSettings);
 		this._initToggleSetting("showTagView");
-		this._initToggleSetting("includeSubTagFiles");
 		this._initToggleSetting("showTagIcon");
+		this._initToggleSetting("includeSubTagFiles");
 	}
 
 	generateFileCreationDateFormatDesc(setting: Setting, format: string) {
