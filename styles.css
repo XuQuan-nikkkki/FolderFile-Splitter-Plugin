@@ -305,10 +305,6 @@ div.ffs__name--bold {
 	stroke-width: var(--icon-stroke);
 }
 
-.ffs__folder-icon {
-	fill: var(--nav-item-color);
-}
-
 .nav-folder-title.is-active .ffs__folder-icon {
 	fill: var(--nav-item-color-active);
 }
