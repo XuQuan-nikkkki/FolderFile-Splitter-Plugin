@@ -104,7 +104,6 @@ const VerticalSplitLayout = () => {
 		const copy = [showFolderView && "Folders", showTagView && "Tags"]
 			.filter(Boolean)
 			.join(" & ");
-			console.log("copy", copy);
 		if (isFoldersCollapsed) {
 			return (
 				<div className={getActionsContainerClassName()}>
@@ -126,8 +125,8 @@ const VerticalSplitLayout = () => {
 			>
 				<div className={getActionsContainerClassName()}>
 					<FolderAndTagActionSection />
-					<ToggleFolderAndTagMode />
 					<div className="ffs__actions-section nav-buttons-container">
+						<ToggleFolderAndTagMode />
 						{renderClosePaneButton(onClosePane)}
 					</div>
 				</div>
