@@ -30,6 +30,7 @@ const SortAction = ({
 	isInAscendingOrder,
 	currentSortRule,
 	isManualOrder,
+	...props
 }: Props) => {
 	const onChangeSortRule = (e: React.MouseEvent<HTMLDivElement>) => {
 		const menu = new Menu();
@@ -67,6 +68,7 @@ const SortAction = ({
 		<div
 			className="ffs__action-button-wrapper clickable-icon nav-action-button"
 			onClick={onChangeSortRule}
+			{...props}
 		>
 			{renderIcon()}
 		</div>

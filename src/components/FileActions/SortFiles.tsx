@@ -96,7 +96,11 @@ const SortFiles = () => {
 			}
 		}
 		changeFileSortRule(rule as FileSortRule);
-	}
+	};
+
+	const getAriaLabel = () => {
+		return language === "zh" ? "对文件排序" : "Sort files";
+	};
 
 	return (
 		<SortAction
@@ -107,6 +111,8 @@ const SortFiles = () => {
 			isInAscendingOrder={isFilesInAscendingOrder}
 			currentSortRule={fileSortRule}
 			isManualOrder={fileSortRule === FILE_MANUAL_SORT_RULE}
+			data-tooltip-position="bottom"
+			aria-label={getAriaLabel()}
 		/>
 	);
 };

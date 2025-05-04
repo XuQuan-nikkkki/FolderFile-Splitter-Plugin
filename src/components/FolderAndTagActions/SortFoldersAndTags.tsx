@@ -87,6 +87,12 @@ const SortFolders = () => {
 		}
 	};
 
+	const getAriaLabel = () => {
+		return language === "zh"
+			? "对文件夹和标签排序"
+			: "Sort folders and tags";
+	};
+
 	return (
 		<SortAction
 			plugin={plugin}
@@ -96,6 +102,8 @@ const SortFolders = () => {
 			isInAscendingOrder={isFoldersInAscendingOrder}
 			currentSortRule={folderSortRule}
 			isManualOrder={folderSortRule === FOLDER_MANUAL_SORT_RULE}
+			data-tooltip-position="bottom"
+			aria-label={getAriaLabel()}
 		/>
 	);
 };
