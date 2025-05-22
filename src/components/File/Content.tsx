@@ -117,6 +117,16 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 		}
 	}, []);
 
+	useEffect(() => {
+		if (focusedFile?.path !== file.path) return;
+		setTimeout(() => {
+			fileRef.current?.scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+			});
+		}, 100);
+	}, [focusedFile]);
+
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
 		e.stopPropagation();

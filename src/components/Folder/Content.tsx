@@ -120,6 +120,16 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 		}
 	}, []);
 
+	useEffect(() => {
+		if (focusedFolder?.path !== folder.path) return;
+		setTimeout(() => {
+			folderRef.current?.scrollIntoView({
+				behavior: "smooth",
+				block: "center",
+			});
+		}, 100);
+	}, [focusedFolder]);
+
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
 		e.stopPropagation();
