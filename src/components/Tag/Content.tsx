@@ -132,7 +132,6 @@ const TagContent = ({ tag }: Props) => {
 			onContextMenu={onShowContextMenu}
 			onClick={(e) => {
 				if (isFocused) {
-					e.stopPropagation();
 					tagRef.current?.focus();
 					setIsFocusing(true);
 				}

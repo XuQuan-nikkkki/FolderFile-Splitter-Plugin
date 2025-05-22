@@ -1,13 +1,5 @@
 type ValueOf<T> = T[keyof T];
 
-export const EXPAND_FOLDER_BY_CLICKING_ELEMENT = {
-	ICON: "icon",
-	FOLDER: "folder",
-} as const;
-export type ExpandFolderByClickingOnElement = ValueOf<
-	typeof EXPAND_FOLDER_BY_CLICKING_ELEMENT
->;
-
 export const LAYOUT_MODE = {
 	HORIZONTAL_SPLIT: "Horizontal split",
 	VERTICAL_SPLIT: "Vertical split",
@@ -40,7 +32,6 @@ export type FolderNoteMissingBehavior = ValueOf<
 export const DEFAULT_FILE_CREATION_DATE_FORMAT = "YYYY/MM/DD";
 
 export interface FolderFileSplitterPluginSettings {
-	expandFolderByClickingOn: ExpandFolderByClickingOnElement;
 	includeSubfolderFiles: boolean;
 	showFolderHierarchyLines: boolean;
 	showFolderIcon: boolean;
@@ -70,7 +61,6 @@ export interface FolderFileSplitterPluginSettings {
 }
 
 export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
-	expandFolderByClickingOn: EXPAND_FOLDER_BY_CLICKING_ELEMENT.FOLDER,
 	includeSubfolderFiles: false,
 	showFolderHierarchyLines: false,
 	showFolderIcon: true,

@@ -6,9 +6,8 @@ import { ChevronRight } from "src/assets/icons";
 type Props = {
 	isExpanded: boolean;
 	hideIcon: boolean;
-	onClickExpandIcon: (e: React.MouseEvent<HTMLDivElement>) => void;
 };
-const ExpandIcon = ({ isExpanded, hideIcon, onClickExpandIcon }: Props) => {
+const ExpandIcon = ({ isExpanded, hideIcon }: Props) => {
 	let content: ReactNode;
 	if (hideIcon) {
 		content = null;
@@ -23,7 +22,6 @@ const ExpandIcon = ({ isExpanded, hideIcon, onClickExpandIcon }: Props) => {
 			className={classNames("tree-item-icon collapse-icon", {
 				"is-collapsed": !isExpanded,
 			})}
-			onClick={onClickExpandIcon}
 		>
 			{content}
 		</div>

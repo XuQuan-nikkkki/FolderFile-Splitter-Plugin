@@ -38,6 +38,7 @@ export default class FolderFileSplitterPlugin extends Plugin {
 		);
 
 		await this.loadSettings();
+		console.log("settings", this.settings.expandFolderByClickingOn)
 
 		this.addCommand({
 			id: "open-file-tree-view",

@@ -95,8 +95,8 @@ export type FolderExplorerStore = {
 	) => Promise<void>;
 	moveFolder: (folder: TFolder, newPath: string) => Promise<void>;
 	renameFolder: (folder: TFolder, newName: string) => Promise<void>;
-	expandFolder: (folder: TFolder) => void;
-	collapseFolder: (folder: TFolder) => void;
+	expandFolder: (folder: TFolder) => Promise<void>;
+	collapseFolder: (folder: TFolder) => Promise<void>;
 	updateFolderPinState: (oldPath: string, newPath: string) => Promise<void>;
 	getNameOfFolder: (folder: TFolder) => string;
 };
@@ -609,25 +609,25 @@ export const createFolderExplorerStore =
 			const newPath = folder.path.replace(folder.name, newName);
 			await moveFolder(folder, newPath);
 		},
-		expandFolder: (folder: TFolder) => {
+		expandFolder: async (folder: TFolder) => {
 			const {
 				changeExpandedFolderPaths,
 				expandedFolderPaths,
 				hasFolderChildren,
 			} = get();
 			if (!hasFolderChildren(folder) || folder.isRoot()) return;
-			changeExpandedFolderPaths(
+			await changeExpandedFolderPaths(
 				uniq([...expandedFolderPaths, folder.path])
 			);
 		},
-		collapseFolder: (folder: TFolder) => {
+		collapseFolder: async(folder: TFolder) => {
 			const {
 				changeExpandedFolderPaths,
 				hasFolderChildren,
 				expandedFolderPaths,
 			} = get();
 			if (!hasFolderChildren(folder) || folder.isRoot()) return;
-			changeExpandedFolderPaths(
+			await changeExpandedFolderPaths(
 				expandedFolderPaths.filter((path) => path !== folder.path)
 			);
 		},

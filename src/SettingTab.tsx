@@ -136,7 +136,6 @@ export class SettingTab extends PluginSettingTab {
 
 	initFolderAndFileBehaviorSettings() {
 		this.createHeader2(this.headersCopy.folderAndFileBehavior);
-		this._initDropdownSetting("expandFolderByClickingOn");
 		this._initToggleSetting("hideRootFolder");
 		this._initToggleSetting("showFolderHierarchyLines");
 		this._initToggleSetting("openDestinationFolderAfterMove");

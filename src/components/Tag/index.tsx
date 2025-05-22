@@ -27,6 +27,9 @@ const Tag = ({
 		focusedTag,
 		getFilesInTag,
 		getTagsByParent,
+		expandedTagPaths,
+		collapseTag,
+		expandTag,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			hasTagChildren: store.hasTagChildren,
@@ -34,8 +37,21 @@ const Tag = ({
 			focusedTag: store.focusedTag,
 			getTagsByParent: store.getTagsByParent,
 			getFilesInTag: store.getFilesInTag,
+			expandedTagPaths: store.expandedTagPaths,
+			collapseTag: store.collapseTag,
+			expandTag: store.expandTag,
 		}))
 	);
+
+	const onToggleExpandState = (): void => {
+		const isFolderExpanded = expandedTagPaths.includes(tag.fullPath);
+		if (isFolderExpanded) {
+			collapseTag(tag);
+		} else {
+			expandTag(tag);
+		}
+	};
+
 	const isFocused = tag.fullPath == focusedTag?.fullPath;
 
 	const getAriaLabel = () => {
@@ -75,7 +91,10 @@ const Tag = ({
 		<div
 			className={getClassNames()}
 			style={getIndentStyle()}
-			onClick={() => setFocusedTag(tag)}
+			onClick={() => {
+				setFocusedTag(tag);
+				onToggleExpandState();
+			}}
 			data-tooltip-position="right"
 			aria-label={getAriaLabel()}
 		>

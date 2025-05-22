@@ -4,10 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { ExplorerStore } from "src/store";
 import { FolderListModal } from "../FolderListModal";
-import {
-	useShowFolderIcon,
-	useExpandFolderByClickingOnElement,
-} from "src/hooks/useSettingsHandler";
+import { useShowFolderIcon } from "src/hooks/useSettingsHandler";
 import FilesCount from "./FilesCount";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { FOLDER_OPERATION_COPY } from "src/locales";
@@ -38,7 +35,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 		renameFolder,
 		latestCreatedFolder,
 		latestFolderCreatedTime,
-		getNameOfFolder
+		getNameOfFolder,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			focusedFolder: store.focusedFolder,
@@ -53,7 +50,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 			renameFolder: store.renameFolder,
 			latestCreatedFolder: store.latestCreatedFolder,
 			latestFolderCreatedTime: store.latestFolderCreatedTime,
-			getNameOfFolder: store.getNameOfFolder
+			getNameOfFolder: store.getNameOfFolder,
 		}))
 	);
 
@@ -62,9 +59,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 
 	const { settings } = plugin;
 	const { showFolderIcon } = useShowFolderIcon(settings.showFolderIcon);
-	const { expandFolderByClickingOn } = useExpandFolderByClickingOnElement(
-		settings.expandFolderByClickingOn
-	);
+
 	const isFocused = folder.path == focusedFolder?.path;
 
 	const onSaveName = (name: string) => renameFolder(folder, name);
@@ -210,15 +205,6 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 		menu.showAtPosition({ x: e.clientX, y: e.clientY });
 	};
 
-	const onClickFolderName = (e: React.MouseEvent<HTMLDivElement>): void => {
-		e.stopPropagation();
-		if (focusedFolder?.path !== folder.path) {
-			setFocusedFolder(folder);
-		} else if (expandFolderByClickingOn === "folder") {
-			onToggleExpandState();
-		}
-	};
-
 	const maybeRenderFolderIcon = () => {
 		if (!showFolderIcon) return null;
 		const className = classNames("ffs__folder-icon", {
@@ -237,11 +223,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 	};
 
 	const renderTitleContent = () => (
-		<div
-			ref={folderRef}
-			className="ffs__folder-content--main"
-			onClick={onClickFolderName}
-		>
+		<div ref={folderRef} className="ffs__folder-content--main">
 			{maybeRenderFolderIcon()}
 			{renderFolderName()}
 			<FilesCount folder={folder} />
@@ -254,7 +236,6 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 			onContextMenu={onShowContextMenu}
 			onClick={(e) => {
 				if (isFocused) {
-					e.stopPropagation();
 					folderRef.current?.focus();
 					setIsFocusing(true);
 				}

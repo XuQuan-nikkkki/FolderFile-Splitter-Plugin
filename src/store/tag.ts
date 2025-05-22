@@ -8,6 +8,7 @@ import {
 	FFS_FOCUSED_TAG_PATH_KEY,
 	FFS_PINNED_TAG_PATHS_KEY,
 } from "src/assets/constants";
+import { uniq } from "src/utils";
 
 type FolderPath = string;
 type ChildrenPaths = string[];
@@ -50,6 +51,8 @@ export type TagExplorerStore = {
 
 	changeExpandedTagPaths: (paths: string[]) => Promise<void>;
 	restoreExpandedTagPaths: () => Promise<void>;
+	expandTag: (tag: TagNode) => Promise<void>;
+	collapseTag: (tag: TagNode) => Promise<void>;
 
 	_setFocusedTag: (tag: TagNode | null) => void;
 	setFocusedTag: (folder: TagNode | null) => Promise<void>;
@@ -227,6 +230,22 @@ export const createTagExplorerStore =
 			saveDataInLocalStorage(
 				FFS_EXPANDED_TAG_PATHS_KEY,
 				JSON.stringify(tagPaths)
+			);
+		},
+
+		expandTag: async (tag: TagNode) => {
+			const { changeExpandedTagPaths, expandedTagPaths, hasTagChildren } =
+				get();
+			if (!hasTagChildren(tag)) return;
+			await changeExpandedTagPaths(uniq([...expandedTagPaths, tag.fullPath]));
+		},
+
+		collapseTag: async (tag: TagNode) => {
+			const { changeExpandedTagPaths, hasTagChildren, expandedTagPaths } =
+				get();
+			if (!hasTagChildren(tag)) return;
+			await changeExpandedTagPaths(
+				expandedTagPaths.filter((path) => path !== tag.fullPath)
 			);
 		},
 

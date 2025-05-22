@@ -140,7 +140,10 @@ const Folder = ({
 		<div
 			className={getClassNames()}
 			ref={setDropRef}
-			onClick={() => setFocusedFolder(folder)}
+			onClick={() => {
+				onToggleExpandState();
+				setFocusedFolder(folder);
+			}}
 			style={getIndentStyle()}
 			data-tooltip-position="right"
 			aria-label={getAriaLabel()}

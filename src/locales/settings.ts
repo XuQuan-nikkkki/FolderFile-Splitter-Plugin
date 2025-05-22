@@ -123,20 +123,6 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		name: "Auto-hide action bar",
 		desc: "When enabled, the top action bar will be hidden by default and only appear when hovering over it.",
 	},
-	expandFolderByClickingOn: {
-		name: "Expand folder/tag on click",
-		desc: "Choose whether to expand a folder/tag by clicking on the toggle icon (▶/▼) or the folder/tag name.",
-		options: [
-			{
-				value: EXPAND_FOLDER_BY_CLICKING_ELEMENT.ICON,
-				text: "Toggle Icon",
-			},
-			{
-				value: EXPAND_FOLDER_BY_CLICKING_ELEMENT.FOLDER,
-				text: "Folder/Tag Name",
-			},
-		],
-	},
 	includeSubfolderFiles: {
 		name: "Include subfolder files",
 		desc: "When enabled, files inside subfolders will be included in the file list and their count will be reflected in the folder’s file count.",
@@ -292,20 +278,6 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	autoHideActionBar: {
 		name: "自动隐藏操作栏",
 		desc: "启用后，顶部操作栏默认隐藏，鼠标悬停时才会显示。",
-	},
-	expandFolderByClickingOn: {
-		name: "点击展开文件夹/标签",
-		desc: "选择通过点击切换图标（▶/▼）或文件夹/标签名称来展开文件夹/标签。",
-		options: [
-			{
-				value: EXPAND_FOLDER_BY_CLICKING_ELEMENT.ICON,
-				text: "切换图标",
-			},
-			{
-				value: EXPAND_FOLDER_BY_CLICKING_ELEMENT.FOLDER,
-				text: "文件夹/标签名称",
-			},
-		],
 	},
 	includeSubfolderFiles: {
 		name: "包含子文件夹文件",

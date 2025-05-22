@@ -1,5 +1,4 @@
 import { useShowFolderIcon } from "./useShowFolderIcon";
-import { useExpandFolderByClickingOnElement } from "./useExpandFolderByClickingOnEle";
 import { useIncludeSubfolderFiles } from "./useIncludeSubfolderFiles";
 import { useShowFileDetail } from "./useShowFileDetail";
 import { useShowHierarchyLines } from "./useShowHierarchyLines";
@@ -22,7 +21,6 @@ import { useShowTagIcon } from "./useShowTagIcon";
 
 export {
 	useShowFolderIcon,
-	useExpandFolderByClickingOnElement,
 	useIncludeSubfolderFiles,
 	useShowFileDetail,
 	useShowHierarchyLines,
