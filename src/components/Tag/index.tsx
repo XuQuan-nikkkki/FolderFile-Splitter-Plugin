@@ -79,7 +79,7 @@ const Tag = ({
 
 	const getClassNames = () => {
 		return classNames(
-			"ffs__folder-container tree-item-self nav-tag-title is-clickable",
+			"ffs__folder-container tree-item-self nav-folder-title is-clickable",
 			{
 				"mod-collapsible": hasTagChildren(tag),
 				"is-active": isFocused,
