@@ -90,7 +90,12 @@ export const createFileExplorerStore =
 				focusedTag,
 				getFilesInFolder,
 				getFilesInTag,
+				viewMode,
 			} = get();
+			if (viewMode === "all") {
+				return plugin.app.vault.getFiles();
+			}
+
 			if (focusedFolder) {
 				return getFilesInFolder(focusedFolder);
 			}
