@@ -30,6 +30,7 @@ const Tag = ({
 		expandedTagPaths,
 		collapseTag,
 		expandTag,
+		changeViewMode,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			hasTagChildren: store.hasTagChildren,
@@ -40,8 +41,11 @@ const Tag = ({
 			expandedTagPaths: store.expandedTagPaths,
 			collapseTag: store.collapseTag,
 			expandTag: store.expandTag,
+			changeViewMode: store.changeViewMode,
 		}))
 	);
+
+	const isFocused = tag.fullPath == focusedTag?.fullPath;
 
 	const onToggleExpandState = (): void => {
 		const isFolderExpanded = expandedTagPaths.includes(tag.fullPath);
@@ -52,7 +56,15 @@ const Tag = ({
 		}
 	};
 
-	const isFocused = tag.fullPath == focusedTag?.fullPath;
+	const onToggleSelectState = async (): Promise<void> => {
+		if (isFocused) {
+			setFocusedTag(null);
+			await changeViewMode("all");
+		} else {
+			setFocusedTag(tag);
+			await changeViewMode("tag");
+		}
+	};
 
 	const getAriaLabel = () => {
 		const { name } = tag;
@@ -91,9 +103,9 @@ const Tag = ({
 		<div
 			className={getClassNames()}
 			style={getIndentStyle()}
-			onClick={() => {
-				setFocusedTag(tag);
+			onClick={async () => {
 				onToggleExpandState();
+				await onToggleSelectState();
 			}}
 			data-tooltip-position="right"
 			aria-label={getAriaLabel()}

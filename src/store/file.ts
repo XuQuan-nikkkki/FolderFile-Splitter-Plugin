@@ -197,6 +197,8 @@ export const createFileExplorerStore =
 		},
 		sortFiles: (files: TFile[], rule: FileSortRule): TFile[] => {
 			const { filesManualSortOrder } = get();
+			if (files.length === 0) return files;
+
 			const parentPath = files[0].parent?.path;
 			const filePaths = parentPath
 				? filesManualSortOrder[parentPath]

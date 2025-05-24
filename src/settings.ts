@@ -1,4 +1,4 @@
-type ValueOf<T> = T[keyof T];
+export type ValueOf<T> = T[keyof T];
 
 export const LAYOUT_MODE = {
 	HORIZONTAL_SPLIT: "Horizontal split",

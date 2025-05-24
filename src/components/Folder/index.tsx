@@ -35,6 +35,7 @@ const Folder = ({
 		hasFolderChildren,
 		getFilesinFolder,
 		getFoldersByParent,
+		changeViewMode,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			setFocusedFolder: store.setFocusedFolder,
@@ -45,6 +46,7 @@ const Folder = ({
 			focusedFolder: store.focusedFolder,
 			getFilesinFolder: store.getFilesInFolder,
 			getFoldersByParent: store.getFoldersByParent,
+			changeViewMode: store.changeViewMode,
 		}))
 	);
 
@@ -140,9 +142,10 @@ const Folder = ({
 		<div
 			className={getClassNames()}
 			ref={setDropRef}
-			onClick={() => {
+			onClick={async () => {
 				onToggleExpandState();
 				setFocusedFolder(folder);
+				await changeViewMode("folder");
 			}}
 			style={getIndentStyle()}
 			data-tooltip-position="right"

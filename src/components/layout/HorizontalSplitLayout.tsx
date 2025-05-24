@@ -13,6 +13,7 @@ import {
 } from "src/hooks/useSettingsHandler";
 import { useExplorer } from "src/hooks/useExplorer";
 import ToggleFolderAndTagMode from "../FolderAndTagActions/ToggleFolderAndTagView";
+import ViewModeDisplay from "./ViewModeDisplay";
 
 const HorizontalSplitLayout = () => {
 	const { plugin } = useExplorer();
@@ -91,6 +92,7 @@ const HorizontalSplitLayout = () => {
 				<div className={getActionsContainerClassName()}>
 					<FileActionSection />
 				</div>
+				<ViewModeDisplay />
 				<FileTree />
 			</div>
 		</div>

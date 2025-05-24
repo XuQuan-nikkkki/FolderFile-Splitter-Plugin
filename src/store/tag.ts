@@ -237,7 +237,9 @@ export const createTagExplorerStore =
 			const { changeExpandedTagPaths, expandedTagPaths, hasTagChildren } =
 				get();
 			if (!hasTagChildren(tag)) return;
-			await changeExpandedTagPaths(uniq([...expandedTagPaths, tag.fullPath]));
+			await changeExpandedTagPaths(
+				uniq([...expandedTagPaths, tag.fullPath])
+			);
 		},
 
 		collapseTag: async (tag: TagNode) => {
