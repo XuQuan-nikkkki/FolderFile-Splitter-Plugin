@@ -18,6 +18,7 @@ import { useShowFolderView } from "./useShowFolderView";
 import { useShowTagView } from "./useShowTagView";
 import { useIncludeSubTagFiles } from "./useIncludeSubTagFiles";
 import { useShowTagIcon } from "./useShowTagIcon";
+import { useShowFilesCount } from "./useShowFilesCount";
 
 export {
 	useShowFolderIcon,
@@ -40,4 +41,5 @@ export {
 	useShowTagView,
 	useIncludeSubTagFiles,
 	useShowTagIcon,
+	useShowFilesCount,
 };

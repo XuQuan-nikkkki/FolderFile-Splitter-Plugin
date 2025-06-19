@@ -1,5 +1,4 @@
 import {
-	EXPAND_FOLDER_BY_CLICKING_ELEMENT,
 	FILE_ITEM_SPACING,
 	FOLDER_NOTE_LOCATION,
 	FOLDER_NOTE_MISSING_BEHAVIOR,
@@ -126,6 +125,10 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 	includeSubfolderFiles: {
 		name: "Include subfolder files",
 		desc: "When enabled, files inside subfolders will be included in the file list and their count will be reflected in the folder’s file count.",
+	},
+	showFilesCount: {
+		name: "Show file count",
+		desc: "Display the number of files next to each folder or tag. The count will appear on the right side of the item name.",
 	},
 	openDestinationFolderAfterMove: {
 		name: "Open destination folder after move",
@@ -282,6 +285,10 @@ export const ZH_SETTINGS: SettingsLocaleResource = {
 	includeSubfolderFiles: {
 		name: "包含子文件夹文件",
 		desc: "启用后，子文件夹中的文件将会显示在文件列表中，并计入所属文件夹的文件数量。",
+	},
+	showFilesCount: {
+		name: "显示文件数量",
+		desc: "在每个文件夹或标签名称右侧显示包含的文件数量。",
 	},
 	openDestinationFolderAfterMove: {
 		name: "移动后打开目标文件夹",

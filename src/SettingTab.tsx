@@ -138,6 +138,7 @@ export class SettingTab extends PluginSettingTab {
 		this.createHeader2(this.headersCopy.folderAndFileBehavior);
 		this._initToggleSetting("hideRootFolder");
 		this._initToggleSetting("showFolderHierarchyLines");
+		this._initToggleSetting("showFilesCount");
 		this._initToggleSetting("openDestinationFolderAfterMove");
 		this._initToggleSetting("revealFileInExplorer");
 	}

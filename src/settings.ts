@@ -41,6 +41,7 @@ export interface FolderFileSplitterPluginSettings {
 	fileCreationDateFormat: string;
 	showFileCreationDate: boolean;
 	showFileItemDivider: boolean;
+	showFilesCount: boolean,
 	stripMarkdownSyntaxInPreview: boolean;
 	fileItemSpacing: FileItemSpacing;
 	highlightActionBar: boolean;
@@ -69,6 +70,7 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	stripMarkdownSyntaxInPreview: false,
 	removeFirstHeadingInPreview: false,
 	showFileCreationDate: true,
+	showFilesCount: true,
 	fileCreationDateFormat: DEFAULT_FILE_CREATION_DATE_FORMAT,
 	fileItemSpacing: FILE_ITEM_SPACING.COMFORTABLE,
 	showFileItemDivider: true,

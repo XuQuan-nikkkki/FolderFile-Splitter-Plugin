@@ -1,7 +1,10 @@
 import { useShallow } from "zustand/react/shallow";
 
 import { ExplorerStore } from "src/store";
-import { useIncludeSubTagFiles } from "src/hooks/useSettingsHandler";
+import {
+	useIncludeSubTagFiles,
+	useShowFilesCount,
+} from "src/hooks/useSettingsHandler";
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFile } from "src/utils";
 import { useEffect, useState } from "react";
@@ -25,6 +28,7 @@ const FilesCount = ({ tag }: Props) => {
 	const { includeSubTagFiles } = useIncludeSubTagFiles(
 		settings.includeSubTagFiles
 	);
+	const { showFilesCount } = useShowFilesCount(settings.showFilesCount);
 
 	const onHandleVaultChange = (event: VaultChangeEvent) => {
 		const { file, changeType } = event.detail;
@@ -49,7 +53,9 @@ const FilesCount = ({ tag }: Props) => {
 		setCount(getFilesCountInTag(tag));
 	}, [tag.children.size, includeSubTagFiles]);
 
-	return <div className="ffs__files-count">{count}</div>;
+	return (
+		<div className="ffs__files-count">{showFilesCount ? count : ""}</div>
+	);
 };
 
 export default FilesCount;

@@ -2,7 +2,10 @@ import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 
 import { ExplorerStore } from "src/store";
-import { useIncludeSubfolderFiles } from "src/hooks/useSettingsHandler";
+import {
+	useIncludeSubfolderFiles,
+	useShowFilesCount,
+} from "src/hooks/useSettingsHandler";
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { isFile } from "src/utils";
 import { useEffect, useState } from "react";
@@ -24,6 +27,7 @@ const FilesCount = ({ folder }: Props) => {
 	const { includeSubfolderFiles } = useIncludeSubfolderFiles(
 		settings.includeSubfolderFiles
 	);
+	const { showFilesCount } = useShowFilesCount(settings.showFilesCount);
 
 	const [count, setCount] = useState<number | null>(null);
 
@@ -50,7 +54,9 @@ const FilesCount = ({ folder }: Props) => {
 		setCount(getFilesCountInFolder(folder, includeSubfolderFiles));
 	}, [folder.children.length, includeSubfolderFiles]);
 
-	return <div className="ffs__files-count">{count}</div>;
+	return (
+		<div className="ffs__files-count">{showFilesCount ? count : ""}</div>
+	);
 };
 
 export default FilesCount;
