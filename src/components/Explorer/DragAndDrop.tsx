@@ -9,7 +9,7 @@ import {
 	useSensor,
 	useSensors,
 } from "@dnd-kit/core";
-import { TAbstractFile, TFolder } from "obsidian";
+import { TAbstractFile, TFile, TFolder } from "obsidian";
 import { snapCenterToCursor } from "@dnd-kit/modifiers";
 import { useShallow } from "zustand/react/shallow";
 
@@ -22,6 +22,7 @@ import ExplorerContent from "./Content";
 
 const DragAndDropExplorer = () => {
 	const { useExplorerStore, plugin } = useExplorer();
+	const { settings } = plugin;
 
 	const {
 		expandedFolderPaths,
@@ -41,7 +42,7 @@ const DragAndDropExplorer = () => {
 		}))
 	);
 
-	const { openDestinationFolderAfterMove } = plugin.settings;
+	const { openDestinationFolderAfterMove } = settings;
 	const { openDestinationFolder } = useOpenDestinationFolder(
 		openDestinationFolderAfterMove
 	);
@@ -60,40 +61,61 @@ const DragAndDropExplorer = () => {
 		setActiveItem(e.active.data.current?.item);
 	};
 
-	const onDragEnd = async (e: DragEndEvent) => {
-		const { active, over } = e;
-		if (!over?.data.current) return;
-		const { item } = active.data.current as {
-			type: string;
-			item: TAbstractFile;
-		};
-		const targetFolder = over?.data.current?.item as TFolder | undefined;
-		if (
-			!targetFolder ||
-			targetFolder.path === item.parent?.path ||
-			targetFolder.path === item?.path
-		)
-			return;
-		const newPath = targetFolder.path + "/" + item.name;
-		if (isFile(item)) {
-			await moveFile(item, newPath);
-			if (openDestinationFolder) {
-				await setFocusedFolder(targetFolder);
-				await selectFile(item);
-			}
-		} else if (isFolder(item)) {
-			await moveFolder(item, newPath);
-			if (openDestinationFolder) {
-				await setFocusedFolder(item);
-			}
-		}
-		if (!expandedFolderPaths.includes(targetFolder.path)) {
-			expandFolder(targetFolder);
-		}
-		setActiveItem(null);
+	const isMovingIlleagal = (
+		folder: TFolder,
+		item: TAbstractFile
+	): boolean => {
+		const isMovingToSameFolder = folder.path === item.parent?.path;
+		const isMovingIntoItself = folder.path === item?.path;
+		return isMovingToSameFolder || isMovingIntoItself;
 	};
 
-	const onDragCancel = () => {
+	const onMoveFile = async (
+		file: TFile,
+		targetFolder: TFolder
+	): Promise<void> => {
+		const newPath = targetFolder.path + "/" + file.name;
+		await moveFile(file, newPath);
+		if (openDestinationFolder) {
+			await setFocusedFolder(targetFolder);
+			await selectFile(file);
+		}
+	};
+
+	const onMoveFolder = async (
+		folder: TFolder,
+		targetFolder: TFolder
+	): Promise<void> => {
+		const newPath = targetFolder.path + "/" + folder.name;
+		await moveFolder(folder, newPath);
+		if (openDestinationFolder) {
+			await setFocusedFolder(targetFolder);
+		}
+	};
+
+	const expandTargetFolder = (targetFolder: TFolder) => {
+		if (expandedFolderPaths.includes(targetFolder.path)) return;
+		expandFolder(targetFolder);
+	};
+
+	const onDragEnd = async (e: DragEndEvent) => {
+		const { active, over } = e;
+
+		const targetFolder = over?.data.current?.item as TFolder | undefined;
+		const item = active.data.current?.item as TAbstractFile;
+
+		if (!targetFolder || isMovingIlleagal(targetFolder, item)) return;
+
+		if (isFile(item)) {
+			await onMoveFile(item, targetFolder);
+		} else if (isFolder(item)) {
+			await onMoveFolder(item, targetFolder);
+		}
+		expandTargetFolder(targetFolder);
+		onClearActiveItem();
+	};
+
+	const onClearActiveItem = () => {
 		setActiveItem(null);
 	};
 
@@ -112,7 +134,7 @@ const DragAndDropExplorer = () => {
 			collisionDetection={pointerWithin}
 			onDragStart={onDragStart}
 			onDragEnd={onDragEnd}
-			onDragCancel={onDragCancel}
+			onDragCancel={onClearActiveItem}
 		>
 			<ExplorerContent />
 			<DragOverlay modifiers={[snapCenterToCursor]}>
