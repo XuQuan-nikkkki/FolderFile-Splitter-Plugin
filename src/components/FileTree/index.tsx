@@ -24,13 +24,12 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 			fileManualSortOrder: store.filesManualSortOrder,
 		}))
 	);
-	const { files, onDeleteFileFromList } = useChangeFile();
+	const { files } = useChangeFile();
 
 	const renderFile = (file: TFile, disableDrag?: boolean) => (
 		<File
 			key={file.path}
 			file={file}
-			deleteFile={() => onDeleteFileFromList(file)}
 			disableDrag={disableDrag}
 			onOpenFoldersPane={onOpenFoldersPane}
 		/>

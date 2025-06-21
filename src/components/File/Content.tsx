@@ -18,9 +18,8 @@ import FileDetail from "./Detail";
 
 export type FileProps = {
 	file: TFile;
-	deleteFile: () => void;
 };
-const FileContent = ({ file, deleteFile }: FileProps) => {
+const FileContent = ({ file }: FileProps) => {
 	const { useExplorerStore, plugin } = useExplorer();
 	const { language, settings } = plugin;
 
@@ -201,7 +200,7 @@ const FileContent = ({ file, deleteFile }: FileProps) => {
 
 			item.setIcon("trash-2");
 			item.onClick(async () => {
-				deleteFile();
+				// deleteFile();
 				await trashFile(file);
 			});
 		});

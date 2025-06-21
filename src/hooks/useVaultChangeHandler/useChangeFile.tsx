@@ -61,23 +61,13 @@ const useChangeFile = () => {
 		};
 	}, [focusedFolder, includeSubfolderFiles, focusedTag, includeSubTagFiles]);
 
-	const onDeleteFileFromList = (file: TFile) => {
-		setFiles((prevFiles) =>
-			prevFiles.filter((prevFile) => prevFile.path !== file.path)
-		);
-	};
-
-	const onUpdateFileInList = (file: TFile) => {
-		setFiles((prevFiles) =>
-			prevFiles.map((prevFile) =>
-				prevFile.path === file.path ? file : prevFile
-			)
-		);
-	};
-
 	const maybeInitOrder = async () => {
 		if (fileSortRule !== FILE_MANUAL_SORT_RULE) return;
 		await initOrder();
+	};
+
+	const updateFileList = async () => {
+		setFiles(getFocusedFiles());
 	};
 
 	const onHandleVaultChange = async (event: VaultChangeEvent) => {
@@ -87,24 +77,17 @@ const useChangeFile = () => {
 		switch (changeType) {
 			case "create":
 				await maybeInitOrder();
-				if (focusedFolder && file.parent?.path == focusedFolder.path) {
-					setFiles((prevFiles) => [...prevFiles, file]);
-				}
+				updateFileList();
 				break;
 			case "delete":
 				await maybeInitOrder();
+				updateFileList();
 				if (isFilePinned(file)) {
 					await unpinFile(file);
 				}
-				onDeleteFileFromList(file);
 				break;
 			case "rename":
-				if (!focusedFolder) return;
-				if (file.parent?.path == focusedFolder.path) {
-					onUpdateFileInList(file);
-				} else {
-					onDeleteFileFromList(file);
-				}
+				updateFileList();
 				if (oldPath) {
 					const parentPath = file.parent?.path;
 					await updateFilePinState(oldPath, file.path);
@@ -118,14 +101,13 @@ const useChangeFile = () => {
 				}
 				break;
 			case "modify":
-				onUpdateFileInList(file);
+				updateFileList();
 				break;
 		}
 	};
 
 	return {
 		files,
-		onDeleteFileFromList,
 	};
 };
 

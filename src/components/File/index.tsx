@@ -13,7 +13,7 @@ type Props = FileProps & {
 	onOpenFoldersPane: () => void;
 	disableDrag?: boolean;
 };
-const File = ({ file, deleteFile, disableDrag, onOpenFoldersPane }: Props) => {
+const File = ({ file, disableDrag, onOpenFoldersPane }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
 	const { language } = plugin;
 
@@ -61,7 +61,7 @@ const File = ({ file, deleteFile, disableDrag, onOpenFoldersPane }: Props) => {
 			{...attributes}
 			{...listeners}
 		>
-			<FileContent file={file} deleteFile={deleteFile} />
+			<FileContent file={file} />
 		</div>
 	);
 };
