@@ -494,3 +494,12 @@ div.ffs__file-content {
 	vertical-align: bottom;
 	cursor: pointer;
 }
+
+/* Drag and Drop folder and file */
+.ffs__drag-overlay {
+	position: absolute;
+	pointer-events: none;
+	font-size: 24px;
+	transform: translate(-50%, -50%);
+	z-index: 100;
+}
