@@ -9,14 +9,14 @@ export const useShowHierarchyLines = (
 		defaultShowHierarchyLines
 	);
 
-	const onChangeShowFolderIcon = (event: CustomEvent) => {
+	const onChangeShowLines = (event: CustomEvent) => {
 		const { changeKey, changeValue } = event.detail;
 		if (changeKey == "showFolderHierarchyLines") {
 			setShowHierarchyLines(changeValue);
 		}
 	};
 
-	useWatchSettingsChange(onChangeShowFolderIcon);
+	useWatchSettingsChange(onChangeShowLines);
 
 	return { showHierarchyLines };
 };

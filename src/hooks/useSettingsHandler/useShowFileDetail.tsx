@@ -7,14 +7,14 @@ export const useShowFileDetail = (
 ): { showFileDetail: boolean } => {
 	const [showFileDetail, setShowFileDetail] = useState(defaultShowFileDetail);
 
-	const onChangeShowFolderIcon = (event: CustomEvent) => {
+	const onChangeShowFileDetail = (event: CustomEvent) => {
 		const { changeKey, changeValue } = event.detail;
 		if (changeKey == "showFileDetail") {
 			setShowFileDetail(changeValue);
 		}
 	};
 
-	useWatchSettingsChange(onChangeShowFolderIcon);
+	useWatchSettingsChange(onChangeShowFileDetail);
 
 	return { showFileDetail };
 };

@@ -8,14 +8,14 @@ export const useOpenDestinationFolder = (
 	const [openDestinationFolder, setOpenDestinationFolder] =
 		useState(defaultOpen);
 
-	const onChangeShowFolderIcon = (event: CustomEvent) => {
+	const onChangeOpen = (event: CustomEvent) => {
 		const { changeKey, changeValue } = event.detail;
 		if (changeKey == "openDestinationFolderAfterMove") {
 			setOpenDestinationFolder(changeValue);
 		}
 	};
 
-	useWatchSettingsChange(onChangeShowFolderIcon);
+	useWatchSettingsChange(onChangeOpen);
 
 	return { openDestinationFolder };
 };
