@@ -15,16 +15,12 @@ import { useShallow } from "zustand/react/shallow";
 
 import FolderFileSplitterPlugin from "src/main";
 import { createExplorerStore, ExplorerStore } from "src/store";
-import {
-	useLayoutMode,
-	useOpenDestinationFolder,
-} from "src/hooks/useSettingsHandler";
-import { LAYOUT_MODE } from "src/settings";
+import { useOpenDestinationFolder } from "src/hooks/useSettingsHandler";
 import { isFile, isFolder } from "src/utils";
 import { ExplorerContext } from "src/hooks/useExplorer";
 
-import { HorizontalSplitLayout, VerticalSplitLayout } from "./layout";
-import Loading from "./Loading";
+import Loading from "../Loading";
+import ExplorerContent from "./Content";
 
 type Props = {
 	plugin: FolderFileSplitterPlugin;
@@ -55,9 +51,7 @@ const Explorer = ({ plugin }: Props) => {
 		}))
 	);
 
-	const { layoutMode: defaultLayout, openDestinationFolderAfterMove } =
-		plugin.settings;
-	const { layoutMode } = useLayoutMode(defaultLayout);
+	const { openDestinationFolderAfterMove } = plugin.settings;
 	const { openDestinationFolder } = useOpenDestinationFolder(
 		openDestinationFolderAfterMove
 	);
@@ -118,17 +112,6 @@ const Explorer = ({ plugin }: Props) => {
 		setActiveItem(null);
 	};
 
-	const renderContent = () => {
-		switch (layoutMode) {
-			case LAYOUT_MODE.HORIZONTAL_SPLIT:
-				return <HorizontalSplitLayout />;
-			case LAYOUT_MODE.VERTICAL_SPLIT:
-				return <VerticalSplitLayout />;
-			default:
-				return "unknown layout mode";
-		}
-	};
-
 	if (isRestoring) return <Loading />;
 
 	const renderOverlayContent = () => {
@@ -157,7 +140,7 @@ const Explorer = ({ plugin }: Props) => {
 			onDragCancel={onDragCancel}
 		>
 			<ExplorerContext.Provider value={{ useExplorerStore, plugin }}>
-				{renderContent()}
+				<ExplorerContent />
 			</ExplorerContext.Provider>
 			<DragOverlay modifiers={[snapCenterToCursor]}>
 				{renderOverlayContent()}

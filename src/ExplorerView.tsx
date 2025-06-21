@@ -33,7 +33,7 @@ export class ExplorerView extends ItemView {
 		this.destroy();
 		this.constructFileTree(this.app.vault.getRoot().path, "");
 		this.containerEl.dataset.type = "file-explorer";
-		this.containerEl.dataset.plugin= "FolderFile Splitter";
+		this.containerEl.dataset.plugin = "FolderFile Splitter";
 	}
 
 	constructFileTree(folderPath: string, vaultChange: string) {
