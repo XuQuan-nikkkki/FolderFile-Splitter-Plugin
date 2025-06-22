@@ -2,27 +2,12 @@ import { useEffect, useState, useRef } from "react";
 
 import { FFS_FOLDER_PANE_HEIGHT_KEY } from "src/assets/constants";
 import { VerticalDraggableDivider } from "./DraggableDivider";
-import {
-	ActionsContainer,
-	FolderAndTagActionSection,
-} from "./Actions";
-import FolderAndTagTree from "../FolderAndTagTree";
 import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
-import { useExplorer } from "src/hooks/useExplorer";
-import {
-	useShowFolderView,
-	useShowTagView,
-} from "src/hooks/useSettingsHandler";
-import ToggleFolderAndTagMode from "../FolderAndTagActions/ToggleFolderAndTagView";
-import { VERTICAL_SPLIT_LAYOUT_OPERATION_COPY } from "src/locales";
 import { toValidNumber } from "src/utils";
-import { ClosePaneButton, OpenPaneButton } from "./TogglePaneButton";
 import VerticalSplitFilesPane from "./VerticalSplitFilesPane";
+import VerticalSplitFoldersAndTagsPane from "./VerticalSplitFoldersAndTagsPane";
 
 const VerticalSplitLayout = () => {
-	const { plugin } = useExplorer();
-	const { settings, language } = plugin;
-
 	const [folderPaneHeight, setFolderPaneHeight] = useState<
 		number | undefined
 	>();
@@ -31,10 +16,6 @@ const VerticalSplitLayout = () => {
 
 	const pluginRef = useRef<HTMLDivElement>(null);
 	useChangeActiveLeaf();
-
-	const { showFolderView: showFolder, showTagView: showTag } = settings;
-	const { showFolderView } = useShowFolderView(showFolder);
-	const { showTagView } = useShowTagView(showTag);
 
 	const changeHeightAndSave = (height: number) => {
 		setFolderPaneHeight(height);
@@ -66,57 +47,14 @@ const VerticalSplitLayout = () => {
 		restoreLayout();
 	}, []);
 
-	const renderFoldersAndTagsPane = () => {
-		const onOpenPane = () => setIsFoldersCollapsed(false);
-		const onClosePane = () => setIsFoldersCollapsed(true);
-
-		const { openFoldersAndTags, closeFoldersAndTags } =
-			VERTICAL_SPLIT_LAYOUT_OPERATION_COPY;
-
-		const copy = [showFolderView && "Folders", showTagView && "Tags"]
-			.filter(Boolean)
-			.join(" & ");
-		if (isFoldersCollapsed) {
-			return (
-				<ActionsContainer>
-					<div className="ffs__actions-section ffs__collapsed-folders nav-buttons-container">
-						{copy}
-					</div>
-					<div className="ffs__actions-section nav-buttons-container">
-						<OpenPaneButton
-							onOpen={onOpenPane}
-							label={openFoldersAndTags[language]}
-						/>
-					</div>
-				</ActionsContainer>
-			);
-		}
-
-		return (
-			<div
-				className="ffs__layout-pane ffs__folders-pane--vertical"
-				style={{
-					height: isFilesCollapsed ? "100%" : folderPaneHeight,
-				}}
-			>
-				<ActionsContainer>
-					<FolderAndTagActionSection />
-					<div className="ffs__actions-section nav-buttons-container">
-						<ToggleFolderAndTagMode />
-						<ClosePaneButton
-							onClose={onClosePane}
-							label={closeFoldersAndTags[language]}
-						/>
-					</div>
-				</ActionsContainer>
-				<FolderAndTagTree />
-			</div>
-		);
-	};
-
 	return (
 		<div className="ffs__layout ffs__layout--vertical" ref={pluginRef}>
-			{renderFoldersAndTagsPane()}
+			<VerticalSplitFoldersAndTagsPane
+				folderPaneHeight={folderPaneHeight}
+				isFoldersCollapsed={isFoldersCollapsed}
+				isFilesCollapsed={isFilesCollapsed}
+				setIsFoldersCollapsed={setIsFoldersCollapsed}
+			/>
 			{!isFilesCollapsed && !isFoldersCollapsed && (
 				<VerticalDraggableDivider
 					initialHeight={folderPaneHeight}
