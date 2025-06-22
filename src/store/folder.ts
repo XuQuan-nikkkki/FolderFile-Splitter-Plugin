@@ -41,6 +41,7 @@ export type FolderExplorerStore = {
 	latestCreatedFolder: TFolder | null;
 	latestFolderCreatedTime: number | null;
 
+	canFolderToggle: (folder: TFolder) => boolean;
 	getTopLevelFolders: () => TFolder[];
 	getFilesCountInFolder: (
 		folder: TFolder,
@@ -115,6 +116,12 @@ export const createFolderExplorerStore =
 		foldersManualSortOrder: {},
 		latestCreatedFolder: null,
 		latestFolderCreatedTime: null,
+
+		canFolderToggle: (folder: TFolder): boolean => {
+			const { hasFolderChildren } = get();
+			// root folder is always expanded
+			return !folder.isRoot() && hasFolderChildren(folder);
+		},
 
 		getTopLevelFolders: () => {
 			return plugin.app.vault
@@ -613,20 +620,20 @@ export const createFolderExplorerStore =
 			const {
 				changeExpandedFolderPaths,
 				expandedFolderPaths,
-				hasFolderChildren,
+				canFolderToggle,
 			} = get();
-			if (!hasFolderChildren(folder) || folder.isRoot()) return;
+			if (!canFolderToggle(folder)) return;
 			await changeExpandedFolderPaths(
 				uniq([...expandedFolderPaths, folder.path])
 			);
 		},
-		collapseFolder: async(folder: TFolder) => {
+		collapseFolder: async (folder: TFolder) => {
 			const {
 				changeExpandedFolderPaths,
-				hasFolderChildren,
 				expandedFolderPaths,
+				canFolderToggle
 			} = get();
-			if (!hasFolderChildren(folder) || folder.isRoot()) return;
+			if (!canFolderToggle(folder)) return;
 			await changeExpandedFolderPaths(
 				expandedFolderPaths.filter((path) => path !== folder.path)
 			);
