@@ -1,8 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import classNames from "classnames";
 
 import { FFS_FOLDER_PANE_HEIGHT_KEY } from "src/assets/constants";
-import { ChevronRight } from "src/assets/icons";
 import { VerticalDraggableDivider } from "./DraggableDivider";
 import {
 	ActionsContainer,
@@ -20,6 +18,7 @@ import {
 import ToggleFolderAndTagMode from "../FolderAndTagActions/ToggleFolderAndTagView";
 import { VERTICAL_SPLIT_LAYOUT_OPERATION_COPY } from "src/locales";
 import { toValidNumber } from "src/utils";
+import { ClosePaneButton, OpenPaneButton } from "./TogglePaneButton";
 
 const VerticalSplitLayout = () => {
 	const { plugin } = useExplorer();
@@ -68,33 +67,13 @@ const VerticalSplitLayout = () => {
 		restoreLayout();
 	}, []);
 
-	const renderIcon = (
-		isCollapsed: boolean,
-		caller: () => void,
-		label: string
-	) => (
-		<div
-			className={classNames(
-				"ffs__action-button-wrapper ffs__collapse-pane-icon clickable-icon nav-action-button",
-				{ "is-collapsed": isCollapsed }
-			)}
-			onClick={caller}
-			data-tooltip-position="bottom"
-			aria-label={label}
-		>
-			<ChevronRight className="ffs__action-button svg-icon" />
-		</div>
-	);
-
-	const renderOpenPaneButton = (onOpen: () => void, label: string) =>
-		renderIcon(true, onOpen, label);
-
-	const renderClosePaneButton = (onClose: () => void, label: string) =>
-		renderIcon(false, onClose, label);
-
 	const renderFoldersAndTagsPane = () => {
 		const onOpenPane = () => setIsFoldersCollapsed(false);
 		const onClosePane = () => setIsFoldersCollapsed(true);
+
+		const { openFoldersAndTags, closeFoldersAndTags } =
+			VERTICAL_SPLIT_LAYOUT_OPERATION_COPY;
+
 		const copy = [showFolderView && "Folders", showTagView && "Tags"]
 			.filter(Boolean)
 			.join(" & ");
@@ -105,11 +84,10 @@ const VerticalSplitLayout = () => {
 						{copy}
 					</div>
 					<div className="ffs__actions-section nav-buttons-container">
-						{renderOpenPaneButton(
-							onOpenPane,
-							VERTICAL_SPLIT_LAYOUT_OPERATION_COPY
-								.openFoldersAndTags[language]
-						)}
+						<OpenPaneButton
+							onOpen={onOpenPane}
+							label={openFoldersAndTags[language]}
+						/>
 					</div>
 				</ActionsContainer>
 			);
@@ -126,11 +104,10 @@ const VerticalSplitLayout = () => {
 					<FolderAndTagActionSection />
 					<div className="ffs__actions-section nav-buttons-container">
 						<ToggleFolderAndTagMode />
-						{renderClosePaneButton(
-							onClosePane,
-							VERTICAL_SPLIT_LAYOUT_OPERATION_COPY
-								.closeFoldersAndTags[language]
-						)}
+						<ClosePaneButton
+							onClose={onClosePane}
+							label={closeFoldersAndTags[language]}
+						/>
 					</div>
 				</ActionsContainer>
 				<FolderAndTagTree />
@@ -141,6 +118,8 @@ const VerticalSplitLayout = () => {
 	const renderFilesPane = () => {
 		const onOpenPane = () => setIsFilesCollapsed(false);
 		const onClosePane = () => setIsFilesCollapsed(true);
+
+		const { openFiles, closeFiles } = VERTICAL_SPLIT_LAYOUT_OPERATION_COPY;
 		if (isFilesCollapsed) {
 			return (
 				<ActionsContainer>
@@ -148,12 +127,10 @@ const VerticalSplitLayout = () => {
 						Files
 					</div>
 					<div className="ffs__actions-section nav-buttons-container">
-						{renderOpenPaneButton(
-							onOpenPane,
-							VERTICAL_SPLIT_LAYOUT_OPERATION_COPY.openFiles[
-								language
-							]
-						)}
+						<OpenPaneButton
+							onOpen={onOpenPane}
+							label={openFiles[language]}
+						/>
 					</div>
 				</ActionsContainer>
 			);
@@ -164,12 +141,10 @@ const VerticalSplitLayout = () => {
 				<ActionsContainer>
 					<FileActionSection />
 					<div className="ffs__actions-section nav-buttons-container">
-						{renderClosePaneButton(
-							onClosePane,
-							VERTICAL_SPLIT_LAYOUT_OPERATION_COPY.closeFiles[
-								language
-							]
-						)}
+						<ClosePaneButton
+							onClose={onClosePane}
+							label={closeFiles[language]}
+						/>
 					</div>
 				</ActionsContainer>
 				<FileTree />
