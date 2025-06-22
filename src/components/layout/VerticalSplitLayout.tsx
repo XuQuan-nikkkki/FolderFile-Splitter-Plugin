@@ -4,10 +4,8 @@ import { FFS_FOLDER_PANE_HEIGHT_KEY } from "src/assets/constants";
 import { VerticalDraggableDivider } from "./DraggableDivider";
 import {
 	ActionsContainer,
-	FileActionSection,
 	FolderAndTagActionSection,
 } from "./Actions";
-import FileTree from "../FileTree";
 import FolderAndTagTree from "../FolderAndTagTree";
 import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
 import { useExplorer } from "src/hooks/useExplorer";
@@ -19,6 +17,7 @@ import ToggleFolderAndTagMode from "../FolderAndTagActions/ToggleFolderAndTagVie
 import { VERTICAL_SPLIT_LAYOUT_OPERATION_COPY } from "src/locales";
 import { toValidNumber } from "src/utils";
 import { ClosePaneButton, OpenPaneButton } from "./TogglePaneButton";
+import VerticalSplitFilesPane from "./VerticalSplitFilesPane";
 
 const VerticalSplitLayout = () => {
 	const { plugin } = useExplorer();
@@ -115,43 +114,6 @@ const VerticalSplitLayout = () => {
 		);
 	};
 
-	const renderFilesPane = () => {
-		const onOpenPane = () => setIsFilesCollapsed(false);
-		const onClosePane = () => setIsFilesCollapsed(true);
-
-		const { openFiles, closeFiles } = VERTICAL_SPLIT_LAYOUT_OPERATION_COPY;
-		if (isFilesCollapsed) {
-			return (
-				<ActionsContainer>
-					<div className="ffs__actions-section ffs__collapsed-files nav-buttons-container">
-						Files
-					</div>
-					<div className="ffs__actions-section nav-buttons-container">
-						<OpenPaneButton
-							onOpen={onOpenPane}
-							label={openFiles[language]}
-						/>
-					</div>
-				</ActionsContainer>
-			);
-		}
-
-		return (
-			<div className="ffs__layout-pane ffs__files-pane--vertical">
-				<ActionsContainer>
-					<FileActionSection />
-					<div className="ffs__actions-section nav-buttons-container">
-						<ClosePaneButton
-							onClose={onClosePane}
-							label={closeFiles[language]}
-						/>
-					</div>
-				</ActionsContainer>
-				<FileTree />
-			</div>
-		);
-	};
-
 	return (
 		<div className="ffs__layout ffs__layout--vertical" ref={pluginRef}>
 			{renderFoldersAndTagsPane()}
@@ -161,7 +123,10 @@ const VerticalSplitLayout = () => {
 					onChangeHeight={changeHeightAndSave}
 				/>
 			)}
-			{renderFilesPane()}
+			<VerticalSplitFilesPane
+				isFilesCollapsed={isFilesCollapsed}
+				setIsFilesCollapsed={setIsFilesCollapsed}
+			/>
 		</div>
 	);
 };
