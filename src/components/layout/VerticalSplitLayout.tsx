@@ -19,6 +19,7 @@ import {
 } from "src/hooks/useSettingsHandler";
 import ToggleFolderAndTagMode from "../FolderAndTagActions/ToggleFolderAndTagView";
 import { VERTICAL_SPLIT_LAYOUT_OPERATION_COPY } from "src/locales";
+import { toValidNumber } from "src/utils";
 
 const VerticalSplitLayout = () => {
 	const { plugin } = useExplorer();
@@ -37,38 +38,35 @@ const VerticalSplitLayout = () => {
 	const { showFolderView } = useShowFolderView(showFolder);
 	const { showTagView } = useShowTagView(showTag);
 
+	const changeHeightAndSave = (height: number) => {
+		setFolderPaneHeight(height);
+		localStorage.setItem(FFS_FOLDER_PANE_HEIGHT_KEY, String(height));
+	};
+
+	const fallbackToDefaultHeight = () => {
+		// The native file explorer uses a single-pane layout,
+		// This plugin introduces a two-pane layout.
+		// By default, the folder pane takes up half of the plugin height.
+		const pluginHeight = pluginRef.current?.offsetHeight;
+		if (!pluginHeight) return;
+		const defaultHeight = pluginHeight / 2;
+		changeHeightAndSave(defaultHeight);
+	};
+
 	const restoreLayout = () => {
-		try {
-			const previousHeightStr = localStorage.getItem(
-				FFS_FOLDER_PANE_HEIGHT_KEY
-			);
-			if (previousHeightStr) {
-				const previousHeight = Number(previousHeightStr);
-				if (previousHeight) {
-					setFolderPaneHeight(previousHeight);
-				}
-			}
-		} catch (e) {
-			const pluginHeight = pluginRef.current?.offsetHeight;
-			if (pluginHeight) {
-				const folderPaneHeight = pluginHeight / 2;
-				setFolderPaneHeight(folderPaneHeight);
-				localStorage.setItem(
-					FFS_FOLDER_PANE_HEIGHT_KEY,
-					String(folderPaneHeight)
-				);
-			}
+		const previousHeight = toValidNumber(
+			localStorage.getItem(FFS_FOLDER_PANE_HEIGHT_KEY)
+		);
+		if (previousHeight !== null) {
+			setFolderPaneHeight(previousHeight);
+		} else {
+			fallbackToDefaultHeight();
 		}
 	};
 
 	useEffect(() => {
 		restoreLayout();
 	}, []);
-
-	const onChangeFolderPaneHeight = (height: number) => {
-		setFolderPaneHeight(height);
-		localStorage.setItem(FFS_FOLDER_PANE_HEIGHT_KEY, String(height));
-	};
 
 	const renderIcon = (
 		isCollapsed: boolean,
@@ -185,7 +183,7 @@ const VerticalSplitLayout = () => {
 			{!isFilesCollapsed && !isFoldersCollapsed && (
 				<VerticalDraggableDivider
 					initialHeight={folderPaneHeight}
-					onChangeHeight={onChangeFolderPaneHeight}
+					onChangeHeight={changeHeightAndSave}
 				/>
 			)}
 			{renderFilesPane()}
