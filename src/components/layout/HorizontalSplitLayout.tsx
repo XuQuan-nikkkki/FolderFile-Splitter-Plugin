@@ -1,37 +1,27 @@
 import { useEffect, useState, useRef } from "react";
-import classNames from "classnames";
 
 import { FFS_FOLDER_PANE_WIDTH_KEY } from "src/assets/constants";
-import { HorizontalDraggableDivider } from "./DraggableDivider";
-import { FileActionSection, FolderAndTagActionSection } from "./Actions";
-import FolderAndTagTree from "../FolderAndTagTree";
-import FileTree from "../FileTree";
 import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
-import {
-	useAutoHideActionBar,
-	useHighlightActionBar,
-} from "src/hooks/useSettingsHandler";
-import { useExplorer } from "src/hooks/useExplorer";
+
+import FileTree from "../FileTree";
 import ToggleFolderAndTagMode from "../FolderAndTagActions/ToggleFolderAndTagView";
+
+import {
+	ActionsContainer,
+	FileActionSection,
+	FolderAndTagActionSection,
+} from "./Actions";
+import FolderAndTagTree from "../FolderAndTagTree";
+import { HorizontalDraggableDivider } from "./DraggableDivider";
 import ViewModeDisplay from "./ViewModeDisplay";
 
 const HorizontalSplitLayout = () => {
-	const { plugin } = useExplorer();
-
 	const [folderPaneWidth, setFolderPaneWidth] = useState<
 		number | undefined
 	>();
 
 	const pluginRef = useRef<HTMLDivElement>(null);
 	useChangeActiveLeaf();
-
-	const { settings } = plugin;
-	const { highlightActionBar } = useHighlightActionBar(
-		settings.highlightActionBar
-	);
-	const { autoHideActionBar } = useAutoHideActionBar(
-		settings.autoHideActionBar
-	);
 
 	const restoreLayout = () => {
 		try {
@@ -66,22 +56,16 @@ const HorizontalSplitLayout = () => {
 		localStorage.setItem(FFS_FOLDER_PANE_WIDTH_KEY, String(width));
 	};
 
-	const getActionsContainerClassName = () =>
-		classNames("ffs__actions-container nav-header", {
-			"ffs__actions-container--highlight": highlightActionBar,
-			"ffs__actions-container--auto-hide": autoHideActionBar,
-		});
-
 	return (
 		<div className="ffs__layout ffs__layout--horizontal" ref={pluginRef}>
 			<div
 				className="ffs__layout-pane ffs__folders-pane--horizontal"
 				style={{ width: folderPaneWidth }}
 			>
-				<div className={getActionsContainerClassName()}>
+				<ActionsContainer>
 					<FolderAndTagActionSection />
 					<ToggleFolderAndTagMode />
-				</div>
+				</ActionsContainer>
 				<FolderAndTagTree />
 			</div>
 			<HorizontalDraggableDivider
@@ -89,9 +73,9 @@ const HorizontalSplitLayout = () => {
 				onChangeWidth={onChangeFolderPaneWidth}
 			/>
 			<div className="ffs__layout-pane ffs__files-pane--horizontal">
-				<div className={getActionsContainerClassName()}>
+				<ActionsContainer>
 					<FileActionSection />
-				</div>
+				</ActionsContainer>
 				<ViewModeDisplay />
 				<FileTree />
 			</div>
