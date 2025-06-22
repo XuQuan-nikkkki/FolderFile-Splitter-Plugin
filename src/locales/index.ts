@@ -178,3 +178,22 @@ export const FILE_SORT_RULES_COPY: Copy = {
 		zh: "手动排序",
 	},
 };
+
+export const VERTICAL_SPLIT_LAYOUT_OPERATION_COPY: Copy = {
+	openFoldersAndTags: {
+		en: "Open folders/tags",
+		zh: "展开文件夹/标签列表",
+	},
+	closeFoldersAndTags: {
+		en: "Close folders/tags",
+		zh: "关闭文件夹/标签列表",
+	},
+	openFiles: {
+		en: "Open files",
+		zh: "展开文件列表",
+	},
+	closeFiles: {
+		en: "Close files",
+		zh: "关闭文件列表",
+	},
+};

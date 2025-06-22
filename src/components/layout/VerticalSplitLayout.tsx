@@ -18,6 +18,7 @@ import {
 	useShowTagView,
 } from "src/hooks/useSettingsHandler";
 import ToggleFolderAndTagMode from "../FolderAndTagActions/ToggleFolderAndTagView";
+import { VERTICAL_SPLIT_LAYOUT_OPERATION_COPY } from "src/locales";
 
 const VerticalSplitLayout = () => {
 	const { plugin } = useExplorer();
@@ -100,22 +101,22 @@ const VerticalSplitLayout = () => {
 			.filter(Boolean)
 			.join(" & ");
 		if (isFoldersCollapsed) {
-			const label =
-				language === "zh" ? "展开文件夹/标签列表" : "Open folders/tags";
 			return (
 				<ActionsContainer>
 					<div className="ffs__actions-section ffs__collapsed-folders nav-buttons-container">
 						{copy}
 					</div>
 					<div className="ffs__actions-section nav-buttons-container">
-						{renderOpenPaneButton(onOpenPane, label)}
+						{renderOpenPaneButton(
+							onOpenPane,
+							VERTICAL_SPLIT_LAYOUT_OPERATION_COPY
+								.openFoldersAndTags[language]
+						)}
 					</div>
 				</ActionsContainer>
 			);
 		}
 
-		const label =
-			language === "zh" ? "关闭文件夹/标签列表" : "Close folders/tags";
 		return (
 			<div
 				className="ffs__layout-pane ffs__folders-pane--vertical"
@@ -127,7 +128,11 @@ const VerticalSplitLayout = () => {
 					<FolderAndTagActionSection />
 					<div className="ffs__actions-section nav-buttons-container">
 						<ToggleFolderAndTagMode />
-						{renderClosePaneButton(onClosePane, label)}
+						{renderClosePaneButton(
+							onClosePane,
+							VERTICAL_SPLIT_LAYOUT_OPERATION_COPY
+								.closeFoldersAndTags[language]
+						)}
 					</div>
 				</ActionsContainer>
 				<FolderAndTagTree />
@@ -139,26 +144,34 @@ const VerticalSplitLayout = () => {
 		const onOpenPane = () => setIsFilesCollapsed(false);
 		const onClosePane = () => setIsFilesCollapsed(true);
 		if (isFilesCollapsed) {
-			const label = language === "zh" ? "展开文件列表" : "Open files";
 			return (
 				<ActionsContainer>
 					<div className="ffs__actions-section ffs__collapsed-files nav-buttons-container">
 						Files
 					</div>
 					<div className="ffs__actions-section nav-buttons-container">
-						{renderOpenPaneButton(onOpenPane, label)}
+						{renderOpenPaneButton(
+							onOpenPane,
+							VERTICAL_SPLIT_LAYOUT_OPERATION_COPY.openFiles[
+								language
+							]
+						)}
 					</div>
 				</ActionsContainer>
 			);
 		}
 
-		const label = language === "zh" ? "关闭文件列表" : "Close files";
 		return (
 			<div className="ffs__layout-pane ffs__files-pane--vertical">
 				<ActionsContainer>
 					<FileActionSection />
 					<div className="ffs__actions-section nav-buttons-container">
-						{renderClosePaneButton(onClosePane, label)}
+						{renderClosePaneButton(
+							onClosePane,
+							VERTICAL_SPLIT_LAYOUT_OPERATION_COPY.closeFiles[
+								language
+							]
+						)}
 					</div>
 				</ActionsContainer>
 				<FileTree />
