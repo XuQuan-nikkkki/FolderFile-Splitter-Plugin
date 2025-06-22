@@ -14,6 +14,7 @@ import {
 import FolderAndTagTree from "../FolderAndTagTree";
 import { HorizontalDraggableDivider } from "./DraggableDivider";
 import ViewModeDisplay from "./ViewModeDisplay";
+import { toValidNumber } from "src/utils";
 
 const HorizontalSplitLayout = () => {
 	const [folderPaneWidth, setFolderPaneWidth] = useState<
@@ -23,38 +24,35 @@ const HorizontalSplitLayout = () => {
 	const pluginRef = useRef<HTMLDivElement>(null);
 	useChangeActiveLeaf();
 
+	const changeWidthAndSave = (width: number) => {
+		setFolderPaneWidth(width);
+		localStorage.setItem(FFS_FOLDER_PANE_WIDTH_KEY, String(width));
+	};
+
+	const fallbackToDefaultWidth = () => {
+		// The native file explorer uses a single-pane layout,
+		// This plugin introduces a two-pane layout.
+		// By default, the folder pane takes up half of the plugin width.
+		const pluginWidth = pluginRef.current?.offsetWidth;
+		if (!pluginWidth) return;
+		const defaultWidth = pluginWidth / 2;
+		changeWidthAndSave(defaultWidth);
+	};
+
 	const restoreLayout = () => {
-		try {
-			const previousWidthStr = localStorage.getItem(
-				FFS_FOLDER_PANE_WIDTH_KEY
-			);
-			if (previousWidthStr) {
-				const previousWidth = Number(previousWidthStr);
-				if (previousWidth) {
-					setFolderPaneWidth(previousWidth);
-				}
-			}
-		} catch (e) {
-			const pluginWidth = pluginRef.current?.offsetWidth;
-			if (pluginWidth) {
-				const folderPaneWidth = pluginWidth / 2;
-				setFolderPaneWidth(folderPaneWidth);
-				localStorage.setItem(
-					FFS_FOLDER_PANE_WIDTH_KEY,
-					String(folderPaneWidth)
-				);
-			}
+		const previousWidth = toValidNumber(
+			localStorage.getItem(FFS_FOLDER_PANE_WIDTH_KEY)
+		);
+		if (previousWidth !== null) {
+			setFolderPaneWidth(previousWidth);
+		} else {
+			fallbackToDefaultWidth();
 		}
 	};
 
 	useEffect(() => {
 		restoreLayout();
 	}, []);
-
-	const onChangeFolderPaneWidth = (width: number) => {
-		setFolderPaneWidth(width);
-		localStorage.setItem(FFS_FOLDER_PANE_WIDTH_KEY, String(width));
-	};
 
 	return (
 		<div className="ffs__layout ffs__layout--horizontal" ref={pluginRef}>
@@ -70,7 +68,7 @@ const HorizontalSplitLayout = () => {
 			</div>
 			<HorizontalDraggableDivider
 				initialWidth={folderPaneWidth}
-				onChangeWidth={onChangeFolderPaneWidth}
+				onChangeWidth={changeWidthAndSave}
 			/>
 			<div className="ffs__layout-pane ffs__files-pane--horizontal">
 				<ActionsContainer>
