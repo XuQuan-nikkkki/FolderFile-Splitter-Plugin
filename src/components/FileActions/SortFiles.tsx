@@ -3,10 +3,12 @@ import { useShallow } from "zustand/react/shallow";
 import { useExplorer } from "src/hooks/useExplorer";
 import { FILE_SORT_RULES_COPY } from "src/locales";
 import { ExplorerStore } from "src/store";
-import { FILE_MANUAL_SORT_RULE, FileSortRule } from "src/store/file";
+import { FILE_MANUAL_SORT_RULE } from "src/store/file/sort";
+import { FileSortRule } from "src/store/file/sort";
 
 import { ManualSortFilesModal } from "../ManualSortFilesModal";
 import SortAction from "../SortAction";
+
 
 type FileSortRuleItem = {
 	text: string;
@@ -84,7 +86,9 @@ const SortFiles = () => {
 	};
 
 	const onChangeSortRule = async (rule: FileSortRule) => {
-		if (rule === FILE_MANUAL_SORT_RULE) {
+		if (rule === FILE_MANUAL_SORT_RULE
+			
+		) {
 			await initFilesManualSortOrder();
 			if (focusedFolder) {
 				const modal = new ManualSortFilesModal(

@@ -4,12 +4,10 @@ import { useShallow } from "zustand/react/shallow";
 
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { ExplorerStore } from "src/store";
-import { FOLDER_MANUAL_SORT_RULE } from "src/store/folder";
 import { isFolder } from "src/utils";
 
-
 import { useExplorer } from "../useExplorer";
-
+import { FOLDER_MANUAL_SORT_RULE } from "src/store/folder/sort";
 
 const useChangeFolder = () => {
 	const { useExplorerStore } = useExplorer();

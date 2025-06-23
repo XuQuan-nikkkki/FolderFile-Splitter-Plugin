@@ -7,16 +7,7 @@ import FolderFileSplitterPlugin from "src/main";
 import { ExplorerStore } from "..";
 import { ManualSortOrder } from "../common";
 
-export type FileSortRule =
-	| "FileNameAscending"
-	| "FileNameDescending"
-	| "FileCreatedTimeAscending"
-	| "FileCreatedTimeDescending"
-	| "FileModifiedTimeAscending"
-	| "FileModifiedTimeDescending"
-	| "FileManualOrder";
-export const DEFAULT_FILE_SORT_RULE: FileSortRule = "FileNameAscending";
-export const FILE_MANUAL_SORT_RULE: FileSortRule = "FileManualOrder";
+import { FILE_MANUAL_SORT_RULE } from "./sort";
 
 export interface ManualSortFileSlice {
 	filesManualSortOrder: ManualSortOrder;

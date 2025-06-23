@@ -3,11 +3,10 @@ import { useShallow } from "zustand/react/shallow";
 import { useExplorer } from "src/hooks/useExplorer";
 import { FOLDER_SORT_RULES_COPY } from "src/locales";
 import { ExplorerStore } from "src/store";
-import { FOLDER_MANUAL_SORT_RULE, FolderSortRule } from "src/store/folder";
+import { FOLDER_MANUAL_SORT_RULE, FolderSortRule } from "src/store/folder/sort";
 
 import { ManualSortFoldersModal } from "../ManualSortFoldersModal";
 import SortAction from "../SortAction";
-
 
 type FolderSortRuleItem = {
 	text: string;

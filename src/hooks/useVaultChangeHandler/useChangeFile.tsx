@@ -4,7 +4,7 @@ import { useShallow } from "zustand/react/shallow";
 
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { ExplorerStore } from "src/store";
-import { FILE_MANUAL_SORT_RULE } from "src/store/file";
+import { FILE_MANUAL_SORT_RULE } from "src/store/file/sort";
 import { isFile } from "src/utils";
 
 import { useExplorer } from "../useExplorer";
