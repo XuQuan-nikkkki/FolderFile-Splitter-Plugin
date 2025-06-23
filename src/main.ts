@@ -1,15 +1,15 @@
 import { Plugin, TAbstractFile, WorkspaceLeaf } from "obsidian";
 
-import { ExplorerView } from "./ExplorerView";
-import { SettingTab } from "./SettingTab";
-import { DEFAULT_SETTINGS, FolderFileSplitterPluginSettings } from "./settings";
 import {
 	ActiveLeafChangeEventName,
 	SettingsChangeEventName,
 	VaultChangeEventName,
 	VaultChangeType,
 } from "./assets/constants";
+import { ExplorerView } from "./ExplorerView";
 import { Lang } from "./locales";
+import { DEFAULT_SETTINGS, FolderFileSplitterPluginSettings } from "./settings";
+import { SettingTab } from "./SettingTab";
 
 export default class FolderFileSplitterPlugin extends Plugin {
 	settings: FolderFileSplitterPluginSettings;

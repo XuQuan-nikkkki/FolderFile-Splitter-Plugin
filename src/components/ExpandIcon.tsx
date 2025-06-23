@@ -1,5 +1,5 @@
-import { ReactNode } from "react";
 import classNames from "classnames";
+import { ReactNode } from "react";
 
 import { ChevronRight } from "src/assets/icons";
 

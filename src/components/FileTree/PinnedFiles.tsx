@@ -1,10 +1,10 @@
+import { TFile } from "obsidian";
 import { ReactNode, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { TFile } from "obsidian";
 
-import { ExplorerStore } from "src/store";
 import { PinIcon } from "src/assets/icons";
 import { useExplorer } from "src/hooks/useExplorer";
+import { ExplorerStore } from "src/store";
 import { uniq } from "src/utils";
 
 type Props = {

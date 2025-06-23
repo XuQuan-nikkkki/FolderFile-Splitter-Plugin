@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 
 import { FFS_FOLDER_PANE_HEIGHT_KEY } from "src/assets/constants";
-import { VerticalDraggableDivider } from "./DraggableDivider";
 import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
 import { toValidNumber } from "src/utils";
+
+import { VerticalDraggableDivider } from "./DraggableDivider";
 import VerticalSplitFilesPane from "./VerticalSplitFilesPane";
 import VerticalSplitFoldersAndTagsPane from "./VerticalSplitFoldersAndTagsPane";
 

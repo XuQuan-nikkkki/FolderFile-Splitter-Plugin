@@ -1,15 +1,16 @@
-import { StateCreator } from "zustand";
 import { TFile, TFolder } from "obsidian";
+import { StateCreator } from "zustand";
 
-import FolderFileSplitterPlugin from "../main";
-import { isFile } from "../utils";
+import { ExplorerStore } from "src/store";
+
 import {
 	FFS_FILE_MANUAL_SORT_ORDER_KEY,
 	FFS_FILE_SORT_RULE_KEY,
 	FFS_FOCUSED_FILE_PATH_KEY,
 	FFS_PINNED_FILE_PATHS_KEY,
 } from "../assets/constants";
-import { ExplorerStore } from "src/store";
+import FolderFileSplitterPlugin from "../main";
+import { isFile } from "../utils";
 
 export type FileSortRule =
 	| "FileNameAscending"

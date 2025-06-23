@@ -1,14 +1,17 @@
-import CreateFolder from "../FolderAndTagActions/CreateFolder";
-import SortFolders from "../FolderAndTagActions/SortFoldersAndTags";
-import ToggleFolders from "../FolderAndTagActions/ToggleFoldersAndTags";
-import CreateFile from "../FileActions/CreateFile";
-import SortFiles from "../FileActions/SortFiles";
 import classNames from "classnames";
+
 import { useExplorer } from "src/hooks/useExplorer";
 import {
 	useAutoHideActionBar,
 	useHighlightActionBar,
 } from "src/hooks/useSettingsHandler";
+
+import CreateFile from "../FileActions/CreateFile";
+import SortFiles from "../FileActions/SortFiles";
+import CreateFolder from "../FolderAndTagActions/CreateFolder";
+import SortFolders from "../FolderAndTagActions/SortFoldersAndTags";
+import ToggleFolders from "../FolderAndTagActions/ToggleFoldersAndTags";
+
 
 export const FolderAndTagActionSection = () => (
 	<div className="ffs__actions-section nav-buttons-container">

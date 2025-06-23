@@ -1,12 +1,3 @@
-import { TFolder } from "obsidian";
-import { useShallow } from "zustand/react/shallow";
-import { StoreApi, UseBoundStore } from "zustand";
-import { Fragment, useEffect, useState } from "react";
-import {
-	SortableContext,
-	sortableKeyboardCoordinates,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import {
 	closestCenter,
 	DndContext,
@@ -18,9 +9,19 @@ import {
 	useSensor,
 	useSensors,
 } from "@dnd-kit/core";
+import {
+	SortableContext,
+	sortableKeyboardCoordinates,
+	verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { TFolder } from "obsidian";
+import { Fragment, useEffect, useState } from "react";
+import { StoreApi, UseBoundStore } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 
-import { ExplorerStore } from "src/store";
 import FolderFileSplitterPlugin from "src/main";
+import { ExplorerStore } from "src/store";
+
 import FolderToSort from "./FolderToSort";
 
 type Props = {

@@ -1,24 +1,24 @@
-import { useShowFolderIcon } from "./useShowFolderIcon";
+import { useAutoHideActionBar } from "./useAutoHideActionBar";
+import { useBoldFileTitle } from "./useBoldFileTitle";
+import { useFileCreationDateFormat } from "./useFileCreationDateFormat";
+import { useFileItemSpacing } from "./useFileItemSpacing";
+import { useHideRootFolder } from "./useHideRootFolder";
+import { useHighlightActionBar } from "./useHighlightActionBar";
 import { useIncludeSubfolderFiles } from "./useIncludeSubfolderFiles";
-import { useShowFileDetail } from "./useShowFileDetail";
-import { useShowHierarchyLines } from "./useShowHierarchyLines";
+import { useIncludeSubTagFiles } from "./useIncludeSubTagFiles";
 import { useLayoutMode } from "./useLayoutMode";
 import { useOpenDestinationFolder } from "./useOpenDestinationFolder";
-import { useHideRootFolder } from "./useHideRootFolder";
-import { useFileItemSpacing } from "./useFileItemSpacing";
-import { useShowFileItemDivider } from "./useShowFileItemDivider";
-import { useHighlightActionBar } from "./useHighlightActionBar";
-import { useAutoHideActionBar } from "./useAutoHideActionBar";
-import { useShowFileCreationDate } from "./useShowFileCreationDate";
-import { useFileCreationDateFormat } from "./useFileCreationDateFormat";
-import { useStripMarkdownSyntaxInPreview } from "./useStripMarkdownSyntax";
-import { useBoldFileTitle } from "./useBoldFileTitle";
 import { useRemoveFirstHeadingInPreview } from "./useRemoveFirstHeadingInPreview";
-import { useShowFolderView } from "./useShowFolderView";
-import { useShowTagView } from "./useShowTagView";
-import { useIncludeSubTagFiles } from "./useIncludeSubTagFiles";
-import { useShowTagIcon } from "./useShowTagIcon";
+import { useShowFileCreationDate } from "./useShowFileCreationDate";
+import { useShowFileDetail } from "./useShowFileDetail";
+import { useShowFileItemDivider } from "./useShowFileItemDivider";
 import { useShowFilesCount } from "./useShowFilesCount";
+import { useShowFolderIcon } from "./useShowFolderIcon";
+import { useShowFolderView } from "./useShowFolderView";
+import { useShowHierarchyLines } from "./useShowHierarchyLines";
+import { useShowTagIcon } from "./useShowTagIcon";
+import { useShowTagView } from "./useShowTagView";
+import { useStripMarkdownSyntaxInPreview } from "./useStripMarkdownSyntax";
 
 export {
 	useShowFolderIcon,

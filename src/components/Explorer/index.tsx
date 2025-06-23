@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-
 import { useShallow } from "zustand/react/shallow";
 
+import { ExplorerContext } from "src/hooks/useExplorer";
 import FolderFileSplitterPlugin from "src/main";
 import { createExplorerStore, ExplorerStore } from "src/store";
-import { ExplorerContext } from "src/hooks/useExplorer";
 
 import Loading from "../Loading";
+
 import DragAndDropExplorer from "./DragAndDrop";
 
 type Props = {

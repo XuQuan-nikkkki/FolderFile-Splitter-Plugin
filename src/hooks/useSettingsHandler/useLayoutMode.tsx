@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-import { useWatchSettingsChange } from "./useWatchSettingsChange";
 import { LayoutMode } from "src/settings";
+
+import { useWatchSettingsChange } from "./useWatchSettingsChange";
 
 export const useLayoutMode = (
 	defaultLayout: LayoutMode

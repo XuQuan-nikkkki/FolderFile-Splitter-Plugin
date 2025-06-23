@@ -1,11 +1,11 @@
-import { useEffect } from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { useShallow } from "zustand/react/shallow";
 import dayjs from "dayjs";
+import { useEffect } from "react";
+import { useShallow } from "zustand/react/shallow";
 
-import { ExplorerStore } from "src/store";
 import { FFS_DRAG_FILE } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
+import { ExplorerStore } from "src/store";
 
 import FileContent, { FileProps } from "./Content";
 

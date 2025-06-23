@@ -1,14 +1,17 @@
-import { useShowTagIcon } from "src/hooks/useSettingsHandler";
-import { useExplorer } from "src/hooks/useExplorer";
 import classNames from "classnames";
-import { TagIcon } from "src/assets/icons";
-import { TagNode } from "src/store/tag";
-import FilesCount from "./FilesCount";
-import { useShallow } from "zustand/react/shallow";
-import useRenderEditableName from "src/hooks/useRenderEditableName";
-import { useEffect, useRef, useState } from "react";
 import { Menu } from "obsidian";
+import { useEffect, useRef, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
+
+import { TagIcon } from "src/assets/icons";
+import { useExplorer } from "src/hooks/useExplorer";
+import useRenderEditableName from "src/hooks/useRenderEditableName";
+import { useShowTagIcon } from "src/hooks/useSettingsHandler";
 import { TAG_OPERATION_COPY } from "src/locales";
+import { TagNode } from "src/store/tag";
+
+import FilesCount from "./FilesCount";
+
 
 type Props = {
 	tag: TagNode;

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
 	DndContext,
 	DragEndEvent,
@@ -9,14 +8,15 @@ import {
 	useSensor,
 	useSensors,
 } from "@dnd-kit/core";
-import { TAbstractFile, TFile, TFolder } from "obsidian";
 import { snapCenterToCursor } from "@dnd-kit/modifiers";
+import { TAbstractFile, TFile, TFolder } from "obsidian";
+import { useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import { ExplorerStore } from "src/store";
-import { useOpenDestinationFolder } from "src/hooks/useSettingsHandler";
-import { isFile, isFolder } from "src/utils";
 import { useExplorer } from "src/hooks/useExplorer";
+import { useOpenDestinationFolder } from "src/hooks/useSettingsHandler";
+import { ExplorerStore } from "src/store";
+import { isFile, isFolder } from "src/utils";
 
 import ExplorerContent from "./Content";
 

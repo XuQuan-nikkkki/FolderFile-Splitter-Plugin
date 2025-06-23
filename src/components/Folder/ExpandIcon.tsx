@@ -1,8 +1,10 @@
 import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 
-import { ExplorerStore } from "src/store";
 import { useExplorer } from "src/hooks/useExplorer";
+import { ExplorerStore } from "src/store";
+
+
 import ExpandIcon from "../ExpandIcon";
 
 type Props = {

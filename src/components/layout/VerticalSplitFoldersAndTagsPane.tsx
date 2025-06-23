@@ -1,12 +1,14 @@
-import { ActionsContainer, FolderAndTagActionSection } from "./Actions";
-import FolderAndTagTree from "../FolderAndTagTree";
 import { useExplorer } from "src/hooks/useExplorer";
 import {
 	useShowFolderView,
 	useShowTagView,
 } from "src/hooks/useSettingsHandler";
-import ToggleFolderAndTagMode from "../FolderAndTagActions/ToggleFolderAndTagView";
 import { VERTICAL_SPLIT_LAYOUT_OPERATION_COPY } from "src/locales";
+
+import ToggleFolderAndTagMode from "../FolderAndTagActions/ToggleFolderAndTagView";
+import FolderAndTagTree from "../FolderAndTagTree";
+
+import { ActionsContainer, FolderAndTagActionSection } from "./Actions";
 import { ClosePaneButton, OpenPaneButton } from "./TogglePaneButton";
 
 type Props = {

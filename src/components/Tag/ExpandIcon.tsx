@@ -1,9 +1,12 @@
 import { useShallow } from "zustand/react/shallow";
 
-import { ExplorerStore } from "src/store";
 import { useExplorer } from "src/hooks/useExplorer";
-import ExpandIcon from "../ExpandIcon";
+import { ExplorerStore } from "src/store";
 import { TagNode } from "src/store/tag";
+
+
+import ExpandIcon from "../ExpandIcon";
+
 
 type Props = {
 	tag: TagNode;

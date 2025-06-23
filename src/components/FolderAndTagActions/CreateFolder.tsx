@@ -1,11 +1,11 @@
+import classNames from "classnames";
 import { TFolder } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
-import classNames from "classnames";
 
 import { AddFolderIcon } from "src/assets/icons";
-import { ExplorerStore } from "src/store";
 import { useExplorer } from "src/hooks/useExplorer";
 import { useShowFolderView } from "src/hooks/useSettingsHandler";
+import { ExplorerStore } from "src/store";
 import { uniq } from "src/utils";
 
 const CreateFolder = () => {

@@ -1,9 +1,9 @@
+import dayjs from "dayjs";
 import { MarkdownRenderer, TFile } from "obsidian";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import dayjs from "dayjs";
 
-import { ExplorerStore } from "src/store";
+import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
 import {
 	useFileCreationDateFormat,
@@ -11,7 +11,8 @@ import {
 	useShowFileCreationDate,
 	useStripMarkdownSyntaxInPreview,
 } from "src/hooks/useSettingsHandler";
-import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
+import { ExplorerStore } from "src/store";
+
 
 type Props = {
 	file: TFile;

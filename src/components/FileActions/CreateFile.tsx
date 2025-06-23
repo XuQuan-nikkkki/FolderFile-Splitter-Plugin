@@ -1,10 +1,11 @@
+
+import classNames from "classnames";
 import { useShallow } from "zustand/react/shallow";
 
 import { AddFileIcon } from "src/assets/icons";
-import { ExplorerStore } from "src/store";
 import { useExplorer } from "src/hooks/useExplorer";
-import classNames from "classnames";
 import { useShowFolderView } from "src/hooks/useSettingsHandler";
+import { ExplorerStore } from "src/store";
 
 const CreateFile = () => {
 	const { useExplorerStore, plugin } = useExplorer();

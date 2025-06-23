@@ -1,12 +1,13 @@
 import classNames from "classnames";
 import { useShallow } from "zustand/react/shallow";
 
-import { TagNode } from "src/store/tag";
 import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
-import TagExpandIcon from "./ExpandIcon";
-import TagContent from "./Content";
+import { TagNode } from "src/store/tag";
 import { pluralize } from "src/utils";
+
+import TagContent from "./Content";
+import TagExpandIcon from "./ExpandIcon";
 
 type Props = {
 	tag: TagNode;

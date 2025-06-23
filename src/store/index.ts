@@ -3,8 +3,8 @@ import { create } from "zustand";
 import FolderFileSplitterPlugin from "../main";
 
 import { CommonExplorerStore, createCommonExplorerStore } from "./common";
-import { createFolderExplorerStore, FolderExplorerStore } from "./folder";
 import { createFileExplorerStore, FileExplorerStore } from "./file";
+import { createFolderExplorerStore, FolderExplorerStore } from "./folder";
 import { createTagExplorerStore, TagExplorerStore } from "./tag";
 
 type FolderPath = string;

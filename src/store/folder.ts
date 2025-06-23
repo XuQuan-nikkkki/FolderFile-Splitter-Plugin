@@ -1,8 +1,8 @@
-import { StateCreator } from "zustand";
 import { Notice, TFile, TFolder } from "obsidian";
+import { StateCreator } from "zustand";
 
-import FolderFileSplitterPlugin from "../main";
-import { isFile, isFolder, uniq } from "../utils";
+import { ExplorerStore } from "src/store";
+
 import {
 	FFS_EXPANDED_FOLDER_PATHS_KEY,
 	FFS_FOCUSED_FOLDER_PATH_KEY,
@@ -10,12 +10,14 @@ import {
 	FFS_FOLDER_SORT_RULE_KEY,
 	FFS_PINNED_FOLDER_PATHS_KEY,
 } from "../assets/constants";
+import { NOTIFICATION_MESSAGE_COPY } from "../locales/message";
+import FolderFileSplitterPlugin from "../main";
 import {
 	FOLDER_NOTE_LOCATION,
 	FOLDER_NOTE_MISSING_BEHAVIOR,
 } from "../settings";
-import { NOTIFICATION_MESSAGE_COPY } from "../locales/message";
-import { ExplorerStore } from "src/store";
+import { isFile, isFolder, uniq } from "../utils";
+
 
 export type FolderSortRule =
 	| "FolderNameAscending"

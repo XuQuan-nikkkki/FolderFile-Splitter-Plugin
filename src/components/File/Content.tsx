@@ -1,19 +1,21 @@
-import { Menu, TFile } from "obsidian";
-import { useShallow } from "zustand/react/shallow";
-import { useEffect, useRef, useState } from "react";
 import classNames from "classnames";
+import { Menu, TFile } from "obsidian";
+import { useEffect, useRef, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 
-import { ExplorerStore } from "src/store";
-import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { useExplorer } from "src/hooks/useExplorer";
-import { FILE_OPERATION_COPY } from "src/locales";
+import useRenderEditableName from "src/hooks/useRenderEditableName";
 import {
 	useBoldFileTitle,
 	useFileItemSpacing,
 	useShowFileDetail,
 	useShowFileItemDivider,
 } from "src/hooks/useSettingsHandler";
+import { FILE_OPERATION_COPY } from "src/locales";
+import { ExplorerStore } from "src/store";
+
 import { FolderListModal } from "../FolderListModal";
+
 import FileDetail from "./Detail";
 
 export type FileProps = {

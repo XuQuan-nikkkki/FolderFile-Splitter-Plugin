@@ -1,9 +1,10 @@
 import { ReactNode } from "react";
+import { useShallow } from "zustand/react/shallow";
+
 import { FolderIcon, TagIcon } from "src/assets/icons";
 import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
 import { ViewMode } from "src/store/common";
-import { useShallow } from "zustand/react/shallow";
 
 const ViewModeDisplay = () => {
 	const { useExplorerStore, plugin } = useExplorer();

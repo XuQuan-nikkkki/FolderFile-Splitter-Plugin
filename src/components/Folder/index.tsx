@@ -1,14 +1,16 @@
-import { useShallow } from "zustand/react/shallow";
-import { useEffect } from "react";
 import { useDraggable, useDroppable } from "@dnd-kit/core";
-
-import { ExplorerStore } from "src/store";
-import { FFS_DRAG_FILE, FFS_DRAG_FOLDER } from "src/assets/constants";
-import FolderContent, { FolderProps } from "./Content";
-import { useExplorer } from "src/hooks/useExplorer";
-import FolderExpandIcon from "./ExpandIcon";
 import classNames from "classnames";
+import { useEffect } from "react";
+import { useShallow } from "zustand/react/shallow";
+
+import { FFS_DRAG_FILE, FFS_DRAG_FOLDER } from "src/assets/constants";
+import { useExplorer } from "src/hooks/useExplorer";
+import { ExplorerStore } from "src/store";
 import { pluralize } from "src/utils";
+
+import FolderContent, { FolderProps } from "./Content";
+import FolderExpandIcon from "./ExpandIcon";
+
 
 type Props = FolderProps & {
 	onOpenFilesPane: () => void;

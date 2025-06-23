@@ -1,6 +1,6 @@
+import dayjs from "dayjs";
 import { App, DropdownComponent, PluginSettingTab, Setting } from "obsidian";
-import FolderFileSplitterPlugin from "./main";
-import { FolderFileSplitterPluginSettings } from "./settings";
+
 import {
 	EN_SETTINGS,
 	EN_SETTINGS_HEADER,
@@ -9,7 +9,8 @@ import {
 	ZH_SETTINGS,
 	ZH_SETTINGS_HEADER,
 } from "./locales/settings";
-import dayjs from "dayjs";
+import FolderFileSplitterPlugin from "./main";
+import { FolderFileSplitterPluginSettings } from "./settings";
 
 export class SettingTab extends PluginSettingTab {
 	plugin: FolderFileSplitterPlugin;

@@ -1,6 +1,6 @@
-import { TFile } from "obsidian";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { TFile } from "obsidian";
 
 import { FFS_SORT_FOLDER } from "src/assets/constants";
 import { GripIcon } from "src/assets/icons";

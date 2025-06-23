@@ -1,7 +1,8 @@
 import { useState } from "react";
 
-import { useWatchSettingsChange } from "./useWatchSettingsChange";
 import { FileItemSpacing } from "src/settings";
+
+import { useWatchSettingsChange } from "./useWatchSettingsChange";
 
 export const useFileItemSpacing = (
 	defaultSpacing: FileItemSpacing

@@ -1,17 +1,17 @@
+import { TFile } from "obsidian";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { TFile } from "obsidian";
-
-import { ExplorerStore } from "src/store";
 
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
+import { ExplorerStore } from "src/store";
+import { FILE_MANUAL_SORT_RULE } from "src/store/file";
 import { isFile } from "src/utils";
+
 import { useExplorer } from "../useExplorer";
 import {
 	useIncludeSubfolderFiles,
 	useIncludeSubTagFiles,
 } from "../useSettingsHandler";
-import { FILE_MANUAL_SORT_RULE } from "src/store/file";
 
 const useChangeFile = () => {
 	const { useExplorerStore, plugin } = useExplorer();

@@ -1,13 +1,16 @@
-import { useShallow } from "zustand/react/shallow";
 import { TFile } from "obsidian";
+import { useShallow } from "zustand/react/shallow";
 
-import { ExplorerStore } from "src/store";
-import { useChangeFile } from "src/hooks/useVaultChangeHandler";
+import { EmptyFolderIcon } from "src/assets/icons";
 import { useExplorer } from "src/hooks/useExplorer";
+import { useChangeFile } from "src/hooks/useVaultChangeHandler";
+import { ExplorerStore } from "src/store";
+
 
 import File from "../File";
+
 import PinnedFiles from "./PinnedFiles";
-import { EmptyFolderIcon } from "src/assets/icons";
+
 
 type Props = {
 	onOpenFoldersPane?: () => void;

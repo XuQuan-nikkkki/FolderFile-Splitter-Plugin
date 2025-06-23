@@ -1,7 +1,9 @@
-import { ActionsContainer, FileActionSection } from "./Actions";
-import FileTree from "../FileTree";
 import { useExplorer } from "src/hooks/useExplorer";
 import { VERTICAL_SPLIT_LAYOUT_OPERATION_COPY } from "src/locales";
+
+import FileTree from "../FileTree";
+
+import { ActionsContainer, FileActionSection } from "./Actions";
 import { ClosePaneButton, OpenPaneButton } from "./TogglePaneButton";
 
 type Props = {

@@ -1,15 +1,16 @@
+
+import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import { ExplorerStore } from "src/store";
+import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
+import { useExplorer } from "src/hooks/useExplorer";
 import {
 	useIncludeSubTagFiles,
 	useShowFilesCount,
 } from "src/hooks/useSettingsHandler";
-import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
-import { isFile } from "src/utils";
-import { useEffect, useState } from "react";
-import { useExplorer } from "src/hooks/useExplorer";
+import { ExplorerStore } from "src/store";
 import { TagNode } from "src/store/tag";
+import { isFile } from "src/utils";
 
 type Props = {
 	tag: TagNode;

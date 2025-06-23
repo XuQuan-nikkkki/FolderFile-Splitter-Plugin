@@ -1,12 +1,15 @@
+import { TFolder } from "obsidian";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { TFolder } from "obsidian";
 
-import { ExplorerStore } from "src/store";
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
-import { isFolder } from "src/utils";
-import { useExplorer } from "../useExplorer";
+import { ExplorerStore } from "src/store";
 import { FOLDER_MANUAL_SORT_RULE } from "src/store/folder";
+import { isFolder } from "src/utils";
+
+
+import { useExplorer } from "../useExplorer";
+
 
 const useChangeFolder = () => {
 	const { useExplorerStore } = useExplorer();

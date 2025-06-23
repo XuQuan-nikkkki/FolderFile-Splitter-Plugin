@@ -1,16 +1,21 @@
-import { Menu, TFolder } from "obsidian";
-import { useShallow } from "zustand/react/shallow";
-import { useEffect, useRef, useState } from "react";
-
-import { ExplorerStore } from "src/store";
-import { FolderListModal } from "../FolderListModal";
-import { useShowFolderIcon } from "src/hooks/useSettingsHandler";
-import FilesCount from "./FilesCount";
-import useRenderEditableName from "src/hooks/useRenderEditableName";
-import { FOLDER_OPERATION_COPY } from "src/locales";
-import { useExplorer } from "src/hooks/useExplorer";
 import classNames from "classnames";
+import { Menu, TFolder } from "obsidian";
+import { useEffect, useRef, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
+
 import { FolderIcon, StarIcon } from "src/assets/icons";
+import { useExplorer } from "src/hooks/useExplorer";
+import useRenderEditableName from "src/hooks/useRenderEditableName";
+import { useShowFolderIcon } from "src/hooks/useSettingsHandler";
+import { FOLDER_OPERATION_COPY } from "src/locales";
+import { ExplorerStore } from "src/store";
+
+
+import { FolderListModal } from "../FolderListModal";
+
+
+import FilesCount from "./FilesCount";
+
 
 export type FolderProps = {
 	folder: TFolder;

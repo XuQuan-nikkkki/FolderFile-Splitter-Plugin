@@ -1,9 +1,10 @@
 import { StateCreator } from "zustand";
 
-import FolderFileSplitterPlugin from "../main";
-import { ExplorerStore } from "src/store";
-import { ValueOf } from "src/settings";
 import { FFS_VIEW_MODE_KEY } from "src/assets/constants";
+import { ValueOf } from "src/settings";
+import { ExplorerStore } from "src/store";
+
+import FolderFileSplitterPlugin from "../main";
 
 export const VIEW_MODE = {
 	ALL: "all",

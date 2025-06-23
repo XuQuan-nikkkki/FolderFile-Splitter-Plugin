@@ -1,14 +1,15 @@
-import { StateCreator } from "zustand";
 import { getAllTags, TFile } from "obsidian";
+import { StateCreator } from "zustand";
 
-import FolderFileSplitterPlugin from "../main";
-import { ExplorerStore } from "src/store";
 import {
 	FFS_EXPANDED_TAG_PATHS_KEY,
 	FFS_FOCUSED_TAG_PATH_KEY,
 	FFS_PINNED_TAG_PATHS_KEY,
 } from "src/assets/constants";
+import { ExplorerStore } from "src/store";
 import { uniq } from "src/utils";
+
+import FolderFileSplitterPlugin from "../main";
 
 type FolderPath = string;
 type ChildrenPaths = string[];

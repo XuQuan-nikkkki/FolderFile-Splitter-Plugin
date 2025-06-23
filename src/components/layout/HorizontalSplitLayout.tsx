@@ -2,19 +2,19 @@ import { useEffect, useState, useRef } from "react";
 
 import { FFS_FOLDER_PANE_WIDTH_KEY } from "src/assets/constants";
 import useChangeActiveLeaf from "src/hooks/useChangeActiveLeaf";
+import { toValidNumber } from "src/utils";
 
 import FileTree from "../FileTree";
 import ToggleFolderAndTagMode from "../FolderAndTagActions/ToggleFolderAndTagView";
+import FolderAndTagTree from "../FolderAndTagTree";
 
 import {
 	ActionsContainer,
 	FileActionSection,
 	FolderAndTagActionSection,
 } from "./Actions";
-import FolderAndTagTree from "../FolderAndTagTree";
 import { HorizontalDraggableDivider } from "./DraggableDivider";
 import ViewModeDisplay from "./ViewModeDisplay";
-import { toValidNumber } from "src/utils";
 
 const HorizontalSplitLayout = () => {
 	const [folderPaneWidth, setFolderPaneWidth] = useState<

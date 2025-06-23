@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { ExpandIcon, CollapseIcon } from "src/assets/icons";
-import { ExplorerStore } from "src/store";
 import { useExplorer } from "src/hooks/useExplorer";
 import {
 	useShowFolderView,
 	useShowTagView,
 } from "src/hooks/useSettingsHandler";
 import { TIPS_COPY } from "src/locales";
+import { ExplorerStore } from "src/store";
 
 const ToggleFolders = () => {
 	const { useExplorerStore, plugin } = useExplorer();

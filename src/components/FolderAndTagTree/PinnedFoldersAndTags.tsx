@@ -1,16 +1,16 @@
-import { useShallow } from "zustand/react/shallow";
 import { TFolder } from "obsidian";
 import { ReactNode, useEffect } from "react";
+import { useShallow } from "zustand/react/shallow";
 
-import { ExplorerStore } from "src/store";
 import PinIcon from "src/assets/icons/PinIcon";
 import { useExplorer } from "src/hooks/useExplorer";
 import {
 	useShowFolderView,
 	useShowTagView,
 } from "src/hooks/useSettingsHandler";
-import { uniq } from "src/utils";
+import { ExplorerStore } from "src/store";
 import { TagNode } from "src/store/tag";
+import { uniq } from "src/utils";
 
 export type RenderOptions = {
 	hideExpandIcon?: boolean;

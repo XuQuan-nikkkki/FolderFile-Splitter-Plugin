@@ -1,12 +1,12 @@
-import { TFolder } from "obsidian";
-import { useShallow } from "zustand/react/shallow";
-import { StoreApi, UseBoundStore } from "zustand";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { TFolder } from "obsidian";
+import { StoreApi, UseBoundStore } from "zustand";
+import { useShallow } from "zustand/react/shallow";
 
-import { ExplorerStore } from "src/store";
 import { FFS_SORT_FOLDER } from "src/assets/constants";
 import { GripIcon } from "src/assets/icons";
+import { ExplorerStore } from "src/store";
 
 type Props = {
 	folder: TFolder;

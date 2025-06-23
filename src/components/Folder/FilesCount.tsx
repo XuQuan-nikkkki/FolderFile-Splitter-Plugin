@@ -1,15 +1,15 @@
 import { TFolder } from "obsidian";
+import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import { ExplorerStore } from "src/store";
+import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
+import { useExplorer } from "src/hooks/useExplorer";
 import {
 	useIncludeSubfolderFiles,
 	useShowFilesCount,
 } from "src/hooks/useSettingsHandler";
-import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
+import { ExplorerStore } from "src/store";
 import { isFile } from "src/utils";
-import { useEffect, useState } from "react";
-import { useExplorer } from "src/hooks/useExplorer";
 
 type Props = {
 	folder: TFolder;

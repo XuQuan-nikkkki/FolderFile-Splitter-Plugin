@@ -2,9 +2,10 @@ import { Modal, TFolder } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
 import { StoreApi, UseBoundStore } from "zustand";
 
+import { TIPS_COPY } from "src/locales";
 import FolderFileSplitterPlugin from "src/main";
 import { ExplorerStore } from "src/store";
-import { TIPS_COPY } from "src/locales";
+
 
 import ManualSortFolders from "./ManualSortFolders";
 

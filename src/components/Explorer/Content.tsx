@@ -1,6 +1,6 @@
+import { useExplorer } from "src/hooks/useExplorer";
 import { useLayoutMode } from "src/hooks/useSettingsHandler";
 import { LAYOUT_MODE } from "src/settings";
-import { useExplorer } from "src/hooks/useExplorer";
 
 import { HorizontalSplitLayout, VerticalSplitLayout } from "../layout";
 

@@ -1,8 +1,8 @@
-import { Root, createRoot } from "react-dom/client";
 import { ItemView, WorkspaceLeaf } from "obsidian";
+import { Root, createRoot } from "react-dom/client";
 
-import FolderFileSplitterPlugin from "./main";
 import Explorer from "./components/Explorer";
+import FolderFileSplitterPlugin from "./main";
 
 export class ExplorerView extends ItemView {
 	root: Root;
