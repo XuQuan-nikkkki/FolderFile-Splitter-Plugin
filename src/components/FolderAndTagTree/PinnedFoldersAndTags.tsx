@@ -2,7 +2,6 @@ import { TFolder } from "obsidian";
 import { ReactNode, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import PinIcon from "src/assets/icons/PinIcon";
 import { useExplorer } from "src/hooks/useExplorer";
 import {
 	useShowFolderView,
@@ -11,6 +10,8 @@ import {
 import { ExplorerStore } from "src/store";
 import { TagNode } from "src/store/tag";
 import { uniq } from "src/utils";
+
+import { PinContainer, PinContent, PinHeader } from "../Pin";
 
 export type RenderOptions = {
 	hideExpandIcon?: boolean;
@@ -109,16 +110,13 @@ const PinnedFoldersAndTags = ({ renderFolder, renderTag }: Props) => {
 	};
 
 	return (
-		<div className="ffs__pin-container">
-			<div className="ffs__pin-header">
-				<PinIcon />
-				Pin
-			</div>
-			<div className="ffs__pin-content" style={{ marginLeft: 4 }}>
+		<PinContainer>
+			<PinHeader />
+			<PinContent style={{ marginLeft: 4 }}>
 				{renderPinnedFolders()}
 				{renderPinnedTags()}
-			</div>
-		</div>
+			</PinContent>
+		</PinContainer>
 	);
 };
 

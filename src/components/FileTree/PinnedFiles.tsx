@@ -2,10 +2,11 @@ import { TFile } from "obsidian";
 import { ReactNode, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import { PinIcon } from "src/assets/icons";
 import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
 import { uniq } from "src/utils";
+
+import { PinContainer, PinContent, PinHeader } from "../Pin";
 
 type Props = {
 	files: TFile[];
@@ -37,15 +38,12 @@ const PinnedFiles = ({ files, renderFile }: Props) => {
 	if (!pinnedFiles.length) return null;
 
 	return (
-		<div className="ffs__pin-container">
-			<div className="ffs__pin-header">
-				<PinIcon />
-				Pin
-			</div>
-			<div className="ffs__pin-content">
+		<PinContainer>
+			<PinHeader />
+			<PinContent>
 				{pinnedFiles.map((file) => renderFile(file, true))}
-			</div>
-		</div>
+			</PinContent>
+		</PinContainer>
 	);
 };
 
