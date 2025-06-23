@@ -18,6 +18,7 @@ import {
 } from "../settings";
 import { isFile, isFolder, uniq } from "../utils";
 
+import { ManualSortOrder } from "./common";
 
 export type FolderSortRule =
 	| "FolderNameAscending"
@@ -27,10 +28,6 @@ export type FolderSortRule =
 	| "FolderManualOrder";
 export const DEFAULT_FOLDER_SORT_RULE: FolderSortRule = "FolderNameAscending";
 export const FOLDER_MANUAL_SORT_RULE: FolderSortRule = "FolderManualOrder";
-
-type FolderPath = string;
-type ChildrenPaths = string[];
-export type ManualSortOrder = Record<FolderPath, ChildrenPaths>;
 
 export type FolderExplorerStore = {
 	folders: TFolder[];
@@ -633,7 +630,7 @@ export const createFolderExplorerStore =
 			const {
 				changeExpandedFolderPaths,
 				expandedFolderPaths,
-				canFolderToggle
+				canFolderToggle,
 			} = get();
 			if (!canFolderToggle(folder)) return;
 			await changeExpandedFolderPaths(

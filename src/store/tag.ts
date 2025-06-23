@@ -11,10 +11,6 @@ import { uniq } from "src/utils";
 
 import FolderFileSplitterPlugin from "../main";
 
-type FolderPath = string;
-type ChildrenPaths = string[];
-export type ManualSortOrder = Record<FolderPath, ChildrenPaths>;
-
 export type TagNode = {
 	name: string;
 	files: TFile[];

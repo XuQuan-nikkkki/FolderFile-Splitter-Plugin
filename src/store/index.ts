@@ -7,10 +7,6 @@ import { createFileExplorerStore, FileExplorerStore } from "./file";
 import { createFolderExplorerStore, FolderExplorerStore } from "./folder";
 import { createTagExplorerStore, TagExplorerStore } from "./tag";
 
-type FolderPath = string;
-type ChildrenPaths = string[];
-export type ManualSortOrder = Record<FolderPath, ChildrenPaths>;
-
 export type ExplorerStore = CommonExplorerStore &
 	FolderExplorerStore &
 	FileExplorerStore &

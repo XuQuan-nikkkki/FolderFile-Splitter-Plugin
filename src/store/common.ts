@@ -14,6 +14,10 @@ export const VIEW_MODE = {
 export type ViewMode = ValueOf<typeof VIEW_MODE>;
 export const DEFAULT_VIEW_MODE: ViewMode = VIEW_MODE.FOLDER;
 
+type FolderPath = string;
+type ChildrenPaths = string[];
+export type ManualSortOrder = Record<FolderPath, ChildrenPaths>;
+
 export type CommonExplorerStore = {
 	viewMode: ViewMode;
 	changeViewMode: (mode: ViewMode) => void;
