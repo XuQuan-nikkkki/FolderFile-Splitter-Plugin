@@ -63,3 +63,25 @@ export const moveItemInArray = <T>(
 export const removeItemFromArray = <T>(array: T[], item: T): T[] => {
 	return array.filter((i) => i !== item);
 };
+
+type LogErrorOptions = {
+	name: string;
+	error: unknown;
+	data?: string;
+	params?: Record<string, unknown>;
+};
+export function logError({
+	name,
+	error,
+	data,
+	params = {},
+}: LogErrorOptions): void {
+	const preview =
+		data && data.length > 200 ? data.slice(0, 200) + "..." : data;
+	const message = `[${name}] An error occurred.`;
+	console.error(message, {
+		error,
+		...(preview ? { rawDataPreview: preview } : {}),
+		...params,
+	});
+}

@@ -3,19 +3,24 @@ import { StateCreator } from "zustand";
 
 import { FFS_PINNED_FILE_PATHS_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
-import { removeItemFromArray, replaceItemInArray } from "src/utils";
+import { removeItemFromArray, replaceItemInArray, uniq } from "src/utils";
 
 import { ExplorerStore } from "..";
 
 export interface PinnedFileSlice {
 	pinnedFilePaths: string[];
 
-	isFilePinned: (file: TFile) => boolean;
-	pinFile: (file: TFile) => Promise<void>;
+	getPinnedFiles: () => TFile[];
+	getDisplayedPinnedFiles: () => TFile[];
 
-	_updatePinnedFilePaths: (paths: string[]) => Promise<void>;
+	isFilePinned: (file: TFile) => boolean;
+
+	setPinnedFilePathsAndSave: (paths: string[]) => Promise<void>;
+
+	pinFile: (file: TFile) => Promise<void>;
 	unpinFile: (file: TFile) => Promise<void>;
 	updatePinnedFilePath: (oldPath: string, newPath: string) => Promise<void>;
+
 	restorePinnedFiles: () => Promise<void>;
 }
 
@@ -26,39 +31,58 @@ export const createPinnedFileSlice =
 	(set, get) => ({
 		pinnedFilePaths: [],
 
+		getPinnedFiles: () => {
+			const { files, pinnedFilePaths } = get();
+			return uniq(pinnedFilePaths)
+				.map((path) => files.find((file) => file.path === path))
+				.filter(Boolean) as TFile[];
+		},
+		getDisplayedPinnedFiles: () => {
+			const { getVisibleFiles, getPinnedFiles } = get();
+			const visibleFiles = getVisibleFiles();
+			const pinnedFiles = getPinnedFiles();
+			return pinnedFiles.filter((file) =>
+				visibleFiles.some((f) => f.path === file.path)
+			);
+		},
+
 		isFilePinned: (file: TFile) => {
 			const { pinnedFilePaths } = get();
 			return pinnedFilePaths.includes(file.path);
 		},
-		_updatePinnedFilePaths: async (filePaths: string[]) => {
+
+		setPinnedFilePathsAndSave: async (filePaths: string[]) => {
 			const { setValueAndSaveInPlugin } = get();
+			const paths = uniq(filePaths);
 			await setValueAndSaveInPlugin({
 				key: "pinnedFilePaths",
-				value: filePaths,
+				value: paths,
 				pluginKey: FFS_PINNED_FILE_PATHS_KEY,
-				pluginValue: JSON.stringify(filePaths),
+				pluginValue: JSON.stringify(paths),
 			});
 		},
+
 		pinFile: async (file: TFile) => {
-			const { pinnedFilePaths, _updatePinnedFilePaths } = get();
+			const { pinnedFilePaths, setPinnedFilePathsAndSave } = get();
 			const filePaths = [...pinnedFilePaths, file.path];
-			await _updatePinnedFilePaths(filePaths);
+			await setPinnedFilePathsAndSave(filePaths);
 		},
 		unpinFile: async (file: TFile) => {
-			const { pinnedFilePaths, _updatePinnedFilePaths } = get();
+			const { pinnedFilePaths, setPinnedFilePathsAndSave } = get();
 			const filePaths = removeItemFromArray(pinnedFilePaths, file.path);
-			await _updatePinnedFilePaths(filePaths);
+			await setPinnedFilePathsAndSave(filePaths);
 		},
 		updatePinnedFilePath: async (oldPath: string, newPath: string) => {
-			const { pinnedFilePaths, _updatePinnedFilePaths } = get();
+			const { pinnedFilePaths, setPinnedFilePathsAndSave } = get();
 			if (!pinnedFilePaths.includes(oldPath)) return;
 			const updatedPaths = replaceItemInArray(
 				pinnedFilePaths,
 				oldPath,
 				newPath
 			);
-			await _updatePinnedFilePaths(updatedPaths);
+			await setPinnedFilePathsAndSave(updatedPaths);
 		},
+
 		restorePinnedFiles: async () => {
 			const { restoreDataFromPlugin } = get();
 			await restoreDataFromPlugin({

@@ -8,12 +8,13 @@ import { createFocusedFileSlice, FocusedFileSlice } from "./focus";
 import { createManualSortFileSlice, ManualSortFileSlice } from "./manualSort";
 import { createPinnedFileSlice, PinnedFileSlice } from "./pin";
 import { createSortFileSlice, SortFileSlice } from "./sort";
+import { createFileStructureSlice, FileStructureSlice } from "./structure";
 
 export type FileExplorerStore = PinnedFileSlice &
 	SortFileSlice &
 	ManualSortFileSlice &
 	FocusedFileSlice &
-	FileActionsSlice;
+	FileActionsSlice & FileStructureSlice;
 
 export const createFileExplorerStore =
 	(
@@ -25,4 +26,5 @@ export const createFileExplorerStore =
 		...createManualSortFileSlice(plugin)(set, get, store),
 		...createFileActionsSlice(plugin)(set, get, store),
 		...createFocusedFileSlice(plugin)(set, get, store),
+		...createFileStructureSlice(plugin)(set, get, store),
 	});

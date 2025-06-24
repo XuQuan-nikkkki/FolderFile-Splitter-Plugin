@@ -3,6 +3,7 @@ import { StateCreator } from "zustand";
 import { FFS_VIEW_MODE_KEY } from "src/assets/constants";
 import { ValueOf } from "src/settings";
 import { ExplorerStore } from "src/store";
+import { logError, uniq } from "src/utils";
 
 import FolderFileSplitterPlugin from "../main";
 
@@ -173,25 +174,27 @@ export const createCommonExplorerStore =
 
 			try {
 				const parsed = needParse ? JSON.parse(raw) : raw;
-				const finalData = transform ? transform(parsed) : parsed;
+				const removeDuplicate = Array.isArray(parsed)
+					? uniq(parsed)
+					: parsed;
+				const finalData = transform
+					? transform(removeDuplicate)
+					: parsed;
 
 				set({ [key]: finalData } as Partial<ExplorerStore>);
 				return finalData;
 			} catch (error) {
-				const shortData =
-					raw.length > 200 ? raw.slice(0, 200) + "..." : raw;
-
-				console.error(
-					`[restoreDataFromLocalStorage] Failed to restore "${String(
-						key
-					)}" from localStorage key "${localStorageKey}".`,
-					{
-						error,
-						rawDataPreview: shortData,
+				logError({
+					name: "restoreDataFromLocalStorage",
+					error,
+					data: raw,
+					params: {
+						key,
+						localStorageKey,
 						needParse,
 						hasTransform: !!transform,
-					}
-				);
+					},
+				});
 			}
 		},
 		restoreDataFromPlugin: async ({
@@ -205,23 +208,20 @@ export const createCommonExplorerStore =
 
 			try {
 				const parsed = needParse ? JSON.parse(raw) : raw;
-				set({ [key]: parsed } as Partial<ExplorerStore>);
+				const final = Array.isArray(parsed) ? uniq(parsed) : parsed;
+				set({ [key]: final } as Partial<ExplorerStore>);
 				return parsed;
 			} catch (error) {
-				const shortData =
-					raw.length > 200 ? raw.slice(0, 200) + "..." : raw;
-
-				console.error(
-					`[restoreDataFromPlugin] Failed to restore "${String(
-						key
-					)}" from plugin key "${pluginKey}".`,
-					{
-						error,
-						rawDataPreview: shortData,
+				logError({
+					name: "restoreDataFromPlugin",
+					error,
+					data: raw,
+					params: {
+						key,
+						pluginKey,
 						needParse,
-						// hasTransform: !!transform,
-					}
-				);
+					},
+				});
 			}
 		},
 	});

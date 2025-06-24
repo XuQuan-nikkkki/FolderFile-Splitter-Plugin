@@ -6,7 +6,6 @@ import FolderFileSplitterPlugin from "src/main";
 import { ExplorerStore } from "..";
 
 import { TagNode, TagTree } from ".";
-import { removeItemFromArray } from "src/utils";
 
 
 export interface TagStructureSlice {
