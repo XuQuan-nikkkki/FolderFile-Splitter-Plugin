@@ -30,12 +30,12 @@ export const createPinnedFileSlice =
 			return pinnedFilePaths.includes(file.path);
 		},
 		_updatePinnedFilePaths: async (filePaths: string[]) => {
-			const { saveDataInPlugin } = get();
-			set({
-				pinnedFilePaths: filePaths,
-			});
-			await saveDataInPlugin({
-				[FFS_PINNED_FILE_PATHS_KEY]: JSON.stringify(filePaths),
+			const { setValueAndSaveInPlugin } = get();
+			await setValueAndSaveInPlugin({
+				key: "pinnedFilePaths",
+				value: filePaths,
+				pluginKey: FFS_PINNED_FILE_PATHS_KEY,
+				pluginValue: JSON.stringify(filePaths),
 			});
 		},
 		pinFile: async (file: TFile) => {
@@ -50,22 +50,22 @@ export const createPinnedFileSlice =
 			);
 			await _updatePinnedFilePaths(filePaths);
 		},
-    restorePinnedFiles: async () => {
-      const { getDataFromPlugin: getData } = get();
-      const pinnedFilePaths = await getData<string>(
-        FFS_PINNED_FILE_PATHS_KEY
-      );
-      if (pinnedFilePaths) {
-        try {
-          const filePaths: string[] = JSON.parse(pinnedFilePaths);
-          set({
-            pinnedFilePaths: filePaths,
-          });
-        } catch (error) {
-          console.error("Invalid Json format: ", error);
-        }
-      }
-    },
+		restorePinnedFiles: async () => {
+			const { getDataFromPlugin: getData } = get();
+			const pinnedFilePaths = await getData<string>(
+				FFS_PINNED_FILE_PATHS_KEY
+			);
+			if (pinnedFilePaths) {
+				try {
+					const filePaths: string[] = JSON.parse(pinnedFilePaths);
+					set({
+						pinnedFilePaths: filePaths,
+					});
+				} catch (error) {
+					console.error("Invalid Json format: ", error);
+				}
+			}
+		},
 		updateFilePinState: async (oldPath: string, newPath: string) => {
 			const { pinnedFilePaths, _updatePinnedFilePath } = get();
 			if (!pinnedFilePaths.includes(oldPath)) return;

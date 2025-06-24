@@ -33,12 +33,12 @@ export const createPinnedFolderSlice =
 			return pinnedFolderPaths.includes(folder.path);
 		},
 		_updatePinnedFolderPaths: async (folderPaths: string[]) => {
-			const { saveDataInPlugin } = get();
-			set({
-				pinnedFolderPaths: folderPaths,
-			});
-			await saveDataInPlugin({
-				[FFS_PINNED_FOLDER_PATHS_KEY]: JSON.stringify(folderPaths),
+			const { setValueAndSaveInPlugin } = get();
+			await setValueAndSaveInPlugin({
+				key: "pinnedFolderPaths",
+				value: folderPaths,
+				pluginKey: FFS_PINNED_FOLDER_PATHS_KEY,
+				pluginValue: JSON.stringify(folderPaths),
 			});
 		},
 		pinFolder: async (folder: TFolder) => {

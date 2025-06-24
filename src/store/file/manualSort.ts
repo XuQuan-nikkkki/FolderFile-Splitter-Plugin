@@ -60,7 +60,7 @@ export const createManualSortFileSlice =
 				fileSortRule,
 				sortFiles,
 				getFilesInFolder,
-				saveDataInPlugin,
+				setValueAndSaveInPlugin,
 			} = get();
 			const foldersToInit = plugin.app.vault.getAllFolders(true);
 			const order: ManualSortOrder = {};
@@ -71,11 +71,11 @@ export const createManualSortFileSlice =
 					order[folder.path] = sortedFiles.map((file) => file.path);
 				}
 			});
-			set({
-				filesManualSortOrder: order,
-			});
-			await saveDataInPlugin({
-				[FFS_FILE_MANUAL_SORT_ORDER_KEY]: order,
+			await setValueAndSaveInPlugin({
+				key: "filesManualSortOrder",
+				value: order,
+				pluginKey: FFS_FILE_MANUAL_SORT_ORDER_KEY,
+				pluginValue: order,
 			});
 		},
 		restoreFilesManualSortOrder: async () => {
@@ -132,12 +132,12 @@ export const createManualSortFileSlice =
 			});
 		},
 		_updateAndSaveFilesOrder: async (updatedOrder: ManualSortOrder) => {
-			const { saveDataInPlugin } = get();
-			set({
-				filesManualSortOrder: updatedOrder,
-			});
-			await saveDataInPlugin({
-				[FFS_FILE_MANUAL_SORT_ORDER_KEY]: updatedOrder,
+			const { setValueAndSaveInPlugin } = get();
+			await setValueAndSaveInPlugin({
+				key: "filesManualSortOrder",
+				value: updatedOrder,
+				pluginKey: FFS_FILE_MANUAL_SORT_ORDER_KEY,
+				pluginValue: updatedOrder,
 			});
 		},
 		updateFileManualOrder: async (

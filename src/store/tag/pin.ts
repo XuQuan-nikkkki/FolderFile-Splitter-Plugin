@@ -27,12 +27,12 @@ export const createPinnedTagSlice =
 			return pinnedTagPaths.includes(tagPath);
 		},
 		_updatePinnedTagPaths: async (tagPaths: string[]) => {
-			const { saveDataInPlugin } = get();
-			set({
-				pinnedTagPaths: tagPaths,
-			});
-			saveDataInPlugin({
-				[FFS_PINNED_TAG_PATHS_KEY]: JSON.stringify(tagPaths),
+			const { setValueAndSaveInPlugin } = get();
+			await setValueAndSaveInPlugin({
+				key: "pinnedTagPaths",
+				value: tagPaths,
+				pluginKey: FFS_PINNED_TAG_PATHS_KEY,
+				pluginValue: JSON.stringify(tagPaths),
 			});
 		},
 

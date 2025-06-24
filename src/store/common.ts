@@ -38,8 +38,17 @@ export type CommonExplorerStore = {
 		key: string;
 		value: T;
 		localStorageKey: string;
-		localStorageValue: string;
+		localStorageValue: string | T;
 	}) => void;
+	setValueAndSaveInPlugin: <T>({
+		key,
+		value,
+	}: {
+		key: string;
+		value: T;
+		pluginKey: string;
+		pluginValue: T | string;
+	}) => Promise<void>;
 };
 
 export const createCommonExplorerStore =
@@ -116,5 +125,20 @@ export const createCommonExplorerStore =
 			} else {
 				saveDataInLocalStorage(localStorageKey, localStorageValue);
 			}
+		},
+		setValueAndSaveInPlugin: async <T>({
+			key,
+			value,
+			pluginKey,
+			pluginValue,
+		}: {
+			key: string;
+			value: T;
+			pluginKey: string;
+			pluginValue: T | string;
+		}): Promise<void> => {
+			const { saveDataInPlugin } = get();
+			set({ [key]: value } as Partial<ExplorerStore>);
+			await saveDataInPlugin({ [pluginKey]: pluginValue });
 		},
 	});

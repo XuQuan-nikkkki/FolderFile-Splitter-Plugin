@@ -72,11 +72,12 @@ export const createSortFileSlice =
 			}
 		},
 		changeFileSortRule: async (rule: FileSortRule) => {
-			set({
-				fileSortRule: rule,
-			});
-			await get().saveDataInPlugin({
-				[FFS_FILE_SORT_RULE_KEY]: rule,
+			const { setValueAndSaveInPlugin } = get();
+			await setValueAndSaveInPlugin({
+				key: "fileSortRule",
+				value: rule,
+				pluginKey: FFS_FILE_SORT_RULE_KEY,
+				pluginValue: rule,
 			});
 		},
 		restoreFileSortRule: async () => {

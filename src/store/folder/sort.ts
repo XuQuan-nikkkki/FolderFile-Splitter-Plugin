@@ -77,10 +77,13 @@ export const createSortFolderSlice =
 			}
 		},
 		changeFolderSortRule: async (rule: FolderSortRule) => {
-			set({
-				folderSortRule: rule,
+			const { setValueAndSaveInPlugin } = get();
+			await setValueAndSaveInPlugin({
+				key: "folderSortRule",
+				value: rule,
+				pluginKey: FFS_FOLDER_SORT_RULE_KEY,
+				pluginValue: rule,
 			});
-			await get().saveDataInPlugin({ [FFS_FOLDER_SORT_RULE_KEY]: rule });
 		},
 		restoreFolderSortRule: async () => {
 			const { restoreFoldersManualSortOrder, getDataFromPlugin } = get();
