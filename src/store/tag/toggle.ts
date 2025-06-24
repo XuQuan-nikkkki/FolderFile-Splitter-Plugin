@@ -24,14 +24,13 @@ export const createToggleTagSlice =
 		expandedTagPaths: [],
 
 		changeExpandedTagPaths: async (tagPaths: string[]) => {
-			const { saveDataInLocalStorage } = get();
-			set({
-				expandedTagPaths: tagPaths,
+			const { setValueAndSaveInLocalStorage } = get();
+			setValueAndSaveInLocalStorage({
+				key: "expandedTagPaths",
+				value: tagPaths,
+				localStorageKey: FFS_EXPANDED_TAG_PATHS_KEY,
+				localStorageValue: JSON.stringify(tagPaths),
 			});
-			saveDataInLocalStorage(
-				FFS_EXPANDED_TAG_PATHS_KEY,
-				JSON.stringify(tagPaths)
-			);
 		},
 
 		expandTag: async (tag: TagNode) => {

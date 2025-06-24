@@ -27,7 +27,19 @@ export type CommonExplorerStore = {
 	saveDataInLocalStorage: (key: string, value: string) => void;
 	removeDataFromLocalStorage: (key: string) => void;
 	getDataFromPlugin: <T>(key: string) => Promise<T | undefined>;
-	saveDataInPlugin: (data: Record<string, unknown>) => Promise<void>;
+	saveDataInPlugin: (oata: Record<string, unknown>) => Promise<void>;
+
+	setValueAndSaveInLocalStorage: <T>({
+		key,
+		value,
+		localStorageKey,
+		localStorageValue,
+	}: {
+		key: string;
+		value: T;
+		localStorageKey: string;
+		localStorageValue: string;
+	}) => void;
 };
 
 export const createCommonExplorerStore =
@@ -38,11 +50,13 @@ export const createCommonExplorerStore =
 		viewMode: DEFAULT_VIEW_MODE,
 
 		changeViewMode: (mode: ViewMode) => {
-			const { saveDataInLocalStorage } = get();
-			set({
-				viewMode: mode,
+			const { setValueAndSaveInLocalStorage } = get();
+			setValueAndSaveInLocalStorage({
+				key: "viewMode",
+				value: mode,
+				localStorageKey: FFS_VIEW_MODE_KEY,
+				localStorageValue: mode,
 			});
-			saveDataInLocalStorage(FFS_VIEW_MODE_KEY, mode);
 		},
 		restoreViewMode: () => {
 			const { getDataFromLocalStorage } = get();
@@ -78,6 +92,29 @@ export const createCommonExplorerStore =
 			} catch (e) {
 				console.error(e);
 				return undefined;
+			}
+		},
+
+		setValueAndSaveInLocalStorage: <T>({
+			key,
+			value,
+			localStorageKey,
+			localStorageValue,
+		}: {
+			key: string;
+			value: T;
+			localStorageKey: string;
+			localStorageValue: string;
+		}) => {
+			const { saveDataInLocalStorage, removeDataFromLocalStorage } =
+				get();
+
+			set({ [key]: value } as Partial<ExplorerStore>);
+
+			if (value === null || value === undefined) {
+				removeDataFromLocalStorage(localStorageKey);
+			} else {
+				saveDataInLocalStorage(localStorageKey, localStorageValue);
 			}
 		},
 	});

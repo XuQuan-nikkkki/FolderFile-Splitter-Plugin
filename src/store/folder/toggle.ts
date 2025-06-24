@@ -8,13 +8,13 @@ import { uniq } from "src/utils";
 import { ExplorerStore } from "..";
 
 export interface ToggleFolderSlice {
-		expandedFolderPaths: string[];
+	expandedFolderPaths: string[];
 
-		canFolderToggle: (folder: TFolder) => boolean;
-		changeExpandedFolderPaths: (folderNames: string[]) => Promise<void>;
-		restoreExpandedFolderPaths: () => Promise<void>;
-		expandFolder: (folder: TFolder) => Promise<void>;
-		collapseFolder: (folder: TFolder) => Promise<void>;
+	canFolderToggle: (folder: TFolder) => boolean;
+	changeExpandedFolderPaths: (folderNames: string[]) => Promise<void>;
+	restoreExpandedFolderPaths: () => Promise<void>;
+	expandFolder: (folder: TFolder) => Promise<void>;
+	collapseFolder: (folder: TFolder) => Promise<void>;
 }
 
 export const createToggleFolderSlice =
@@ -53,14 +53,13 @@ export const createToggleFolderSlice =
 			);
 		},
 		changeExpandedFolderPaths: async (folderPaths: string[]) => {
-			const { saveDataInLocalStorage } = get();
-			set({
-				expandedFolderPaths: folderPaths,
+			const { setValueAndSaveInLocalStorage } = get();
+			setValueAndSaveInLocalStorage({
+				key: "expandedFolderPaths",
+				value: folderPaths,
+				localStorageKey: FFS_EXPANDED_FOLDER_PATHS_KEY,
+				localStorageValue: JSON.stringify(folderPaths),
 			});
-			saveDataInLocalStorage(
-				FFS_EXPANDED_FOLDER_PATHS_KEY,
-				JSON.stringify(folderPaths)
-			);
 		},
 		restoreExpandedFolderPaths: async () => {
 			const { getDataFromLocalStorage, hasFolderChildren } = get();

@@ -47,16 +47,13 @@ export const createFocusedFileSlice =
 		},
 
 		setFocusedFile: async (file: TFile | null) => {
-			const { saveDataInLocalStorage, removeDataFromLocalStorage } =
-				get();
-			set({
-				focusedFile: file,
+			const { setValueAndSaveInLocalStorage } = get();
+			setValueAndSaveInLocalStorage({
+				key: "focusedFile",
+				value: file,
+				localStorageKey: FFS_FOCUSED_FILE_PATH_KEY,
+				localStorageValue: file ? file.path : "",
 			});
-			if (file) {
-				saveDataInLocalStorage(FFS_FOCUSED_FILE_PATH_KEY, file.path);
-			} else {
-				removeDataFromLocalStorage(FFS_FOCUSED_FILE_PATH_KEY);
-			}
 		},
 
 		restoreLastFocusedFile: async () => {
