@@ -10,16 +10,19 @@ export interface FolderStructureSlice {
 	folders: TFolder[];
 	rootFolder: TFolder | null;
 
+	getNameOfFolder: (folder: TFolder) => string;
+
 	getTopLevelFolders: () => TFolder[];
 	isTopLevelFolder: (folder: TFolder) => boolean;
+
+	getSubFolders: (parentFolder: TFolder) => TFolder[];
+	hasSubFolders: (folder: TFolder) => boolean;
+
+	getFilesInFolder: (folder: TFolder, getFilesInFolder?: boolean) => TFile[];
 	getFilesCountInFolder: (
 		folder: TFolder,
 		includeSubfolderFiles: boolean
 	) => number;
-	getFoldersByParent: (parentFolder: TFolder) => TFolder[];
-	getFilesInFolder: (folder: TFolder, getFilesInFolder?: boolean) => TFile[];
-	hasFolderChildren: (folder: TFolder) => boolean;
-	getNameOfFolder: (folder: TFolder) => string;
 }
 
 export const createFolderStructureSlice =
@@ -30,39 +33,27 @@ export const createFolderStructureSlice =
 		folders: plugin.app.vault.getAllFolders() || [],
 		rootFolder: plugin.app.vault.getRoot() || null,
 
+		getNameOfFolder: (folder: TFolder) => {
+			return folder.isRoot() ? plugin.app.vault.getName() : folder.name;
+		},
+
 		isTopLevelFolder: (folder: TFolder): boolean => {
 			return Boolean(folder.parent?.isRoot());
 		},
 		getTopLevelFolders: () => {
-			const {isTopLevelFolder } = get();
+			const { isTopLevelFolder } = get();
 			return plugin.app.vault
 				.getAllFolders()
 				.filter((folder) => isTopLevelFolder(folder));
 		},
-		hasFolderChildren: (folder: TFolder): boolean => {
+
+		hasSubFolders: (folder: TFolder): boolean => {
 			return folder.children.some((child) => isFolder(child));
 		},
-		getFilesCountInFolder: (
-			folder: TFolder,
-			includeSubfolderFiles: boolean
-		): number => {
-			const getFilesCount = (folder: TFolder): number => {
-				if (!folder || !folder.children) return 0;
-				return folder.children.reduce((total, child) => {
-					if (isFile(child)) {
-						return total + 1;
-					}
-					if (includeSubfolderFiles && isFolder(child)) {
-						return total + getFilesCount(child);
-					}
-					return total;
-				}, 0);
-			};
-			return getFilesCount(folder);
-		},
-		getFoldersByParent: (parentFolder: TFolder): TFolder[] => {
+		getSubFolders: (parentFolder: TFolder): TFolder[] => {
 			return parentFolder.children.filter((child) => isFolder(child));
 		},
+
 		getFilesInFolder: (folder: TFolder): TFile[] => {
 			const { includeSubfolderFiles } = plugin.settings;
 
@@ -81,8 +72,22 @@ export const createFolderStructureSlice =
 
 			return getFiles(folder);
 		},
-
-		getNameOfFolder: (folder: TFolder) => {
-			return folder.isRoot() ? plugin.app.vault.getName() : folder.name;
+		getFilesCountInFolder: (
+			folder: TFolder,
+			includeSubfolderFiles: boolean
+		): number => {
+			const getFilesCount = (folder: TFolder): number => {
+				if (!folder || !folder.children) return 0;
+				return folder.children.reduce((total, child) => {
+					if (isFile(child)) {
+						return total + 1;
+					}
+					if (includeSubfolderFiles && isFolder(child)) {
+						return total + getFilesCount(child);
+					}
+					return total;
+				}, 0);
+			};
+			return getFilesCount(folder);
 		},
 	});

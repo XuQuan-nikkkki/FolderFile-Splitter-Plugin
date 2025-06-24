@@ -35,13 +35,13 @@ const ManualSortFolders = ({
 	plugin,
 }: Props) => {
 	const {
-		getFoldersByParent,
+		getSubFolders,
 		sortFolders,
 		folderSortRule,
 		changeFoldersManualOrderAndSave,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			getFoldersByParent: store.getFoldersByParent,
+			getSubFolders: store.getSubFolders,
 			sortFolders: store.sortFolders,
 			folderSortRule: store.folderSortRule,
 			order: store.foldersManualSortOrder,
@@ -67,7 +67,7 @@ const ManualSortFolders = ({
 
 	const getSortedFolders = () => {
 		if (!folder) return [];
-		return sortFolders(getFoldersByParent(folder), folderSortRule, false);
+		return sortFolders(getSubFolders(folder), folderSortRule, false);
 	};
 
 	const onDragStart = (event: DragStartEvent) => {

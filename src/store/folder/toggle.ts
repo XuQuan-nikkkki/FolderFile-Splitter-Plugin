@@ -25,9 +25,9 @@ export const createToggleFolderSlice =
 		expandedFolderPaths: [],
 
 		canFolderToggle: (folder: TFolder): boolean => {
-			const { hasFolderChildren } = get();
+			const { hasSubFolders } = get();
 			// root folder is always expanded
-			return !folder.isRoot() && hasFolderChildren(folder);
+			return !folder.isRoot() && hasSubFolders(folder);
 		},
 
 		expandFolder: async (folder: TFolder) => {
@@ -62,7 +62,7 @@ export const createToggleFolderSlice =
 			});
 		},
 		restoreExpandedFolderPaths: async () => {
-			const { getDataFromLocalStorage, hasFolderChildren } = get();
+			const { getDataFromLocalStorage, hasSubFolders } = get();
 			const lastExpandedFolderPaths = getDataFromLocalStorage(
 				FFS_EXPANDED_FOLDER_PATHS_KEY
 			);
@@ -74,7 +74,7 @@ export const createToggleFolderSlice =
 				set({
 					expandedFolderPaths: folderPaths.filter((path) => {
 						const folder = plugin.app.vault.getFolderByPath(path);
-						return folder && hasFolderChildren(folder);
+						return folder && hasSubFolders(folder);
 					}),
 				});
 			} catch (error) {

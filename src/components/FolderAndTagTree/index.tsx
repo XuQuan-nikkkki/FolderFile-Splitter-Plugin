@@ -19,7 +19,6 @@ import Tag from "../Tag";
 
 import PinnedFoldersAndTags, { RenderOptions } from "./PinnedFoldersAndTags";
 
-
 type Props = {
 	onOpenFilesPane?: () => void;
 };
@@ -29,8 +28,8 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	const {
 		rootFolder,
 		folderSortRule,
-		hasFolderChildren,
-		getFoldersByParent,
+		hasSubFolders,
+		getSubFolders,
 		sortFolders,
 		expandedFolderPaths,
 		focusedFolder,
@@ -45,8 +44,8 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		useShallow((store: ExplorerStore) => ({
 			rootFolder: store.rootFolder,
 			folderSortRule: store.folderSortRule,
-			hasFolderChildren: store.hasFolderChildren,
-			getFoldersByParent: store.getFoldersByParent,
+			hasSubFolders: store.hasSubFolders,
+			getSubFolders: store.getSubFolders,
 			sortFolders: store.sortFolders,
 			expandedFolderPaths: store.expandedFolderPaths,
 			focusedFolder: store.focusedFolder,
@@ -128,10 +127,8 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 				>
 					{renderFolder(folder)}
 					{isExpanded &&
-						hasFolderChildren(folder) &&
-						renderSubfolders(
-							renderFolders(getFoldersByParent(folder))
-						)}
+						hasSubFolders(folder) &&
+						renderSubfolders(renderFolders(getSubFolders(folder)))}
 				</div>
 			);
 		});

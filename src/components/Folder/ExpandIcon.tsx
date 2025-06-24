@@ -4,7 +4,6 @@ import { useShallow } from "zustand/react/shallow";
 import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
 
-
 import ExpandIcon from "../ExpandIcon";
 
 type Props = {
@@ -13,9 +12,9 @@ type Props = {
 const FolderExpandIcon = ({ folder }: Props) => {
 	const { useExplorerStore } = useExplorer();
 
-	const { hasFolderChildren, expandedFolderPaths } = useExplorerStore(
+	const { hasSubFolders, expandedFolderPaths } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			hasFolderChildren: store.hasFolderChildren,
+			hasSubFolders: store.hasSubFolders,
 			expandedFolderPaths: store.expandedFolderPaths,
 		}))
 	);
@@ -25,7 +24,7 @@ const FolderExpandIcon = ({ folder }: Props) => {
 	return (
 		<ExpandIcon
 			isExpanded={isFolderExpanded}
-			hideIcon={!hasFolderChildren(folder)}
+			hideIcon={!hasSubFolders(folder)}
 		/>
 	);
 };

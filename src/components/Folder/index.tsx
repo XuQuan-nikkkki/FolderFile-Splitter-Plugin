@@ -11,7 +11,6 @@ import { pluralize } from "src/utils";
 import FolderContent, { FolderProps } from "./Content";
 import FolderExpandIcon from "./ExpandIcon";
 
-
 type Props = FolderProps & {
 	onOpenFilesPane: () => void;
 	disableDrag?: boolean;
@@ -34,20 +33,20 @@ const Folder = ({
 		collapseFolder,
 		expandedFolderPaths,
 		focusedFolder,
-		hasFolderChildren,
+		hasSubFolders,
 		getFilesinFolder,
-		getFoldersByParent,
+		getSubFolders,
 		changeViewMode,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			setFocusedFolder: store.setFocusedFolder,
-			hasFolderChildren: store.hasFolderChildren,
+			hasSubFolders: store.hasSubFolders,
 			expandedFolderPaths: store.expandedFolderPaths,
 			expandFolder: store.expandFolder,
 			collapseFolder: store.collapseFolder,
 			focusedFolder: store.focusedFolder,
 			getFilesinFolder: store.getFilesInFolder,
-			getFoldersByParent: store.getFoldersByParent,
+			getSubFolders: store.getSubFolders,
 			changeViewMode: store.changeViewMode,
 		}))
 	);
@@ -109,7 +108,7 @@ const Folder = ({
 	const getAriaLabel = () => {
 		const { name } = folder;
 		const filesCount = getFilesinFolder(folder).length;
-		const foldersCount = getFoldersByParent(folder).length;
+		const foldersCount = getSubFolders(folder).length;
 
 		const filesCountInfo = pluralize(filesCount, "file");
 		const foldersCountInfo = pluralize(foldersCount, "folder");
@@ -133,7 +132,7 @@ const Folder = ({
 		return classNames(
 			"ffs__folder-container tree-item-self nav-folder-title is-clickable",
 			{
-				"mod-collapsible": hasFolderChildren(folder),
+				"mod-collapsible": hasSubFolders(folder),
 				"is-active": isFocused,
 				"ffs__is-over": isOver && !disableDrag,
 			}

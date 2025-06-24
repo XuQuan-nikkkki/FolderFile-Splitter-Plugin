@@ -14,9 +14,9 @@ type Props = {
 	goInToFolder: (folder: TFolder | null) => void;
 };
 const FolderToSort = ({ folder, useExplorerStore, goInToFolder }: Props) => {
-	const { getFoldersByParent } = useExplorerStore(
+	const { getSubFolders } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			getFoldersByParent: store.getFoldersByParent,
+			getSubFolders: store.getSubFolders,
 		}))
 	);
 
@@ -38,7 +38,7 @@ const FolderToSort = ({ folder, useExplorerStore, goInToFolder }: Props) => {
 		opacity: isDragging ? 0.5 : 1,
 	};
 
-	const subfolders = getFoldersByParent(folder);
+	const subfolders = getSubFolders(folder);
 	return (
 		<div
 			className="ffs__manual-sort-item--folder"

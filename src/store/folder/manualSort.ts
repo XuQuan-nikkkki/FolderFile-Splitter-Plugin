@@ -39,12 +39,12 @@ export const createManualSortFolderSlice =
 		foldersManualSortOrder: {},
 
 		getInitialFoldersOrder: () => {
-			const { folderSortRule, getFoldersByParent, sortFolders } = get();
+			const { folderSortRule, getSubFolders, sortFolders } = get();
 			const foldersToInit = plugin.app.vault.getAllFolders(true);
 			const order: ManualSortOrder = {};
 			foldersToInit.forEach((folder) => {
 				if (folder) {
-					const folders = getFoldersByParent(folder);
+					const folders = getSubFolders(folder);
 					if (folders.length) {
 						const sortedFolders = sortFolders(
 							folders,
@@ -63,14 +63,14 @@ export const createManualSortFolderSlice =
 		initFoldersManualSortOrder: async () => {
 			const {
 				folderSortRule,
-				getFoldersByParent,
+				getSubFolders,
 				sortFolders,
 				saveDataInPlugin,
 			} = get();
 			const foldersToInit = plugin.app.vault.getAllFolders(true);
 			const order: ManualSortOrder = {};
 			foldersToInit.forEach((folder) => {
-				const folders = getFoldersByParent(folder);
+				const folders = getSubFolders(folder);
 				if (folders.length) {
 					const sortedFolders = sortFolders(
 						folders,
