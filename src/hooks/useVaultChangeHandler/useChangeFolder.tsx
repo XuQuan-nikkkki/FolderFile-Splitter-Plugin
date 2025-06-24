@@ -18,7 +18,7 @@ const useChangeFolder = () => {
 		initOrder,
 		isFolderPinned,
 		unpinFolder,
-		updateFolderPinState,
+		updatePinnedFolderPath,
 		updateFolderManualOrder,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
@@ -27,7 +27,7 @@ const useChangeFolder = () => {
 			initOrder: store.initFoldersManualSortOrder,
 			isFolderPinned: store.isFolderPinned,
 			unpinFolder: store.unpinFolder,
-			updateFolderPinState: store.updateFolderPinState,
+			updatePinnedFolderPath: store.updatePinnedFolderPath,
 			updateFolderManualOrder: store._updateFolderManualOrder,
 		}))
 	);
@@ -86,7 +86,7 @@ const useChangeFolder = () => {
 			case "rename":
 				onUpdateTopFolders();
 				if (!oldPath) return;
-				await updateFolderPinState(oldPath, folder.path);
+				await updatePinnedFolderPath(oldPath, folder.path);
 				if (!parentPath || folderSortRule !== FOLDER_MANUAL_SORT_RULE)
 					return;
 				await updateFolderManualOrder(parentPath, oldPath, folder.path);

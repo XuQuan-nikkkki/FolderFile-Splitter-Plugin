@@ -2,17 +2,25 @@ import { StateCreator } from "zustand";
 
 import { FFS_PINNED_TAG_PATHS_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
-import { removeItemFromArray } from "src/utils";
+import { removeItemFromArray, uniq } from "src/utils";
 
 import { ExplorerStore } from "..";
+
+import { TagNode } from ".";
 
 export interface PinnedTagSlice {
 	pinnedTagPaths: string[];
 
+	getPinnedTags: () => TagNode[];
+	getDisplayedPinnedTags: () => TagNode[];
+
 	isTagPinned: (tagPath: string) => boolean;
+
+	setPinnedTagPathsAndSave: (tagPaths: string[]) => Promise<void>;
+
 	pinTag: (tagPath: string) => Promise<void>;
 	unpinTag: (tagPath: string) => Promise<void>;
-	_updatePinnedTagPaths: (tagPaths: string[]) => Promise<void>;
+
 	restorePinnedTags: () => Promise<void>;
 }
 
@@ -23,11 +31,25 @@ export const createPinnedTagSlice =
 	(set, get) => ({
 		pinnedTagPaths: [],
 
+		getPinnedTags: () => {
+			const { tagTree, pinnedTagPaths } = get();
+			return pinnedTagPaths
+				.map((path) => tagTree.get(path))
+				.filter(Boolean) as TagNode[];
+		},
+		getDisplayedPinnedTags: () => {
+			const { showTagView } = plugin.settings;
+			const { getPinnedTags } = get();
+			if (!showTagView) return [];
+			return getPinnedTags();
+		},
+
 		isTagPinned: (tagPath: string) => {
 			const { pinnedTagPaths } = get();
 			return pinnedTagPaths.includes(tagPath);
 		},
-		_updatePinnedTagPaths: async (tagPaths: string[]) => {
+
+		setPinnedTagPathsAndSave: async (tagPaths: string[]) => {
 			const { setValueAndSaveInPlugin } = get();
 			await setValueAndSaveInPlugin({
 				key: "pinnedTagPaths",
@@ -38,17 +60,18 @@ export const createPinnedTagSlice =
 		},
 
 		pinTag: async (tagPath: string) => {
-			const { pinnedTagPaths, _updatePinnedTagPaths } = get();
+			const { pinnedTagPaths, setPinnedTagPathsAndSave } = get();
 			if (pinnedTagPaths.includes(tagPath)) return;
-			await _updatePinnedTagPaths([...pinnedTagPaths, tagPath]);
+			await setPinnedTagPathsAndSave(uniq([...pinnedTagPaths, tagPath]));
 		},
 		unpinTag: async (tagPath: string) => {
-			const { pinnedTagPaths, _updatePinnedTagPaths } = get();
+			const { pinnedTagPaths, setPinnedTagPathsAndSave } = get();
 			if (!pinnedTagPaths.includes(tagPath)) return;
-			await _updatePinnedTagPaths(
-				removeItemFromArray(pinnedTagPaths, tagPath)
+			await setPinnedTagPathsAndSave(
+				uniq(removeItemFromArray(pinnedTagPaths, tagPath))
 			);
 		},
+
 		restorePinnedTags: async () => {
 			const { restoreDataFromPlugin } = get();
 			await restoreDataFromPlugin({

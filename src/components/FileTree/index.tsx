@@ -6,11 +6,9 @@ import { useExplorer } from "src/hooks/useExplorer";
 import { useChangeFile } from "src/hooks/useVaultChangeHandler";
 import { ExplorerStore } from "src/store";
 
-
 import File from "../File";
 
 import PinnedFiles from "./PinnedFiles";
-
 
 type Props = {
 	onOpenFoldersPane?: () => void;
@@ -49,7 +47,7 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 	const sortedFiles = sortFiles(files, fileSortRule);
 	return (
 		<div className="ffs__tree ffs__file-tree nav-files-container">
-			<PinnedFiles files={files} renderFile={renderFile} />
+			<PinnedFiles renderFile={renderFile} />
 			{sortedFiles.map((file) => renderFile(file))}
 		</div>
 	);
