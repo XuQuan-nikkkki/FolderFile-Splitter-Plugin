@@ -57,15 +57,11 @@ export const createSortFolderSlice =
 					return folders.sort((a, b) => b.name.localeCompare(a.name));
 				case "FilesCountAscending":
 					return folders.sort(
-						(a, b) =>
-							getFilesCount(a, includeSubfolder) -
-							getFilesCount(b, includeSubfolder)
+						(a, b) => getFilesCount(a) - getFilesCount(b)
 					);
 				case "FilesCountDescending":
 					return folders.sort(
-						(a, b) =>
-							getFilesCount(b, includeSubfolder) -
-							getFilesCount(a, includeSubfolder)
+						(a, b) => getFilesCount(b) - getFilesCount(a)
 					);
 				case "FolderManualOrder":
 					if (!parentPath || !folderPaths || !folderPaths.length)

@@ -35,12 +35,12 @@ const FilesCount = ({ folder }: Props) => {
 		const { file, changeType } = event.detail;
 		if (!isFile(file)) return;
 		if (changeType === "delete" || changeType === "rename") {
-			setCount(getFilesCountInFolder(folder, includeSubfolderFiles));
+			setCount(getFilesCountInFolder(folder));
 		}
 	};
 
 	useEffect(() => {
-		setCount(getFilesCountInFolder(folder, includeSubfolderFiles));
+		setCount(getFilesCountInFolder(folder));
 		window.addEventListener(VaultChangeEventName, onHandleVaultChange);
 		return () => {
 			window.removeEventListener(
@@ -51,7 +51,7 @@ const FilesCount = ({ folder }: Props) => {
 	}, [folder]);
 
 	useEffect(() => {
-		setCount(getFilesCountInFolder(folder, includeSubfolderFiles));
+		setCount(getFilesCountInFolder(folder));
 	}, [folder.children.length, includeSubfolderFiles]);
 
 	return (

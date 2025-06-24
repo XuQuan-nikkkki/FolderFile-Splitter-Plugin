@@ -18,11 +18,8 @@ export interface FolderStructureSlice {
 	getSubFolders: (parentFolder: TFolder) => TFolder[];
 	hasSubFolders: (folder: TFolder) => boolean;
 
-	getFilesInFolder: (folder: TFolder, getFilesInFolder?: boolean) => TFile[];
-	getFilesCountInFolder: (
-		folder: TFolder,
-		includeSubfolderFiles: boolean
-	) => number;
+	getFilesInFolder: (folder: TFolder) => TFile[];
+	getFilesCountInFolder: (folder: TFolder) => number;
 }
 
 export const createFolderStructureSlice =
@@ -72,22 +69,8 @@ export const createFolderStructureSlice =
 
 			return getFiles(folder);
 		},
-		getFilesCountInFolder: (
-			folder: TFolder,
-			includeSubfolderFiles: boolean
-		): number => {
-			const getFilesCount = (folder: TFolder): number => {
-				if (!folder || !folder.children) return 0;
-				return folder.children.reduce((total, child) => {
-					if (isFile(child)) {
-						return total + 1;
-					}
-					if (includeSubfolderFiles && isFolder(child)) {
-						return total + getFilesCount(child);
-					}
-					return total;
-				}, 0);
-			};
-			return getFilesCount(folder);
+		getFilesCountInFolder: (folder: TFolder): number => {
+			const { getFilesInFolder } = get();
+			return getFilesInFolder(folder).length;
 		},
 	});
