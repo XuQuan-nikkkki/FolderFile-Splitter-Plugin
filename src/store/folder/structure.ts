@@ -11,6 +11,7 @@ export interface FolderStructureSlice {
 	rootFolder: TFolder | null;
 
 	getTopLevelFolders: () => TFolder[];
+	isTopLevelFolder: (folder: TFolder) => boolean;
 	getFilesCountInFolder: (
 		folder: TFolder,
 		includeSubfolderFiles: boolean
@@ -29,10 +30,14 @@ export const createFolderStructureSlice =
 		folders: plugin.app.vault.getAllFolders() || [],
 		rootFolder: plugin.app.vault.getRoot() || null,
 
+		isTopLevelFolder: (folder: TFolder): boolean => {
+			return Boolean(folder.parent?.isRoot());
+		},
 		getTopLevelFolders: () => {
+			const {isTopLevelFolder } = get();
 			return plugin.app.vault
 				.getAllFolders()
-				.filter((folder) => folder.parent?.parent === null);
+				.filter((folder) => isTopLevelFolder(folder));
 		},
 		hasFolderChildren: (folder: TFolder): boolean => {
 			return folder.children.some((child) => isFolder(child));
