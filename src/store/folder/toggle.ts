@@ -62,23 +62,17 @@ export const createToggleFolderSlice =
 			});
 		},
 		restoreExpandedFolderPaths: async () => {
-			const { getDataFromLocalStorage, hasSubFolders } = get();
-			const lastExpandedFolderPaths = getDataFromLocalStorage(
-				FFS_EXPANDED_FOLDER_PATHS_KEY
-			);
-			if (!lastExpandedFolderPaths) return;
-			try {
-				const folderPaths: string[] = JSON.parse(
-					lastExpandedFolderPaths
-				);
-				set({
-					expandedFolderPaths: folderPaths.filter((path) => {
+			const { hasSubFolders, restoreDataFromLocalStorage } = get();
+			restoreDataFromLocalStorage({
+				localStorageKey: FFS_EXPANDED_FOLDER_PATHS_KEY,
+				key: "expandedFolderPaths",
+				needParse: true,
+				transform: (value) => {
+					return (value as string[]).filter((path) => {
 						const folder = plugin.app.vault.getFolderByPath(path);
 						return folder && hasSubFolders(folder);
-					}),
-				});
-			} catch (error) {
-				console.error("Invalid Json format: ", error);
-			}
+					});
+				},
+			});
 		},
 	});

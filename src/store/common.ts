@@ -18,6 +18,25 @@ type FolderPath = string;
 type ChildrenPaths = string[];
 export type ManualSortOrder = Record<FolderPath, ChildrenPaths>;
 
+type SetValueAndSaveInLocalStorageParams<T> = {
+	key: string;
+	value: T;
+	localStorageKey: string;
+	localStorageValue: string;
+};
+type SetValueAndSaveInPluginParams<T> = {
+	key: string;
+	value: T;
+	pluginKey: string;
+	pluginValue: T | string;
+};
+type RestoreDataFromLocalStorageParams = {
+	localStorageKey: string;
+	key: string;
+	needParse?: boolean;
+	transform?: (value: any) => unknown;
+};
+
 export type CommonExplorerStore = {
 	viewMode: ViewMode;
 	changeViewMode: (mode: ViewMode) => void;
@@ -26,6 +45,7 @@ export type CommonExplorerStore = {
 	getDataFromLocalStorage: (key: string) => string | null;
 	saveDataInLocalStorage: (key: string, value: string) => void;
 	removeDataFromLocalStorage: (key: string) => void;
+
 	getDataFromPlugin: <T>(key: string) => Promise<T | undefined>;
 	saveDataInPlugin: (oata: Record<string, unknown>) => Promise<void>;
 
@@ -34,21 +54,19 @@ export type CommonExplorerStore = {
 		value,
 		localStorageKey,
 		localStorageValue,
-	}: {
-		key: string;
-		value: T;
-		localStorageKey: string;
-		localStorageValue: string | T;
-	}) => void;
+	}: SetValueAndSaveInLocalStorageParams<T>) => void;
 	setValueAndSaveInPlugin: <T>({
 		key,
 		value,
-	}: {
-		key: string;
-		value: T;
-		pluginKey: string;
-		pluginValue: T | string;
-	}) => Promise<void>;
+		pluginKey,
+		pluginValue,
+	}: SetValueAndSaveInPluginParams<T>) => Promise<void>;
+	restoreDataFromLocalStorage: ({
+		localStorageKey,
+		key,
+		needParse,
+		transform,
+	}: RestoreDataFromLocalStorageParams) => void;
 };
 
 export const createCommonExplorerStore =
@@ -85,6 +103,7 @@ export const createCommonExplorerStore =
 		removeDataFromLocalStorage: (key: string) => {
 			localStorage.removeItem(key);
 		},
+
 		saveDataInPlugin: async (
 			data: Record<string, unknown>
 		): Promise<void> => {
@@ -109,12 +128,7 @@ export const createCommonExplorerStore =
 			value,
 			localStorageKey,
 			localStorageValue,
-		}: {
-			key: string;
-			value: T;
-			localStorageKey: string;
-			localStorageValue: string;
-		}) => {
+		}: SetValueAndSaveInLocalStorageParams<T>) => {
 			const { saveDataInLocalStorage, removeDataFromLocalStorage } =
 				get();
 
@@ -131,14 +145,43 @@ export const createCommonExplorerStore =
 			value,
 			pluginKey,
 			pluginValue,
-		}: {
-			key: string;
-			value: T;
-			pluginKey: string;
-			pluginValue: T | string;
-		}): Promise<void> => {
+		}: SetValueAndSaveInPluginParams<T>): Promise<void> => {
 			const { saveDataInPlugin } = get();
 			set({ [key]: value } as Partial<ExplorerStore>);
 			await saveDataInPlugin({ [pluginKey]: pluginValue });
 		},
+
+		restoreDataFromLocalStorage: ({
+			localStorageKey,
+			key,
+			needParse = false,
+			transform,
+		}: RestoreDataFromLocalStorageParams) => {
+			const { getDataFromLocalStorage } = get();
+			const raw = getDataFromLocalStorage(localStorageKey);
+			if (!raw) return;
+
+			try {
+				const parsed = needParse ? JSON.parse(raw) : raw;
+				const finalData = transform ? transform(parsed) : parsed;
+
+				set({ [key]: finalData } as Partial<ExplorerStore>);
+			} catch (error) {
+				const shortData =
+					raw.length > 200 ? raw.slice(0, 200) + "..." : raw;
+
+				console.error(
+					`[restoreDataFromLocalStorage] Failed to restore "${String(
+						key
+					)}" from localStorage key "${localStorageKey}".`,
+					{
+						error,
+						rawDataPreview: shortData,
+						needParse,
+						hasTransform: !!transform,
+					}
+				);
+			}
+		},
+		restoreDataFromPlugin: () => {},
 	});

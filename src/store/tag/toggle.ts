@@ -51,21 +51,18 @@ export const createToggleTagSlice =
 		},
 
 		restoreExpandedTagPaths: async () => {
-			const { getDataFromLocalStorage, hasTagChildren, tagTree } = get();
-			const lastExpandedTagPaths = getDataFromLocalStorage(
-				FFS_EXPANDED_TAG_PATHS_KEY
-			);
-			if (!lastExpandedTagPaths) return;
-			try {
-				const tagPaths: string[] = JSON.parse(lastExpandedTagPaths);
-				set({
-					expandedTagPaths: tagPaths.filter((path) => {
+			const { hasTagChildren, tagTree, restoreDataFromLocalStorage } =
+				get();
+			restoreDataFromLocalStorage({
+				localStorageKey: FFS_EXPANDED_TAG_PATHS_KEY,
+				key: "expandedTagPaths",
+				needParse: true,
+				transform: (value) => {
+					return (value as string[]).filter((path) => {
 						const tag = tagTree.get(path);
 						return tag && hasTagChildren(tag);
-					}),
-				});
-			} catch (error) {
-				console.error("Invalid Json format: ", error);
-			}
+					});
+				},
+			});
 		},
 	});
