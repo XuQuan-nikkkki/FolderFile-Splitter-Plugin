@@ -5,11 +5,12 @@ import { FFS_FOCUSED_FILE_PATH_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
 
 import { ExplorerStore } from "..";
+import { VIEW_MODE } from "../common";
 
 export interface FocusedFileSlice {
 	focusedFile: TFile | null;
 
-	getFocusedFiles: () => TFile[];
+	getVisibleFiles: () => TFile[];
 	findFileByPath: (path: string) => TFile | null;
 	setFocusedFile: (file: TFile | null) => Promise<void>;
 	restoreLastFocusedFile: () => Promise<void>;
@@ -22,7 +23,7 @@ export const createFocusedFileSlice =
 	(set, get) => ({
 		focusedFile: null,
 
-		getFocusedFiles: () => {
+		getVisibleFiles: () => {
 			const {
 				focusedFolder,
 				focusedTag,
@@ -30,22 +31,20 @@ export const createFocusedFileSlice =
 				getFilesInTag,
 				viewMode,
 			} = get();
-			if (viewMode === "all") {
-				return plugin.app.vault.getFiles();
+			switch (viewMode) {
+				case VIEW_MODE.ALL:
+					return plugin.app.vault.getFiles();
+				case VIEW_MODE.FOLDER:
+					return focusedFolder ? getFilesInFolder(focusedFolder) : [];
+				case VIEW_MODE.TAG:
+					return focusedTag ? getFilesInTag(focusedTag) : [];
+				default:
+					return [];
 			}
-
-			if (focusedFolder) {
-				return getFilesInFolder(focusedFolder);
-			}
-			if (focusedTag) {
-				return getFilesInTag(focusedTag);
-			}
-			return [];
 		},
 		findFileByPath: (path: string): TFile | null => {
 			return plugin.app.vault.getFileByPath(path);
 		},
-
 		setFocusedFile: async (file: TFile | null) => {
 			const { setValueAndSaveInLocalStorage } = get();
 			setValueAndSaveInLocalStorage({
