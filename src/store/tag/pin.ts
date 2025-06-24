@@ -2,6 +2,7 @@ import { StateCreator } from "zustand";
 
 import { FFS_PINNED_TAG_PATHS_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
+import { removeItemFromArray } from "src/utils";
 
 import { ExplorerStore } from "..";
 
@@ -45,7 +46,7 @@ export const createPinnedTagSlice =
 			const { pinnedTagPaths, _updatePinnedTagPaths } = get();
 			if (!pinnedTagPaths.includes(tagPath)) return;
 			await _updatePinnedTagPaths(
-				pinnedTagPaths.filter((path) => path !== tagPath)
+				removeItemFromArray(pinnedTagPaths, tagPath)
 			);
 		},
 		restorePinnedTags: async () => {

@@ -8,6 +8,7 @@ import { ExplorerStore } from "..";
 import { ManualSortOrder } from "../common";
 
 import { FILE_MANUAL_SORT_RULE } from "./sort";
+import { moveItemInArray } from "src/utils";
 
 export interface ManualSortFileSlice {
 	filesManualSortOrder: ManualSortOrder;
@@ -111,9 +112,11 @@ export const createManualSortFileSlice =
 			if (currentIndex === atIndex) {
 				return filesManualSortOrder;
 			}
-			const newOrder = [...initialOrder];
-			newOrder.splice(currentIndex, 1);
-			newOrder.splice(atIndex, 0, file.path);
+			const newOrder = moveItemInArray(
+				initialOrder,
+				currentIndex,
+				atIndex
+			);
 			const updatedOrder = {
 				...filesManualSortOrder,
 				[parentPath]: newOrder,

@@ -19,7 +19,7 @@ const useChangeFile = () => {
 	const {
 		focusedFolder,
 		focusedTag,
-		updateFilePinState,
+		updatePinnedFilePath,
 		updateFileManualOrder,
 		fileSortRule,
 		initOrder,
@@ -30,7 +30,7 @@ const useChangeFile = () => {
 		useShallow((store: ExplorerStore) => ({
 			focusedFolder: store.focusedFolder,
 			focusedTag: store.focusedTag,
-			updateFilePinState: store.updateFilePinState,
+			updatePinnedFilePath: store.updatePinnedFilePath,
 			updateFileManualOrder: store.updateFileManualOrder,
 			fileSortRule: store.fileSortRule,
 			initOrder: store.initFilesManualSortOrder,
@@ -90,7 +90,7 @@ const useChangeFile = () => {
 				updateFileList();
 				if (oldPath) {
 					const parentPath = file.parent?.path;
-					await updateFilePinState(oldPath, file.path);
+					await updatePinnedFilePath(oldPath, file.path);
 					if (parentPath && fileSortRule === FILE_MANUAL_SORT_RULE) {
 						await updateFileManualOrder(
 							parentPath,

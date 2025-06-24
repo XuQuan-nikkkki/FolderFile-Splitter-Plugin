@@ -3,6 +3,7 @@ import { StateCreator } from "zustand";
 
 import { FFS_PINNED_FOLDER_PATHS_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
+import { removeItemFromArray, replaceItemInArray } from "src/utils";
 
 import { ExplorerStore } from "..";
 
@@ -14,10 +15,6 @@ export interface PinnedFolderSlice {
 	unpinFolder: (folder: TFolder) => Promise<void>;
 	isFolderPinned: (folder: TFolder) => boolean;
 	restorePinnedFolders: () => Promise<void>;
-	_updatePinnedFolderPath: (
-		oldPath: string,
-		newPath: string
-	) => Promise<void>;
 	updateFolderPinState: (oldPath: string, newPath: string) => Promise<void>;
 }
 
@@ -50,8 +47,9 @@ export const createPinnedFolderSlice =
 		unpinFolder: async (folder: TFolder) => {
 			const { pinnedFolderPaths, _updatePinnedFolderPaths } = get();
 			if (!pinnedFolderPaths.includes(folder.path)) return;
-			const folderPaths = pinnedFolderPaths.filter(
-				(path) => path !== folder.path
+			const folderPaths = removeItemFromArray(
+				pinnedFolderPaths,
+				folder.path
 			);
 			await _updatePinnedFolderPaths(folderPaths);
 		},
@@ -71,18 +69,17 @@ export const createPinnedFolderSlice =
 				}
 			}
 		},
-		_updatePinnedFolderPath: async (oldPath: string, newPath: string) => {
-			const { pinnedFolderPaths, _updatePinnedFolderPaths } = get();
-			if (!pinnedFolderPaths.includes(oldPath)) return;
-
-			const pinnedIndex = pinnedFolderPaths.indexOf(oldPath);
-			const paths = [...pinnedFolderPaths];
-			paths.splice(pinnedIndex, 1, newPath);
-			await _updatePinnedFolderPaths(paths);
-		},
 		updateFolderPinState: async (oldPath: string, newPath: string) => {
-			const { pinnedFolderPaths, _updatePinnedFolderPath } = get();
+			const {
+				pinnedFolderPaths,
+				_updatePinnedFolderPaths,
+			} = get();
 			if (!pinnedFolderPaths.includes(oldPath)) return;
-			await _updatePinnedFolderPath(oldPath, newPath);
+			const updatedPaths = replaceItemInArray(
+				pinnedFolderPaths,
+				oldPath,
+				newPath
+			);
+			await _updatePinnedFolderPaths(updatedPaths);
 		},
 	});

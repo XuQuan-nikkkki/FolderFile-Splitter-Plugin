@@ -6,6 +6,7 @@ import FolderFileSplitterPlugin from "src/main";
 
 import { ExplorerStore } from "..";
 import { ManualSortOrder } from "../common";
+import { moveItemInArray } from "src/utils";
 
 export interface ManualSortFolderSlice {
 	foldersManualSortOrder: ManualSortOrder;
@@ -122,9 +123,11 @@ export const createManualSortFolderSlice =
 			if (currentIndex === atIndex) {
 				return foldersManualSortOrder;
 			}
-			const newOrder = [...initialOrder];
-			newOrder.splice(currentIndex, 1);
-			newOrder.splice(atIndex, 0, folder.path);
+			const newOrder = moveItemInArray(
+				initialOrder,
+				currentIndex,
+				atIndex
+			);
 			const updatedOrder = {
 				...foldersManualSortOrder,
 				[parentPath]: newOrder,

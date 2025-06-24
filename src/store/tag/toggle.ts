@@ -2,7 +2,7 @@ import { StateCreator } from "zustand";
 
 import { FFS_EXPANDED_TAG_PATHS_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
-import { uniq } from "src/utils";
+import { removeItemFromArray, uniq } from "src/utils";
 
 import { ExplorerStore } from "..";
 
@@ -46,7 +46,7 @@ export const createToggleTagSlice =
 				get();
 			if (!hasTagChildren(tag)) return;
 			await changeExpandedTagPaths(
-				expandedTagPaths.filter((path) => path !== tag.fullPath)
+				removeItemFromArray(expandedTagPaths, tag.fullPath)
 			);
 		},
 

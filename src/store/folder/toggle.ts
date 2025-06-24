@@ -3,7 +3,7 @@ import { StateCreator } from "zustand";
 
 import { FFS_EXPANDED_FOLDER_PATHS_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
-import { uniq } from "src/utils";
+import { removeItemFromArray, uniq } from "src/utils";
 
 import { ExplorerStore } from "..";
 
@@ -49,7 +49,7 @@ export const createToggleFolderSlice =
 			} = get();
 			if (!canFolderToggle(folder)) return;
 			await changeExpandedFolderPaths(
-				expandedFolderPaths.filter((path) => path !== folder.path)
+				removeItemFromArray(expandedFolderPaths, folder.path)
 			);
 		},
 		changeExpandedFolderPaths: async (folderPaths: string[]) => {
