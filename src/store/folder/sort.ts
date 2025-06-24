@@ -86,13 +86,12 @@ export const createSortFolderSlice =
 			});
 		},
 		restoreFolderSortRule: async () => {
-			const { restoreFoldersManualSortOrder, getDataFromPlugin } = get();
-			const lastFolderSortRule = await getDataFromPlugin<FolderSortRule>(
-				FFS_FOLDER_SORT_RULE_KEY
-			);
-			if (!lastFolderSortRule) return;
-			set({
-				folderSortRule: lastFolderSortRule,
+			const { restoreFoldersManualSortOrder, restoreDataFromPlugin } =
+				get();
+			const lastFolderSortRule = await restoreDataFromPlugin({
+				pluginKey: FFS_FOLDER_SORT_RULE_KEY,
+				key: "folderSortRule",
+				needParse: true,
 			});
 			if (lastFolderSortRule === FOLDER_MANUAL_SORT_RULE) {
 				await restoreFoldersManualSortOrder();

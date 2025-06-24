@@ -54,26 +54,15 @@ export const createPinnedFolderSlice =
 			await _updatePinnedFolderPaths(folderPaths);
 		},
 		restorePinnedFolders: async () => {
-			const { getDataFromPlugin: getData } = get();
-			const pinnedFolderPaths = await getData<string>(
-				FFS_PINNED_FOLDER_PATHS_KEY
-			);
-			if (pinnedFolderPaths) {
-				try {
-					const folderPaths: string[] = JSON.parse(pinnedFolderPaths);
-					set({
-						pinnedFolderPaths: folderPaths,
-					});
-				} catch (error) {
-					console.error("Invalid Json format: ", error);
-				}
-			}
+			const { restoreDataFromPlugin } = get();
+			await restoreDataFromPlugin({
+				pluginKey: FFS_PINNED_FOLDER_PATHS_KEY,
+				key: "pinnedFolderPaths",
+				needParse: true,
+			});
 		},
 		updateFolderPinState: async (oldPath: string, newPath: string) => {
-			const {
-				pinnedFolderPaths,
-				_updatePinnedFolderPaths,
-			} = get();
+			const { pinnedFolderPaths, _updatePinnedFolderPaths } = get();
 			if (!pinnedFolderPaths.includes(oldPath)) return;
 			const updatedPaths = replaceItemInArray(
 				pinnedFolderPaths,

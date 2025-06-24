@@ -50,18 +50,11 @@ export const createPinnedTagSlice =
 			);
 		},
 		restorePinnedTags: async () => {
-			const { getDataFromPlugin: getData } = get();
-			const pinnedTagPaths = await getData<string>(
-				FFS_PINNED_TAG_PATHS_KEY
-			);
-			if (!pinnedTagPaths) return;
-			try {
-				const tagPaths: string[] = JSON.parse(pinnedTagPaths);
-				set({
-					pinnedTagPaths: tagPaths,
-				});
-			} catch (error) {
-				console.error("Invalid Json format: ", error);
-			}
+			const { restoreDataFromPlugin } = get();
+			await restoreDataFromPlugin({
+				pluginKey: FFS_PINNED_TAG_PATHS_KEY,
+				key: "pinnedTagPaths",
+				needParse: true,
+			});
 		},
 	});

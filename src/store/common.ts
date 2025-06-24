@@ -36,6 +36,11 @@ type RestoreDataFromLocalStorageParams = {
 	needParse?: boolean;
 	transform?: (value: any) => unknown;
 };
+type RestoreDataFromPluginParams = {
+	pluginKey: string;
+	key: string;
+	needParse?: boolean;
+};
 
 export type CommonExplorerStore = {
 	viewMode: ViewMode;
@@ -61,12 +66,17 @@ export type CommonExplorerStore = {
 		pluginKey,
 		pluginValue,
 	}: SetValueAndSaveInPluginParams<T>) => Promise<void>;
-	restoreDataFromLocalStorage: ({
+	restoreDataFromLocalStorage: <T>({
 		localStorageKey,
 		key,
 		needParse,
 		transform,
-	}: RestoreDataFromLocalStorageParams) => void;
+	}: RestoreDataFromLocalStorageParams) => T;
+	restoreDataFromPlugin: ({
+		pluginKey,
+		key,
+		needParse,
+	}: RestoreDataFromPluginParams) => Promise<unknown>;
 };
 
 export const createCommonExplorerStore =
@@ -166,6 +176,7 @@ export const createCommonExplorerStore =
 				const finalData = transform ? transform(parsed) : parsed;
 
 				set({ [key]: finalData } as Partial<ExplorerStore>);
+				return finalData;
 			} catch (error) {
 				const shortData =
 					raw.length > 200 ? raw.slice(0, 200) + "..." : raw;
@@ -183,5 +194,34 @@ export const createCommonExplorerStore =
 				);
 			}
 		},
-		restoreDataFromPlugin: () => {},
+		restoreDataFromPlugin: async ({
+			pluginKey,
+			key,
+			needParse = false,
+		}: RestoreDataFromPluginParams) => {
+			const { getDataFromPlugin } = get();
+			const raw = await getDataFromPlugin<string>(pluginKey);
+			if (!raw) return;
+
+			try {
+				const parsed = needParse ? JSON.parse(raw) : raw;
+				set({ [key]: parsed } as Partial<ExplorerStore>);
+				return parsed;
+			} catch (error) {
+				const shortData =
+					raw.length > 200 ? raw.slice(0, 200) + "..." : raw;
+
+				console.error(
+					`[restoreDataFromPlugin] Failed to restore "${String(
+						key
+					)}" from plugin key "${pluginKey}".`,
+					{
+						error,
+						rawDataPreview: shortData,
+						needParse,
+						// hasTransform: !!transform,
+					}
+				);
+			}
+		},
 	});

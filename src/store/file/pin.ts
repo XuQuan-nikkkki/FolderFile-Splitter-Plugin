@@ -60,19 +60,11 @@ export const createPinnedFileSlice =
 			await _updatePinnedFilePaths(updatedPaths);
 		},
 		restorePinnedFiles: async () => {
-			const { getDataFromPlugin: getData } = get();
-			const pinnedFilePaths = await getData<string>(
-				FFS_PINNED_FILE_PATHS_KEY
-			);
-			if (pinnedFilePaths) {
-				try {
-					const filePaths: string[] = JSON.parse(pinnedFilePaths);
-					set({
-						pinnedFilePaths: filePaths,
-					});
-				} catch (error) {
-					console.error("Invalid Json format: ", error);
-				}
-			}
+			const { restoreDataFromPlugin } = get();
+			await restoreDataFromPlugin({
+				pluginKey: FFS_PINNED_FILE_PATHS_KEY,
+				key: "pinnedFilePaths",
+				needParse: true,
+			});
 		},
 	});
