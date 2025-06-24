@@ -58,17 +58,16 @@ export const createFolderStructureSlice =
 		getFoldersByParent: (parentFolder: TFolder): TFolder[] => {
 			return parentFolder.children.filter((child) => isFolder(child));
 		},
-		getFilesInFolder: (
-			folder: TFolder,
-			includeSubfolder = false
-		): TFile[] => {
+		getFilesInFolder: (folder: TFolder): TFile[] => {
+			const { includeSubfolderFiles } = plugin.settings;
+
 			const getFiles = (folder: TFolder): TFile[] => {
-				if (!folder || !folder.children) return [];
+				if (!folder.children) return [];
 
 				return folder.children.reduce<TFile[]>((files, child) => {
 					if (isFile(child)) {
 						files.push(child as TFile);
-					} else if (includeSubfolder && isFolder(child)) {
+					} else if (includeSubfolderFiles && isFolder(child)) {
 						files.push(...getFiles(child as TFolder));
 					}
 					return files;
