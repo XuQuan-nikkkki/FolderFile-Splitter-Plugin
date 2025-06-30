@@ -27,7 +27,7 @@ const FileContent = ({ file }: FileProps) => {
 
 	const {
 		focusedFile,
-		selectFile,
+		selectFileAndOpen,
 		createFile,
 		duplicateFile,
 		isFilePinned,
@@ -38,7 +38,7 @@ const FileContent = ({ file }: FileProps) => {
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			focusedFile: store.focusedFile,
-			selectFile: store.selectFile,
+			selectFileAndOpen: store.selectFileAndOpen,
 			createFile: store.createFile,
 			duplicateFile: store.duplicateFile,
 			isFilePinned: store.isFilePinned,
@@ -212,7 +212,7 @@ const FileContent = ({ file }: FileProps) => {
 
 	const openFileInNewTab = (file: TFile) => {
 		plugin.app.workspace.openLinkText(file.path, file.path, true);
-		selectFile(file);
+		selectFileAndOpen(file);
 	};
 
 	const maybeRenderFileDetail = () => {

@@ -2,24 +2,35 @@ import { TFile, TFolder } from "obsidian";
 import { StateCreator } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
+import { FOLDER_NOTE_LOCATION } from "src/settings";
 import { isFile, isFolder } from "src/utils";
 
 import { ExplorerStore } from "..";
+import { MARKDOWN_FILE_EXTENSION } from "../file/actions";
 
 export interface FolderStructureSlice {
 	folders: TFolder[];
-	rootFolder: TFolder | null;
+	foldersWithRoot: TFolder[];
+	rootFolder: TFolder;
 
 	getNameOfFolder: (folder: TFolder) => string;
 
+	getFolderAncestors: (folder: TFolder) => TFolder[];
+	isAnscestorOf: (ancestor: TFolder, folder: TFolder) => boolean;
+
 	getTopLevelFolders: () => TFolder[];
 	isTopLevelFolder: (folder: TFolder) => boolean;
+	isFolderPathValid: (path: string) => boolean;
 
 	getSubFolders: (parentFolder: TFolder) => TFolder[];
-	hasSubFolders: (folder: TFolder) => boolean;
+	hasSubFolder: (folder: TFolder) => boolean;
 
 	getFilesInFolder: (folder: TFolder) => TFile[];
 	getFilesCountInFolder: (folder: TFolder) => number;
+
+	getFolderNotePath: (folder: TFolder) => string;
+
+	findFolderByPath: (path: string) => TFolder | null;
 }
 
 export const createFolderStructureSlice =
@@ -28,23 +39,41 @@ export const createFolderStructureSlice =
 	): StateCreator<ExplorerStore, [], [], FolderStructureSlice> =>
 	(set, get) => ({
 		folders: plugin.app.vault.getAllFolders() || [],
-		rootFolder: plugin.app.vault.getRoot() || null,
+		foldersWithRoot: plugin.app.vault.getAllFolders(true) || [],
+		rootFolder: plugin.app.vault.getRoot(),
 
 		getNameOfFolder: (folder: TFolder) => {
 			return folder.isRoot() ? plugin.app.vault.getName() : folder.name;
+		},
+		getFolderAncestors: (folder: TFolder): TFolder[] => {
+			const ancestors: TFolder[] = [];
+			let current = folder.parent;
+
+			while (current && !current.isRoot()) {
+				ancestors.unshift(current);
+				current = current.parent;
+			}
+
+			return ancestors;
+		},
+		isAnscestorOf: (ancestor: TFolder, folder: TFolder): boolean => {
+			const ancestors = get().getFolderAncestors(folder);
+			return ancestors.some((f) => f.path === ancestor.path);
+		},
+
+		isFolderPathValid: (path: string) => {
+			return Boolean(get().findFolderByPath(path));
 		},
 
 		isTopLevelFolder: (folder: TFolder): boolean => {
 			return Boolean(folder.parent?.isRoot());
 		},
 		getTopLevelFolders: () => {
-			const { isTopLevelFolder } = get();
-			return plugin.app.vault
-				.getAllFolders()
-				.filter((folder) => isTopLevelFolder(folder));
+			const { isTopLevelFolder, folders } = get();
+			return folders.filter((folder) => isTopLevelFolder(folder));
 		},
 
-		hasSubFolders: (folder: TFolder): boolean => {
+		hasSubFolder: (folder: TFolder): boolean => {
 			return folder.children.some((child) => isFolder(child));
 		},
 		getSubFolders: (parentFolder: TFolder): TFolder[] => {
@@ -72,5 +101,25 @@ export const createFolderStructureSlice =
 		getFilesCountInFolder: (folder: TFolder): number => {
 			const { getFilesInFolder } = get();
 			return getFilesInFolder(folder).length;
+		},
+
+		getFolderNotePath: (folder: TFolder): string => {
+			const { folderNoteLocation, customFolderNotePath } =
+				plugin.settings;
+			const { INDEX_FILE, UNDERSCORE_FILE } = FOLDER_NOTE_LOCATION;
+
+			if ([INDEX_FILE, UNDERSCORE_FILE].includes(folderNoteLocation)) {
+				return `${folder.path}/${folderNoteLocation}`;
+			}
+
+			if (folderNoteLocation === FOLDER_NOTE_LOCATION.FOLDER_NAME_FILE) {
+				return `${folder.path}/${folder.name}${MARKDOWN_FILE_EXTENSION}`;
+			}
+
+			return customFolderNotePath.replace("{folder}", folder.name || "");
+		},
+
+		findFolderByPath: (path: string): TFolder | null => {
+			return plugin.app.vault.getFolderByPath(path);
 		},
 	});

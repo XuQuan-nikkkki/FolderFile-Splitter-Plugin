@@ -38,15 +38,16 @@ const ManualSortFolders = ({
 		getSubFolders,
 		sortFolders,
 		folderSortRule,
-		changeFoldersManualOrderAndSave,
+		moveFolderInManualOrder,
+		findFolderByPath,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			getSubFolders: store.getSubFolders,
 			sortFolders: store.sortFolders,
 			folderSortRule: store.folderSortRule,
 			order: store.foldersManualSortOrder,
-			changeFoldersManualOrderAndSave:
-				store.changeFoldersManualOrderAndSave,
+			moveFolderInManualOrder: store.moveFolderInManualOrder,
+			findFolderByPath: store.findFolderByPath,
 		}))
 	);
 
@@ -67,7 +68,7 @@ const ManualSortFolders = ({
 
 	const getSortedFolders = () => {
 		if (!folder) return [];
-		return sortFolders(getSubFolders(folder), folderSortRule, false);
+		return sortFolders(getSubFolders(folder));
 	};
 
 	const onDragStart = (event: DragStartEvent) => {
@@ -83,7 +84,7 @@ const ManualSortFolders = ({
 			const atIndex = getSortedFolders().findIndex(
 				(f) => f.path === over.id
 			);
-			return await changeFoldersManualOrderAndSave(folder, atIndex);
+			return await moveFolderInManualOrder(folder, atIndex);
 		}
 	};
 
@@ -122,7 +123,7 @@ const ManualSortFolders = ({
 				{renderSlashSign()}
 				{crumbs.map((crumb, index) => {
 					const path = crumbs.slice(0, index + 1).join("/");
-					const target = plugin.app.vault.getFolderByPath(path);
+					const target = findFolderByPath(path);
 					return (
 						<Fragment key={crumb + index}>
 							{index > 0 && renderSlashSign()}

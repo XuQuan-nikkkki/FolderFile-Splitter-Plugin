@@ -4,22 +4,24 @@ import { useShallow } from "zustand/react/shallow";
 import { ActiveLeafChangeEventName } from "src/assets/constants";
 import { ExplorerStore } from "src/store";
 
-
-
 import { useExplorer } from "./useExplorer";
 
 const useChangeActiveLeaf = () => {
 	const { useExplorerStore, plugin } = useExplorer();
 
-	const { focusedFile, setFocusedFile, expandFolder, setFocusedFolder } =
-		useExplorerStore(
-			useShallow((store: ExplorerStore) => ({
-				focusedFile: store.focusedFile,
-				expandFolder: store.expandFolder,
-				setFocusedFolder: store.setFocusedFolder,
-				setFocusedFile: store.setFocusedFile,
-			}))
-		);
+	const {
+		focusedFile,
+		setFocusedFileAndSave,
+		expandFolder,
+		changeFocusedFolder,
+	} = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
+			focusedFile: store.focusedFile,
+			expandFolder: store.expandFolder,
+			changeFocusedFolder: store.changeFocusedFolder,
+			setFocusedFileAndSave: store.setFocusedFileAndSave,
+		}))
+	);
 
 	useEffect(() => {
 		window.addEventListener(
@@ -35,7 +37,7 @@ const useChangeActiveLeaf = () => {
 	}, [focusedFile]);
 
 	const onHandleActiveLeafChange = async () => {
-		if (!plugin.settings.revealFileInExplorer) return
+		if (!plugin.settings.revealFileInExplorer) return;
 		const currentActiveFile = plugin.app.workspace.getActiveFile();
 		if (currentActiveFile && currentActiveFile.path !== focusedFile?.path) {
 			let currentFolder = currentActiveFile.parent;
@@ -43,8 +45,8 @@ const useChangeActiveLeaf = () => {
 				expandFolder(currentFolder);
 				currentFolder = currentFolder.parent;
 			}
-			setFocusedFolder(currentActiveFile.parent);
-			await setFocusedFile(currentActiveFile);
+			changeFocusedFolder(currentActiveFile.parent);
+			await setFocusedFileAndSave(currentActiveFile);
 		}
 	};
 };

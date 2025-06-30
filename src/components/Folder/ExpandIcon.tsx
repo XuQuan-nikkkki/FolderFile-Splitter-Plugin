@@ -12,9 +12,9 @@ type Props = {
 const FolderExpandIcon = ({ folder }: Props) => {
 	const { useExplorerStore } = useExplorer();
 
-	const { hasSubFolders, expandedFolderPaths } = useExplorerStore(
+	const { hasSubFolder, expandedFolderPaths } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			hasSubFolders: store.hasSubFolders,
+			hasSubFolder: store.hasSubFolder,
 			expandedFolderPaths: store.expandedFolderPaths,
 		}))
 	);
@@ -24,7 +24,7 @@ const FolderExpandIcon = ({ folder }: Props) => {
 	return (
 		<ExpandIcon
 			isExpanded={isFolderExpanded}
-			hideIcon={!hasSubFolders(folder)}
+			hideIcon={!hasSubFolder(folder)}
 		/>
 	);
 };

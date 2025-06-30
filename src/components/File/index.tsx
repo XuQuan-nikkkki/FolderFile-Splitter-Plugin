@@ -17,9 +17,9 @@ const File = ({ file, disableDrag, onOpenFoldersPane }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
 	const { language } = plugin;
 
-	const { selectFile } = useExplorerStore(
+	const { selectFileAndOpen } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			selectFile: store.selectFile,
+			selectFileAndOpen: store.selectFileAndOpen,
 		}))
 	);
 
@@ -55,7 +55,7 @@ const File = ({ file, disableDrag, onOpenFoldersPane }: Props) => {
 			className="ffs__file-tree-item tree-item nav-file"
 			ref={setNodeRef}
 			style={{ opacity: isDragging ? 0.5 : 1 }}
-			onClick={() => selectFile(file)}
+			onClick={() => selectFileAndOpen(file)}
 			data-tooltip-position="right"
 			aria-label={getAriaLabel()}
 			{...attributes}

@@ -15,16 +15,27 @@ export type FolderSortRule =
 export const DEFAULT_FOLDER_SORT_RULE: FolderSortRule = "FolderNameAscending";
 export const FOLDER_MANUAL_SORT_RULE: FolderSortRule = "FolderManualOrder";
 
+export const createFolderSorters = (
+	getFilesCountInFolder: (folder: TFolder) => number
+): Record<FolderSortRule, (a: TFolder, b: TFolder) => number> => ({
+	FolderNameAscending: (a, b) => a.name.localeCompare(b.name),
+	FolderNameDescending: (a, b) => b.name.localeCompare(a.name),
+	FilesCountAscending: (a, b) =>
+		getFilesCountInFolder(a) - getFilesCountInFolder(b),
+	FilesCountDescending: (a, b) =>
+		getFilesCountInFolder(b) - getFilesCountInFolder(a),
+	FolderManualOrder: () => 0, // special case
+});
+
 export interface SortFolderSlice {
 	folderSortRule: FolderSortRule;
 
-	isFoldersInAscendingOrder: () => boolean;
-	sortFolders: (
-		folders: TFolder[],
-		rule: FolderSortRule,
-		includeSubfolderFiles: boolean
-	) => TFolder[];
+	folderSortRulesGroup: FolderSortRule[][];
+
+	sortFolders: (folders: TFolder[]) => TFolder[];
+
 	changeFolderSortRule: (rule: FolderSortRule) => Promise<void>;
+	changeFolderSortRuleAndUpdateOrder: (rule: FolderSortRule) => Promise<void>;
 	restoreFolderSortRule: () => Promise<void>;
 }
 
@@ -35,46 +46,42 @@ export const createSortFolderSlice =
 	(set, get) => ({
 		folderSortRule: DEFAULT_FOLDER_SORT_RULE,
 
-		isFoldersInAscendingOrder: (): boolean => {
-			const { folderSortRule } = get();
-			return folderSortRule.contains("Ascending");
+		get folderSortRulesGroup(): FolderSortRule[][] {
+			return [
+				["FolderNameAscending", "FolderNameDescending"],
+				["FilesCountAscending", "FilesCountDescending"],
+				["FolderManualOrder"],
+			];
 		},
-		sortFolders: (
-			folders: TFolder[],
-			rule: FolderSortRule,
-			includeSubfolder: boolean
-		): TFolder[] => {
+
+		sortFolders: (folders: TFolder[]): TFolder[] => {
 			const {
 				getFilesCountInFolder: getFilesCount,
 				foldersManualSortOrder: order,
+				folderSortRule: rule,
 			} = get();
-			const parentPath = folders[0]?.parent?.path;
-			const folderPaths = parentPath ? order[parentPath] : [];
-			switch (rule) {
-				case "FolderNameAscending":
-					return folders.sort((a, b) => a.name.localeCompare(b.name));
-				case "FolderNameDescending":
-					return folders.sort((a, b) => b.name.localeCompare(a.name));
-				case "FilesCountAscending":
-					return folders.sort(
-						(a, b) => getFilesCount(a) - getFilesCount(b)
-					);
-				case "FilesCountDescending":
-					return folders.sort(
-						(a, b) => getFilesCount(b) - getFilesCount(a)
-					);
-				case "FolderManualOrder":
-					if (!parentPath || !folderPaths || !folderPaths.length)
-						return folders;
-					return folderPaths
-						.map((path) => folders.find((f) => f.path === path))
-						.concat(
-							folders.filter((f) => !folderPaths.includes(f.path))
-						)
-						.filter(Boolean) as TFolder[];
-				default:
-					return folders;
+			if (folders.length === 0) return folders;
+
+			if (rule === "FolderManualOrder") {
+				const parentPath = folders[0]?.parent?.path;
+				if (!parentPath) return folders;
+
+				const sortedFolderPaths = order[parentPath] ?? [];
+				if (!sortedFolderPaths.length) return folders;
+
+				return [...folders].sort((a, b) => {
+					const aIndex = sortedFolderPaths.indexOf(a.path);
+					const bIndex = sortedFolderPaths.indexOf(b.path);
+					if (aIndex === -1 && bIndex === -1) return 0;
+					if (aIndex === -1) return 1;
+					if (bIndex === -1) return -1;
+					return aIndex - bIndex;
+				});
 			}
+
+			const folderSorters = createFolderSorters(getFilesCount);
+			const sorter = folderSorters[rule];
+			return [...folders].sort(sorter);
 		},
 		changeFolderSortRule: async (rule: FolderSortRule) => {
 			const { setValueAndSaveInPlugin } = get();
@@ -84,6 +91,22 @@ export const createSortFolderSlice =
 				pluginKey: FFS_FOLDER_SORT_RULE_KEY,
 				pluginValue: rule,
 			});
+		},
+		changeFolderSortRuleAndUpdateOrder: async (rule: FolderSortRule) => {
+			const {
+				folderSortRule,
+				changeFolderSortRule,
+				initFoldersManualSortOrder,
+				clearFoldersManualOrderAndSave,
+			} = get();
+			if (rule !== folderSortRule) {
+				await changeFolderSortRule(rule as FolderSortRule);
+				if (rule === FOLDER_MANUAL_SORT_RULE) {
+					await initFoldersManualSortOrder();
+				} else {
+					clearFoldersManualOrderAndSave();
+				}
+			}
 		},
 		restoreFolderSortRule: async () => {
 			const { restoreFoldersManualSortOrder, restoreDataFromPlugin } =

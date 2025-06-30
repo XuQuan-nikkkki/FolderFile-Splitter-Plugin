@@ -30,15 +30,15 @@ export const createFocusedTagSlice =
 			const {
 				_setFocusedTag,
 				focusedFile,
-				setFocusedFile,
-				setFocusedFolder,
+				setFocusedFileAndSave,
+				changeFocusedFolder,
 				saveDataInLocalStorage,
 				removeDataFromLocalStorage,
 			} = get();
 			_setFocusedTag(tag);
 
 			if (tag) {
-				setFocusedFolder(null);
+				changeFocusedFolder(null);
 				saveDataInLocalStorage(FFS_FOCUSED_TAG_PATH_KEY, tag.fullPath);
 
 				if (!focusedFile) return;
@@ -46,7 +46,7 @@ export const createFocusedTagSlice =
 					plugin.app.metadataCache.getFileCache(focusedFile)?.tags ??
 					[];
 				if (tagsOfFocusedFile.every((t) => t.tag !== tag?.fullPath)) {
-					await setFocusedFile(null);
+					await setFocusedFileAndSave(null);
 				}
 			} else {
 				removeDataFromLocalStorage(FFS_FOCUSED_TAG_PATH_KEY);

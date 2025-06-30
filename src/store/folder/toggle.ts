@@ -10,11 +10,14 @@ import { ExplorerStore } from "..";
 export interface ToggleFolderSlice {
 	expandedFolderPaths: string[];
 
+	isFolderExpanded: (folder: TFolder) => boolean;
 	canFolderToggle: (folder: TFolder) => boolean;
-	changeExpandedFolderPaths: (folderNames: string[]) => Promise<void>;
-	restoreExpandedFolderPaths: () => Promise<void>;
-	expandFolder: (folder: TFolder) => Promise<void>;
-	collapseFolder: (folder: TFolder) => Promise<void>;
+
+	changeExpandedFolderPaths: (folderNames: string[]) => void;
+	expandFolder: (folder: TFolder) => void;
+	collapseFolder: (folder: TFolder) => void;
+
+	restoreExpandedFolderPaths: () => void;
 }
 
 export const createToggleFolderSlice =
@@ -24,53 +27,60 @@ export const createToggleFolderSlice =
 	(set, get) => ({
 		expandedFolderPaths: [],
 
+		isFolderExpanded: (folder: TFolder) => {
+			return get().expandedFolderPaths.includes(folder.path);
+		},
 		canFolderToggle: (folder: TFolder): boolean => {
-			const { hasSubFolders } = get();
+			const { hasSubFolder } = get();
 			// root folder is always expanded
-			return !folder.isRoot() && hasSubFolders(folder);
+			return !folder.isRoot() && hasSubFolder(folder);
 		},
 
-		expandFolder: async (folder: TFolder) => {
-			const {
-				changeExpandedFolderPaths,
-				expandedFolderPaths,
-				canFolderToggle,
-			} = get();
-			if (!canFolderToggle(folder)) return;
-			await changeExpandedFolderPaths(
-				uniq([...expandedFolderPaths, folder.path])
-			);
+		changeExpandedFolderPaths: (folderPaths: string[]) => {
+			const { setValueAndSaveInLocalStorage } = get();
+			const paths = uniq(folderPaths);
+			setValueAndSaveInLocalStorage({
+				key: "expandedFolderPaths",
+				value: paths,
+				localStorageKey: FFS_EXPANDED_FOLDER_PATHS_KEY,
+				localStorageValue: JSON.stringify(paths),
+			});
 		},
-		collapseFolder: async (folder: TFolder) => {
+		expandFolder: (folder: TFolder) => {
 			const {
 				changeExpandedFolderPaths,
 				expandedFolderPaths,
 				canFolderToggle,
 			} = get();
 			if (!canFolderToggle(folder)) return;
-			await changeExpandedFolderPaths(
+			changeExpandedFolderPaths([...expandedFolderPaths, folder.path]);
+		},
+		collapseFolder: (folder: TFolder) => {
+			const {
+				changeExpandedFolderPaths,
+				expandedFolderPaths,
+				canFolderToggle,
+			} = get();
+			if (!canFolderToggle(folder)) return;
+			changeExpandedFolderPaths(
 				removeItemFromArray(expandedFolderPaths, folder.path)
 			);
 		},
-		changeExpandedFolderPaths: async (folderPaths: string[]) => {
-			const { setValueAndSaveInLocalStorage } = get();
-			setValueAndSaveInLocalStorage({
-				key: "expandedFolderPaths",
-				value: folderPaths,
-				localStorageKey: FFS_EXPANDED_FOLDER_PATHS_KEY,
-				localStorageValue: JSON.stringify(folderPaths),
-			});
-		},
-		restoreExpandedFolderPaths: async () => {
-			const { hasSubFolders, restoreDataFromLocalStorage } = get();
+
+		restoreExpandedFolderPaths: () => {
+			const {
+				hasSubFolder,
+				restoreDataFromLocalStorage,
+				findFolderByPath,
+			} = get();
 			restoreDataFromLocalStorage({
 				localStorageKey: FFS_EXPANDED_FOLDER_PATHS_KEY,
 				key: "expandedFolderPaths",
 				needParse: true,
 				transform: (value) => {
 					return (value as string[]).filter((path) => {
-						const folder = plugin.app.vault.getFolderByPath(path);
-						return folder && hasSubFolders(folder);
+						const folder = findFolderByPath(path);
+						return folder && hasSubFolder(folder);
 					});
 				},
 			});

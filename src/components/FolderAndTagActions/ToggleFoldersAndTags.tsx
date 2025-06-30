@@ -36,10 +36,10 @@ const ToggleFolders = () => {
 	const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
 	useEffect(() => {
-		const isFolderExpanded =
+		const hassFolderExpanded =
 			showFolderView && expandedFolderPaths.length > 0;
-		const isTagExpanded = showTagView && expandedTagPaths.length > 0;
-		setIsExpanded(isFolderExpanded || isTagExpanded);
+		const hasTagExpanded = showTagView && expandedTagPaths.length > 0;
+		setIsExpanded(hassFolderExpanded || hasTagExpanded);
 	}, [expandedFolderPaths, expandedTagPaths, showFolderView, showTagView]);
 
 	const onToggleAllFolders = () => {

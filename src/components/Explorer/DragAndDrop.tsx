@@ -29,16 +29,16 @@ const DragAndDropExplorer = () => {
 		moveFile,
 		moveFolder,
 		expandFolder,
-		setFocusedFolder,
-		selectFile,
+		changeFocusedFolder,
+		selectFileAndOpen,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			expandedFolderPaths: store.expandedFolderPaths,
 			moveFile: store.moveFile,
 			moveFolder: store.moveFolder,
 			expandFolder: store.expandFolder,
-			setFocusedFolder: store.setFocusedFolder,
-			selectFile: store.selectFile,
+			changeFocusedFolder: store.changeFocusedFolder,
+			selectFileAndOpen: store.selectFileAndOpen,
 		}))
 	);
 
@@ -77,8 +77,8 @@ const DragAndDropExplorer = () => {
 		const newPath = targetFolder.path + "/" + file.name;
 		await moveFile(file, newPath);
 		if (openDestinationFolder) {
-			await setFocusedFolder(targetFolder);
-			await selectFile(file);
+			await changeFocusedFolder(targetFolder);
+			await selectFileAndOpen(file);
 		}
 	};
 
@@ -89,7 +89,7 @@ const DragAndDropExplorer = () => {
 		const newPath = targetFolder.path + "/" + folder.name;
 		await moveFolder(folder, newPath);
 		if (openDestinationFolder) {
-			await setFocusedFolder(targetFolder);
+			await changeFocusedFolder(targetFolder);
 		}
 	};
 

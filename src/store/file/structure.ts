@@ -4,9 +4,15 @@ import { StateCreator } from "zustand";
 import FolderFileSplitterPlugin from "src/main";
 
 import { ExplorerStore } from "..";
+import { VIEW_MODE } from "../common";
 
 export interface FileStructureSlice {
 	files: TFile[];
+	getMarkdownFiles: () => TFile[];
+	getVisibleFiles: () => TFile[];
+
+	findFileByPath: (path: string) => TFile | null;
+	isFilePathValid: (path: string) => boolean;
 }
 
 export const createFileStructureSlice =
@@ -15,4 +21,35 @@ export const createFileStructureSlice =
 	): StateCreator<ExplorerStore, [], [], FileStructureSlice> =>
 	(set, get) => ({
 		files: plugin.app.vault.getFiles() || [],
+
+		getMarkdownFiles: () => {
+			return plugin.app.vault.getMarkdownFiles();
+		},
+
+		getVisibleFiles: () => {
+			const {
+				focusedFolder,
+				focusedTag,
+				getFilesInFolder,
+				getFilesInTag,
+				viewMode,
+			} = get();
+			switch (viewMode) {
+				case VIEW_MODE.ALL:
+					return plugin.app.vault.getFiles();
+				case VIEW_MODE.FOLDER:
+					return focusedFolder ? getFilesInFolder(focusedFolder) : [];
+				case VIEW_MODE.TAG:
+					return focusedTag ? getFilesInTag(focusedTag) : [];
+				default:
+					return [];
+			}
+		},
+
+		findFileByPath: (path: string): TFile | null => {
+			return plugin.app.vault.getFileByPath(path);
+		},
+		isFilePathValid: (path: string) => {
+			return Boolean(get().findFileByPath(path));
+		},
 	});

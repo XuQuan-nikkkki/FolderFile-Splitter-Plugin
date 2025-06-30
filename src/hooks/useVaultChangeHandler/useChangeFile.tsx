@@ -20,7 +20,7 @@ const useChangeFile = () => {
 		focusedFolder,
 		focusedTag,
 		updatePinnedFilePath,
-		updateFileManualOrder,
+		updateFilePathInManualOrder,
 		fileSortRule,
 		initOrder,
 		isFilePinned,
@@ -31,7 +31,7 @@ const useChangeFile = () => {
 			focusedFolder: store.focusedFolder,
 			focusedTag: store.focusedTag,
 			updatePinnedFilePath: store.updatePinnedFilePath,
-			updateFileManualOrder: store.updateFileManualOrder,
+			updateFilePathInManualOrder: store.updateFilePathInManualOrder,
 			fileSortRule: store.fileSortRule,
 			initOrder: store.initFilesManualSortOrder,
 			isFilePinned: store.isFilePinned,
@@ -92,7 +92,7 @@ const useChangeFile = () => {
 					const parentPath = file.parent?.path;
 					await updatePinnedFilePath(oldPath, file.path);
 					if (parentPath && fileSortRule === FILE_MANUAL_SORT_RULE) {
-						await updateFileManualOrder(
+						await updateFilePathInManualOrder(
 							parentPath,
 							oldPath,
 							file.path

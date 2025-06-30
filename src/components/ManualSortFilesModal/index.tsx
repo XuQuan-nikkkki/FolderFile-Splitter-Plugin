@@ -6,7 +6,6 @@ import { TIPS_COPY } from "src/locales";
 import FolderFileSplitterPlugin from "src/main";
 import { ExplorerStore } from "src/store";
 
-
 import ManualSortFiles from "./ManualSortFiles";
 
 export class ManualSortFilesModal extends Modal {
@@ -17,8 +16,8 @@ export class ManualSortFilesModal extends Modal {
 
 	constructor(
 		plugin: FolderFileSplitterPlugin,
-		folder: TFolder,
-		useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>
+		useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>,
+		folder: TFolder | null = plugin.app.vault.getRoot()
 	) {
 		super(plugin.app);
 		this.plugin = plugin;

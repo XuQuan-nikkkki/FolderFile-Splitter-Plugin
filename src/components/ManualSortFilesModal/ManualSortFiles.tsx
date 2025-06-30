@@ -30,16 +30,14 @@ type Props = {
 	plugin: FolderFileSplitterPlugin;
 };
 const ManualSortFiles = ({ parentFolder, useExplorerStore, plugin }: Props) => {
-	const { getFilesInFolder, sortFiles, fileSortRule, changeOrder } =
-		useExplorerStore(
-			useShallow((store: ExplorerStore) => ({
-				order: store.filesManualSortOrder,
-				getFilesInFolder: store.getFilesInFolder,
-				sortFiles: store.sortFiles,
-				fileSortRule: store.fileSortRule,
-				changeOrder: store.changeFilesManualOrderAndSave,
-			}))
-		);
+	const { getFilesInFolder, sortFiles, changeOrder } = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
+			order: store.filesManualSortOrder,
+			getFilesInFolder: store.getFilesInFolder,
+			sortFiles: store.sortFiles,
+			changeOrder: store.moveFileInManualOrder,
+		}))
+	);
 
 	const [activeFile, setActiveFile] = useState<TFile | null>(null);
 
@@ -53,7 +51,7 @@ const ManualSortFiles = ({ parentFolder, useExplorerStore, plugin }: Props) => {
 	const getSortedFiles = () => {
 		if (!parentFolder) return [];
 		const files = getFilesInFolder(parentFolder);
-		return sortFiles(files, fileSortRule);
+		return sortFiles(files);
 	};
 
 	const onDragStart = (event: DragStartEvent) => {

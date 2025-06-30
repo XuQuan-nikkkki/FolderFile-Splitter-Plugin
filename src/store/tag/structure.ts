@@ -7,13 +7,10 @@ import { ExplorerStore } from "..";
 
 import { TagNode, TagTree } from ".";
 
-
 export interface TagStructureSlice {
 	tagTree: TagTree;
 
 	generateTagTree: () => TagTree;
-
-	markdownFiles: TFile[];
 
 	getTagsOfFile: (file: TFile) => string[];
 	getTopLevelTags: () => TagNode[];
@@ -21,7 +18,7 @@ export interface TagStructureSlice {
 	getFilesInTag: (tagNode: TagNode) => TFile[];
 	getFilesCountInTag: (tagNode: TagNode) => number;
 	getTagsByParent: (parentTag: string) => TagNode[];
-	hasTagChildren: (tagNode: TagNode) => boolean;
+	hasSubTag: (tagNode: TagNode) => boolean;
 }
 
 export const createTagStructureSlice =
@@ -31,10 +28,6 @@ export const createTagStructureSlice =
 	(set, get) => ({
 		tagTree: new Map(),
 
-		get markdownFiles() {
-			return plugin.app.vault.getMarkdownFiles();
-		},
-
 		getTagsOfFile: (file: TFile) => {
 			const cache = plugin.app.metadataCache.getFileCache(file);
 			if (!cache) return [];
@@ -42,9 +35,11 @@ export const createTagStructureSlice =
 		},
 
 		generateTagTree: () => {
-			const { _getOrCreateTagNode, markdownFiles, getTagsOfFile } = get();
+			const { _getOrCreateTagNode, getMarkdownFiles, getTagsOfFile } =
+				get();
 
 			const tagTree: TagTree = new Map();
+			const markdownFiles = getMarkdownFiles();
 			if (!markdownFiles || markdownFiles.length === 0) return tagTree;
 
 			markdownFiles.forEach((file) => {
@@ -136,7 +131,7 @@ export const createTagStructureSlice =
 			return tags;
 		},
 
-		hasTagChildren: (tag: TagNode): boolean => {
+		hasSubTag: (tag: TagNode): boolean => {
 			return tag.children && tag.children.size > 0;
 		},
-  });
+	});

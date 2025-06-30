@@ -10,12 +10,9 @@ import { useShowFolderIcon } from "src/hooks/useSettingsHandler";
 import { FOLDER_OPERATION_COPY } from "src/locales";
 import { ExplorerStore } from "src/store";
 
-
 import { FolderListModal } from "../FolderListModal";
 
-
 import FilesCount from "./FilesCount";
-
 
 export type FolderProps = {
 	folder: TFolder;
@@ -29,7 +26,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 
 	const {
 		focusedFolder,
-		setFocusedFolder,
+		changeFocusedFolder,
 		expandedFolderPaths,
 		createNewFolder,
 		createFile,
@@ -44,7 +41,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			focusedFolder: store.focusedFolder,
-			setFocusedFolder: store.setFocusedFolder,
+			changeFocusedFolder: store.changeFocusedFolder,
 			expandedFolderPaths: store.expandedFolderPaths,
 			createNewFolder: store.createNewFolder,
 			createFile: store.createFile,
@@ -161,7 +158,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 			item.setTitle(FOLDER_OPERATION_COPY.createFile[language]);
 			item.onClick(async () => {
 				if (folder.path !== focusedFolder?.path) {
-					await setFocusedFolder(folder);
+					await changeFocusedFolder(folder);
 				}
 				await createFile(folder);
 			});
@@ -175,7 +172,7 @@ const FolderContent = ({ folder, onToggleExpandState }: Props) => {
 					onToggleExpandState();
 				}
 				if (newFolder) {
-					await setFocusedFolder(newFolder);
+					await changeFocusedFolder(newFolder);
 				}
 			});
 		});

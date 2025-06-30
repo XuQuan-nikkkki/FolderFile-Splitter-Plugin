@@ -5,59 +5,57 @@ import {
 	AscendingSortIcon,
 	DescendingSortIcon,
 } from "src/assets/icons";
-import FolderFileSplitterPlugin from "src/main";
+import { useExplorer } from "src/hooks/useExplorer";
+import {
+	addMenuItem,
+	isInAscendingOrderRule,
+	isManualSortOrderRule,
+	SortRule,
+	triggerMenu,
+} from "src/utils";
 
-type SortRule = {
+type RuleCopy = {
 	text: string;
 	rule: string;
 };
-type SortRuleGroup = SortRule[];
+type SortRuleGroup = RuleCopy[];
 
 type Props = {
-	plugin: FolderFileSplitterPlugin;
 	ruleGroups: SortRuleGroup[];
 	menuName: string;
 	changeSortRule: (rule: string) => void;
-	isInAscendingOrder: () => boolean;
-	currentSortRule: string;
-	isManualOrder: boolean;
+	currentSortRule: SortRule;
 };
 const SortAction = ({
-	plugin,
 	ruleGroups,
 	menuName,
 	changeSortRule,
-	isInAscendingOrder,
 	currentSortRule,
-	isManualOrder,
 	...props
 }: Props) => {
+	const { plugin } = useExplorer();
+
 	const onChangeSortRule = (e: React.MouseEvent<HTMLDivElement>) => {
 		const menu = new Menu();
 		ruleGroups.forEach((rules) => {
 			rules.forEach(({ text, rule }) => {
-				menu.addItem((newItem) => {
-					newItem
-						.setTitle(text)
-						.setChecked(rule === currentSortRule)
-						.onClick(() => {
-							changeSortRule(rule);
-						});
+				addMenuItem(menu, {
+					title: text,
+					checked: rule === currentSortRule,
+					action: () => changeSortRule(rule),
 				});
 			});
 			menu.addSeparator();
 		});
-		plugin.app.workspace.trigger(menuName, menu);
-		menu.showAtPosition({ x: e.pageX, y: e.pageY });
-		return false;
+		triggerMenu(plugin, menu, menuName)(e);
 	};
 
 	const renderIcon = () => {
 		const actionButtonClassName = "ffs__action-button svg-icon";
-		if (isManualOrder) {
+		if (isManualSortOrderRule(currentSortRule)) {
 			return <ArrowUpDownIcon className={actionButtonClassName} />;
 		}
-		return isInAscendingOrder() ? (
+		return isInAscendingOrderRule(currentSortRule) ? (
 			<AscendingSortIcon className={actionButtonClassName} />
 		) : (
 			<DescendingSortIcon className={actionButtonClassName} />

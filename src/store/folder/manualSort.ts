@@ -5,31 +5,29 @@ import { FFS_FOLDER_MANUAL_SORT_ORDER_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
 
 import { ExplorerStore } from "..";
-import { ManualSortOrder } from "../common";
-import { moveItemInArray } from "src/utils";
+import { DEFAULT_MANUAL_SORT_ORDER, ManualSortOrder } from "../common";
 
 export interface ManualSortFolderSlice {
 	foldersManualSortOrder: ManualSortOrder;
 
-	initFoldersManualSortOrder: () => Promise<void>;
 	getInitialFoldersOrder: () => ManualSortOrder;
+	getRestoredFoldersOrder: () => Promise<ManualSortOrder>;
+
+	initFoldersManualSortOrder: () => Promise<void>;
 	restoreFoldersManualSortOrder: () => Promise<void>;
-	changeFoldersManualOrder: (
-		folder: TFolder,
-		atIndex: number
-	) => ManualSortOrder | undefined;
-	changeFoldersManualOrderAndSave: (
+	moveFolderInManualOrder: (
 		folder: TFolder,
 		atIndex: number
 	) => Promise<void>;
-	_updateAndSaveFoldersOrder: (
+	setFoldersManualOrderAndSave: (
 		updatedOrder: ManualSortOrder
 	) => Promise<void>;
-	_updateFolderManualOrder: (
+	updateFolderPathInManualOrder: (
 		parentPath: string,
 		oldPath: string,
 		newPath: string
 	) => Promise<void>;
+	clearFoldersManualOrderAndSave: () => Promise<void>;
 }
 
 export const createManualSortFolderSlice =
@@ -40,114 +38,26 @@ export const createManualSortFolderSlice =
 		foldersManualSortOrder: {},
 
 		getInitialFoldersOrder: () => {
-			const { folderSortRule, getSubFolders, sortFolders } = get();
-			const foldersToInit = plugin.app.vault.getAllFolders(true);
-			const order: ManualSortOrder = {};
-			foldersToInit.forEach((folder) => {
-				if (folder) {
-					const folders = getSubFolders(folder);
-					if (folders.length) {
-						const sortedFolders = sortFolders(
-							folders,
-							folderSortRule,
-							plugin.settings.includeSubfolderFiles
-						);
-						order[folder.path] = sortedFolders.map(
-							(folder) => folder.path
-						);
-					}
-				}
-			});
-			return order;
-		},
-
-		initFoldersManualSortOrder: async () => {
 			const {
-				folderSortRule,
 				getSubFolders,
 				sortFolders,
-				setValueAndSaveInPlugin,
+				foldersWithRoot: foldersToInit,
+				getInitialOrder,
 			} = get();
-			const foldersToInit = plugin.app.vault.getAllFolders(true);
-			const order: ManualSortOrder = {};
-			foldersToInit.forEach((folder) => {
-				const folders = getSubFolders(folder);
-				if (folders.length) {
-					const sortedFolders = sortFolders(
-						folders,
-						folderSortRule,
-						plugin.settings.includeSubfolderFiles
-					);
-					order[folder.path] = sortedFolders.map(
-						(folder) => folder.path
-					);
-				}
-			});
-			await setValueAndSaveInPlugin({
-				key: "foldersManualSortOrder",
-				value: order,
-				pluginKey: FFS_FOLDER_MANUAL_SORT_ORDER_KEY,
-				pluginValue: order,
-			});
-		},
-		restoreFoldersManualSortOrder: async () => {
-			const {
-				getDataFromPlugin,
-				getInitialFoldersOrder,
-				_updateAndSaveFoldersOrder,
-			} = get();
-			const { vault } = plugin.app;
-			const order = getInitialFoldersOrder();
-			const previousOrder =
-				(await getDataFromPlugin<ManualSortOrder>(
-					FFS_FOLDER_MANUAL_SORT_ORDER_KEY
-				)) ?? {};
-			Object.keys(previousOrder).forEach((parentFolderPath) => {
-				if (!vault.getFolderByPath(parentFolderPath)) return;
-				const paths = previousOrder[parentFolderPath].filter((p) =>
-					Boolean(vault.getFolderByPath(p))
-				);
-				if (paths.length > 0) {
-					order[parentFolderPath] = paths;
-				}
-			});
-			await _updateAndSaveFoldersOrder(order);
-		},
-		changeFoldersManualOrder: (folder: TFolder, atIndex: number) => {
-			const { foldersManualSortOrder } = get();
-			const parentPath = folder.parent?.path;
-			if (!parentPath) return;
-
-			const initialOrder = foldersManualSortOrder[parentPath] ?? [];
-			const currentIndex = initialOrder.indexOf(folder.path);
-			if (currentIndex === atIndex) {
-				return foldersManualSortOrder;
-			}
-			const newOrder = moveItemInArray(
-				initialOrder,
-				currentIndex,
-				atIndex
+			const order: ManualSortOrder = getInitialOrder(
+				foldersToInit,
+				getSubFolders,
+				sortFolders
 			);
-			const updatedOrder = {
-				...foldersManualSortOrder,
-				[parentPath]: newOrder,
-			};
-			set({
-				foldersManualSortOrder: updatedOrder,
-			});
-			return updatedOrder;
+
+			return order;
 		},
-		changeFoldersManualOrderAndSave: async (
-			folder: TFolder,
-			atIndex: number
-		) => {
-			const { saveDataInPlugin, changeFoldersManualOrder } = get();
-			const updatedOrder = changeFoldersManualOrder(folder, atIndex);
-			await saveDataInPlugin({
-				[FFS_FOLDER_MANUAL_SORT_ORDER_KEY]: updatedOrder,
-			});
+		getRestoredFoldersOrder: async () => {
+			const { getRestoredOrder } = get();
+			return await getRestoredOrder(FFS_FOLDER_MANUAL_SORT_ORDER_KEY);
 		},
-		_updateAndSaveFoldersOrder: async (updatedOrder: ManualSortOrder) => {
+
+		setFoldersManualOrderAndSave: async (updatedOrder: ManualSortOrder) => {
 			const { setValueAndSaveInPlugin } = get();
 			await setValueAndSaveInPlugin({
 				key: "foldersManualSortOrder",
@@ -156,30 +66,62 @@ export const createManualSortFolderSlice =
 				pluginValue: updatedOrder,
 			});
 		},
-		_updateFolderManualOrder: async (
+
+		initFoldersManualSortOrder: async () => {
+			const { getInitialFoldersOrder, setFoldersManualOrderAndSave } =
+				get();
+			const order: ManualSortOrder = getInitialFoldersOrder();
+			await setFoldersManualOrderAndSave(order);
+		},
+		restoreFoldersManualSortOrder: async () => {
+			const {
+				getRestoredFoldersOrder,
+				getInitialFoldersOrder,
+				resolveValidManualSortOrder,
+				isFolderPathValid,
+				setFoldersManualOrderAndSave,
+			} = get();
+			const restoredOrder = await getRestoredFoldersOrder();
+			const initialOrder = getInitialFoldersOrder();
+			const finalOrder: ManualSortOrder = resolveValidManualSortOrder(
+				restoredOrder,
+				initialOrder,
+				isFolderPathValid
+			);
+
+			await setFoldersManualOrderAndSave(finalOrder);
+		},
+		moveFolderInManualOrder: async (folder: TFolder, atIndex: number) => {
+			const {
+				foldersManualSortOrder,
+				setFoldersManualOrderAndSave,
+				moveItemInManualOrder,
+			} = get();
+			await moveItemInManualOrder(
+				foldersManualSortOrder,
+				folder,
+				atIndex,
+				setFoldersManualOrderAndSave
+			);
+		},
+		updateFolderPathInManualOrder: async (
 			parentPath: string,
 			oldPath: string,
 			newPath: string
 		) => {
 			const {
 				foldersManualSortOrder: order,
-				_updateAndSaveFoldersOrder,
+				setFoldersManualOrderAndSave,
+				updatePathInManualOrder,
 			} = get();
-			const orderedPaths = [...(order[parentPath] ?? [])];
-			if (!orderedPaths.length) return;
-			const updatedOrder = { ...order };
-			const index = orderedPaths.indexOf(oldPath);
-			if (index >= 0) {
-				orderedPaths[index] = newPath;
-			} else {
-				orderedPaths.push(newPath);
-			}
-			updatedOrder[parentPath] = orderedPaths;
-			const childPaths = updatedOrder[oldPath];
-			if (childPaths) {
-				delete updatedOrder[oldPath];
-				updatedOrder[newPath] = childPaths;
-			}
-			_updateAndSaveFoldersOrder(updatedOrder);
+			await updatePathInManualOrder(order, setFoldersManualOrderAndSave, {
+				parentPath,
+				oldPath,
+				newPath,
+			});
+		},
+
+		clearFoldersManualOrderAndSave: async () => {
+			await get().setFoldersManualOrderAndSave(DEFAULT_MANUAL_SORT_ORDER);
 		},
 	});

@@ -28,7 +28,7 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 	const {
 		rootFolder,
 		folderSortRule,
-		hasSubFolders,
+		hasSubFolder,
 		getSubFolders,
 		sortFolders,
 		expandedFolderPaths,
@@ -37,14 +37,14 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 		sortTags,
 		expandedTagPaths,
 		getTagsByParent,
-		hasTagChildren,
+		hasSubTag,
 		focusedTag,
 		isTopLevelTag,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			rootFolder: store.rootFolder,
 			folderSortRule: store.folderSortRule,
-			hasSubFolders: store.hasSubFolders,
+			hasSubFolder: store.hasSubFolder,
 			getSubFolders: store.getSubFolders,
 			sortFolders: store.sortFolders,
 			expandedFolderPaths: store.expandedFolderPaths,
@@ -55,7 +55,7 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 			sortTags: store.sortTags,
 			expandedTagPaths: store.expandedTagPaths,
 			getTagsByParent: store.getTagsByParent,
-			hasTagChildren: store.hasTagChildren,
+			hasSubTag: store.hasSubTag,
 			focusedTag: store.focusedTag,
 			isTopLevelTag: store.isTopLevelTag,
 		}))
@@ -127,7 +127,7 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 				>
 					{renderFolder(folder)}
 					{isExpanded &&
-						hasSubFolders(folder) &&
+						hasSubFolder(folder) &&
 						renderSubfolders(renderFolders(getSubFolders(folder)))}
 				</div>
 			);
@@ -195,7 +195,7 @@ const FolderAndTagTree = ({ onOpenFilesPane = () => {} }: Props) => {
 				>
 					{renderTag(tag)}
 					{isExpanded &&
-						hasTagChildren(tag) &&
+						hasSubTag(tag) &&
 						renderSubTags(
 							renderTags(getTagsByParent(tag.fullPath))
 						)}

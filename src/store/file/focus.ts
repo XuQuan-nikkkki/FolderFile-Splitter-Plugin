@@ -5,15 +5,13 @@ import { FFS_FOCUSED_FILE_PATH_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
 
 import { ExplorerStore } from "..";
-import { VIEW_MODE } from "../common";
 
 export interface FocusedFileSlice {
 	focusedFile: TFile | null;
 
-	getVisibleFiles: () => TFile[];
-	findFileByPath: (path: string) => TFile | null;
-	setFocusedFile: (file: TFile | null) => Promise<void>;
+	setFocusedFileAndSave: (file: TFile | null) => void;
 	restoreLastFocusedFile: () => Promise<void>;
+	clearFocusedFile: () => Promise<void>;
 }
 
 export const createFocusedFileSlice =
@@ -23,29 +21,7 @@ export const createFocusedFileSlice =
 	(set, get) => ({
 		focusedFile: null,
 
-		getVisibleFiles: () => {
-			const {
-				focusedFolder,
-				focusedTag,
-				getFilesInFolder,
-				getFilesInTag,
-				viewMode,
-			} = get();
-			switch (viewMode) {
-				case VIEW_MODE.ALL:
-					return plugin.app.vault.getFiles();
-				case VIEW_MODE.FOLDER:
-					return focusedFolder ? getFilesInFolder(focusedFolder) : [];
-				case VIEW_MODE.TAG:
-					return focusedTag ? getFilesInTag(focusedTag) : [];
-				default:
-					return [];
-			}
-		},
-		findFileByPath: (path: string): TFile | null => {
-			return plugin.app.vault.getFileByPath(path);
-		},
-		setFocusedFile: async (file: TFile | null) => {
+		setFocusedFileAndSave: (file: TFile | null) => {
 			const { setValueAndSaveInLocalStorage } = get();
 			setValueAndSaveInLocalStorage({
 				key: "focusedFile",
@@ -56,15 +32,22 @@ export const createFocusedFileSlice =
 		},
 
 		restoreLastFocusedFile: async () => {
-			const { findFileByPath, selectFile, getDataFromLocalStorage } =
-				get();
+			const {
+				findFileByPath,
+				selectFileAndOpen,
+				getDataFromLocalStorage,
+			} = get();
 			const lastFocusedFilePath = getDataFromLocalStorage(
 				FFS_FOCUSED_FILE_PATH_KEY
 			);
 			if (!lastFocusedFilePath) return;
 			const file = findFileByPath(lastFocusedFilePath);
 			if (file) {
-				selectFile(file);
+				selectFileAndOpen(file);
 			}
+		},
+
+		clearFocusedFile: async () => {
+			await get().setFocusedFileAndSave(null);
 		},
 	});

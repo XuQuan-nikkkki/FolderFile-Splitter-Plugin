@@ -3,7 +3,6 @@ import { StateCreator } from "zustand";
 
 import { FFS_PINNED_FOLDER_PATHS_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
-import { removeItemFromArray, replaceItemInArray, uniq } from "src/utils";
 
 import { ExplorerStore } from "..";
 
@@ -32,10 +31,10 @@ export const createPinnedFolderSlice =
 		pinnedFolderPaths: [],
 
 		getPinnedFolders: () => {
-			const { folders, pinnedFolderPaths } = get();
-			return uniq(pinnedFolderPaths)
-				.map((path) => folders.find((folder) => folder.path === path))
-				.filter(Boolean) as TFolder[];
+			const { folders, pinnedFolderPaths, getPinnedItems } = get();
+			return getPinnedItems<TFolder>(pinnedFolderPaths, (path) =>
+				folders.find((folder) => folder.path === path)
+			);
 		},
 		getDisplayedPinnedFolders: () => {
 			const { showFolderView } = plugin.settings;
@@ -45,53 +44,57 @@ export const createPinnedFolderSlice =
 		},
 
 		isFolderPinned: (folder: TFolder) => {
-			const { pinnedFolderPaths } = get();
-			return pinnedFolderPaths.includes(folder.path);
+			const { pinnedFolderPaths, isPinned } = get();
+			return isPinned(pinnedFolderPaths, folder.path);
 		},
 
 		setPinnedFolderPathsAndSave: async (folderPaths: string[]) => {
-			const { setValueAndSaveInPlugin } = get();
-			const paths = uniq(folderPaths);
-			await setValueAndSaveInPlugin({
-				key: "pinnedFolderPaths",
-				value: paths,
-				pluginKey: FFS_PINNED_FOLDER_PATHS_KEY,
-				pluginValue: JSON.stringify(paths),
-			});
+			await get().setPinnedPathsAndSave(
+				"pinnedFolderPaths",
+				FFS_PINNED_FOLDER_PATHS_KEY,
+				folderPaths
+			);
 		},
 
 		pinFolder: async (folder: TFolder) => {
-			const { pinnedFolderPaths, setPinnedFolderPathsAndSave } = get();
-			if (pinnedFolderPaths.includes(folder.path)) return;
-			const folderPaths = [...pinnedFolderPaths, folder.path];
-			await setPinnedFolderPathsAndSave(folderPaths);
+			const { pinnedFolderPaths, setPinnedFolderPathsAndSave, pinItem } =
+				get();
+			await pinItem(
+				folder.path,
+				pinnedFolderPaths,
+				setPinnedFolderPathsAndSave
+			);
 		},
 		unpinFolder: async (folder: TFolder) => {
-			const { pinnedFolderPaths, setPinnedFolderPathsAndSave } = get();
-			if (!pinnedFolderPaths.includes(folder.path)) return;
-			const folderPaths = removeItemFromArray(
+			const {
 				pinnedFolderPaths,
-				folder.path
+				setPinnedFolderPathsAndSave,
+				unpinItem,
+			} = get();
+			await unpinItem(
+				folder.path,
+				pinnedFolderPaths,
+				setPinnedFolderPathsAndSave
 			);
-			await setPinnedFolderPathsAndSave(folderPaths);
 		},
 		updatePinnedFolderPath: async (oldPath: string, newPath: string) => {
-			const { pinnedFolderPaths, setPinnedFolderPathsAndSave } = get();
-			if (!pinnedFolderPaths.includes(oldPath)) return;
-			const updatedPaths = replaceItemInArray(
+			const {
 				pinnedFolderPaths,
+				setPinnedFolderPathsAndSave,
+				updatePinnedPath,
+			} = get();
+			await updatePinnedPath(
 				oldPath,
-				newPath
+				newPath,
+				pinnedFolderPaths,
+				setPinnedFolderPathsAndSave
 			);
-			await setPinnedFolderPathsAndSave(updatedPaths);
 		},
 
 		restorePinnedFolders: async () => {
-			const { restoreDataFromPlugin } = get();
-			await restoreDataFromPlugin({
-				pluginKey: FFS_PINNED_FOLDER_PATHS_KEY,
-				key: "pinnedFolderPaths",
-				needParse: true,
-			});
+			await get().restorePinnedPaths(
+				"pinnedFolderPaths",
+				FFS_PINNED_FOLDER_PATHS_KEY
+			);
 		},
 	});

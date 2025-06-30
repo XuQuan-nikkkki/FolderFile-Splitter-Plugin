@@ -126,54 +126,54 @@ export const TIPS_COPY: Copy = {
 };
 
 export const FOLDER_SORT_RULES_COPY: Copy = {
-	folderNameAscending: {
+	FolderNameAscending: {
 		en: "Folder/Tag name(A to Z)",
 		zh: "按文件夹/标签名升序",
 	},
-	folderNameDescending: {
+	FolderNameDescending: {
 		en: "Folder/Tag name(Z to A)",
 		zh: "按文件夹/标签名降序",
 	},
-	filesCountAscending: {
+	FilesCountAscending: {
 		en: "Files count(small to large)",
 		zh: "按文件数（从少到多）",
 	},
-	filesCountDescending: {
+	FilesCountDescending: {
 		en: "Files count(large to small)",
 		zh: "按文件数（从多到少）",
 	},
-	manualOrder: {
+	FolderManualOrder: {
 		en: "Manual order",
 		zh: "手动排序",
 	},
 };
 
 export const FILE_SORT_RULES_COPY: Copy = {
-	fileNameAscending: {
+	FileNameAscending: {
 		en: "File name(A to Z)",
 		zh: "按文件名升序",
 	},
-	fileNameDescending: {
+	FileNameDescending: {
 		en: "File name(Z to A)",
 		zh: "按文件名降序",
 	},
-	modifiledTimeDescending: {
+	FileModifiedTimeDescending: {
 		en: "Modifiled time(new to old)",
 		zh: "按修改时间（从新到旧）",
 	},
-	modifiledTimeAscending: {
+	FileModifiedTimeAscending: {
 		en: "Modifiled time(old to new)",
 		zh: "按修改时间（从旧到新）",
 	},
-	createdTimeDescending: {
+	FileCreatedTimeDescending: {
 		en: "Created time(new to old)",
 		zh: "按创建时间（从新到旧）",
 	},
-	createdTimeAscending: {
+	FileCreatedTimeAscending: {
 		en: "Created time(old to new)",
 		zh: "按创建时间（从旧到新）",
 	},
-	manualOrder: {
+	FileManualOrder: {
 		en: "Manual order",
 		zh: "手动排序",
 	},
@@ -195,5 +195,16 @@ export const VERTICAL_SPLIT_LAYOUT_OPERATION_COPY: Copy = {
 	closeFiles: {
 		en: "Close files",
 		zh: "关闭文件列表",
+	},
+};
+
+export const SORT_TIPS_COPY: Copy = {
+	sortFiles: {
+		en: "Sort files",
+		zh: "对文件排序",
+	},
+	sortFoldersAndTags: {
+		en: "Sort folders and tags",
+		zh: "对文件夹和标签排序",
 	},
 };

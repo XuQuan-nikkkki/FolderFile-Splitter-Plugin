@@ -18,7 +18,7 @@ const CreateFolder = () => {
 		focusedFolder,
 		createNewFolder,
 		changeExpandedFolderPaths,
-		setFocusedFolder,
+		changeFocusedFolder,
 		expandedFolderPaths,
 		initOrder,
 		getNameOfFolder,
@@ -28,7 +28,7 @@ const CreateFolder = () => {
 			focusedFolder: store.focusedFolder,
 			createNewFolder: store.createNewFolder,
 			changeExpandedFolderPaths: store.changeExpandedFolderPaths,
-			setFocusedFolder: store.setFocusedFolder,
+			changeFocusedFolder: store.changeFocusedFolder,
 			expandedFolderPaths: store.expandedFolderPaths,
 			initOrder: store.initFoldersManualSortOrder,
 			getNameOfFolder: store.getNameOfFolder,
@@ -55,7 +55,7 @@ const CreateFolder = () => {
 		const newFolder = await createNewFolder(parentFolder);
 		if (newFolder) {
 			await expandParentFolders(parentFolder);
-			await setFocusedFolder(newFolder);
+			await changeFocusedFolder(newFolder);
 		}
 		await initOrder();
 	};

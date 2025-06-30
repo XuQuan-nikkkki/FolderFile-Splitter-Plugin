@@ -84,7 +84,7 @@ const TagContent = ({ tag }: Props) => {
 
 		const menu = new Menu();
 		menu.addItem((item) => {
-			const isPinned = isTagPinned(tag.fullPath);
+			const isPinned = isTagPinned(tag);
 			item.setIcon(isPinned ? "pin-off" : "pin");
 			const title = isPinned
 				? TAG_OPERATION_COPY.unpinTag[language]
@@ -92,9 +92,9 @@ const TagContent = ({ tag }: Props) => {
 			item.setTitle(title);
 			item.onClick(() => {
 				if (isPinned) {
-					unpinTag(tag.fullPath);
+					unpinTag(tag);
 				} else {
-					pinTag(tag.fullPath);
+					pinTag(tag);
 				}
 			});
 		});

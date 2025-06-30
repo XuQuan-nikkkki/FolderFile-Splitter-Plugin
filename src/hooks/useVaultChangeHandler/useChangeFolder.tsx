@@ -4,10 +4,10 @@ import { useShallow } from "zustand/react/shallow";
 
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { ExplorerStore } from "src/store";
-import { isFolder, removeItemFromArray } from "src/utils";
+import { FOLDER_MANUAL_SORT_RULE } from "src/store/folder/sort";
+import { isFolder } from "src/utils";
 
 import { useExplorer } from "../useExplorer";
-import { FOLDER_MANUAL_SORT_RULE } from "src/store/folder/sort";
 
 const useChangeFolder = () => {
 	const { useExplorerStore } = useExplorer();
@@ -19,7 +19,7 @@ const useChangeFolder = () => {
 		isFolderPinned,
 		unpinFolder,
 		updatePinnedFolderPath,
-		updateFolderManualOrder,
+		updateFolderPathInManualOrder,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			getTopLevelFolders: store.getTopLevelFolders,
@@ -28,7 +28,7 @@ const useChangeFolder = () => {
 			isFolderPinned: store.isFolderPinned,
 			unpinFolder: store.unpinFolder,
 			updatePinnedFolderPath: store.updatePinnedFolderPath,
-			updateFolderManualOrder: store._updateFolderManualOrder,
+			updateFolderPathInManualOrder: store.updateFolderPathInManualOrder,
 		}))
 	);
 
@@ -89,7 +89,11 @@ const useChangeFolder = () => {
 				await updatePinnedFolderPath(oldPath, folder.path);
 				if (!parentPath || folderSortRule !== FOLDER_MANUAL_SORT_RULE)
 					return;
-				await updateFolderManualOrder(parentPath, oldPath, folder.path);
+				await updateFolderPathInManualOrder(
+					parentPath,
+					oldPath,
+					folder.path
+				);
 				break;
 			case "modify":
 				onUpdateTopFolders();

@@ -2,18 +2,22 @@ import { TFolder } from "obsidian";
 import { StateCreator } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
-import { isFolder } from "src/utils";
+import { getDefaultUntitledName } from "src/utils";
 
 import { ExplorerStore } from "..";
 
 export interface FolderActionsSlice {
 	latestCreatedFolder: TFolder | null;
 	latestFolderCreatedTime: number | null;
-	_createFolder: (path: string) => Promise<TFolder>;
+
+	getNewFolderDefaultName: (parentFolder: TFolder) => string;
+
 	createNewFolder: (parentFolder: TFolder) => Promise<TFolder | undefined>;
-	trashFolder: (folder: TFolder) => Promise<void>;
+
 	moveFolder: (folder: TFolder, newPath: string) => Promise<void>;
 	renameFolder: (folder: TFolder, newName: string) => Promise<void>;
+
+	trashFolder: (folder: TFolder) => Promise<void>;
 }
 
 export const createFolderActionsSlice =
@@ -24,57 +28,36 @@ export const createFolderActionsSlice =
 		latestCreatedFolder: null,
 		latestFolderCreatedTime: null,
 
-		_createFolder: async (path: string): Promise<TFolder> => {
-			const newFolder = await plugin.app.vault.createFolder(path);
+		getNewFolderDefaultName: (parentFolder: TFolder): string => {
+			const subfolders = get().getSubFolders(parentFolder);
+			return getDefaultUntitledName(
+				subfolders.map((folder) => folder.name)
+			);
+		},
+
+		createNewFolder: async (
+			parentFolder: TFolder
+		): Promise<TFolder | undefined> => {
+			const { getNewFolderDefaultName } = get();
+
+			const newFolderName = getNewFolderDefaultName(parentFolder);
+			const newFolder = await plugin.app.vault.createFolder(
+				`${parentFolder.path}/${newFolderName}`
+			);
 			set({
 				latestCreatedFolder: newFolder,
 				latestFolderCreatedTime: Date.now(),
 			});
 			return newFolder;
 		},
-		createNewFolder: async (
-			parentFolder: TFolder
-		): Promise<TFolder | undefined> => {
-			const { rootFolder, _createFolder } = get();
-			if (!rootFolder) return;
-
-			const baseFolderName = "Untitled";
-			let newFolderName = baseFolderName;
-			let untitledFoldersCount = 0;
-
-			parentFolder.children.forEach((child) => {
-				if (!isFolder(child)) return;
-
-				if (child.name === newFolderName) {
-					untitledFoldersCount++;
-				} else if (child.name.startsWith(baseFolderName)) {
-					const suffix = child.name
-						.replace(baseFolderName, "")
-						.trim();
-					const number = parseInt(suffix, 10);
-					if (!isNaN(number) && number > untitledFoldersCount) {
-						untitledFoldersCount = number;
-					}
-				}
-			});
-
-			if (untitledFoldersCount > 0) {
-				newFolderName = `${baseFolderName} ${untitledFoldersCount + 1}`;
-			}
-
-			const newFolder = await _createFolder(
-				`${parentFolder.path}/${newFolderName}`
-			);
-			return newFolder;
-		},
 		trashFolder: async (folder: TFolder) => {
-			const { focusedFolder, setFocusedFolder } = get();
-			const { app } = plugin;
-			const focusedFolderPaths = focusedFolder?.path.split("/") ?? [];
-			if (focusedFolderPaths.includes(folder.path)) {
-				setFocusedFolder(null);
+			const { focusedFolder, isAnscestorOf, setFocusedFolderAndSave } =
+				get();
+
+			if (focusedFolder && isAnscestorOf(folder, focusedFolder)) {
+				setFocusedFolderAndSave(null);
 			}
-			await app.fileManager.trashFile(folder);
+			await plugin.app.fileManager.trashFile(folder);
 		},
 
 		moveFolder: async (folder: TFolder, newPath: string) => {

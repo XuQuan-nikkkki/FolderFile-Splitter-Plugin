@@ -28,19 +28,19 @@ const Folder = ({
 	const { language } = plugin;
 
 	const {
-		setFocusedFolder,
+		changeFocusedFolder,
 		expandFolder,
 		collapseFolder,
 		expandedFolderPaths,
 		focusedFolder,
-		hasSubFolders,
+		hasSubFolder,
 		getFilesinFolder,
 		getSubFolders,
 		changeViewMode,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			setFocusedFolder: store.setFocusedFolder,
-			hasSubFolders: store.hasSubFolders,
+			changeFocusedFolder: store.changeFocusedFolder,
+			hasSubFolder: store.hasSubFolder,
 			expandedFolderPaths: store.expandedFolderPaths,
 			expandFolder: store.expandFolder,
 			collapseFolder: store.collapseFolder,
@@ -132,7 +132,7 @@ const Folder = ({
 		return classNames(
 			"ffs__folder-container tree-item-self nav-folder-title is-clickable",
 			{
-				"mod-collapsible": hasSubFolders(folder),
+				"mod-collapsible": hasSubFolder(folder),
 				"is-active": isFocused,
 				"ffs__is-over": isOver && !disableDrag,
 			}
@@ -145,7 +145,7 @@ const Folder = ({
 			ref={setDropRef}
 			onClick={async () => {
 				onToggleExpandState();
-				setFocusedFolder(folder);
+				changeFocusedFolder(folder);
 				await changeViewMode("folder");
 			}}
 			style={getIndentStyle()}

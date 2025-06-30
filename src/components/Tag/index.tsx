@@ -23,7 +23,7 @@ const Tag = ({
 	const { language } = plugin;
 
 	const {
-		hasTagChildren,
+		hasSubTag,
 		setFocusedTag,
 		focusedTag,
 		getFilesInTag,
@@ -34,7 +34,7 @@ const Tag = ({
 		changeViewMode,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			hasTagChildren: store.hasTagChildren,
+			hasSubTag: store.hasSubTag,
 			setFocusedTag: store.setFocusedTag,
 			focusedTag: store.focusedTag,
 			getTagsByParent: store.getTagsByParent,
@@ -94,7 +94,7 @@ const Tag = ({
 		return classNames(
 			"ffs__folder-container tree-item-self nav-folder-title is-clickable",
 			{
-				"mod-collapsible": hasTagChildren(tag),
+				"mod-collapsible": hasSubTag(tag),
 				"is-active": isFocused,
 			}
 		);

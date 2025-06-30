@@ -4,9 +4,7 @@ import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
 import { TagNode } from "src/store/tag";
 
-
 import ExpandIcon from "../ExpandIcon";
-
 
 type Props = {
 	tag: TagNode;
@@ -14,19 +12,17 @@ type Props = {
 const TagExpandIcon = ({ tag }: Props) => {
 	const { useExplorerStore } = useExplorer();
 
-	const { hasTagChildren, expandedTagPaths } = useExplorerStore(
+	const { hasSubTag, isTagExpanded } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			hasTagChildren: store.hasTagChildren,
-			expandedTagPaths: store.expandedTagPaths,
+			hasSubTag: store.hasSubTag,
+			isTagExpanded: store.isTagExpanded,
 		}))
 	);
 
-	const isTagExpanded = expandedTagPaths.includes(tag.fullPath);
-
 	return (
 		<ExpandIcon
-			isExpanded={isTagExpanded}
-			hideIcon={!hasTagChildren(tag)}
+			isExpanded={isTagExpanded(tag)}
+			hideIcon={!hasSubTag(tag)}
 		/>
 	);
 };

@@ -17,8 +17,8 @@ export class ManualSortFoldersModal extends Modal {
 
 	constructor(
 		plugin: FolderFileSplitterPlugin,
+		useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>,
 		folder: TFolder,
-		useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>
 	) {
 		super(plugin.app);
 		this.plugin = plugin;

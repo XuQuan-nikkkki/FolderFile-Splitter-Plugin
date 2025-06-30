@@ -2,7 +2,6 @@ import { StateCreator } from "zustand";
 
 import { FFS_PINNED_TAG_PATHS_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
-import { removeItemFromArray, uniq } from "src/utils";
 
 import { ExplorerStore } from "..";
 
@@ -14,12 +13,12 @@ export interface PinnedTagSlice {
 	getPinnedTags: () => TagNode[];
 	getDisplayedPinnedTags: () => TagNode[];
 
-	isTagPinned: (tagPath: string) => boolean;
+	isTagPinned: (tag: TagNode) => boolean;
 
 	setPinnedTagPathsAndSave: (tagPaths: string[]) => Promise<void>;
 
-	pinTag: (tagPath: string) => Promise<void>;
-	unpinTag: (tagPath: string) => Promise<void>;
+	pinTag: (tag: TagNode) => Promise<void>;
+	unpinTag: (tag: TagNode) => Promise<void>;
 
 	restorePinnedTags: () => Promise<void>;
 }
@@ -32,10 +31,10 @@ export const createPinnedTagSlice =
 		pinnedTagPaths: [],
 
 		getPinnedTags: () => {
-			const { tagTree, pinnedTagPaths } = get();
-			return uniq(pinnedTagPaths)
-				.map((path) => tagTree.get(path))
-				.filter(Boolean) as TagNode[];
+			const { tagTree, pinnedTagPaths, getPinnedItems } = get();
+			return getPinnedItems<TagNode>(pinnedTagPaths, (p) =>
+				tagTree.get(p)
+			);
 		},
 		getDisplayedPinnedTags: () => {
 			const { showTagView } = plugin.settings;
@@ -44,44 +43,41 @@ export const createPinnedTagSlice =
 			return getPinnedTags();
 		},
 
-		isTagPinned: (tagPath: string) => {
-			const { pinnedTagPaths } = get();
-			return pinnedTagPaths.includes(tagPath);
+		isTagPinned: (tag: TagNode) => {
+			const { pinnedTagPaths, isPinned } = get();
+			return isPinned(pinnedTagPaths, tag.fullPath);
 		},
 
 		setPinnedTagPathsAndSave: async (tagPaths: string[]) => {
-			const { setValueAndSaveInPlugin } = get();
-			const paths = uniq(tagPaths);
-			await setValueAndSaveInPlugin({
-				key: "pinnedTagPaths",
-				value: paths,
-				pluginKey: FFS_PINNED_TAG_PATHS_KEY,
-				pluginValue: JSON.stringify(paths),
-			});
+			await get().setPinnedPathsAndSave(
+				"pinnedTagPaths",
+				FFS_PINNED_TAG_PATHS_KEY,
+				tagPaths
+			);
 		},
 
-		pinTag: async (tagPath: string) => {
-			const { pinnedTagPaths, setPinnedTagPathsAndSave, isTagPinned } =
-				get();
-			if (isTagPinned(tagPath)) return;
-			const tagPaths = [...pinnedTagPaths, tagPath];
-			await setPinnedTagPathsAndSave(tagPaths);
+		pinTag: async (tag: TagNode) => {
+			const { pinnedTagPaths, setPinnedTagPathsAndSave, pinItem } = get();
+			await pinItem(
+				tag.fullPath,
+				pinnedTagPaths,
+				setPinnedTagPathsAndSave
+			);
 		},
-		unpinTag: async (tagPath: string) => {
-			const { pinnedTagPaths, setPinnedTagPathsAndSave, isTagPinned } =
+		unpinTag: async (tag: TagNode) => {
+			const { pinnedTagPaths, setPinnedTagPathsAndSave, unpinItem } =
 				get();
-			if (!isTagPinned(tagPath)) return;
-			await setPinnedTagPathsAndSave(
-				removeItemFromArray(pinnedTagPaths, tagPath)
+			await unpinItem(
+				tag.fullPath,
+				pinnedTagPaths,
+				setPinnedTagPathsAndSave
 			);
 		},
 
 		restorePinnedTags: async () => {
-			const { restoreDataFromPlugin } = get();
-			await restoreDataFromPlugin({
-				pluginKey: FFS_PINNED_TAG_PATHS_KEY,
-				key: "pinnedTagPaths",
-				needParse: true,
-			});
+			await get().restorePinnedPaths(
+				"pinnedTagPaths",
+				FFS_PINNED_TAG_PATHS_KEY
+			);
 		},
 	});

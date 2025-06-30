@@ -16,7 +16,7 @@ type Props = {
 const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 	const { useExplorerStore } = useExplorer();
 
-	const { sortFiles, fileSortRule } = useExplorerStore(
+	const { sortFiles } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			sortFiles: store.sortFiles,
 			fileSortRule: store.fileSortRule,
@@ -44,7 +44,7 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 		);
 	}
 
-	const sortedFiles = sortFiles(files, fileSortRule);
+	const sortedFiles = sortFiles(files);
 	return (
 		<div className="ffs__tree ffs__file-tree nav-files-container">
 			<PinnedFiles renderFile={renderFile} />

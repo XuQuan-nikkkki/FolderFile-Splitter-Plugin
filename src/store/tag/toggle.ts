@@ -10,10 +10,15 @@ import { TagNode } from ".";
 
 export interface ToggleTagSlice {
 	expandedTagPaths: string[];
-	changeExpandedTagPaths: (paths: string[]) => Promise<void>;
-	restoreExpandedTagPaths: () => Promise<void>;
+
+	isTagExpanded: (tag: TagNode) => boolean;
+	canTagToggle: (tag: TagNode) => boolean;
+
+	changeExpandedTagPaths: (paths: string[]) => void;
 	expandTag: (tag: TagNode) => Promise<void>;
 	collapseTag: (tag: TagNode) => Promise<void>;
+
+	restoreExpandedTagPaths: () => Promise<void>;
 }
 
 export const createToggleTagSlice =
@@ -23,36 +28,41 @@ export const createToggleTagSlice =
 	(set, get) => ({
 		expandedTagPaths: [],
 
-		changeExpandedTagPaths: async (tagPaths: string[]) => {
+		isTagExpanded: (tag: TagNode) => {
+			return get().expandedTagPaths.includes(tag.fullPath);
+		},
+		canTagToggle: (tag: TagNode) => {
+			return get().hasSubTag(tag);
+		},
+
+		changeExpandedTagPaths: (tagPaths: string[]) => {
 			const { setValueAndSaveInLocalStorage } = get();
+			const paths = uniq(tagPaths);
 			setValueAndSaveInLocalStorage({
 				key: "expandedTagPaths",
-				value: tagPaths,
+				value: paths,
 				localStorageKey: FFS_EXPANDED_TAG_PATHS_KEY,
-				localStorageValue: JSON.stringify(tagPaths),
+				localStorageValue: JSON.stringify(paths),
 			});
 		},
 
 		expandTag: async (tag: TagNode) => {
-			const { changeExpandedTagPaths, expandedTagPaths, hasTagChildren } =
+			const { changeExpandedTagPaths, expandedTagPaths, canTagToggle } =
 				get();
-			if (!hasTagChildren(tag)) return;
-			await changeExpandedTagPaths(
-				uniq([...expandedTagPaths, tag.fullPath])
-			);
+			if (!canTagToggle(tag)) return;
+			await changeExpandedTagPaths([...expandedTagPaths, tag.fullPath]);
 		},
 		collapseTag: async (tag: TagNode) => {
-			const { changeExpandedTagPaths, hasTagChildren, expandedTagPaths } =
+			const { changeExpandedTagPaths, canTagToggle, expandedTagPaths } =
 				get();
-			if (!hasTagChildren(tag)) return;
+			if (!canTagToggle(tag)) return;
 			await changeExpandedTagPaths(
 				removeItemFromArray(expandedTagPaths, tag.fullPath)
 			);
 		},
 
 		restoreExpandedTagPaths: async () => {
-			const { hasTagChildren, tagTree, restoreDataFromLocalStorage } =
-				get();
+			const { hasSubTag, tagTree, restoreDataFromLocalStorage } = get();
 			restoreDataFromLocalStorage({
 				localStorageKey: FFS_EXPANDED_TAG_PATHS_KEY,
 				key: "expandedTagPaths",
@@ -60,7 +70,7 @@ export const createToggleTagSlice =
 				transform: (value) => {
 					return (value as string[]).filter((path) => {
 						const tag = tagTree.get(path);
-						return tag && hasTagChildren(tag);
+						return tag && hasSubTag(tag);
 					});
 				},
 			});
