@@ -20,6 +20,7 @@ const useChangeFolder = () => {
 		unpinFolder,
 		updatePinnedFolderPath,
 		updateFolderPathInManualOrder,
+		sortFolders
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			getTopLevelFolders: store.getTopLevelFolders,
@@ -29,13 +30,14 @@ const useChangeFolder = () => {
 			unpinFolder: store.unpinFolder,
 			updatePinnedFolderPath: store.updatePinnedFolderPath,
 			updateFolderPathInManualOrder: store.updateFolderPathInManualOrder,
+			sortFolders: store.sortFolders
 		}))
 	);
 
 	const [topFolders, setTopFolders] = useState<TFolder[]>([]);
 
 	const onUpdateTopFolders = () => {
-		const topLevelFolders = getTopLevelFolders();
+		const topLevelFolders = sortFolders(getTopLevelFolders());
 		setTopFolders(topLevelFolders);
 	};
 

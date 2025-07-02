@@ -69,12 +69,18 @@ export const createSortFolderSlice =
 				const sortedFolderPaths = order[parentPath] ?? [];
 				if (!sortedFolderPaths.length) return folders;
 
+				const indexMap = new Map<string, number>();
+				sortedFolderPaths.forEach((path, index) =>
+					indexMap.set(path, index)
+				);
+
 				return [...folders].sort((a, b) => {
-					const aIndex = sortedFolderPaths.indexOf(a.path);
-					const bIndex = sortedFolderPaths.indexOf(b.path);
-					if (aIndex === -1 && bIndex === -1) return 0;
-					if (aIndex === -1) return 1;
-					if (bIndex === -1) return -1;
+					const aIndex = indexMap.get(a.path);
+					const bIndex = indexMap.get(b.path);
+
+					if (aIndex === undefined && bIndex === undefined) return 0;
+					if (aIndex === undefined) return 1;
+					if (bIndex === undefined) return -1;
 					return aIndex - bIndex;
 				});
 			}
@@ -114,7 +120,6 @@ export const createSortFolderSlice =
 			const lastFolderSortRule = await restoreDataFromPlugin({
 				pluginKey: FFS_FOLDER_SORT_RULE_KEY,
 				key: "folderSortRule",
-				needParse: true,
 			});
 			if (lastFolderSortRule === FOLDER_MANUAL_SORT_RULE) {
 				await restoreFoldersManualSortOrder();

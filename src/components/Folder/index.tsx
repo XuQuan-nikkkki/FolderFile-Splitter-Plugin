@@ -1,4 +1,4 @@
-import { useDraggable, useDroppable } from "@dnd-kit/core";
+import { useDroppable } from "@dnd-kit/core";
 import classNames from "classnames";
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
@@ -6,64 +6,53 @@ import { useShallow } from "zustand/react/shallow";
 import { FFS_DRAG_FILE, FFS_DRAG_FOLDER } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
-import { pluralize } from "src/utils";
+import { getIndentStyle } from "src/utils";
 
-import FolderContent, { FolderProps } from "./Content";
+import { FolderProps } from "./Content";
+import FolderDraggableContent from "./DraggableContent";
 import FolderExpandIcon from "./ExpandIcon";
+import { getPopupInfo } from "./popupInfo";
 
 type Props = FolderProps & {
-	onOpenFilesPane: () => void;
 	disableDrag?: boolean;
 	hideExpandIcon?: boolean;
 	disableHoverIndent?: boolean;
 };
 const Folder = ({
 	folder,
-	onOpenFilesPane,
 	hideExpandIcon = false,
 	disableDrag = false,
 	disableHoverIndent = false,
 }: Props) => {
-	const { useExplorerStore, plugin } = useExplorer();
-	const { language } = plugin;
+	const { useExplorerStore } = useExplorer();
 
 	const {
 		changeFocusedFolder,
 		expandFolder,
-		collapseFolder,
-		expandedFolderPaths,
+		toggleFolder,
 		focusedFolder,
 		hasSubFolder,
 		getFilesinFolder,
 		getSubFolders,
-		changeViewMode,
+		getFolderLevel,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			changeFocusedFolder: store.changeFocusedFolder,
 			hasSubFolder: store.hasSubFolder,
-			expandedFolderPaths: store.expandedFolderPaths,
 			expandFolder: store.expandFolder,
-			collapseFolder: store.collapseFolder,
+			toggleFolder: store.toggleFolder,
 			focusedFolder: store.focusedFolder,
 			getFilesinFolder: store.getFilesInFolder,
 			getSubFolders: store.getSubFolders,
-			changeViewMode: store.changeViewMode,
+			getFolderLevel: store.getFolderLevel,
+
+			// for dependency tracking only
+			expandedFolderPaths: store.expandedFolderPaths,
 		}))
 	);
 
 	const isFocused = folder.path == focusedFolder?.path;
 	const isRoot = folder.isRoot();
-
-	const {
-		setNodeRef: setDragRef,
-		attributes,
-		listeners,
-		isDragging,
-	} = useDraggable({
-		id: folder.path,
-		data: { type: FFS_DRAG_FOLDER, item: folder },
-		disabled: disableDrag,
-	});
 
 	const { setNodeRef: setDropRef, isOver } = useDroppable({
 		id: `drop-${folder.path}`,
@@ -77,28 +66,10 @@ const Folder = ({
 	useEffect(() => {
 		if (!isOver) return;
 		const timer = setTimeout(() => {
-			if (!expandedFolderPaths.includes(folder.path)) {
-				expandFolder(folder);
-			}
+			expandFolder(folder);
 		}, 800);
 		return () => clearTimeout(timer);
 	}, [isOver]);
-
-	useEffect(() => {
-		window.addEventListener("dblclick", onOpenFilesPane);
-		return () => {
-			window.removeEventListener("dblclick", onOpenFilesPane);
-		};
-	}, [onOpenFilesPane]);
-
-	const onToggleExpandState = (): void => {
-		const isFolderExpanded = expandedFolderPaths.includes(folder.path);
-		if (isFolderExpanded) {
-			collapseFolder(folder);
-		} else {
-			expandFolder(folder);
-		}
-	};
 
 	const maybeRenderExpandIcon = () => {
 		if (isRoot || hideExpandIcon) return null;
@@ -106,26 +77,9 @@ const Folder = ({
 	};
 
 	const getAriaLabel = () => {
-		const { name } = folder;
 		const filesCount = getFilesinFolder(folder).length;
 		const foldersCount = getSubFolders(folder).length;
-
-		const filesCountInfo = pluralize(filesCount, "file");
-		const foldersCountInfo = pluralize(foldersCount, "folder");
-
-		if (language === "zh") {
-			return `${name}\n${filesCount} 条笔记，${foldersCount} 个文件夹`;
-		}
-		return `${name}\n${filesCountInfo}, ${foldersCountInfo}`;
-	};
-
-	const getIndentStyle = () => {
-		if (disableHoverIndent) return undefined;
-		const folderLevel = isRoot ? 0 : folder.path.split("/").length - 1;
-		return {
-			marginInlineStart: -17 * folderLevel,
-			paddingInlineStart: 24 + 17 * folderLevel,
-		};
+		return getPopupInfo(folder, foldersCount, filesCount);
 	};
 
 	const getClassNames = () => {
@@ -144,27 +98,15 @@ const Folder = ({
 			className={getClassNames()}
 			ref={setDropRef}
 			onClick={async () => {
-				onToggleExpandState();
-				changeFocusedFolder(folder);
-				await changeViewMode("folder");
+				toggleFolder(folder);
+				await changeFocusedFolder(folder);
 			}}
-			style={getIndentStyle()}
+			style={getIndentStyle(getFolderLevel(folder), disableHoverIndent)}
 			data-tooltip-position="right"
 			aria-label={getAriaLabel()}
 		>
 			{maybeRenderExpandIcon()}
-			<div
-				className="ffs__draggable-container tree-item-inner nav-folder-title-content"
-				style={{ opacity: isDragging ? 0.5 : 1 }}
-				ref={setDragRef}
-				{...attributes}
-				{...listeners}
-			>
-				<FolderContent
-					folder={folder}
-					onToggleExpandState={onToggleExpandState}
-				/>
-			</div>
+			<FolderDraggableContent folder={folder} disableDrag={disableDrag} />
 		</div>
 	);
 };

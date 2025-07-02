@@ -57,17 +57,17 @@ export const areArraysEqual = <T>(
 ): boolean => {
 	if (array1.length !== array2.length) return false;
 
-	const usedIndices = new Set<number>();
+	return array1.every((item, index) => {
+		const other = array2[index];
+		return isEqual ? isEqual(item, other) : item === other;
+	});
+};
 
-	for (const item1 of array1) {
-		const index = array2.findIndex((item2, i) => {
-			if (usedIndices.has(i)) return false;
-			return isEqual ? isEqual(item1, item2) : item1 === item2;
-		});
-
-		if (index === -1) return false;
-		usedIndices.add(index);
-	}
-
-	return true;
+export const isLastInArray = <T>(
+	array: T[],
+	item: T,
+	findIndexFn?: (array: T[], item: T) => number
+): boolean => {
+	const index = findIndexFn ? findIndexFn(array, item) : array.indexOf(item);
+	return index === array.length - 1;
 };

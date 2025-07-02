@@ -1,20 +1,16 @@
-import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
-import {
-	useIncludeSubTagFiles,
-	useShowFilesCount,
-} from "src/hooks/useSettingsHandler";
+import { useIncludeSubTagFiles } from "src/hooks/useSettingsHandler";
 import { ExplorerStore } from "src/store";
 import { TagNode } from "src/store/tag";
-import { isFile } from "src/utils";
+
+import FilesCount from "../FilesCount";
 
 type Props = {
 	tag: TagNode;
 };
-const FilesCount = ({ tag }: Props) => {
+const TagFilesCount = ({ tag }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
 	const { settings } = plugin;
 
@@ -23,39 +19,18 @@ const FilesCount = ({ tag }: Props) => {
 			getFilesCountInTag: store.getFilesCountInTag,
 		}))
 	);
-	const [count, setCount] = useState<number | null>(null);
 
 	const { includeSubTagFiles } = useIncludeSubTagFiles(
 		settings.includeSubTagFiles
 	);
-	const { showFilesCount } = useShowFilesCount(settings.showFilesCount);
-
-	const onHandleVaultChange = (event: VaultChangeEvent) => {
-		const { file, changeType } = event.detail;
-		if (!isFile(file)) return;
-		if (changeType === "delete" || changeType === "rename") {
-			setCount(getFilesCountInTag(tag));
-		}
-	};
-
-	useEffect(() => {
-		setCount(getFilesCountInTag(tag));
-		window.addEventListener(VaultChangeEventName, onHandleVaultChange);
-		return () => {
-			window.removeEventListener(
-				VaultChangeEventName,
-				onHandleVaultChange
-			);
-		};
-	}, [tag]);
-
-	useEffect(() => {
-		setCount(getFilesCountInTag(tag));
-	}, [tag.children.size, includeSubTagFiles]);
 
 	return (
-		<div className="ffs__files-count">{showFilesCount ? count : ""}</div>
+		<FilesCount
+			getFilesCount={() => getFilesCountInTag(tag)}
+			includeSubItemFiles={includeSubTagFiles}
+			childrenLen={tag.subTagPaths.size}
+		/>
 	);
 };
 
-export default FilesCount;
+export default TagFilesCount;

@@ -1,29 +1,13 @@
-import { TFolder } from "obsidian";
-import { ReactNode } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
-import { TagNode } from "src/store/tag";
 
+import Folder from "../Folder";
 import { PinContainer, PinContent, PinHeader } from "../Pin";
+import Tag from "../Tag";
 
-export type RenderOptions = {
-	hideExpandIcon?: boolean;
-	disableDrag?: boolean;
-	disableHoverIndent?: boolean;
-};
-const RENDER_OPTIONS: RenderOptions = {
-	hideExpandIcon: true,
-	disableDrag: true,
-	disableHoverIndent: true,
-};
-
-type Props = {
-	renderFolder: (folder: TFolder, options: RenderOptions) => ReactNode;
-	renderTag: (tag: TagNode, options: RenderOptions) => ReactNode;
-};
-const PinnedFoldersAndTags = ({ renderFolder, renderTag }: Props) => {
+const PinnedFoldersAndTags = () => {
 	const { useExplorerStore } = useExplorer();
 
 	const { getDisplayedPinnedFolders, getDisplayedPinnedTags } =
@@ -31,7 +15,9 @@ const PinnedFoldersAndTags = ({ renderFolder, renderTag }: Props) => {
 			useShallow((store: ExplorerStore) => ({
 				getDisplayedPinnedFolders: store.getDisplayedPinnedFolders,
 				getDisplayedPinnedTags: store.getDisplayedPinnedTags,
+
 				// for dependency tracking only
+				pinnedFolderPaths: store.pinnedFolderPaths,
 				pinnedTagPaths: store.pinnedTagPaths,
 			}))
 		);
@@ -45,12 +31,23 @@ const PinnedFoldersAndTags = ({ renderFolder, renderTag }: Props) => {
 		<PinContainer>
 			<PinHeader />
 			<PinContent style={{ marginLeft: 4 }}>
-				{getDisplayedPinnedFolders().map((folder) =>
-					renderFolder(folder, RENDER_OPTIONS)
-				)}
-				{getDisplayedPinnedTags().map((tag) =>
-					renderTag(tag, RENDER_OPTIONS)
-				)}
+				{getDisplayedPinnedFolders().map((folder) => (
+					<Folder
+						key={folder.path}
+						folder={folder}
+						hideExpandIcon
+						disableDrag
+						disableHoverIndent
+					/>
+				))}
+				{getDisplayedPinnedTags().map((tag) => (
+					<Tag
+						key={tag.name}
+						tag={tag}
+						hideExpandIcon
+						disableHoverIndent
+					/>
+				))}
 			</PinContent>
 		</PinContainer>
 	);

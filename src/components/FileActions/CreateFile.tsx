@@ -1,4 +1,3 @@
-
 import classNames from "classnames";
 import { useShallow } from "zustand/react/shallow";
 
@@ -9,23 +8,21 @@ import { ExplorerStore } from "src/store";
 
 const CreateFile = () => {
 	const { useExplorerStore, plugin } = useExplorer();
-	const { language } = plugin
+	const { language } = plugin;
 
 	const {
-		createFile,
-		focusedFolder,
-		rootFolder,
-		initOrder,
+		createFileWithDefaultName,
 		focusedTag,
 		getNameOfFolder,
+		getTargetFolder
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			createFile: store.createFile,
-			focusedFolder: store.focusedFolder,
-			rootFolder: store.rootFolder,
-			initOrder: store.initFilesManualSortOrder,
+			createFileWithDefaultName: store.createFileWithDefaultName,
 			focusedTag: store.focusedTag,
 			getNameOfFolder: store.getNameOfFolder,
+			getTargetFolder: store.getTargetFolder,
+			// for dependency tracking only
+			focusedFolder: store.focusedFolder,
 		}))
 	);
 
@@ -33,12 +30,12 @@ const CreateFile = () => {
 		plugin.settings.showFolderView
 	);
 
+	const targetFolder = getTargetFolder()
+
 	const onCreateNewFile = async () => {
+		// TODO: 判断条件有问题
 		if (focusedTag) return;
-		const targetFolder = focusedFolder || rootFolder;
-		if (!targetFolder) return;
-		await createFile(targetFolder);
-		await initOrder();
+		await createFileWithDefaultName(targetFolder);
 	};
 
 	const getClassNames = () => {
@@ -52,8 +49,6 @@ const CreateFile = () => {
 	};
 
 	const getAriaLabel = () => {
-		const targetFolder = focusedFolder || rootFolder;
-		if (!targetFolder) return "";
 		const folderName = getNameOfFolder(targetFolder);
 		if (language === "zh") {
 			return `在 ${folderName} 中创建新笔记`;

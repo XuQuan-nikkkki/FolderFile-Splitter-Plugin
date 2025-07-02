@@ -1,5 +1,5 @@
 import { useDraggable } from "@dnd-kit/core";
-import dayjs from "dayjs";
+import { TFile } from "obsidian";
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -7,15 +7,16 @@ import { FFS_DRAG_FILE } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
 
-import FileContent, { FileProps } from "./Content";
+import FileContent from "./Content";
+import { getPopupInfo } from "./popupInfo";
 
-type Props = FileProps & {
+type Props =  {
+	file: TFile
 	onOpenFoldersPane: () => void;
 	disableDrag?: boolean;
 };
 const File = ({ file, disableDrag, onOpenFoldersPane }: Props) => {
-	const { useExplorerStore, plugin } = useExplorer();
-	const { language } = plugin;
+	const { useExplorerStore } = useExplorer();
 
 	const { selectFileAndOpen } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
@@ -36,20 +37,6 @@ const File = ({ file, disableDrag, onOpenFoldersPane }: Props) => {
 		};
 	}, [onOpenFoldersPane]);
 
-	const getAriaLabel = () => {
-		const { basename, stat } = file;
-		const { ctime, mtime } = stat;
-		const format = "YYYY-MM-DD HH:mm";
-
-		const modifiedInfo = dayjs(mtime).format(format);
-		const createdInfo = dayjs(ctime).format(format);
-
-		if (language === "zh") {
-			return `${basename}\n最后修改于 ${modifiedInfo}\n创建于 ${createdInfo}`;
-		}
-		return `${basename}\nLast modified at ${modifiedInfo}\nCreated at ${createdInfo}`;
-	};
-
 	return (
 		<div
 			className="ffs__file-tree-item tree-item nav-file"
@@ -57,7 +44,7 @@ const File = ({ file, disableDrag, onOpenFoldersPane }: Props) => {
 			style={{ opacity: isDragging ? 0.5 : 1 }}
 			onClick={() => selectFileAndOpen(file)}
 			data-tooltip-position="right"
-			aria-label={getAriaLabel()}
+			aria-label={getPopupInfo(file)}
 			{...attributes}
 			{...listeners}
 		>

@@ -70,18 +70,21 @@ const useChangeFile = () => {
 		setFiles(getVisibleFiles());
 	};
 
+	const updateFileListAndOrder = async () => {
+		await maybeInitOrder()
+		updateFileList()
+	}
+
 	const onHandleVaultChange = async (event: VaultChangeEvent) => {
 		const { file, changeType, oldPath } = event.detail;
 		if (!isFile(file)) return;
 
 		switch (changeType) {
 			case "create":
-				await maybeInitOrder();
-				updateFileList();
+				await updateFileListAndOrder();
 				break;
 			case "delete":
-				await maybeInitOrder();
-				updateFileList();
+				await updateFileListAndOrder();
 				if (isFilePinned(file)) {
 					await unpinFile(file);
 				}

@@ -60,20 +60,11 @@ export class SettingTab extends PluginSettingTab {
 			.setDesc(settingsCopy[settingKey].desc);
 	}
 
-	async _updateSetting<K extends SettingsKey>(
-		settingKey: K,
-		value: FolderFileSplitterPluginSettings[K]
-	) {
-		this.plugin.settings[settingKey] = value;
-		await this.plugin.saveSettings();
-		this.plugin.triggerSettingsChangeEvent(settingKey, value);
-	}
-
 	_initToggleSetting<K extends SettingsKey>(settingKey: K) {
 		this._initSetting(settingKey).addToggle((toggle) => {
 			toggle.setValue(this.plugin.settings[settingKey] as boolean);
 			toggle.onChange(async (val) => {
-				this._updateSetting(
+				this.plugin.changeSetting(
 					settingKey,
 					val as FolderFileSplitterPluginSettings[K]
 				);
@@ -97,7 +88,7 @@ export class SettingTab extends PluginSettingTab {
 			this._initDropdownOptions(dropdown, options);
 			dropdown.setValue(this.plugin.settings[settingKey] as string);
 			dropdown.onChange(async (val) => {
-				this._updateSetting(
+				this.plugin.changeSetting(
 					settingKey,
 					val as FolderFileSplitterPluginSettings[K]
 				);
@@ -115,7 +106,7 @@ export class SettingTab extends PluginSettingTab {
 			}
 			text.setValue(this.plugin.settings[settingKey] as string);
 			text.onChange(async (val) => {
-				this._updateSetting(
+				this.plugin.changeSetting(
 					settingKey,
 					val as FolderFileSplitterPluginSettings[K]
 				);
@@ -197,7 +188,7 @@ export class SettingTab extends PluginSettingTab {
 		setting.addText((text) => {
 			text.setValue(this.plugin.settings.fileCreationDateFormat);
 			text.onChange(async (val) => {
-				this._updateSetting("fileCreationDateFormat", val);
+				this.plugin.changeSetting("fileCreationDateFormat", val);
 				this.generateFileCreationDateFormatDesc(setting, val);
 			});
 		});

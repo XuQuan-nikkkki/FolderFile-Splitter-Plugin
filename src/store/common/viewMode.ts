@@ -48,16 +48,13 @@ export const createViewModeSlice =
 		},
 
 		changeToFolderMode: () => {
-			const { changeViewMode, setFocusedTag } = get();
+			const { changeViewMode, changeFocusedTag } = get();
 			changeViewMode(VIEW_MODE.FOLDER);
-			setFocusedTag(null);
+			changeFocusedTag(null);
 		},
 		changeToTagMode: () => {
-			const {
-				changeViewMode,
-				setFocusedFileAndSave: setFocusedFolderAndSave,
-			} = get();
+			const { changeViewMode, setFocusedFileAndSave } = get();
 			changeViewMode(VIEW_MODE.TAG);
-			setFocusedFolderAndSave(null);
+			setFocusedFileAndSave(null);
 		},
 	});

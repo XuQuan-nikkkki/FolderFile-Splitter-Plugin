@@ -37,8 +37,6 @@ const SortFiles = () => {
 		);
 
 	const onChangeSortRule = async (rule: FileSortRule) => {
-		await changeFileSortRuleAndUpdateOrder(rule);
-
 		if (rule === FILE_MANUAL_SORT_RULE) {
 			const modal = new ManualSortFilesModal(
 				plugin,
@@ -47,6 +45,7 @@ const SortFiles = () => {
 			);
 			modal.open();
 		}
+		await changeFileSortRuleAndUpdateOrder(rule);
 	};
 
 	return (

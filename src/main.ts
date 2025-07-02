@@ -1,7 +1,14 @@
-import { Plugin, TAbstractFile, WorkspaceLeaf } from "obsidian";
+import {
+	CachedMetadata,
+	Plugin,
+	TAbstractFile,
+	TFile,
+	WorkspaceLeaf,
+} from "obsidian";
 
 import {
 	ActiveLeafChangeEventName,
+	MetadataCacheChangeEventName,
 	SettingsChangeEventName,
 	VaultChangeEventName,
 	VaultChangeType,
@@ -56,6 +63,7 @@ export default class FolderFileSplitterPlugin extends Plugin {
 		this.app.vault.on("delete", this.onDelete);
 		this.app.vault.on("rename", this.onRename);
 		this.app.workspace.on("active-leaf-change", this.onChangeActiveLeaf);
+		this.app.metadataCache.on("changed", this.onChangeMetadataCache);
 	}
 
 	triggerVaultChangeEvent = (
@@ -92,6 +100,36 @@ export default class FolderFileSplitterPlugin extends Plugin {
 		this.triggerVaultChangeEvent(file, "rename", oldPath);
 	};
 
+	triggerMetadataCacheChangeEvent = (
+		file: TAbstractFile,
+		data: string,
+		cache: CachedMetadata
+	) => {
+		const event = new CustomEvent(MetadataCacheChangeEventName, {
+			detail: {
+				file,
+				data,
+				cache,
+			},
+		});
+		window.dispatchEvent(event);
+	};
+
+	onChangeMetadataCache: (
+		file: TFile,
+		data: string,
+		cache: CachedMetadata
+	) => void = (file, data, cache) => {
+		const lastHandledFiles = new Set<string>();
+
+		if (lastHandledFiles.has(file.path)) return;
+		lastHandledFiles.add(file.path);
+
+		this.triggerMetadataCacheChangeEvent(file, data, cache);
+
+		setTimeout(() => lastHandledFiles.delete(file.path), 500);
+	};
+
 	triggerSettingsChangeEvent = <
 		K extends keyof FolderFileSplitterPluginSettings
 	>(
@@ -121,12 +159,14 @@ export default class FolderFileSplitterPlugin extends Plugin {
 	};
 
 	onunload() {
+		console.log("Unloading FolderFile Splitter...")
 		this.detachFileTreeLeafs();
 		this.app.vault.off("create", this.onCreate);
 		this.app.vault.off("modify", this.onModify);
 		this.app.vault.off("delete", this.onDelete);
 		this.app.vault.off("rename", this.onRename);
 		this.app.workspace.off("active-leaf-change", this.onChangeActiveLeaf);
+		this.app.metadataCache.off("changed", this.onChangeMetadataCache);
 	}
 
 	openFileTreeLeaf = async (showAfterAttach: boolean) => {
@@ -144,17 +184,24 @@ export default class FolderFileSplitterPlugin extends Plugin {
 	};
 
 	async loadSettings() {
-		const rawData = await this.loadData() ?? {};
+		const rawData = (await this.loadData()) ?? {};
 		const filteredData = Object.fromEntries(
-			Object.entries(rawData).filter(
-				([key]) => key in DEFAULT_SETTINGS
-			)
+			Object.entries(rawData).filter(([key]) => key in DEFAULT_SETTINGS)
 		);
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, filteredData);
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	async changeSetting<K extends keyof FolderFileSplitterPluginSettings>(
+		key: K,
+		value: FolderFileSplitterPluginSettings[K]
+	) {
+		this.settings[key] = value;
+		await this.saveSettings();
+		this.triggerSettingsChangeEvent(key, value);
 	}
 
 	detachFileTreeLeafs = () => {

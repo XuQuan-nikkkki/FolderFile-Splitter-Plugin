@@ -4,15 +4,18 @@ import { FFS_FOCUSED_TAG_PATH_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
 
 import { ExplorerStore } from "..";
+import { VIEW_MODE } from "../common";
 
 import { TagNode } from ".";
 
 export interface FocusedTagSlice {
 	focusedTag: TagNode | null;
 
-	_setFocusedTag: (tag: TagNode | null) => void;
-	setFocusedTag: (folder: TagNode | null) => Promise<void>;
-	restoreLastFocusedTag: () => Promise<void>;
+	isFocusedTag: (tag: TagNode) => boolean;
+	setFocusedTagAndSave: (tag: TagNode | null) => void;
+
+	changeFocusedTag: (folder: TagNode | null) => Promise<void>;
+	restoreLastFocusedTag: () => void;
 }
 
 export const createFocusedTagSlice =
@@ -22,46 +25,48 @@ export const createFocusedTagSlice =
 	(set, get) => ({
 		focusedTag: null,
 
-		_setFocusedTag: (tag: TagNode | null) =>
-			set({
-				focusedTag: tag,
-			}),
-		setFocusedTag: async (tag: TagNode | null) => {
+		isFocusedTag: (tag: TagNode) => {
+			return get().focusedTag?.fullPath === tag.fullPath;
+		},
+
+		setFocusedTagAndSave: (tag: TagNode | null) => {
+			const { setValueAndSaveInLocalStorage } = get();
+			setValueAndSaveInLocalStorage({
+				key: "focusedTag",
+				value: tag,
+				localStorageKey: FFS_FOCUSED_TAG_PATH_KEY,
+				localStorageValue: tag ? tag.fullPath : "",
+			});
+		},
+
+		changeFocusedTag: async (tag: TagNode | null) => {
 			const {
-				_setFocusedTag,
 				focusedFile,
-				setFocusedFileAndSave,
-				changeFocusedFolder,
-				saveDataInLocalStorage,
-				removeDataFromLocalStorage,
+				changeToTagMode,
+				setFocusedTagAndSave,
+				viewMode,
+				clearFocusedFile,
+				isFileHasTag,
 			} = get();
-			_setFocusedTag(tag);
 
-			if (tag) {
-				changeFocusedFolder(null);
-				saveDataInLocalStorage(FFS_FOCUSED_TAG_PATH_KEY, tag.fullPath);
+			setFocusedTagAndSave(tag);
+			if (!tag) return;
 
-				if (!focusedFile) return;
-				const tagsOfFocusedFile =
-					plugin.app.metadataCache.getFileCache(focusedFile)?.tags ??
-					[];
-				if (tagsOfFocusedFile.every((t) => t.tag !== tag?.fullPath)) {
-					await setFocusedFileAndSave(null);
-				}
-			} else {
-				removeDataFromLocalStorage(FFS_FOCUSED_TAG_PATH_KEY);
+			if (viewMode !== VIEW_MODE.TAG) {
+				changeToTagMode();
+			}
+			if (focusedFile && !isFileHasTag(focusedFile, tag)) {
+				clearFocusedFile();
 			}
 		},
 
-		restoreLastFocusedTag: async () => {
-			const { getDataFromLocalStorage, tagTree, setFocusedTag } = get();
-			const lastFocusedTagPath = getDataFromLocalStorage(
-				FFS_FOCUSED_TAG_PATH_KEY
-			);
-			if (!lastFocusedTagPath) return;
-			const tag = tagTree.get(lastFocusedTagPath);
-			if (tag) {
-				setFocusedTag(tag);
-			}
+		restoreLastFocusedTag: () => {
+			const { restoreDataFromLocalStorage, getTagByPath } = get();
+			restoreDataFromLocalStorage({
+				localStorageKey: FFS_FOCUSED_TAG_PATH_KEY,
+				key: "focusedTag",
+				transform: getTagByPath,
+				validate: (tag) => Boolean(tag),
+			});
 		},
 	});

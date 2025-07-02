@@ -1,4 +1,4 @@
-import { TAbstractFile, WorkspaceLeaf } from "obsidian";
+import { CachedMetadata, TAbstractFile, TFile, WorkspaceLeaf } from "obsidian";
 
 export const FFS_FOCUSED_FOLDER_PATH_KEY = "FocusedFolderPath";
 export const FFS_FOCUSED_TAG_PATH_KEY = "FocusedTagPath";
@@ -25,6 +25,12 @@ export type VaultChangeEvent = CustomEvent<{
 	file: TAbstractFile;
 	changeType: VaultChangeType;
 	oldPath?: string;
+}>;
+export const MetadataCacheChangeEventName = "FFS-MetadataCacheChangeEvent";
+export type MetadataCacheChangeEvent = CustomEvent<{
+	file: TFile;
+	data: string;
+	cache: CachedMetadata
 }>;
 
 export const FFS_PLUGIN_SETTINGS = "FolderFileSplitterPlugin-Settings";

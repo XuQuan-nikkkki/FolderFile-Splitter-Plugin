@@ -1,195 +1,88 @@
-import {
-	closestCenter,
-	DndContext,
-	DragEndEvent,
-	DragOverlay,
-	DragStartEvent,
-	KeyboardSensor,
-	PointerSensor,
-	useSensor,
-	useSensors,
-} from "@dnd-kit/core";
-import {
-	SortableContext,
-	sortableKeyboardCoordinates,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import { TFolder } from "obsidian";
-import { Fragment, useEffect, useState } from "react";
-import { StoreApi, UseBoundStore } from "zustand";
+import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import FolderFileSplitterPlugin from "src/main";
+import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
 
+import ManualSortContainer from "../ManualSort/Container";
+
+import FoldersBreadcrumbs from "./Breadcrumbs";
 import FolderToSort from "./FolderToSort";
 
 type Props = {
 	parentFolder: TFolder | null;
-	useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>;
-	plugin: FolderFileSplitterPlugin;
 };
-const ManualSortFolders = ({
-	parentFolder,
-	useExplorerStore,
-	plugin,
-}: Props) => {
+const ManualSortFolders = ({ parentFolder }: Props) => {
+	const { useExplorerStore } = useExplorer();
+
 	const {
 		getSubFolders,
 		sortFolders,
-		folderSortRule,
 		moveFolderInManualOrder,
-		findFolderByPath,
+		rootFolder,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			getSubFolders: store.getSubFolders,
 			sortFolders: store.sortFolders,
-			folderSortRule: store.folderSortRule,
-			order: store.foldersManualSortOrder,
 			moveFolderInManualOrder: store.moveFolderInManualOrder,
-			findFolderByPath: store.findFolderByPath,
+			rootFolder: store.rootFolder,
+			// for dependency tracking only
+			foldersOrder: store.foldersManualSortOrder
 		}))
 	);
 
-	const [folder, setFolder] = useState<TFolder | null>(null);
-	const [activeId, setActiveId] = useState<string | null>(null);
-
-	const sensors = useSensors(
-		useSensor(PointerSensor),
-		useSensor(KeyboardSensor, {
-			coordinateGetter: sortableKeyboardCoordinates,
-		})
+	const [currentFolder, setCurrentFolder] = useState<TFolder | null>(
+		rootFolder
 	);
 
 	useEffect(() => {
-		const targetFolder = parentFolder ?? plugin.app.vault.getRoot();
-		setFolder(targetFolder);
+		const targetFolder = parentFolder ?? rootFolder;
+		setCurrentFolder(targetFolder);
 	}, []);
 
 	const getSortedFolders = () => {
-		if (!folder) return [];
-		return sortFolders(getSubFolders(folder));
+		if (!currentFolder) return [];
+		return sortFolders(getSubFolders(currentFolder));
 	};
 
-	const onDragStart = (event: DragStartEvent) => {
-		setActiveId(String(event.active.id));
-	};
+	if (!currentFolder) return null;
 
-	const onDragEnd = async (event: DragEndEvent) => {
-		const { active, over } = event;
-
-		if (over && active.id !== over.id) {
-			const folder = active.data.current?.item as TFolder;
-			if (!folder) return;
-			const atIndex = getSortedFolders().findIndex(
-				(f) => f.path === over.id
-			);
-			return await moveFolderInManualOrder(folder, atIndex);
-		}
-	};
-
-	const goInToFolder = (folder: TFolder | null) => {
-		if (!folder) return;
-		setFolder(folder);
-	};
-
-	const renderSlashSign = () => <span> / </span>;
-
-	const getEnterFolderBtnClassName = (disabled?: boolean) =>
-		[
-			"ffs__enter-folder-button",
-			disabled ? "ffs__enter-folder-button--disabled" : "",
-		].join(" ");
-
-	const renderBreadcrumbs = () => {
-		if (!folder) return null;
-		if (folder.isRoot()) {
-			return (
-				<div className={getEnterFolderBtnClassName(true)}>
-					{plugin.app.vault.getName()}
-				</div>
-			);
-		}
-		const crumbs = folder.path.split("/");
-		const rootFolder = plugin.app.vault.getRoot();
-		return (
-			<>
-				<div
-					className={getEnterFolderBtnClassName()}
-					onClick={() => goInToFolder(rootFolder)}
-				>
-					{plugin.app.vault.getName()}
-				</div>
-				{renderSlashSign()}
-				{crumbs.map((crumb, index) => {
-					const path = crumbs.slice(0, index + 1).join("/");
-					const target = findFolderByPath(path);
-					return (
-						<Fragment key={crumb + index}>
-							{index > 0 && renderSlashSign()}
-							<div
-								className={getEnterFolderBtnClassName(
-									index === crumbs.length - 1
-								)}
-								onClick={() => goInToFolder(target)}
-							>
-								{crumb}
-							</div>
-						</Fragment>
-					);
-				})}
-			</>
-		);
-	};
-
-	if (!folder) return null;
-
-	const items = getSortedFolders().map((folder) => folder.path);
-
-	const renderOverlayContent = () => {
-		if (!activeId) return null;
-		const folder = getSortedFolders().find((f) => f.path === activeId);
+	const renderOverlayContent = (folder: TFolder) => {
 		if (!folder) return null;
 		return (
 			<div className="ffs__sorting-item-container">
-				<FolderToSort
-					folder={folder}
-					useExplorerStore={useExplorerStore}
-					goInToFolder={goInToFolder}
-				/>
+				<FolderToSort folder={folder} goInToFolder={setCurrentFolder} />
 			</div>
 		);
 	};
 
+	const renderBreadcrumbs = () => (
+		<div className="ffs__manual-sort-breadcrumbs-container">
+			<FoldersBreadcrumbs
+				folder={currentFolder}
+				setFolder={setCurrentFolder}
+			/>
+		</div>
+	);
+
+	const sortedFolders = getSortedFolders();
+	const items = sortedFolders.map((folder) => folder.path);
 	return (
-		<DndContext
-			sensors={sensors}
-			collisionDetection={closestCenter}
-			onDragStart={onDragStart}
-			onDragEnd={onDragEnd}
+		<ManualSortContainer
+			items={items}
+			changeOrder={moveFolderInManualOrder}
+			renderOverlay={renderOverlayContent}
+			breadcrumbs={renderBreadcrumbs()}
 		>
-			<div className="ffs__manual-sort-container">
-				<div className="ffs__manual-sort-breadcrumbs">
-					{renderBreadcrumbs()}
-				</div>
-				<SortableContext
-					items={items}
-					strategy={verticalListSortingStrategy}
-				>
-					<div className="ffs__manual-sort-list">
-						{getSortedFolders().map((folder) => (
-							<FolderToSort
-								key={folder.path}
-								folder={folder}
-								useExplorerStore={useExplorerStore}
-								goInToFolder={goInToFolder}
-							/>
-						))}
-					</div>
-				</SortableContext>
-			</div>
-			<DragOverlay>{renderOverlayContent()}</DragOverlay>
-		</DndContext>
+			{sortedFolders.map((f) => (
+				<FolderToSort
+					key={f.path}
+					folder={f}
+					goInToFolder={setCurrentFolder}
+				/>
+			))}
+		</ManualSortContainer>
 	);
 };
 

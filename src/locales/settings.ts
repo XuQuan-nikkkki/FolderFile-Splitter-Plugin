@@ -127,7 +127,7 @@ export const EN_SETTINGS: SettingsLocaleResource = {
 		desc: "When enabled, files inside subfolders will be included in the file list and their count will be reflected in the folder’s file count.",
 	},
 	showFilesCount: {
-		name: "Show file count",
+		name: "Show files count",
 		desc: "Display the number of files next to each folder or tag. The count will appear on the right side of the item name.",
 	},
 	openDestinationFolderAfterMove: {

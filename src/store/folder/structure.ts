@@ -15,8 +15,9 @@ export interface FolderStructureSlice {
 
 	getNameOfFolder: (folder: TFolder) => string;
 
-	getFolderAncestors: (folder: TFolder) => TFolder[];
+	getFolderAncestors: (folder: TFolder, includeRoot?: boolean) => TFolder[];
 	isAnscestorOf: (ancestor: TFolder, folder: TFolder) => boolean;
+	getFolderLevel: (folder: TFolder) => number;
 
 	getTopLevelFolders: () => TFolder[];
 	isTopLevelFolder: (folder: TFolder) => boolean;
@@ -45,7 +46,10 @@ export const createFolderStructureSlice =
 		getNameOfFolder: (folder: TFolder) => {
 			return folder.isRoot() ? plugin.app.vault.getName() : folder.name;
 		},
-		getFolderAncestors: (folder: TFolder): TFolder[] => {
+		getFolderAncestors: (
+			folder: TFolder,
+			includeRoot = false
+		): TFolder[] => {
 			const ancestors: TFolder[] = [];
 			let current = folder.parent;
 
@@ -54,11 +58,14 @@ export const createFolderStructureSlice =
 				current = current.parent;
 			}
 
-			return ancestors;
+			return includeRoot ? [get().rootFolder, ...ancestors] : ancestors;
 		},
 		isAnscestorOf: (ancestor: TFolder, folder: TFolder): boolean => {
 			const ancestors = get().getFolderAncestors(folder);
 			return ancestors.some((f) => f.path === ancestor.path);
+		},
+		getFolderLevel: (folder: TFolder) => {
+			return folder.isRoot() ? 0 : folder.path.split("/").length - 1;
 		},
 
 		isFolderPathValid: (path: string) => {
@@ -116,7 +123,7 @@ export const createFolderStructureSlice =
 				return `${folder.path}/${folder.name}${MARKDOWN_FILE_EXTENSION}`;
 			}
 
-			return customFolderNotePath.replace("{folder}", folder.name || "");
+			return customFolderNotePath.replace("{folder}", folder.path);
 		},
 
 		findFolderByPath: (path: string): TFolder | null => {

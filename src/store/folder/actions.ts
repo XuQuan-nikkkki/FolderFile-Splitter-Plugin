@@ -11,8 +11,11 @@ export interface FolderActionsSlice {
 	latestFolderCreatedTime: number | null;
 
 	getNewFolderDefaultName: (parentFolder: TFolder) => string;
+	getTargetFolder: () => TFolder;
+	isLastCreatedFolder: (folder: TFolder) => boolean;
 
 	createNewFolder: (parentFolder: TFolder) => Promise<TFolder | undefined>;
+	createNewFolderAndFocus: (parentFolder: TFolder) => Promise<void>;
 
 	moveFolder: (folder: TFolder, newPath: string) => Promise<void>;
 	renameFolder: (folder: TFolder, newName: string) => Promise<void>;
@@ -34,6 +37,20 @@ export const createFolderActionsSlice =
 				subfolders.map((folder) => folder.name)
 			);
 		},
+		getTargetFolder: () => {
+			const { focusedFolder, rootFolder } = get();
+			return focusedFolder || rootFolder;
+		},
+
+		isLastCreatedFolder: (folder: TFolder): boolean => {
+			const { latestCreatedFolder, latestFolderCreatedTime } = get();
+			const now = Date.now();
+			return Boolean(
+				folder.path === latestCreatedFolder?.path &&
+					latestFolderCreatedTime &&
+					now - latestFolderCreatedTime < 3000
+			);
+		},
 
 		createNewFolder: async (
 			parentFolder: TFolder
@@ -49,6 +66,15 @@ export const createFolderActionsSlice =
 				latestFolderCreatedTime: Date.now(),
 			});
 			return newFolder;
+		},
+		createNewFolderAndFocus: async (parentFolder: TFolder) => {
+			const { createNewFolder, expandAncestors, changeFocusedFolder } =
+				get();
+			const newFolder = await createNewFolder(parentFolder);
+			if (newFolder) {
+				expandAncestors(newFolder);
+				await changeFocusedFolder(newFolder);
+			}
 		},
 		trashFolder: async (folder: TFolder) => {
 			const { focusedFolder, isAnscestorOf, setFocusedFolderAndSave } =

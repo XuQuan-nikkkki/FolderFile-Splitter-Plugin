@@ -34,7 +34,7 @@ const Explorer = ({ plugin }: Props) => {
 
 	return (
 		<ExplorerContext.Provider value={{ useExplorerStore, plugin }}>
-			<DragAndDropExplorer />;
+			<DragAndDropExplorer />
 		</ExplorerContext.Provider>
 	);
 };

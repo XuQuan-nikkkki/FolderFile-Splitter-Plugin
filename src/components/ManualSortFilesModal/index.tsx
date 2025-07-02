@@ -2,12 +2,12 @@ import { Modal, TFolder } from "obsidian";
 import { createRoot, Root } from "react-dom/client";
 import { StoreApi, UseBoundStore } from "zustand";
 
+import { ExplorerContext } from "src/hooks/useExplorer";
 import { TIPS_COPY } from "src/locales";
 import FolderFileSplitterPlugin from "src/main";
 import { ExplorerStore } from "src/store";
 
 import ManualSortFiles from "./ManualSortFiles";
-
 export class ManualSortFilesModal extends Modal {
 	folder: TFolder | null;
 	useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>;
@@ -43,11 +43,14 @@ export class ManualSortFilesModal extends Modal {
 		this.destroy();
 		this.root = createRoot(this.contentEl);
 		this.root.render(
-			<ManualSortFiles
-				parentFolder={this.folder}
-				useExplorerStore={this.useExplorerStore}
-				plugin={this.plugin}
-			/>
+			<ExplorerContext.Provider
+				value={{
+					plugin: this.plugin,
+					useExplorerStore: this.useExplorerStore,
+				}}
+			>
+				<ManualSortFiles parentFolder={this.folder} />
+			</ExplorerContext.Provider>
 		);
 	}
 }

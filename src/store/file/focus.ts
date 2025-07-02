@@ -9,9 +9,11 @@ import { ExplorerStore } from "..";
 export interface FocusedFileSlice {
 	focusedFile: TFile | null;
 
+	isFocusedFile: (file: TFile) => boolean;
+
 	setFocusedFileAndSave: (file: TFile | null) => void;
-	restoreLastFocusedFile: () => Promise<void>;
-	clearFocusedFile: () => Promise<void>;
+	restoreLastFocusedFile: () => void;
+	clearFocusedFile: () => void;
 }
 
 export const createFocusedFileSlice =
@@ -20,6 +22,10 @@ export const createFocusedFileSlice =
 	): StateCreator<ExplorerStore, [], [], FocusedFileSlice> =>
 	(set, get) => ({
 		focusedFile: null,
+
+		isFocusedFile: (file: TFile) => {
+			return file.path === get().focusedFile?.path;
+		},
 
 		setFocusedFileAndSave: (file: TFile | null) => {
 			const { setValueAndSaveInLocalStorage } = get();
@@ -31,7 +37,7 @@ export const createFocusedFileSlice =
 			});
 		},
 
-		restoreLastFocusedFile: async () => {
+		restoreLastFocusedFile: () => {
 			const {
 				findFileByPath,
 				selectFileAndOpen,
@@ -47,7 +53,7 @@ export const createFocusedFileSlice =
 			}
 		},
 
-		clearFocusedFile: async () => {
-			await get().setFocusedFileAndSave(null);
+		clearFocusedFile: () => {
+			get().setFocusedFileAndSave(null);
 		},
 	});

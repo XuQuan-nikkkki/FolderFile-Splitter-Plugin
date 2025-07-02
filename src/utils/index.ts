@@ -32,3 +32,6 @@ export function logError({
 export * from "./array";
 export * from "./file";
 export * from "./string";
+export * from "./menu";
+export * from "./function"
+export * from './style'

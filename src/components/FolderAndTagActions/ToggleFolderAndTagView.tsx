@@ -8,6 +8,8 @@ import {
 } from "src/hooks/useSettingsHandler";
 import { TIPS_COPY } from "src/locales";
 
+const IconClassNames = `ffs__action-button svg-icon `;
+
 const ToggleFolderAndTagMode = () => {
 	const { plugin } = useExplorer();
 	const { language, settings } = plugin;
@@ -16,15 +18,6 @@ const ToggleFolderAndTagMode = () => {
 	const { showTagView } = useShowTagView(settings.showTagView);
 
 	const copy_lang = language === "zh" ? "zh" : "en";
-
-	const updateView = async (
-		key: "showFolderView" | "showTagView",
-		value: boolean
-	) => {
-		plugin.settings[key] = value;
-		await plugin.saveSettings();
-		plugin.triggerSettingsChangeEvent(key, value);
-	};
 
 	const getButtonClassNames = (disabled: boolean) =>
 		classNames(
@@ -43,9 +36,14 @@ const ToggleFolderAndTagMode = () => {
 				className={getButtonClassNames(!showFolderView)}
 				aria-label={copy[copy_lang]}
 				data-tooltip-position="bottom"
-				onClick={() => updateView("showFolderView", !showFolderView)}
+				onClick={async () =>
+					await plugin.changeSetting(
+						"showFolderView",
+						!showFolderView
+					)
+				}
 			>
-				<FolderIcon className="ffs__action-button svg-icon ffs__folder-icon" />
+				<FolderIcon className={`${IconClassNames} ffs__folder-icon`} />
 			</div>
 		);
 	};
@@ -57,9 +55,11 @@ const ToggleFolderAndTagMode = () => {
 				className={getButtonClassNames(!showTagView)}
 				aria-label={copy[copy_lang]}
 				data-tooltip-position="bottom"
-				onClick={() => updateView("showTagView", !showTagView)}
+				onClick={async () =>
+					await plugin.changeSetting("showTagView", !showTagView)
+				}
 			>
-				<TagIcon className="ffs__action-button svg-icon" />
+				<TagIcon className={IconClassNames} />
 			</div>
 		);
 	};

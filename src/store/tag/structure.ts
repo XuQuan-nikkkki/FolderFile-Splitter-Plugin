@@ -7,18 +7,28 @@ import { ExplorerStore } from "..";
 
 import { TagNode, TagTree } from ".";
 
+export const DEFAULT_TAG_TREE = new Map();
+
 export interface TagStructureSlice {
 	tagTree: TagTree;
 
-	generateTagTree: () => TagTree;
-
-	getTagsOfFile: (file: TFile) => string[];
-	getTopLevelTags: () => TagNode[];
+	isTagValid: (tag: TagNode) => boolean;
+	hasSubTag: (tagNode: TagNode) => boolean;
 	isTopLevelTag: (tagNode: TagNode) => boolean;
+	getTopLevelTags: () => TagNode[];
+
+	getTagPathParts: (path: string) => string[];
+	getTagByPath: (path: string) => TagNode | undefined;
+	getTagsByParent: (parentTag: string) => TagNode[];
+	getParentTag: (tag: TagNode) => TagNode | undefined;
+	getTagAncestors: (tag: TagNode) => TagNode[];
+
+	getTagPathsOfFile: (file: TFile) => string[];
+	getTagsOfFile: (file: TFile) => TagNode[];
+	isFileHasTag: (file: TFile, tag: TagNode) => boolean;
+
 	getFilesInTag: (tagNode: TagNode) => TFile[];
 	getFilesCountInTag: (tagNode: TagNode) => number;
-	getTagsByParent: (parentTag: string) => TagNode[];
-	hasSubTag: (tagNode: TagNode) => boolean;
 }
 
 export const createTagStructureSlice =
@@ -26,112 +36,99 @@ export const createTagStructureSlice =
 		plugin: FolderFileSplitterPlugin
 	): StateCreator<ExplorerStore, [], [], TagStructureSlice> =>
 	(set, get) => ({
-		tagTree: new Map(),
+		tagTree: DEFAULT_TAG_TREE,
 
-		getTagsOfFile: (file: TFile) => {
+		isTagValid: (tag: TagNode) => {
+			return Boolean(get().getTagByPath(tag.fullPath));
+		},
+		hasSubTag: (tag: TagNode): boolean => {
+			return tag.subTagPaths?.size > 0;
+		},
+		isTopLevelTag: (tag: TagNode): boolean => {
+			const { isTagValid, getParentTag } = get();
+			return isTagValid(tag) && !getParentTag(tag);
+		},
+		getTopLevelTags: () => {
+			const { tagTree, isTopLevelTag } = get();
+			// console.log(tagTree)
+			return Array.from(tagTree.values()).filter(isTopLevelTag);
+		},
+
+		getTagPathParts: (path: string) => {
+			return path.replace(/^#/, "").split("/");
+		},
+		getTagByPath: (path: string) => {
+			return get().tagTree.get(path);
+		},
+		getTagsByParent: (parentTag: string): TagNode[] => {
+			const { tagTree } = get();
+			const tags = Array.from(tagTree.values()).filter(
+				(tagNode) => tagNode.parentPath === parentTag
+			);
+			return tags;
+		},
+		getParentTag: (tag: TagNode) => {
+			return tag.parentPath
+				? get().getTagByPath(tag.parentPath)
+				: undefined;
+		},
+		getTagAncestors: (tag: TagNode) => {
+			const { getParentTag } = get();
+			const ancestors: TagNode[] = [];
+			let current = getParentTag(tag);
+
+			while (current) {
+				ancestors.unshift(current);
+				current = getParentTag(current);
+			}
+			return ancestors;
+		},
+
+		getTagPathsOfFile: (file: TFile) => {
 			const cache = plugin.app.metadataCache.getFileCache(file);
 			if (!cache) return [];
 			return [...new Set(getAllTags(cache))];
 		},
-
-		generateTagTree: () => {
-			const { _getOrCreateTagNode, getMarkdownFiles, getTagsOfFile } =
-				get();
-
-			const tagTree: TagTree = new Map();
-			const markdownFiles = getMarkdownFiles();
-			if (!markdownFiles || markdownFiles.length === 0) return tagTree;
-
-			markdownFiles.forEach((file) => {
-				const tags = getTagsOfFile(file);
-				if (!tags || tags.length === 0) return;
-
-				tags.forEach((tag) => {
-					const tagParts = tag.replace("#", "").split("/");
-					let parentTag: string | null = null;
-
-					tagParts.forEach((part, index) => {
-						const fullTagPath = tagParts
-							.slice(0, index + 1)
-							.join("/");
-						const tagNode = _getOrCreateTagNode(
-							tagTree,
-							part,
-							fullTagPath,
-							parentTag
-						);
-
-						if (index === tagParts.length - 1) {
-							tagNode.files.push(file);
-						}
-
-						if (parentTag) {
-							const parentNode = tagTree.get(parentTag);
-							if (parentNode) {
-								parentNode.children.add(fullTagPath);
-							}
-						}
-
-						parentTag = fullTagPath;
-					});
-				});
-			});
-
-			set({
-				tagTree,
-			});
-			return tagTree;
+		getTagsOfFile: (file: TFile) => {
+			const { getTagPathsOfFile, getTagByPath } = get();
+			const paths = getTagPathsOfFile(file);
+			return paths.map(getTagByPath).filter(Boolean) as TagNode[];
 		},
-
-		getTopLevelTags: () => {
-			const { tagTree } = get();
-			return Array.from(tagTree.values()).filter(
-				(tagNode) => !tagNode.parent
-			);
-		},
-
-		isTopLevelTag: (tagNode: TagNode): boolean => {
-			const { tagTree } = get();
-			return tagNode && !tagNode.parent && tagTree.has(tagNode.fullPath);
+		isFileHasTag: (file: TFile, tag: TagNode) => {
+			const { getTagsOfFile } = get();
+			const tags = getTagsOfFile(file);
+			return tags.some((t) => t.fullPath === tag.fullPath);
 		},
 
 		getFilesInTag: (tagNode: TagNode): TFile[] => {
-			if (!tagNode || !tagNode.files) return [];
-
-			const { tagTree } = get();
 			const { includeSubTagFiles } = plugin.settings;
+			const { getTagByPath } = get();
 
-			const files = [...tagNode.files];
-			if (!includeSubTagFiles) return files;
+			const visited = new Set<string>();
 
-			const getAllChildFiles = (node: TagNode): TFile[] => {
-				const childFiles: TFile[] = [];
-				node.children.forEach((childPath) => {
-					const childNode = tagTree.get(childPath);
-					if (childNode) {
-						childFiles.push(...childNode.files);
+			const getFiles = (tag: TagNode): TFile[] => {
+				if (visited.has(tag.fullPath)) return [];
+				visited.add(tag.fullPath);
+
+				const allFiles = [...tag.files];
+
+				if (!includeSubTagFiles) return allFiles;
+
+				for (const subTagPath of tag.subTagPaths) {
+					const subTag = getTagByPath(subTagPath);
+					if (subTag) {
+						allFiles.push(...getFiles(subTag));
 					}
-				});
-				return childFiles;
+				}
+
+				return allFiles;
 			};
 
-			return [...new Set([...files, ...getAllChildFiles(tagNode)])];
+			return getFiles(tagNode);
 		},
 
 		getFilesCountInTag: (tagNode: TagNode): number => {
 			const { getFilesInTag } = get();
 			return getFilesInTag(tagNode).length;
-		},
-
-		getTagsByParent: (parentTag: string): TagNode[] => {
-			const { tagTree } = get();
-			const tags = Array.from(tagTree.values()).filter(
-				(tagNode) => tagNode.parent === parentTag
-			);
-			return tags;
-		},
-
-		hasSubTag: (tag: TagNode): boolean => {
-			return tag.children && tag.children.size > 0;
 		},
 	});

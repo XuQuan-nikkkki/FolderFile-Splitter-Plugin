@@ -1,5 +1,15 @@
 import classNames from "classnames";
-import { ReactElement, useEffect, useRef, useState } from "react";
+import {
+	ReactElement,
+	Ref,
+	RefObject,
+	useEffect,
+	useImperativeHandle,
+	useRef,
+	useState,
+} from "react";
+
+import { Noop } from "src/utils";
 
 type Options = {
 	className?: string;
@@ -8,17 +18,21 @@ type Options = {
 const useRenderEditableName = (
 	defaultName: string,
 	onSaveName: (name: string) => Promise<void>,
-	options?: Options
+	options?: Options,
+	ref?: Ref<{ selectFileNameText: Noop }>
 ): {
 	renderEditableName: () => ReactElement;
-	selectFileNameText: () => void;
-	onBeginEdit: () => void;
 	isEditing: boolean;
+	onStartEditingName: Noop;
+	setIsFocusing: (isFocusing: boolean) => void;
+	contentRef: RefObject<HTMLDivElement>;
 } => {
 	const eleRef = useRef<HTMLDivElement>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
+	const contentRef = useRef<HTMLDivElement>(null);
 
 	const [isEditing, setIsEditing] = useState(false);
+	const [isFocusing, setIsFocusing] = useState<boolean>(false);
 	const [name, setName] = useState(defaultName);
 
 	const onBeginEdit = () => {
@@ -28,7 +42,7 @@ const useRenderEditableName = (
 
 	const onSaveNewName = async () => {
 		try {
-			await onSaveName(name);
+			await onSaveName(name.trim());
 		} catch (error) {
 			console.error("Save  failed：", error);
 			alert("Content save failed, please try again!！");
@@ -39,10 +53,16 @@ const useRenderEditableName = (
 	};
 
 	const onClickOutside = (event: MouseEvent) => {
-		if (inputRef?.current && !inputRef.current.contains(event.target)) {
+		const { current: input } = inputRef;
+		const { current: content } = contentRef;
+		const node = event.target as Node;
+		if (input && !input.contains(node)) {
 			if (isEditing) {
 				onSaveNewName();
 			}
+		}
+		if (content && !content.contains(node)) {
+			setIsFocusing(false);
 		}
 	};
 
@@ -55,8 +75,12 @@ const useRenderEditableName = (
 
 	const onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
 		if (event.key === "Enter") {
-			event.preventDefault();
-			onSaveNewName();
+			if (isFocusing && !isEditing) {
+				onStartEditingName();
+			} else {
+				event.preventDefault();
+				onSaveNewName();
+			}
 		} else if (event.key === "Escape") {
 			event.preventDefault();
 			setIsEditing(false);
@@ -75,6 +99,21 @@ const useRenderEditableName = (
 			selectText(element);
 		}
 	};
+
+	const onStartEditingName = () => {
+		onBeginEdit();
+		setTimeout(() => {
+			selectFileNameText();
+		}, 100);
+	};
+
+	useImperativeHandle(
+		ref,
+		() => ({
+			selectFileNameText,
+		}),
+		[selectFileNameText]
+	);
 
 	const renderEditableName = () => {
 		const { className, bold } = options ?? {};
@@ -100,9 +139,10 @@ const useRenderEditableName = (
 
 	return {
 		renderEditableName,
-		selectFileNameText,
-		onBeginEdit,
 		isEditing,
+		onStartEditingName,
+		setIsFocusing,
+		contentRef,
 	};
 };
 

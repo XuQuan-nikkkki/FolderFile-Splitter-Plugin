@@ -16,12 +16,16 @@ const SortFolders = () => {
 		folderSortRule,
 		folderSortRulesGroup,
 		changeFolderSortRuleAndUpdateOrder,
+		rootFolder,
+		initFoldersOrder,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			folderSortRule: store.folderSortRule,
 			folderSortRulesGroup: store.folderSortRulesGroup,
 			changeFolderSortRuleAndUpdateOrder:
 				store.changeFolderSortRuleAndUpdateOrder,
+			rootFolder: store.rootFolder,
+			initFoldersOrder: store.initFoldersManualSortOrder,
 		}))
 	);
 
@@ -34,16 +38,16 @@ const SortFolders = () => {
 		);
 
 	const onChangeSortRule = async (rule: FolderSortRule) => {
-		await changeFolderSortRuleAndUpdateOrder(rule);
-
 		if (rule === FOLDER_MANUAL_SORT_RULE) {
+			await initFoldersOrder();
 			const modal = new ManualSortFoldersModal(
 				plugin,
 				useExplorerStore,
-				plugin.app.vault.getRoot()
+				rootFolder
 			);
 			modal.open();
 		}
+		await changeFolderSortRuleAndUpdateOrder(rule);
 	};
 
 	return (

@@ -14,9 +14,9 @@ import { createToggleTagSlice, ToggleTagSlice } from "./toggle";
 export type TagNode = {
 	name: string;
 	files: TFile[];
-	parent: string | null;
+	parentPath: string | null;
 	fullPath: string;
-	children: Set<string>;
+	subTagPaths: Set<string>;
 };
 export type TagTree = Map<string, TagNode>;
 
