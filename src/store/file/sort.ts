@@ -110,7 +110,6 @@ export const createSortFileSlice =
 			const lastFileSortRule = await restoreDataFromPlugin({
 				pluginKey: FFS_FILE_SORT_RULE_KEY,
 				key: "fileSortRule",
-				needParse: true,
 			});
 			if (lastFileSortRule === FILE_MANUAL_SORT_RULE) {
 				await restoreFilesManualSortOrder();

@@ -392,7 +392,7 @@ div.ffs__file-content {
 	gap: 8px;
 }
 
-.ffs__manual-sort-breadcrumbs {
+.ffs__manual-sort-breadcrumbs-container {
 	width: 100%;
 	background-color: var(--interactive-normal);
 	border-radius: var(--radius-s);

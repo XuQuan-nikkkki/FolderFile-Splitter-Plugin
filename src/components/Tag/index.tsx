@@ -24,7 +24,7 @@ const Tag = ({
 
 	const {
 		hasSubTag,
-		setFocusedTag,
+		changeFocusedTag,
 		focusedTag,
 		getFilesInTag,
 		getTagsByParent,
@@ -35,7 +35,7 @@ const Tag = ({
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			hasSubTag: store.hasSubTag,
-			setFocusedTag: store.setFocusedTag,
+			changeFocusedTag: store.changeFocusedTag,
 			focusedTag: store.focusedTag,
 			getTagsByParent: store.getTagsByParent,
 			getFilesInTag: store.getFilesInTag,
@@ -57,13 +57,13 @@ const Tag = ({
 		}
 	};
 
-	const onToggleSelectState = async (): Promise<void> => {
+	const onToggleSelectState = (): void => {
 		if (isFocused) {
-			setFocusedTag(null);
-			await changeViewMode("all");
+			changeFocusedTag(null);
+			changeViewMode("all");
 		} else {
-			setFocusedTag(tag);
-			await changeViewMode("tag");
+			changeFocusedTag(tag);
+			changeViewMode("tag");
 		}
 	};
 
@@ -104,9 +104,9 @@ const Tag = ({
 		<div
 			className={getClassNames()}
 			style={getIndentStyle()}
-			onClick={async () => {
+			onClick={() => {
 				onToggleExpandState();
-				await onToggleSelectState();
+				onToggleSelectState();
 			}}
 			data-tooltip-position="right"
 			aria-label={getAriaLabel()}

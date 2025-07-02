@@ -114,7 +114,6 @@ export const createSortFolderSlice =
 			const lastFolderSortRule = await restoreDataFromPlugin({
 				pluginKey: FFS_FOLDER_SORT_RULE_KEY,
 				key: "folderSortRule",
-				needParse: true,
 			});
 			if (lastFolderSortRule === FOLDER_MANUAL_SORT_RULE) {
 				await restoreFoldersManualSortOrder();

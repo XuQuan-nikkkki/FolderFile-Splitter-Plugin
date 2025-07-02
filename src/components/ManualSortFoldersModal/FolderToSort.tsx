@@ -1,19 +1,20 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { TFolder } from "obsidian";
-import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
 import { FFS_SORT_FOLDER } from "src/assets/constants";
 import { GripIcon } from "src/assets/icons";
+import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
 
 type Props = {
 	folder: TFolder;
-	useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>;
 	goInToFolder: (folder: TFolder | null) => void;
 };
-const FolderToSort = ({ folder, useExplorerStore, goInToFolder }: Props) => {
+const FolderToSort = ({ folder, goInToFolder }: Props) => {
+	const { useExplorerStore } = useExplorer();
+
 	const { getSubFolders } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			getSubFolders: store.getSubFolders,

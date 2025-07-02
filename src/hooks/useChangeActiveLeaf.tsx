@@ -12,14 +12,16 @@ const useChangeActiveLeaf = () => {
 	const {
 		focusedFile,
 		setFocusedFileAndSave,
-		expandFolder,
 		changeFocusedFolder,
+		isFocusedFile,
+		expandAncestors,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			focusedFile: store.focusedFile,
-			expandFolder: store.expandFolder,
 			changeFocusedFolder: store.changeFocusedFolder,
 			setFocusedFileAndSave: store.setFocusedFileAndSave,
+			isFocusedFile: store.isFocusedFile,
+			expandAncestors: store.expandAncestors,
 		}))
 	);
 
@@ -39,14 +41,13 @@ const useChangeActiveLeaf = () => {
 	const onHandleActiveLeafChange = async () => {
 		if (!plugin.settings.revealFileInExplorer) return;
 		const currentActiveFile = plugin.app.workspace.getActiveFile();
-		if (currentActiveFile && currentActiveFile.path !== focusedFile?.path) {
-			let currentFolder = currentActiveFile.parent;
-			while (currentFolder && currentFolder.parent) {
-				expandFolder(currentFolder);
-				currentFolder = currentFolder.parent;
-			}
-			changeFocusedFolder(currentActiveFile.parent);
-			await setFocusedFileAndSave(currentActiveFile);
+		if (!currentActiveFile || isFocusedFile(currentActiveFile)) return;
+
+		setFocusedFileAndSave(currentActiveFile);
+		const currentFolder = currentActiveFile.parent;
+		if (currentFolder) {
+			expandAncestors(currentFolder);
+			changeFocusedFolder(currentFolder);
 		}
 	};
 };

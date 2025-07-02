@@ -6,6 +6,7 @@ import { TIPS_COPY } from "src/locales";
 import FolderFileSplitterPlugin from "src/main";
 import { ExplorerStore } from "src/store";
 
+import ContextProvider from "../ContextProvider";
 
 import ManualSortFolders from "./ManualSortFolders";
 
@@ -18,7 +19,7 @@ export class ManualSortFoldersModal extends Modal {
 	constructor(
 		plugin: FolderFileSplitterPlugin,
 		useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>,
-		folder: TFolder,
+		folder: TFolder
 	) {
 		super(plugin.app);
 		this.plugin = plugin;
@@ -44,11 +45,9 @@ export class ManualSortFoldersModal extends Modal {
 		this.destroy();
 		this.root = createRoot(this.contentEl);
 		this.root.render(
-			<ManualSortFolders
-				parentFolder={this.folder}
-				useExplorerStore={this.useExplorerStore}
-				plugin={this.plugin}
-			/>
+			<ContextProvider plugin={this.plugin}>
+				<ManualSortFolders parentFolder={this.folder} />
+			</ContextProvider>
 		);
 	}
 }

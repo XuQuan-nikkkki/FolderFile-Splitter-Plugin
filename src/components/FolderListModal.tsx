@@ -41,16 +41,11 @@ export class FolderListModal extends SuggestModal<TFolder> {
 
 	async onChooseSuggestion(folder: TFolder) {
 		const { moveFile, moveFolder } = this.useExplorerStore.getState();
-		try {
-			const newPath = folder.path + "/" + this.item.name;
-			if (isFile(this.item)) {
-				await moveFile(this.item, newPath);
-			} else {
-				await moveFolder(this.item as TFolder, newPath);
-			}
-		} catch (e) {
-			alert(e);
-			console.error(e);
+		const newPath = folder.path + "/" + this.item.name;
+		if (isFile(this.item)) {
+			await moveFile(this.item, newPath);
+		} else {
+			await moveFolder(this.item as TFolder, newPath);
 		}
 	}
 }

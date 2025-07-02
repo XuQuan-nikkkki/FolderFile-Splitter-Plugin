@@ -71,3 +71,12 @@ export const areArraysEqual = <T>(
 
 	return true;
 };
+
+export const isLastInArray = <T>(
+	array: T[],
+	item: T,
+	findIndexFn?: (array: T[], item: T) => number
+): boolean => {
+	const index = findIndexFn ? findIndexFn(array, item) : array.indexOf(item);
+	return index === array.length - 1;
+};

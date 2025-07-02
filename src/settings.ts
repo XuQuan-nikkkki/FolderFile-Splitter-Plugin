@@ -85,6 +85,7 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	customFolderNotePath: "",
 	folderNoteMissingBehavior: FOLDER_NOTE_MISSING_BEHAVIOR.IGNORE,
 	revealFileInExplorer: false,
+	// TODO: 统一 view mode 和 show tag/folder view
 	showFolderView: true,
 	showTagView: false,
 	includeSubTagFiles: false,

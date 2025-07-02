@@ -8,7 +8,11 @@ import {
 } from "./assets/constants";
 import { ExplorerView } from "./ExplorerView";
 import { Lang } from "./locales";
-import { DEFAULT_SETTINGS, FolderFileSplitterPluginSettings } from "./settings";
+import {
+	DEFAULT_SETTINGS,
+	FolderFileSplitterPluginSettings,
+	ValueOf,
+} from "./settings";
 import { SettingTab } from "./SettingTab";
 
 export default class FolderFileSplitterPlugin extends Plugin {
@@ -144,17 +148,24 @@ export default class FolderFileSplitterPlugin extends Plugin {
 	};
 
 	async loadSettings() {
-		const rawData = await this.loadData() ?? {};
+		const rawData = (await this.loadData()) ?? {};
 		const filteredData = Object.fromEntries(
-			Object.entries(rawData).filter(
-				([key]) => key in DEFAULT_SETTINGS
-			)
+			Object.entries(rawData).filter(([key]) => key in DEFAULT_SETTINGS)
 		);
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, filteredData);
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
+	}
+
+	async changeSetting<K extends keyof FolderFileSplitterPluginSettings>(
+		key: K,
+		value: FolderFileSplitterPluginSettings[K]
+	) {
+		this.settings[key] = value;
+		await this.saveSettings();
+		this.triggerSettingsChangeEvent(key, value);
 	}
 
 	detachFileTreeLeafs = () => {

@@ -1,35 +1,19 @@
-import {
-	closestCenter,
-	DndContext,
-	DragEndEvent,
-	DragOverlay,
-	DragStartEvent,
-	KeyboardSensor,
-	PointerSensor,
-	useSensor,
-	useSensors,
-} from "@dnd-kit/core";
-import {
-	SortableContext,
-	sortableKeyboardCoordinates,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import { TFile, TFolder } from "obsidian";
-import { useState } from "react";
-import { StoreApi, UseBoundStore } from "zustand";
 import { useShallow } from "zustand/react/shallow";
 
-import FolderFileSplitterPlugin from "src/main";
+import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
+
+import ManualSortContainer from "../ManualSort/Container";
 
 import FileToSort from "./FileToSort";
 
 type Props = {
 	parentFolder: TFolder | null;
-	useExplorerStore: UseBoundStore<StoreApi<ExplorerStore>>;
-	plugin: FolderFileSplitterPlugin;
 };
-const ManualSortFiles = ({ parentFolder, useExplorerStore, plugin }: Props) => {
+const ManualSortFiles = ({ parentFolder }: Props) => {
+	const { useExplorerStore } = useExplorer();
+
 	const { getFilesInFolder, sortFiles, changeOrder } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			order: store.filesManualSortOrder,
@@ -39,71 +23,34 @@ const ManualSortFiles = ({ parentFolder, useExplorerStore, plugin }: Props) => {
 		}))
 	);
 
-	const [activeFile, setActiveFile] = useState<TFile | null>(null);
-
-	const sensors = useSensors(
-		useSensor(PointerSensor),
-		useSensor(KeyboardSensor, {
-			coordinateGetter: sortableKeyboardCoordinates,
-		})
-	);
-
 	const getSortedFiles = () => {
 		if (!parentFolder) return [];
 		const files = getFilesInFolder(parentFolder);
 		return sortFiles(files);
 	};
 
-	const onDragStart = (event: DragStartEvent) => {
-		setActiveFile(event.active.data.current?.item as TFile);
-	};
-
-	const onDragEnd = async (event: DragEndEvent) => {
-		const { active, over } = event;
-
-		if (over && active.id !== over.id) {
-			if (!activeFile) return;
-			const atIndex = getSortedFiles().findIndex(
-				(f) => f.path === over.id
-			);
-			return await changeOrder(activeFile, atIndex);
-		}
-	};
-
 	if (!parentFolder) return null;
 
-	const items = getSortedFiles().map((folder) => folder.path);
-
-	const renderOverlayContent = () => {
-		if (!activeFile) return null;
+	const renderOverlayContent = (file: TFile) => {
+		if (!file) return null;
 		return (
 			<div className="ffs__sorting-item-container">
-				<FileToSort file={activeFile} />
+				<FileToSort file={file} />
 			</div>
 		);
 	};
 
+	const items = getSortedFiles().map((file) => file.path);
 	return (
-		<DndContext
-			sensors={sensors}
-			collisionDetection={closestCenter}
-			onDragStart={onDragStart}
-			onDragEnd={onDragEnd}
+		<ManualSortContainer
+			items={items}
+			changeOrder={changeOrder}
+			renderOverlay={renderOverlayContent}
 		>
-			<div className="ffs__manual-sort-container">
-				<SortableContext
-					items={items}
-					strategy={verticalListSortingStrategy}
-				>
-					<div className="ffs__manual-sort-list">
-						{getSortedFiles().map((file) => (
-							<FileToSort key={file.path} file={file} />
-						))}
-					</div>
-				</SortableContext>
-			</div>
-			<DragOverlay>{renderOverlayContent()}</DragOverlay>
-		</DndContext>
+			{getSortedFiles().map((file) => (
+				<FileToSort key={file.path} file={file} />
+			))}
+		</ManualSortContainer>
 	);
 };
 

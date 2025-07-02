@@ -12,10 +12,11 @@ import { VIEW_MODE } from "../common";
 export interface FocusedFolderSlice {
 	focusedFolder: TFolder | null;
 
+	isFocusedFolder: (folder: TFolder) => boolean;
 	setFocusedFolderAndSave: (folder: TFolder | null) => void;
 
 	changeFocusedFolder: (folder: TFolder | null) => Promise<void>;
-	restoreLastFocusedFolder: () => Promise<void>;
+	restoreLastFocusedFolder: () => void;
 
 	openFolderNote: (folder: TFolder) => Promise<void>;
 	handleMissingFolderNote: (folderNotePath: string) => Promise<void>;
@@ -27,6 +28,10 @@ export const createFocusedFolderSlice =
 	): StateCreator<ExplorerStore, [], [], FocusedFolderSlice> =>
 	(set, get) => ({
 		focusedFolder: null,
+
+		isFocusedFolder: (folder: TFolder) => {
+			return get().focusedFolder?.path === folder.path;
+		},
 
 		setFocusedFolderAndSave: (folder: TFolder | null) => {
 			const { setValueAndSaveInLocalStorage } = get();
@@ -59,7 +64,7 @@ export const createFocusedFolderSlice =
 			}
 			// TODO: Question?
 			if (focusedFile?.parent?.path !== folder?.path) {
-				await clearFocusedFile();
+				clearFocusedFile();
 			}
 		},
 
@@ -96,13 +101,13 @@ export const createFocusedFolderSlice =
 			}
 		},
 
-		restoreLastFocusedFolder: async () => {
+		restoreLastFocusedFolder: () => {
 			const {
 				findFolderByPath,
 				rootFolder,
 				restoreDataFromLocalStorage,
 			} = get();
-			await restoreDataFromLocalStorage({
+			restoreDataFromLocalStorage({
 				localStorageKey: FFS_FOCUSED_FOLDER_PATH_KEY,
 				key: "focusedFolder",
 				transform: (path: string) =>

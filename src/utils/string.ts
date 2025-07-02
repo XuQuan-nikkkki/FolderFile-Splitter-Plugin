@@ -1,3 +1,6 @@
+import { MarkdownRenderer } from "obsidian";
+import FolderFileSplitterPlugin from "src/main";
+
 export const getAvailableName = (
 	existingNames: string[],
 	baseName: string
@@ -37,4 +40,27 @@ export const getCopyName = (
 	const baseCopyName = `${originalName} copy`;
 
 	return getAvailableName(existingNames, baseCopyName);
+};
+
+export const removeFirstHeading = (content: string): string => {
+	const lines = content.split("\n");
+	const firstNonEmptyLineIndex = lines.findIndex(
+		(line) => line.trim() !== ""
+	);
+	if (
+		firstNonEmptyLineIndex !== -1 &&
+		/^#{1,6}\s/.test(lines[firstNonEmptyLineIndex])
+	) {
+		lines.splice(firstNonEmptyLineIndex, 1);
+	}
+	return lines.join("\n").trim();
+};
+
+export const stripMarkdownSyntax = async (
+	plugin: FolderFileSplitterPlugin,
+	content: string
+): Promise<string> => {
+	const container = document.createElement("div");
+	await MarkdownRenderer.render(plugin.app, content, container, "", plugin);
+	return container.textContent ?? "";
 };

@@ -25,7 +25,7 @@ const DragAndDropExplorer = () => {
 	const { settings } = plugin;
 
 	const {
-		expandedFolderPaths,
+		isFolderExpanded,
 		moveFile,
 		moveFolder,
 		expandFolder,
@@ -33,7 +33,7 @@ const DragAndDropExplorer = () => {
 		selectFileAndOpen,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			expandedFolderPaths: store.expandedFolderPaths,
+			isFolderExpanded: store.isFolderExpanded,
 			moveFile: store.moveFile,
 			moveFolder: store.moveFolder,
 			expandFolder: store.expandFolder,
@@ -42,9 +42,8 @@ const DragAndDropExplorer = () => {
 		}))
 	);
 
-	const { openDestinationFolderAfterMove } = settings;
 	const { openDestinationFolder } = useOpenDestinationFolder(
-		openDestinationFolderAfterMove
+		settings.openDestinationFolderAfterMove
 	);
 
 	const [activeItem, setActiveItem] = useState<TAbstractFile | null>(null);
@@ -78,7 +77,7 @@ const DragAndDropExplorer = () => {
 		await moveFile(file, newPath);
 		if (openDestinationFolder) {
 			await changeFocusedFolder(targetFolder);
-			await selectFileAndOpen(file);
+			selectFileAndOpen(file);
 		}
 	};
 
@@ -94,7 +93,7 @@ const DragAndDropExplorer = () => {
 	};
 
 	const expandTargetFolder = (targetFolder: TFolder) => {
-		if (expandedFolderPaths.includes(targetFolder.path)) return;
+		if (isFolderExpanded(targetFolder)) return;
 		expandFolder(targetFolder);
 	};
 
@@ -119,7 +118,7 @@ const DragAndDropExplorer = () => {
 		setActiveItem(null);
 	};
 
-	const renderOverlayContent = () => {
+	const maybeRenderOverlayContent = () => {
 		if (!activeItem) return null;
 		return (
 			<div className="ffs__drag-overlay">
@@ -138,7 +137,7 @@ const DragAndDropExplorer = () => {
 		>
 			<ExplorerContent />
 			<DragOverlay modifiers={[snapCenterToCursor]}>
-				{renderOverlayContent()}
+				{maybeRenderOverlayContent()}
 			</DragOverlay>
 		</DndContext>
 	);

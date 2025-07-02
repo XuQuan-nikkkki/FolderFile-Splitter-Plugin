@@ -1,3 +1,4 @@
+import { TFile } from "obsidian";
 import { StateCreator } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
@@ -7,13 +8,16 @@ import { ExplorerStore } from "..";
 import { TagNode, TagTree } from ".";
 
 export interface TagActionsSlice {
-		_getOrCreateTagNode: (
-			tagTree: TagTree,
-			tagName: string,
-			fullPath: string,
-			parent: string | null
-		) => TagNode;
-		renameTag: (tag: TagNode, newName: string) => Promise<void>;
+	getOrCreateTagNode: (
+		tagName: string,
+		fullPath: string,
+		parent: string | null
+	) => TagNode;
+	addTagPathToTree: (path: string, file: TFile) => void;
+	generateTagTree: () => TagTree;
+
+	completeTagPathWithHash: (path: string) => string;
+	renameTag: (tag: TagNode, newName: string) => Promise<void>;
 }
 
 export const createTagActionsSlice =
@@ -21,48 +25,104 @@ export const createTagActionsSlice =
 		plugin: FolderFileSplitterPlugin
 	): StateCreator<ExplorerStore, [], [], TagActionsSlice> =>
 	(set, get) => ({
-		_getOrCreateTagNode: (
-			tagTree: TagTree,
+		getOrCreateTagNode: (
 			tagName: string,
 			fullPath: string,
-			parent: string | null = null
+			parentPath: string | null = null
 		) => {
-			if (!tagTree.has(fullPath)) {
+			const { tagTree, getTagByPath } = get();
+
+			if (!getTagByPath(fullPath)) {
 				tagTree.set(fullPath, {
 					name: tagName,
 					files: [],
-					parent,
+					parentPath,
 					fullPath,
 					children: new Set(),
 				});
 			}
-			return tagTree.get(fullPath) as TagNode;
+			return getTagByPath(fullPath) as TagNode;
 		},
-		renameTag: async (tag: TagNode, newName: string) => {
-			const files = plugin.app.vault.getMarkdownFiles();
-			const oldTag = tag.fullPath;
-			const parts = oldTag.split("/");
-			parts[parts.length - 1] = newName;
-			const newTag = parts.join("/");
+		addTagPathToTree: (path: string, file: TFile) => {
+			const { getTagPathParts, getOrCreateTagNode, getParentTag } = get();
 
-			const oldTagWithHash = oldTag.startsWith("#")
-				? oldTag
-				: `#${oldTag}`;
-			const newTagWithHash = newTag.startsWith("#")
-				? newTag
-				: `#${newTag}`;
+			const parts = getTagPathParts(path);
+			let parentPath: string | null = null;
+			let currentPath = "";
 
-			for (const file of files) {
-				const content = await plugin.app.vault.read(file);
+			for (let i = 0; i < parts.length; i++) {
+				const part = parts[i];
+				currentPath = currentPath ? `${currentPath}/${part}` : part;
 
-				const updated = content.replace(
-					new RegExp(`(?<=\\s|^)${oldTagWithHash}(?=\\s|$)`, "g"),
-					newTagWithHash
+				const tagNode = getOrCreateTagNode(
+					part,
+					currentPath,
+					parentPath
 				);
 
-				if (updated !== content) {
-					await plugin.app.vault.modify(file, updated);
+				if (i === parts.length - 1) {
+					tagNode.files.push(file);
 				}
+
+				const parentNode = getParentTag(tagNode);
+				parentNode?.children.add(currentPath);
+				parentPath = currentPath;
+			}
+		},
+		generateTagTree: () => {
+			const {
+				tagTree,
+				getMarkdownFiles,
+				getTagPathsOfFile,
+				addTagPathToTree,
+			} = get();
+			const markdownFiles = getMarkdownFiles();
+			if (!markdownFiles?.length) return tagTree;
+
+			for (const file of markdownFiles) {
+				const paths = getTagPathsOfFile(file);
+				if (!paths?.length) continue;
+
+				for (const tag of paths) {
+					addTagPathToTree(tag, file);
+				}
+			}
+			return tagTree;
+		},
+
+		completeTagPathWithHash: (tagPath: string) => {
+			return tagPath.startsWith("#") ? tagPath : `#${tagPath}`;
+		},
+
+		renameTag: async (tag: TagNode, newName: string) => {
+			const {
+				getMarkdownFiles,
+				readFile,
+				modifyFile,
+				getTagPathParts,
+				completeTagPathWithHash,
+			} = get();
+			const files = getMarkdownFiles();
+
+			const oldPath = tag.fullPath;
+			const parts = getTagPathParts(oldPath);
+			parts[parts.length - 1] = newName;
+			const newPath = parts.join("/");
+
+			const oldPathWithHash = completeTagPathWithHash(oldPath);
+			const newPathWithHash = completeTagPathWithHash(newPath);
+
+			if (oldPathWithHash === newPathWithHash) return;
+
+			for (const file of files) {
+				const content = await readFile(file);
+
+				const updated = content.replace(
+					new RegExp(`(?<=\\s|^)${oldPathWithHash}(?=\\s|$)`, "g"),
+					newPathWithHash
+				);
+
+				await modifyFile(file, updated);
 			}
 		},
 	});

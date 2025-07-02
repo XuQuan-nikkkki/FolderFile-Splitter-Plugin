@@ -16,9 +16,10 @@ export interface FileActionsSlice {
 	openFile: (file: TFile, focus?: boolean) => void;
 	selectFileAndOpen: (file: TFile, focus?: boolean) => void;
 	readFile: (file: TFile) => Promise<string>;
+	modifyFile: (file: TFile, content: string) => Promise<void>
 
 	createFileAndOpen: (path: string, focus?: boolean) => Promise<TFile>;
-	createFile: (folder: TFolder) => Promise<TFile | undefined>;
+	createFileWithDefaultName: (folder: TFolder) => Promise<TFile | undefined>;
 	duplicateFile: (file: TFile) => Promise<TFile>;
 
 	moveFile: (file: TFile, newPath: string) => Promise<void>;
@@ -49,11 +50,8 @@ export const createFileActionsSlice =
 		},
 
 		openFile: (file: TFile, focus = true): void => {
-			const { workspace } = plugin.app;
-			const { getLeaf, setActiveLeaf } = workspace;
-
-			const leaf = getLeaf();
-			setActiveLeaf(leaf, { focus });
+			const leaf = plugin.app.workspace.getLeaf();
+			plugin.app.workspace.setActiveLeaf(leaf, { focus });
 			leaf.openFile(file, { eState: { focus } });
 		},
 		selectFileAndOpen: (file: TFile, focus?: boolean): void => {
@@ -64,6 +62,10 @@ export const createFileActionsSlice =
 		readFile: async (file: TFile): Promise<string> => {
 			return await plugin.app.vault.read(file);
 		},
+		modifyFile: async(file: TFile, content: string) => {
+			// TODO: 对 markdown 是否有效
+			await plugin.app.vault.modify(file, content)
+		},
 
 		createFileAndOpen: async (path: string, focus?: boolean) => {
 			const file = await plugin.app.vault.create(
@@ -73,7 +75,7 @@ export const createFileActionsSlice =
 			get().selectFileAndOpen(file, focus);
 			return file;
 		},
-		createFile: async (folder: TFolder) => {
+		createFileWithDefaultName: async (folder: TFolder) => {
 			const { createFileAndOpen, getNewFileDefaultName } = get();
 			const newFileName = getNewFileDefaultName(folder);
 			const filePath = `${folder.path}/${newFileName}${MARKDOWN_FILE_EXTENSION}`;
