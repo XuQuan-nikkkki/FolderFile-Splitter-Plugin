@@ -39,14 +39,14 @@ export type LayoutSettings = {
 	highlightActionBar: boolean;
 	autoHideActionBar: boolean;
 };
-export type FolderAndFileBehaviorSettings = {
-	hideRootFolder: boolean;
+export type FolderAndTagBehaviorSettings = {
 	showFolderHierarchyLines: boolean;
 	showFilesCount: boolean;
 	openDestinationFolderAfterMove: boolean;
 	revealFileInExplorer: boolean;
 };
 export type FolderSettings = {
+	hideRootFolder: boolean;
 	showFolderView: boolean;
 	showFolderIcon: boolean;
 	includeSubfolderFiles: boolean;
@@ -76,7 +76,7 @@ export type FolderNoteSettings = {
 };
 export type FolderFileSplitterPluginSettings = StartupSettings &
 	LayoutSettings &
-	FolderAndFileBehaviorSettings &
+	FolderAndTagBehaviorSettings &
 	FolderSettings &
 	TagSettings &
 	FileDetailSettings &
@@ -93,16 +93,15 @@ export const LAYOUT_SETTINGS: LayoutSettings = {
 	autoHideActionBar: false,
 };
 
-export const FOLDER_AND_FILE_BEHAVIOR_SETTINGS: FolderAndFileBehaviorSettings =
-	{
-		hideRootFolder: false,
-		showFolderHierarchyLines: false,
-		showFilesCount: true,
-		openDestinationFolderAfterMove: false,
-		revealFileInExplorer: false,
-	};
+export const FOLDER_AND_TAG_BEHAVIOR_SETTINGS: FolderAndTagBehaviorSettings = {
+	showFolderHierarchyLines: false,
+	showFilesCount: true,
+	openDestinationFolderAfterMove: false,
+	revealFileInExplorer: false,
+};
 
 export const FOLDER_SETTINGS: FolderSettings = {
+	hideRootFolder: false,
 	showFolderView: true,
 	showFolderIcon: true,
 	includeSubfolderFiles: false,
@@ -138,7 +137,7 @@ export const FOLDER_NOTE_SETTINGS: FolderNoteSettings = {
 export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	...STARTUP_SETTINGS,
 	...LAYOUT_SETTINGS,
-	...FOLDER_AND_FILE_BEHAVIOR_SETTINGS,
+	...FOLDER_AND_TAG_BEHAVIOR_SETTINGS,
 	...FOLDER_SETTINGS,
 	...TAG_SETTINGS,
 	...FILE_DETAIL_SETTINGS,

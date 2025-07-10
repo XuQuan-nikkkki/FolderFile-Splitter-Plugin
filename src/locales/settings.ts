@@ -4,7 +4,7 @@ import {
 	FileDisplaySettings,
 	FOLDER_NOTE_LOCATION,
 	FOLDER_NOTE_MISSING_BEHAVIOR,
-	FolderAndFileBehaviorSettings,
+	FolderAndTagBehaviorSettings,
 	FolderFileSplitterPluginSettings,
 	FolderNoteSettings,
 	FolderSettings,
@@ -21,7 +21,7 @@ export interface SettingsHeaderLocaleResource {
 export const EN_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 	startup: "🔷 Startup",
 	layout: "🧭 Layout",
-	folderAndFileBehavior: "🧾 Folder/Tag and file behavior",
+	folderAndTagBehavior: "🧾 Folder and tag behavior",
 	folderSettings: "📂 Folder settings",
 	tagSettings: "🏷️ Tag settings",
 	fileDetail: "📄 File Detail",
@@ -31,7 +31,7 @@ export const EN_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 export const ZH_SETTINGS_HEADER: SettingsHeaderLocaleResource = {
 	startup: "🔷 启动与布局",
 	layout: "🧭 布局样式",
-	folderAndFileBehavior: "🧾 文件夹/标签和文件行为",
+	folderAndTagBehavior: "🧾 文件夹和标签行为",
 	folderSettings: "📂 文件夹设置",
 	tagSettings: "🏷️ 标签设置",
 	fileDetail: "📄 文件详情",
@@ -123,18 +123,8 @@ export const LAYOUT_SETTINGS_COPY: SettingsLocaleResource<LayoutSettings> = {
 	},
 };
 
-export const FOLDER_AND_FILE_BEHAVIOR_SETTINGS_COPY: SettingsLocaleResource<FolderAndFileBehaviorSettings> =
+export const FOLDER_AND_TAG_BEHAVIOR_SETTINGS_COPY: SettingsLocaleResource<FolderAndTagBehaviorSettings> =
 	{
-		hideRootFolder: {
-			en: {
-				name: "Hide root folder",
-				desc: "When enabled, the root folder will be hidden from the folder view. Only its subfolders will be shown.",
-			},
-			zh: {
-				name: "隐藏根文件夹",
-				desc: "启用后，文件夹视图中将隐藏根文件夹，只显示其子文件夹。",
-			},
-		},
 		showFolderHierarchyLines: {
 			en: {
 				name: "Show hierarchy lines",
@@ -178,6 +168,16 @@ export const FOLDER_AND_FILE_BEHAVIOR_SETTINGS_COPY: SettingsLocaleResource<Fold
 	};
 
 export const FOLDER_SETTINGS_COPY: SettingsLocaleResource<FolderSettings> = {
+	hideRootFolder: {
+		en: {
+			name: "Hide root folder",
+			desc: "When enabled, the root folder will be hidden from the folder view. Only its subfolders will be shown.",
+		},
+		zh: {
+			name: "隐藏根文件夹",
+			desc: "启用后，文件夹视图中将隐藏根文件夹，只显示其子文件夹。",
+		},
+	},
 	showFolderView: {
 		en: {
 			name: "Show folder view",
@@ -463,7 +463,7 @@ export const SETTINGS_COPY: SettingsLocaleResource<FolderFileSplitterPluginSetti
 	{
 		...STARTUP_SETTINGS_COPY,
 		...LAYOUT_SETTINGS_COPY,
-		...FOLDER_AND_FILE_BEHAVIOR_SETTINGS_COPY,
+		...FOLDER_AND_TAG_BEHAVIOR_SETTINGS_COPY,
 		...FOLDER_SETTINGS_COPY,
 		...TAG_SETTINGS_COPY,
 		...FILE_DETAIL_SETTINGS_COPY,
