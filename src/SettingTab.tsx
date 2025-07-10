@@ -2,11 +2,10 @@ import dayjs from "dayjs";
 import { App, DropdownComponent, PluginSettingTab, Setting } from "obsidian";
 
 import {
-	EN_SETTINGS,
 	EN_SETTINGS_HEADER,
 	SettingOptions,
+	SETTINGS_COPY,
 	SettingsKey,
-	ZH_SETTINGS,
 	ZH_SETTINGS_HEADER,
 } from "./locales/settings";
 import FolderFileSplitterPlugin from "./main";
@@ -49,15 +48,10 @@ export class SettingTab extends PluginSettingTab {
 			: EN_SETTINGS_HEADER;
 	}
 
-	get settingsCopy() {
-		return this.plugin.language === "zh" ? ZH_SETTINGS : EN_SETTINGS;
-	}
-
 	_initSetting(settingKey: SettingsKey) {
-		const { settingsCopy } = this;
 		return new Setting(this.containerEl)
-			.setName(settingsCopy[settingKey].name)
-			.setDesc(settingsCopy[settingKey].desc);
+			.setName(SETTINGS_COPY[settingKey][this.plugin.language].name)
+			.setDesc(SETTINGS_COPY[settingKey][this.plugin.language].desc);
 	}
 
 	_initToggleSetting<K extends SettingsKey>(settingKey: K) {
@@ -83,7 +77,8 @@ export class SettingTab extends PluginSettingTab {
 	}
 
 	_initDropdownSetting<K extends SettingsKey>(settingKey: K) {
-		const { options = [] } = this.settingsCopy[settingKey];
+		const { options = [] } =
+			SETTINGS_COPY[settingKey][this.plugin.language];
 		this._initSetting(settingKey).addDropdown((dropdown) => {
 			this._initDropdownOptions(dropdown, options);
 			dropdown.setValue(this.plugin.settings[settingKey] as string);
@@ -150,10 +145,10 @@ export class SettingTab extends PluginSettingTab {
 	}
 
 	generateFileCreationDateFormatDesc(setting: Setting, format: string) {
-		const { settingsCopy, plugin } = this;
+		const { plugin } = this;
 		const { language } = plugin;
 		const fragment = document.createDocumentFragment();
-		fragment.append(settingsCopy.fileCreationDateFormat.desc);
+		fragment.append(SETTINGS_COPY.fileCreationDateFormat[language].desc);
 
 		const anchor = document.createElement("a");
 		const link =
@@ -174,10 +169,10 @@ export class SettingTab extends PluginSettingTab {
 	}
 
 	_initFileCreationDateFormatSetting() {
-		const { containerEl, settingsCopy, plugin } = this;
-		const { settings } = plugin;
+		const { containerEl, plugin } = this;
+		const { settings, language } = plugin;
 		const setting = new Setting(containerEl).setName(
-			settingsCopy.fileCreationDateFormat.name
+			SETTINGS_COPY.fileCreationDateFormat[language].name
 		);
 
 		this.generateFileCreationDateFormatDesc(

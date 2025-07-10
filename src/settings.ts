@@ -31,62 +31,117 @@ export type FolderNoteMissingBehavior = ValueOf<
 
 export const DEFAULT_FILE_CREATION_DATE_FORMAT = "YYYY/MM/DD";
 
-export interface FolderFileSplitterPluginSettings {
-	includeSubfolderFiles: boolean;
-	showFolderHierarchyLines: boolean;
-	showFolderIcon: boolean;
-	boldFileTitle: boolean;
-	showFileDetail: boolean;
-	removeFirstHeadingInPreview: boolean;
-	fileCreationDateFormat: string;
-	showFileCreationDate: boolean;
-	showFileItemDivider: boolean;
-	showFilesCount: boolean,
-	stripMarkdownSyntaxInPreview: boolean;
-	fileItemSpacing: FileItemSpacing;
+export type StartupSettings = {
+	openPluginViewOnStartup: boolean;
+};
+export type LayoutSettings = {
+	layoutMode: LayoutMode;
 	highlightActionBar: boolean;
 	autoHideActionBar: boolean;
-	openPluginViewOnStartup: boolean;
-	layoutMode: LayoutMode;
-	openDestinationFolderAfterMove: boolean;
+};
+export type FolderAndFileBehaviorSettings = {
 	hideRootFolder: boolean;
+	showFolderHierarchyLines: boolean;
+	showFilesCount: boolean;
+	openDestinationFolderAfterMove: boolean;
+	revealFileInExplorer: boolean;
+};
+export type FolderSettings = {
+	showFolderView: boolean;
+	showFolderIcon: boolean;
+	includeSubfolderFiles: boolean;
+};
+export type TagSettings = {
+	showTagView: boolean;
+	showTagIcon: boolean;
+	includeSubTagFiles: boolean;
+};
+export type FileDetailSettings = {
+	showFileDetail: boolean;
+	stripMarkdownSyntaxInPreview: boolean;
+	removeFirstHeadingInPreview: boolean;
+	showFileCreationDate: boolean;
+	fileCreationDateFormat: string;
+};
+export type FileDisplaySettings = {
+	boldFileTitle: boolean;
+	fileItemSpacing: FileItemSpacing;
+	showFileItemDivider: boolean;
+};
+export type FolderNoteSettings = {
 	autoOpenFolderNote: boolean;
 	folderNoteLocation: FolderNoteLocation;
 	customFolderNotePath: string;
 	folderNoteMissingBehavior: FolderNoteMissingBehavior;
-	revealFileInExplorer: boolean;
-	showFolderView: boolean;
-	showTagView: boolean;
-	includeSubTagFiles: boolean;
-	showTagIcon: boolean;
-}
+};
+export type FolderFileSplitterPluginSettings = StartupSettings &
+	LayoutSettings &
+	FolderAndFileBehaviorSettings &
+	FolderSettings &
+	TagSettings &
+	FileDetailSettings &
+	FileDisplaySettings &
+	FolderNoteSettings;
 
-export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
-	includeSubfolderFiles: false,
-	showFolderHierarchyLines: false,
+export const STARTUP_SETTINGS: StartupSettings = {
+	openPluginViewOnStartup: true,
+};
+
+export const LAYOUT_SETTINGS: LayoutSettings = {
+	layoutMode: LAYOUT_MODE.HORIZONTAL_SPLIT,
+	highlightActionBar: false,
+	autoHideActionBar: false,
+};
+
+export const FOLDER_AND_FILE_BEHAVIOR_SETTINGS: FolderAndFileBehaviorSettings =
+	{
+		hideRootFolder: false,
+		showFolderHierarchyLines: false,
+		showFilesCount: true,
+		openDestinationFolderAfterMove: false,
+		revealFileInExplorer: false,
+	};
+
+export const FOLDER_SETTINGS: FolderSettings = {
+	showFolderView: true,
 	showFolderIcon: true,
-	boldFileTitle: true,
+	includeSubfolderFiles: false,
+};
+
+export const TAG_SETTINGS: TagSettings = {
+	showTagView: false,
+	showTagIcon: true,
+	includeSubTagFiles: false,
+};
+
+export const FILE_DETAIL_SETTINGS: FileDetailSettings = {
 	showFileDetail: true,
 	stripMarkdownSyntaxInPreview: false,
 	removeFirstHeadingInPreview: false,
 	showFileCreationDate: true,
-	showFilesCount: true,
 	fileCreationDateFormat: DEFAULT_FILE_CREATION_DATE_FORMAT,
+};
+
+export const FILE_DISPLAY_SETTINGS: FileDisplaySettings = {
+	boldFileTitle: true,
 	fileItemSpacing: FILE_ITEM_SPACING.COMFORTABLE,
 	showFileItemDivider: true,
-	highlightActionBar: false,
-	autoHideActionBar: false,
-	openPluginViewOnStartup: true,
-	layoutMode: LAYOUT_MODE.HORIZONTAL_SPLIT,
-	openDestinationFolderAfterMove: false,
-	hideRootFolder: false,
+};
+
+export const FOLDER_NOTE_SETTINGS: FolderNoteSettings = {
 	autoOpenFolderNote: false,
 	folderNoteLocation: FOLDER_NOTE_LOCATION.INDEX_FILE,
 	customFolderNotePath: "",
 	folderNoteMissingBehavior: FOLDER_NOTE_MISSING_BEHAVIOR.IGNORE,
-	revealFileInExplorer: false,
-	showFolderView: true,
-	showTagView: false,
-	includeSubTagFiles: false,
-	showTagIcon: true,
+};
+
+export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
+	...STARTUP_SETTINGS,
+	...LAYOUT_SETTINGS,
+	...FOLDER_AND_FILE_BEHAVIOR_SETTINGS,
+	...FOLDER_SETTINGS,
+	...TAG_SETTINGS,
+	...FILE_DETAIL_SETTINGS,
+	...FILE_DISPLAY_SETTINGS,
+	...FOLDER_NOTE_SETTINGS,
 };
