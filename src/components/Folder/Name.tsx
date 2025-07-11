@@ -1,84 +1,53 @@
 import { TFolder } from "obsidian";
-import {
-	ForwardedRef,
-	forwardRef,
-	useEffect,
-	useImperativeHandle,
-	useRef,
-	useState,
-} from "react";
+import { forwardRef, RefObject, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { useExplorer } from "src/hooks/useExplorer";
-import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { ExplorerStore } from "src/store";
 
-import { FolderNameRef } from "./Content";
+import EditableName, { NameRef } from "../EditableName";
 
 export type FolderProps = {
 	folder: TFolder;
+	contentRef: RefObject<HTMLDivElement | null>;
 };
 type Props = FolderProps;
 const FolderName = forwardRef(
-	({ folder }: Props, ref: ForwardedRef<FolderNameRef>) => {
+	({ folder, contentRef }: Props, ref: RefObject<NameRef>) => {
 		const { useExplorerStore } = useExplorer();
 
-		const { renameFolder, getNameOfFolder, isLastCreatedFolder } =
-			useExplorerStore(
-				useShallow((store: ExplorerStore) => ({
-					renameFolder: store.renameFolder,
-					getNameOfFolder: store.getNameOfFolder,
-					isLastCreatedFolder: store.isLastCreatedFolder,
-				}))
-			);
-
-		const onSaveName = (name: string) => renameFolder(folder, name);
-		const folderName = getNameOfFolder(folder);
-		const { renderEditableName: renderFolderName, onStartEditingName } =
-			useRenderEditableName(folderName, onSaveName, {
-				className: "ffs__folder-name",
-			});
-
-		const folderRef = useRef<HTMLDivElement>(null);
-		const [isFocusing, setIsFocusing] = useState<boolean>(false);
-
-		useImperativeHandle(ref, () => ({
-			setIsFocusing,
-			onStartEditingName,
-			isFocusing,
-		}));
-
-		const onClickOutside = (event: MouseEvent) => {
-			if (
-				folderRef.current &&
-				!folderRef.current.contains(event.target as Node)
-			) {
-				setIsFocusing(false);
-			}
-		};
-
-		const onKeyDown = (e: KeyboardEvent) => {
-			if (e.key === "Enter" && isFocusing) {
-				onStartEditingName();
-			}
-		};
-
-		useEffect(() => {
-			window.addEventListener("keydown", onKeyDown);
-			window.addEventListener("mousedown", onClickOutside);
-			return () => {
-				window.removeEventListener("keydown", onKeyDown);
-				window.removeEventListener("mousedown", onClickOutside);
-			};
-		}, [isFocusing]);
+		const {
+			renameFolder,
+			getNameOfFolder,
+			isLastCreatedFolder,
+			isFocusedFolder,
+		} = useExplorerStore(
+			useShallow((store: ExplorerStore) => ({
+				renameFolder: store.renameFolder,
+				getNameOfFolder: store.getNameOfFolder,
+				isLastCreatedFolder: store.isLastCreatedFolder,
+				isFocusedFolder: store.isFocusedFolder,
+			}))
+		);
 
 		useEffect(() => {
 			if (isLastCreatedFolder(folder)) {
-				onStartEditingName();
+				ref.current?.onStartEditingName();
 			}
 		}, []);
 
-		return renderFolderName();
+		return (
+			<EditableName
+				ref={ref}
+				isFocused={isFocusedFolder(folder)}
+				contentRef={contentRef}
+				defaultName={getNameOfFolder(folder)}
+				className="ffs__folder-name"
+				onSaveName={async (name: string) =>
+					await renameFolder(folder, name)
+				}
+			/>
+		);
 	}
 );
 

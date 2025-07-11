@@ -1,13 +1,21 @@
-import classNames from "classnames";
 import { Menu } from "obsidian";
+import { useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { useExplorer } from "src/hooks/useExplorer";
-import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { TagNode } from "src/store/tag";
-import { addPinMenuItem, addRenameMenuItem, triggerMenu } from "src/utils";
+import {
+	addPinMenuItem,
+	addRenameMenuItem,
+	noop,
+	triggerMenu,
+} from "src/utils";
+
+import { NameRef } from "../EditableName";
+import TogglableContainer from "../TogglableContainer";
 
 import TagFilesCount from "./FilesCount";
+import TagName from "./Name";
 import TagIcon from "./TagIcon";
 
 type Props = {
@@ -16,28 +24,28 @@ type Props = {
 const TagContent = ({ tag }: Props) => {
 	const { plugin, useExplorerStore } = useExplorer();
 
-	const { renameTag, focusedTag, isTagPinned, pinTag, unpinTag } =
-		useExplorerStore(
-			useShallow((store) => ({
-				renameTag: store.renameTag,
-				focusedTag: store.focusedTag,
-				isTagPinned: store.isTagPinned,
-				pinTag: store.pinTag,
-				unpinTag: store.unpinTag,
-			}))
-		);
+	const {
+		focusedTag,
+		isTagPinned,
+		pinTag,
+		unpinTag,
+		changeFocusedTag,
+		toggleTag,
+	} = useExplorerStore(
+		useShallow((store) => ({
+			focusedTag: store.focusedTag,
+			isTagPinned: store.isTagPinned,
+			pinTag: store.pinTag,
+			unpinTag: store.unpinTag,
+			changeFocusedTag: store.changeFocusedTag,
+			toggleTag: store.toggleTag,
+		}))
+	);
+
+	const nameRef = useRef<NameRef>(null);
+	const contentRef = useRef<HTMLDivElement | null>(null);
 
 	const isFocused = tag.fullPath == focusedTag?.fullPath;
-
-	const onSaveName = (name: string) => renameTag(tag, name);
-	const {
-		renderEditableName: renderTagName,
-		onStartEditingName,
-		setIsFocusing,
-		contentRef: tagRef,
-	} = useRenderEditableName(tag.name, onSaveName, {
-		className: "ffs__tag-name",
-	});
 
 	const addPinInMenu = (menu: Menu) => {
 		const isPinned = isTagPinned(tag);
@@ -56,32 +64,30 @@ const TagContent = ({ tag }: Props) => {
 		addPinInMenu(menu);
 		menu.addSeparator();
 
-		addRenameMenuItem(menu, onStartEditingName);
+		addRenameMenuItem(menu, nameRef.current?.onStartEditingName ?? noop);
 
 		triggerMenu(plugin, menu, "tag-context-menu")(e);
 	};
 
 	const renderTitleContent = () => (
-		<div className="ffs__tag-content--main" ref={tagRef}>
+		<div className="ffs__tag-content--main" ref={contentRef}>
 			<TagIcon />
-			{renderTagName()}
+			<TagName tag={tag} ref={nameRef} contentRef={contentRef} />
 			<TagFilesCount tag={tag} />
 		</div>
 	);
 
 	return (
-		<div
-			className={classNames("ffs__tag")}
+		<TogglableContainer
+			nameRef={nameRef}
+			isFocused={isFocused}
+			onFocus={async () => await changeFocusedTag(tag)}
+			onToggle={() => toggleTag(tag)}
+			className="ffs__tag"
 			onContextMenu={onShowContextMenu}
-			onClick={(e) => {
-				if (isFocused) {
-					tagRef.current?.focus();
-					setIsFocusing(true);
-				}
-			}}
 		>
 			{renderTitleContent()}
-		</div>
+		</TogglableContainer>
 	);
 };
 

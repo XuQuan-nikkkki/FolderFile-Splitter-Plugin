@@ -4,7 +4,7 @@ import { useShallow } from "zustand/react/shallow";
 import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
 import { TagNode } from "src/store/tag";
-import { pluralize } from "src/utils";
+import { isZh, pluralize } from "src/utils";
 
 import TagContent from "./Content";
 import TagExpandIcon from "./ExpandIcon";
@@ -19,66 +19,32 @@ const Tag = ({
 	disableHoverIndent = false,
 	hideExpandIcon = false,
 }: Props) => {
-	const { useExplorerStore, plugin } = useExplorer();
-	const { language } = plugin;
+	const { useExplorerStore } = useExplorer();
 
-	const {
-		hasSubTag,
-		changeFocusedTag,
-		focusedTag,
-		getFilesInTag,
-		getTagsByParent,
-		expandedTagPaths,
-		collapseTag,
-		expandTag,
-		changeViewMode,
-	} = useExplorerStore(
-		useShallow((store: ExplorerStore) => ({
-			hasSubTag: store.hasSubTag,
-			changeFocusedTag: store.changeFocusedTag,
-			focusedTag: store.focusedTag,
-			getTagsByParent: store.getTagsByParent,
-			getFilesInTag: store.getFilesInTag,
-			expandedTagPaths: store.expandedTagPaths,
-			collapseTag: store.collapseTag,
-			expandTag: store.expandTag,
-			changeViewMode: store.changeViewMode,
-		}))
-	);
+	const { hasSubTag, focusedTag, getFilesInTag, getTagsByParent } =
+		useExplorerStore(
+			useShallow((store: ExplorerStore) => ({
+				hasSubTag: store.hasSubTag,
+				focusedTag: store.focusedTag,
+				getTagsByParent: store.getTagsByParent,
+				getFilesInTag: store.getFilesInTag,
+				// for dependency tracking only
+				expandedTagPaths: store.expandedTagPaths,
+			}))
+		);
 
 	const isFocused = tag.fullPath == focusedTag?.fullPath;
-
-	const onToggleExpandState = (): void => {
-		const isFolderExpanded = expandedTagPaths.includes(tag.fullPath);
-		if (isFolderExpanded) {
-			collapseTag(tag);
-		} else {
-			expandTag(tag);
-		}
-	};
-
-	const onToggleSelectState = (): void => {
-		if (isFocused) {
-			changeFocusedTag(null);
-			changeViewMode("all");
-		} else {
-			changeFocusedTag(tag);
-			changeViewMode("tag");
-		}
-	};
 
 	const getAriaLabel = () => {
 		const { name } = tag;
 		const filesCount = getFilesInTag(tag).length;
 		const tagsCount = getTagsByParent(tag.fullPath).length;
 
-		if (language === "en") {
-			return `${name}\n${pluralize(filesCount, "file")}, ${pluralize(
-				tagsCount,
-				"tag"
-			)}`;
-		}
-		return `${name}\n${filesCount} 条笔记，${tagsCount} 个标签`;
+		if (isZh) return `${name}\n${filesCount} 条笔记，${tagsCount} 个标签`;
+		return `${name}\n${pluralize(filesCount, "file")}, ${pluralize(
+			tagsCount,
+			"tag"
+		)}`;
 	};
 
 	const getIndentStyle = () => {
@@ -104,10 +70,6 @@ const Tag = ({
 		<div
 			className={getClassNames()}
 			style={getIndentStyle()}
-			onClick={() => {
-				onToggleExpandState();
-				onToggleSelectState();
-			}}
 			data-tooltip-position="right"
 			aria-label={getAriaLabel()}
 		>

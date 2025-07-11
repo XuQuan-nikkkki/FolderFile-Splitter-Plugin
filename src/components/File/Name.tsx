@@ -1,79 +1,56 @@
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
+import { TFile } from "obsidian";
+import { forwardRef, RefObject, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { useExplorer } from "src/hooks/useExplorer";
-import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { useBoldFileTitle } from "src/hooks/useSettingsHandler";
 import { ExplorerStore } from "src/store";
 import { UNTITLED_NAME } from "src/utils";
 
-import { FileInnerContentRef } from "./Content";
-import { Props } from "./ContentInner";
+import EditableName, { NameRef } from "../EditableName";
 
+type Props = {
+	file: TFile
+	contentRef: RefObject<HTMLDivElement | null>
+}
 const FileName = forwardRef(
-	(
-		{ file, fileRef }: Props,
-		ref: React.ForwardedRef<FileInnerContentRef>
-	) => {
+	({ file, contentRef }: Props, ref: RefObject<NameRef>) => {
 		const { useExplorerStore, plugin } = useExplorer();
 		const { settings } = plugin;
 
-		const { renameFile } = useExplorerStore(
+		const { renameFile, isFocusedFile } = useExplorerStore(
 			useShallow((store: ExplorerStore) => ({
 				renameFile: store.renameFile,
+				isFocusedFile: store.isFocusedFile,
 			}))
 		);
 
 		const { boldFileTitle } = useBoldFileTitle(settings.boldFileTitle);
 
-		useImperativeHandle(ref, () => ({
-			setIsFocusing,
-			onStartEditingName,
-		}));
-
-		const onSaveName = (name: string) => renameFile(file, name);
-
-		const { renderEditableName: renderFileName, onStartEditingName } =
-			useRenderEditableName(file.basename, onSaveName, {
-				className: "ffs__file-name",
-				bold: boldFileTitle,
-			});
-
-		const [isFocusing, setIsFocusing] = useState<boolean>(false);
-
-		const onKeyDown = (event: KeyboardEvent) => {
-			if (event.key === "Enter" && isFocusing) {
-				onStartEditingName();
-			}
-		};
-
-		const onClickOutside = (event: MouseEvent) => {
-			if (
-				fileRef.current &&
-				!fileRef.current.contains(event.target as Node)
-			) {
-				setIsFocusing(false);
-			}
-		};
-
-		useEffect(() => {
-			window.addEventListener("keydown", onKeyDown);
-			window.addEventListener("mousedown", onClickOutside);
-			return () => {
-				window.removeEventListener("keydown", onKeyDown);
-				window.removeEventListener("mousedown", onClickOutside);
-			};
-		}, [isFocusing]);
-
 		useEffect(() => {
 			const now = Date.now();
 			const fileCreateTime = file.stat.ctime;
-			if (now - fileCreateTime < 3000 && file.name.includes(UNTITLED_NAME)) {
-				onStartEditingName();
+			if (
+				now - fileCreateTime < 3000 &&
+				file.name.includes(UNTITLED_NAME)
+			) {
+				ref.current?.onStartEditingName();
 			}
 		}, []);
 
-		return renderFileName();
+		return (
+			<EditableName
+				ref={ref}
+				contentRef={contentRef}
+				defaultName={file.basename}
+				onSaveName={async (name: string) =>
+					await renameFile(file, name)
+				}
+				className="ffs__file-name"
+				boldName={boldFileTitle}
+				isFocused={isFocusedFile(file)}
+			/>
+		);
 	}
 );
 

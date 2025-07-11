@@ -1,12 +1,9 @@
-import classNames from "classnames";
 import { Menu, TFolder } from "obsidian";
-import { MouseEvent, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { useExplorer } from "src/hooks/useExplorer";
-import { useExpandNodeByClick } from "src/hooks/useSettingsHandler";
 import { FOLDER_OPERATION_COPY } from "src/locales";
-import { EXPAND_NODE_ON_CLICK } from "src/settings";
 import { ExplorerStore } from "src/store";
 import {
 	addCreateFileMenuItem,
@@ -16,19 +13,16 @@ import {
 	addPinMenuItem,
 	addRenameMenuItem,
 	noop,
-	Noop,
 	triggerMenu,
 } from "src/utils";
 
+import { NameRef } from "../EditableName";
 import { FolderListModal } from "../FolderListModal";
+import TogglableContainer from "../TogglableContainer";
 
-import FolderContentInner from "./ContentInner";
-
-export type FolderNameRef = {
-	isFocusing: boolean;
-	setIsFocusing: (isFocusing: boolean) => void;
-	onStartEditingName: Noop;
-};
+import FolderFilesCount from "./FilesCount";
+import FolderIcon from "./Icon";
+import FolderName from "./Name";
 
 export type FolderProps = {
 	folder: TFolder;
@@ -36,7 +30,7 @@ export type FolderProps = {
 type Props = FolderProps;
 const FolderContent = ({ folder }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
-	const { language, settings } = plugin;
+	const { language } = plugin;
 
 	const {
 		focusedFolder,
@@ -48,6 +42,7 @@ const FolderContent = ({ folder }: Props) => {
 		isFolderPinned,
 		trashFolder,
 		toggleFolder,
+		isFocusedFolder,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			focusedFolder: store.focusedFolder,
@@ -59,27 +54,14 @@ const FolderContent = ({ folder }: Props) => {
 			isFolderPinned: store.isFolderPinned,
 			trashFolder: store.trashFolder,
 			toggleFolder: store.toggleFolder,
+			isFocusedFolder: store.isFocusedFolder,
 		}))
 	);
 
-	const { expandNodeByClick } = useExpandNodeByClick(
-		settings.expandNodeOnClick
-	);
+	const nameRef = useRef<NameRef>(null);
+	const contentRef = useRef<HTMLDivElement>(null);
 
-	const folderRef = useRef<HTMLDivElement>(null);
-	const nameRef = useRef<FolderNameRef>(null);
-
-	useEffect(() => {
-		nameRef.current?.setIsFocusing(false)
-
-		if (focusedFolder?.path !== folder.path) return;
-		setTimeout(() => {
-			folderRef.current?.scrollIntoView({
-				behavior: "smooth",
-				block: "center",
-			});
-		}, 100);
-	}, [focusedFolder]);
+	const isFocused = isFocusedFolder(folder);
 
 	const addPinInMenu = (menu: Menu) => {
 		const isPinned = isFolderPinned(folder);
@@ -133,30 +115,25 @@ const FolderContent = ({ folder }: Props) => {
 		triggerMenu(plugin, menu, "folder-context-menu")(e);
 	};
 
-	const onClickFolderContent = async (e: MouseEvent) => {
-		e.stopPropagation()
-		e.preventDefault()
-		await changeFocusedFolder(folder);
-		if (expandNodeByClick === EXPAND_NODE_ON_CLICK.LABEL) {
-			toggleFolder(folder);
-		} else if (expandNodeByClick === EXPAND_NODE_ON_CLICK.SELECTED_LABEL) {
-			folderRef.current?.focus();
-			if (nameRef.current?.isFocusing) {
-				toggleFolder(folder);
-			} else {
-				nameRef.current?.setIsFocusing(true);
-			}
-		}
-	};
-
 	return (
-		<div
-			className={classNames("ffs__folder")}
+		<TogglableContainer
+			nameRef={nameRef}
+			isFocused={isFocused}
+			onFocus={async () => await changeFocusedFolder(folder)}
+			onToggle={() => toggleFolder(folder)}
+			className="ffs__folder"
 			onContextMenu={onShowContextMenu}
-			onClick={onClickFolderContent}
 		>
-			<FolderContentInner folder={folder} ref={folderRef} nameRef={nameRef} />
-		</div>
+			<div className="ffs__folder-content--main" ref={contentRef}>
+				<FolderIcon folder={folder} />
+				<FolderName
+					folder={folder}
+					ref={nameRef}
+					contentRef={contentRef}
+				/>
+				<FolderFilesCount folder={folder} />
+			</div>
+		</TogglableContainer>
 	);
 };
 

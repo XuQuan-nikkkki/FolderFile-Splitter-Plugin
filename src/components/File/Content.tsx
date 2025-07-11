@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { Menu, TFile } from "obsidian";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { useExplorer } from "src/hooks/useExplorer";
@@ -19,7 +19,9 @@ import {
 	triggerMenu,
 } from "src/utils";
 
+import { NameRef } from "../EditableName";
 import { FolderListModal } from "../FolderListModal";
+import ScrollInToViewContainer from "../ScrollInToViewContainer";
 
 import FileContentInner from "./ContentInner";
 
@@ -36,7 +38,6 @@ const FileContent = ({ file }: FileProps) => {
 	const { language, settings } = plugin;
 
 	const {
-		focusedFile,
 		selectFileAndOpen,
 		createFileWithDefaultName,
 		duplicateFile,
@@ -44,9 +45,9 @@ const FileContent = ({ file }: FileProps) => {
 		pinFile,
 		unpinFile,
 		trashFile,
+		isFocusedFile,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			focusedFile: store.focusedFile,
 			selectFileAndOpen: store.selectFileAndOpen,
 			createFileWithDefaultName: store.createFileWithDefaultName,
 			duplicateFile: store.duplicateFile,
@@ -54,6 +55,9 @@ const FileContent = ({ file }: FileProps) => {
 			pinFile: store.pinFile,
 			unpinFile: store.unpinFile,
 			trashFile: store.trashFile,
+			isFocusedFile: store.isFocusedFile,
+
+			focusedFile: store.focusedFile,
 		}))
 	);
 
@@ -61,19 +65,9 @@ const FileContent = ({ file }: FileProps) => {
 		settings.showFileItemDivider
 	);
 
-	const isFocused = focusedFile?.path === file.path;
-	const fileRef = useRef<HTMLDivElement>(null);
-	const innerContentRef = useRef<FileInnerContentRef>(null);
+	const nameRef = useRef<NameRef>(null);
 
-	useEffect(() => {
-		if (focusedFile?.path !== file.path) return;
-		setTimeout(() => {
-			fileRef.current?.scrollIntoView({
-				behavior: "smooth",
-				block: "center",
-			});
-		}, 100);
-	}, [focusedFile]);
+	const isFocused = isFocusedFile(file);
 
 	const addPinInMenu = (menu: Menu) => {
 		const isPinned = isFilePinned(file);
@@ -135,10 +129,7 @@ const FileContent = ({ file }: FileProps) => {
 		addMoveMenuItem(menu, onShowTargetFoldersList);
 		menu.addSeparator();
 
-		addRenameMenuItem(
-			menu,
-			innerContentRef.current?.onStartEditingName ?? noop
-		);
+		addRenameMenuItem(menu, nameRef.current?.onStartEditingName ?? noop);
 		addDeleteMenuItem(menu, () => trashFile(file));
 
 		triggerMenu(plugin, menu, "file-context-menu")(e);
@@ -159,24 +150,19 @@ const FileContent = ({ file }: FileProps) => {
 			openFileInNewTab(file);
 		} else if (isFocused) {
 			e.stopPropagation();
-			fileRef.current?.focus();
-			innerContentRef.current?.setIsFocusing(true);
+			nameRef.current?.setIsFocusing(true);
 		}
 	};
 
 	return (
-		<div
+		<ScrollInToViewContainer
+			needToScroll={isFocused}
 			className={getClassNames()}
-			ref={fileRef}
 			onContextMenu={onShowContextMenu}
 			onClick={onClickFile}
 		>
-			<FileContentInner
-				file={file}
-				ref={innerContentRef}
-				fileRef={fileRef}
-			/>
-		</div>
+			<FileContentInner file={file} ref={nameRef} />
+		</ScrollInToViewContainer>
 	);
 };
 
