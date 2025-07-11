@@ -15,7 +15,14 @@ import {
 } from "./assets/constants";
 import { ExplorerView } from "./ExplorerView";
 import { Lang } from "./locales";
-import { DEFAULT_SETTINGS, FolderFileSplitterPluginSettings } from "./settings";
+import {
+	AllSettings,
+	DEFAULT_SETTINGS,
+	ExpandFolderByClickingOnElement,
+	ExpandNodeOnClick,
+	FolderFileSplitterPluginSettings,
+	LegacySettings,
+} from "./settings";
 import { SettingTab } from "./SettingTab";
 
 export default class FolderFileSplitterPlugin extends Plugin {
@@ -159,7 +166,7 @@ export default class FolderFileSplitterPlugin extends Plugin {
 	};
 
 	onunload() {
-		console.log("Unloading FolderFile Splitter...")
+		console.log("Unloading FolderFile Splitter...");
 		this.detachFileTreeLeafs();
 		this.app.vault.off("create", this.onCreate);
 		this.app.vault.off("modify", this.onModify);
@@ -183,11 +190,37 @@ export default class FolderFileSplitterPlugin extends Plugin {
 		}
 	};
 
+	migrateLegacySettings(raw: Partial<AllSettings>): Partial<AllSettings> {
+		const updated = { ...raw };
+
+		const legacyExpandNodeOnClick = raw.expandFolderByClickingOn;
+		if (legacyExpandNodeOnClick && !raw.expandNodeOnClick) {
+			const valueMap: Record<
+				ExpandFolderByClickingOnElement,
+				ExpandNodeOnClick
+			> = {
+				icon: "icon",
+				folder: "selected_label",
+			};
+
+			updated.expandNodeOnClick = valueMap[legacyExpandNodeOnClick];
+		}
+
+		return updated;
+	}
+
+	removeLegacySettings(
+		raw: Partial<AllSettings>
+	): FolderFileSplitterPluginSettings {
+		return Object.fromEntries(
+			Object.entries(raw).filter(([key]) => key in DEFAULT_SETTINGS)
+		) as FolderFileSplitterPluginSettings;
+	}
+
 	async loadSettings() {
 		const rawData = (await this.loadData()) ?? {};
-		const filteredData = Object.fromEntries(
-			Object.entries(rawData).filter(([key]) => key in DEFAULT_SETTINGS)
-		);
+		const migratedData = this.migrateLegacySettings(rawData);
+		const filteredData = this.removeLegacySettings(migratedData);
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, filteredData);
 	}
 

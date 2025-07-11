@@ -12,10 +12,11 @@ type Props = {
 const TagExpandIcon = ({ tag }: Props) => {
 	const { useExplorerStore } = useExplorer();
 
-	const { hasSubTag, isTagExpanded } = useExplorerStore(
+	const { hasSubTag, isTagExpanded, toggleTag } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			hasSubTag: store.hasSubTag,
 			isTagExpanded: store.isTagExpanded,
+			toggleTag: store.toggleTag,
 		}))
 	);
 
@@ -23,6 +24,7 @@ const TagExpandIcon = ({ tag }: Props) => {
 		<ExpandIcon
 			isExpanded={isTagExpanded(tag)}
 			hideIcon={!hasSubTag(tag)}
+			onToggle={() => toggleTag(tag)}
 		/>
 	);
 };

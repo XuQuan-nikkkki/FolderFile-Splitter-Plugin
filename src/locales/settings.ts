@@ -1,4 +1,5 @@
 import {
+	EXPAND_NODE_ON_CLICK,
 	FILE_ITEM_SPACING,
 	FileDetailSettings,
 	FileDisplaySettings,
@@ -143,6 +144,44 @@ export const FOLDER_AND_TAG_BEHAVIOR_SETTINGS_COPY: SettingsLocaleResource<Folde
 			zh: {
 				name: "显示文件数量",
 				desc: "在每个文件夹或标签名称右侧显示包含的文件数量。",
+			},
+		},
+		expandNodeOnClick: {
+			en: {
+				name: "Expand node on click",
+				desc: "Control how folders or tags expand when clicked: only when clicking the icon, or also when clicking the label (with optional selection behavior).",
+				options: [
+					{
+						value: EXPAND_NODE_ON_CLICK.ICON,
+						text: "Toggle icon only",
+					},
+					{
+						value: EXPAND_NODE_ON_CLICK.LABEL,
+						text: "Click label to expand and select",
+					},
+					{
+						value: EXPAND_NODE_ON_CLICK.SELECTED_LABEL,
+						text: "Click once to select, click again to expand",
+					},
+				],
+			},
+			zh: {
+				name: "点击展开节点",
+				desc: "设置点击文件夹或标签时的展开方式：仅点击图标展开，点击标签名时直接展开并选中，或点击一次选中、再次点击展开。",
+				options: [
+					{
+						value: EXPAND_NODE_ON_CLICK.ICON,
+						text: "仅点击图标",
+					},
+					{
+						value: EXPAND_NODE_ON_CLICK.LABEL,
+						text: "点击文件夹/标签名展开并选中",
+					},
+					{
+						value: EXPAND_NODE_ON_CLICK.SELECTED_LABEL,
+						text: "第一次点击选中，再次点击展开",
+					},
+				],
 			},
 		},
 		openDestinationFolderAfterMove: {

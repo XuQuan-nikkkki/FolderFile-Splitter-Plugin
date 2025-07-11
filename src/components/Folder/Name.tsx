@@ -13,43 +13,39 @@ import { useExplorer } from "src/hooks/useExplorer";
 import useRenderEditableName from "src/hooks/useRenderEditableName";
 import { ExplorerStore } from "src/store";
 
-import { FolderInnerContentRef } from "./Content";
+import { FolderNameRef } from "./Content";
 
 export type FolderProps = {
 	folder: TFolder;
 };
 type Props = FolderProps;
 const FolderName = forwardRef(
-	({ folder }: Props, ref: ForwardedRef<FolderInnerContentRef>) => {
+	({ folder }: Props, ref: ForwardedRef<FolderNameRef>) => {
 		const { useExplorerStore } = useExplorer();
 
-		const {
-			renameFolder,
-			getNameOfFolder,
-			isLastCreatedFolder,
-		} = useExplorerStore(
-			useShallow((store: ExplorerStore) => ({
-				renameFolder: store.renameFolder,
-				getNameOfFolder: store.getNameOfFolder,
-				isLastCreatedFolder: store.isLastCreatedFolder,
-			}))
-		);
+		const { renameFolder, getNameOfFolder, isLastCreatedFolder } =
+			useExplorerStore(
+				useShallow((store: ExplorerStore) => ({
+					renameFolder: store.renameFolder,
+					getNameOfFolder: store.getNameOfFolder,
+					isLastCreatedFolder: store.isLastCreatedFolder,
+				}))
+			);
 
 		const onSaveName = (name: string) => renameFolder(folder, name);
 		const folderName = getNameOfFolder(folder);
-		const {
-			renderEditableName: renderFolderName,
-      onStartEditingName,
-		} = useRenderEditableName(folderName, onSaveName, {
-			className: "ffs__folder-name",
-		});
+		const { renderEditableName: renderFolderName, onStartEditingName } =
+			useRenderEditableName(folderName, onSaveName, {
+				className: "ffs__folder-name",
+			});
 
 		const folderRef = useRef<HTMLDivElement>(null);
 		const [isFocusing, setIsFocusing] = useState<boolean>(false);
 
 		useImperativeHandle(ref, () => ({
 			setIsFocusing,
-      onStartEditingName
+			onStartEditingName,
+			isFocusing,
 		}));
 
 		const onClickOutside = (event: MouseEvent) => {
@@ -63,7 +59,7 @@ const FolderName = forwardRef(
 
 		const onKeyDown = (e: KeyboardEvent) => {
 			if (e.key === "Enter" && isFocusing) {
-				onStartEditingName()
+				onStartEditingName();
 			}
 		};
 

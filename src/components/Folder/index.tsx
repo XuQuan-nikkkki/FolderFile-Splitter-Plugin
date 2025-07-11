@@ -27,9 +27,7 @@ const Folder = ({
 	const { useExplorerStore } = useExplorer();
 
 	const {
-		changeFocusedFolder,
 		expandFolder,
-		toggleFolder,
 		focusedFolder,
 		hasSubFolder,
 		getFilesinFolder,
@@ -37,10 +35,8 @@ const Folder = ({
 		getFolderLevel,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			changeFocusedFolder: store.changeFocusedFolder,
 			hasSubFolder: store.hasSubFolder,
 			expandFolder: store.expandFolder,
-			toggleFolder: store.toggleFolder,
 			focusedFolder: store.focusedFolder,
 			getFilesinFolder: store.getFilesInFolder,
 			getSubFolders: store.getSubFolders,
@@ -97,10 +93,6 @@ const Folder = ({
 		<div
 			className={getClassNames()}
 			ref={setDropRef}
-			onClick={async () => {
-				toggleFolder(folder);
-				await changeFocusedFolder(folder);
-			}}
 			style={getIndentStyle(getFolderLevel(folder), disableHoverIndent)}
 			data-tooltip-position="right"
 			aria-label={getAriaLabel()}

@@ -1,5 +1,12 @@
 export type ValueOf<T> = T[keyof T];
 
+export const EXPAND_NODE_ON_CLICK = {
+	ICON: "icon",
+	LABEL: "label",
+	SELECTED_LABEL: "selected_label",
+} as const;
+export type ExpandNodeOnClick = ValueOf<typeof EXPAND_NODE_ON_CLICK>;
+
 export const LAYOUT_MODE = {
 	HORIZONTAL_SPLIT: "Horizontal split",
 	VERTICAL_SPLIT: "Vertical split",
@@ -42,6 +49,7 @@ export type LayoutSettings = {
 export type FolderAndTagBehaviorSettings = {
 	showFolderHierarchyLines: boolean;
 	showFilesCount: boolean;
+	expandNodeOnClick: ExpandNodeOnClick;
 	openDestinationFolderAfterMove: boolean;
 	revealFileInExplorer: boolean;
 };
@@ -96,6 +104,7 @@ export const LAYOUT_SETTINGS: LayoutSettings = {
 export const FOLDER_AND_TAG_BEHAVIOR_SETTINGS: FolderAndTagBehaviorSettings = {
 	showFolderHierarchyLines: false,
 	showFilesCount: true,
+	expandNodeOnClick: EXPAND_NODE_ON_CLICK.SELECTED_LABEL,
 	openDestinationFolderAfterMove: false,
 	revealFileInExplorer: false,
 };
@@ -144,3 +153,21 @@ export const DEFAULT_SETTINGS: FolderFileSplitterPluginSettings = {
 	...FILE_DISPLAY_SETTINGS,
 	...FOLDER_NOTE_SETTINGS,
 };
+
+// legacy constant and type
+const EXPAND_FOLDER_BY_CLICKING_ELEMENT = {
+	ICON: "icon",
+	FOLDER: "folder",
+} as const;
+export type ExpandFolderByClickingOnElement = ValueOf<
+	typeof EXPAND_FOLDER_BY_CLICKING_ELEMENT
+>;
+
+export type LegacySettings = {
+	expandFolderByClickingOn: ExpandFolderByClickingOnElement;
+};
+export const LEGACY_SETTINGS = {
+	expandFolderByClickingOn: EXPAND_FOLDER_BY_CLICKING_ELEMENT.FOLDER,
+};
+
+export type AllSettings = FolderFileSplitterPluginSettings & LegacySettings;

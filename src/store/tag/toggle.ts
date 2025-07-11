@@ -19,6 +19,7 @@ export interface ToggleTagSlice {
 	expandTag: (tag: TagNode) => void;
 	expandAllTags: () => void;
 	collapseTag: (tag: TagNode) => void;
+	toggleTag: (tag: TagNode) => void;
 	collapseAllTags: () => void;
 
 	restoreExpandedTagPaths: () => void;
@@ -71,6 +72,14 @@ export const createToggleTagSlice =
 			changeExpandedTagPaths(
 				removeItemFromArray(expandedTagPaths, tag.fullPath)
 			);
+		},
+		toggleTag: (tag: TagNode) => {
+			const { isTagExpanded, expandTag, collapseTag } = get();
+			if (isTagExpanded(tag)) {
+				collapseTag(tag);
+			} else {
+				expandTag(tag);
+			}
 		},
 		collapseAllTags: () => {
 			get().changeExpandedTagPaths([]);

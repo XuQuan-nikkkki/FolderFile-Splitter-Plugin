@@ -16,6 +16,7 @@ export interface FolderActionsSlice {
 
 	createNewFolder: (parentFolder: TFolder) => Promise<TFolder | undefined>;
 	createNewFolderAndFocus: (parentFolder: TFolder) => Promise<void>;
+	createNewFileAndFocus: (parentFolder: TFolder) => Promise<void>;
 
 	moveFolder: (folder: TFolder, newPath: string) => Promise<void>;
 	renameFolder: (folder: TFolder, newName: string) => Promise<void>;
@@ -75,6 +76,11 @@ export const createFolderActionsSlice =
 				expandAncestors(newFolder);
 				await changeFocusedFolder(newFolder);
 			}
+		},
+		createNewFileAndFocus: async (parentFolder: TFolder) => {
+			const { createFileWithDefaultName, changeFocusedFolder } = get();
+			await createFileWithDefaultName(parentFolder);
+			await changeFocusedFolder(parentFolder);
 		},
 		trashFolder: async (folder: TFolder) => {
 			const { focusedFolder, isAnscestorOf, setFocusedFolderAndSave } =

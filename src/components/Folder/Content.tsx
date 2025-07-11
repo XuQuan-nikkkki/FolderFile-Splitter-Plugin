@@ -1,10 +1,12 @@
 import classNames from "classnames";
 import { Menu, TFolder } from "obsidian";
-import { useEffect, useRef } from "react";
+import { MouseEvent, useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { useExplorer } from "src/hooks/useExplorer";
+import { useExpandNodeByClick } from "src/hooks/useSettingsHandler";
 import { FOLDER_OPERATION_COPY } from "src/locales";
+import { EXPAND_NODE_ON_CLICK } from "src/settings";
 import { ExplorerStore } from "src/store";
 import {
 	addCreateFileMenuItem,
@@ -22,7 +24,8 @@ import { FolderListModal } from "../FolderListModal";
 
 import FolderContentInner from "./ContentInner";
 
-export type FolderInnerContentRef = {
+export type FolderNameRef = {
+	isFocusing: boolean;
 	setIsFocusing: (isFocusing: boolean) => void;
 	onStartEditingName: Noop;
 };
@@ -33,40 +36,42 @@ export type FolderProps = {
 type Props = FolderProps;
 const FolderContent = ({ folder }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
-	const { language } = plugin;
+	const { language, settings } = plugin;
 
 	const {
 		focusedFolder,
 		changeFocusedFolder,
-		createNewFolder,
-		createFileWithDefaultName,
+		createNewFolderAndFocus,
+		createNewFileAndFocus,
 		pinFolder,
 		unpinFolder,
 		isFolderPinned,
 		trashFolder,
-		expandFolder,
-		isFolderExpanded
+		toggleFolder,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			focusedFolder: store.focusedFolder,
 			changeFocusedFolder: store.changeFocusedFolder,
-			createNewFolder: store.createNewFolder,
-			createFileWithDefaultName: store.createFileWithDefaultName,
+			createNewFolderAndFocus: store.createNewFolderAndFocus,
+			createNewFileAndFocus: store.createNewFileAndFocus,
 			pinFolder: store.pinFolder,
 			unpinFolder: store.unpinFolder,
 			isFolderPinned: store.isFolderPinned,
 			trashFolder: store.trashFolder,
-			expandFolder: store.expandFolder,
-			isFolderExpanded: store.isFolderExpanded
+			toggleFolder: store.toggleFolder,
 		}))
 	);
 
-	const isFocused = folder.path == focusedFolder?.path;
+	const { expandNodeByClick } = useExpandNodeByClick(
+		settings.expandNodeOnClick
+	);
 
 	const folderRef = useRef<HTMLDivElement>(null);
-	const innerContentRef = useRef<FolderInnerContentRef>(null);
+	const nameRef = useRef<FolderNameRef>(null);
 
 	useEffect(() => {
+		nameRef.current?.setIsFocusing(false)
+
 		if (focusedFolder?.path !== folder.path) return;
 		setTimeout(() => {
 			folderRef.current?.scrollIntoView({
@@ -90,28 +95,11 @@ const FolderContent = ({ folder }: Props) => {
 		modal.open();
 	};
 
-	const onCreateNewFile = async () => {
-		if (folder.path !== focusedFolder?.path) {
-			await changeFocusedFolder(folder);
-		}
-		await createFileWithDefaultName(folder);
-	};
-
-	const onCreateNewFolder = async () => {
-		const newFolder = await createNewFolder(folder);
-		if (!isFolderExpanded(folder)) {
-			expandFolder(folder);
-		}
-		if (newFolder) {
-			await changeFocusedFolder(newFolder);
-		}
-	};
-
 	const addCreateFolderMenuItem = (menu: Menu) => {
 		addMenuItem(menu, {
 			title: FOLDER_OPERATION_COPY.createFolder[language],
 			icon: "folder-open",
-			action: onCreateNewFolder,
+			action: async () => await createNewFolderAndFocus(folder),
 		});
 	};
 
@@ -125,7 +113,10 @@ const FolderContent = ({ folder }: Props) => {
 		addPinInMenu(menu);
 		menu.addSeparator();
 
-		addCreateFileMenuItem(menu, onCreateNewFile);
+		addCreateFileMenuItem(
+			menu,
+			async () => await createNewFileAndFocus(folder)
+		);
 		addCreateFolderMenuItem(menu);
 		menu.addSeparator();
 
@@ -134,7 +125,7 @@ const FolderContent = ({ folder }: Props) => {
 
 		addRenameMenuItem(
 			menu,
-			innerContentRef?.current?.onStartEditingName ?? noop,
+			nameRef?.current?.onStartEditingName ?? noop,
 			isRootFolder
 		);
 		addDeleteMenuItem(menu, () => trashFolder(folder));
@@ -142,18 +133,29 @@ const FolderContent = ({ folder }: Props) => {
 		triggerMenu(plugin, menu, "folder-context-menu")(e);
 	};
 
+	const onClickFolderContent = async (e: MouseEvent) => {
+		e.stopPropagation()
+		e.preventDefault()
+		await changeFocusedFolder(folder);
+		if (expandNodeByClick === EXPAND_NODE_ON_CLICK.LABEL) {
+			toggleFolder(folder);
+		} else if (expandNodeByClick === EXPAND_NODE_ON_CLICK.SELECTED_LABEL) {
+			folderRef.current?.focus();
+			if (nameRef.current?.isFocusing) {
+				toggleFolder(folder);
+			} else {
+				nameRef.current?.setIsFocusing(true);
+			}
+		}
+	};
+
 	return (
 		<div
 			className={classNames("ffs__folder")}
 			onContextMenu={onShowContextMenu}
-			onClick={() => {
-				if (isFocused) {
-					folderRef.current?.focus();
-					innerContentRef.current?.setIsFocusing(true);
-				}
-			}}
+			onClick={onClickFolderContent}
 		>
-			<FolderContentInner folder={folder} />
+			<FolderContentInner folder={folder} ref={folderRef} nameRef={nameRef} />
 		</div>
 	);
 };

@@ -40,9 +40,9 @@ const FolderAndTagTree = () => {
 		if (!showFolderView) return;
 
 		const sortedFolders = sortFolders(folders);
-		return sortedFolders.map((folder) => {
-			return <FolderTreeItem folder={folder} key={folder.path} />;
-		});
+		return sortedFolders.map((folder) => (
+			<FolderTreeItem folder={folder} key={folder.path} />
+		));
 	};
 
 	const renderTags = (tags: TagNode[]) => {
