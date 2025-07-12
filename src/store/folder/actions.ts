@@ -83,11 +83,27 @@ export const createFolderActionsSlice =
 			await changeFocusedFolder(parentFolder);
 		},
 		trashFolder: async (folder: TFolder) => {
-			const { focusedFolder, isAnscestorOf, setFocusedFolderAndSave } =
-				get();
+			const {
+				focusedFolder,
+				focusedFile,
+				isAnscestorOf,
+				isFocusedFolder,
+				setFocusedFolderAndSave,
+				isFileInFolder,
+				clearFocusedFile,
+				changeToAllMode,
+			} = get();
 
-			if (focusedFolder && isAnscestorOf(folder, focusedFolder)) {
+			if (
+				focusedFolder &&
+				(isAnscestorOf(folder, focusedFolder) ||
+					isFocusedFolder(folder))
+			) {
 				setFocusedFolderAndSave(null);
+				changeToAllMode();
+			}
+			if (focusedFile && isFileInFolder(focusedFile, folder)) {
+				clearFocusedFile();
 			}
 			await plugin.app.fileManager.trashFile(folder);
 		},

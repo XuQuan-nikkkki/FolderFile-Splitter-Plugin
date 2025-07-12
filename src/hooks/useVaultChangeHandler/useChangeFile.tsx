@@ -26,6 +26,7 @@ const useChangeFile = () => {
 		isFilePinned,
 		unpinFile,
 		getVisibleFiles,
+		viewMode,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			focusedFolder: store.focusedFolder,
@@ -37,6 +38,7 @@ const useChangeFile = () => {
 			isFilePinned: store.isFilePinned,
 			unpinFile: store.unpinFile,
 			getVisibleFiles: store.getVisibleFiles,
+			viewMode: store.viewMode,
 		}))
 	);
 
@@ -59,7 +61,13 @@ const useChangeFile = () => {
 				onHandleVaultChange
 			);
 		};
-	}, [focusedFolder, includeSubfolderFiles, focusedTag, includeSubTagFiles]);
+	}, [
+		focusedFolder,
+		includeSubfolderFiles,
+		focusedTag,
+		includeSubTagFiles,
+		viewMode,
+	]);
 
 	const maybeInitOrder = async () => {
 		if (fileSortRule !== FILE_MANUAL_SORT_RULE) return;
@@ -71,9 +79,9 @@ const useChangeFile = () => {
 	};
 
 	const updateFileListAndOrder = async () => {
-		await maybeInitOrder()
-		updateFileList()
-	}
+		await maybeInitOrder();
+		updateFileList();
+	};
 
 	const onHandleVaultChange = async (event: VaultChangeEvent) => {
 		const { file, changeType, oldPath } = event.detail;

@@ -43,27 +43,27 @@ export const createFocusedFolderSlice =
 			});
 		},
 
-		changeFocusedFolder: async (folder: TFolder | null) => {
+		changeFocusedFolder: async (folder: TFolder) => {
 			const {
 				focusedFile,
 				setFocusedFolderAndSave,
+				setFocusedTagAndSave,
 				changeToFolderMode,
 				openFolderNote,
 				clearFocusedFile,
 				viewMode,
+				isFileInFolder,
 			} = get();
 
 			setFocusedFolderAndSave(folder);
-			if (folder) {
-				if (viewMode !== VIEW_MODE.FOLDER) {
-					changeToFolderMode();
-				}
-				if (plugin.settings.autoOpenFolderNote) {
-					await openFolderNote(folder);
-				}
+			setFocusedTagAndSave(null);
+			if (viewMode !== VIEW_MODE.FOLDER) {
+				changeToFolderMode();
 			}
-			// TODO: Question?
-			if (focusedFile?.parent?.path !== folder?.path) {
+			if (plugin.settings.autoOpenFolderNote) {
+				await openFolderNote(folder);
+			}
+			if (focusedFile && !isFileInFolder(focusedFile, folder)) {
 				clearFocusedFile();
 			}
 		},

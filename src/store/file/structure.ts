@@ -1,4 +1,4 @@
-import { TFile } from "obsidian";
+import { TFile, TFolder } from "obsidian";
 import { StateCreator } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
@@ -13,6 +13,8 @@ export interface FileStructureSlice {
 
 	findFileByPath: (path: string) => TFile | null;
 	isFilePathValid: (path: string) => boolean;
+
+	isFileInFolder: (file: TFile, folder: TFolder) => boolean;
 }
 
 export const createFileStructureSlice =
@@ -51,5 +53,9 @@ export const createFileStructureSlice =
 		},
 		isFilePathValid: (path: string) => {
 			return Boolean(get().findFileByPath(path));
+		},
+
+		isFileInFolder: (file: TFile, folder: TFolder) => {
+			return file.parent?.path === folder.path;
 		},
 	});

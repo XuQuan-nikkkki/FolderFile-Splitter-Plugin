@@ -39,19 +39,19 @@ export const createFocusedTagSlice =
 			});
 		},
 
-		changeFocusedTag: async (tag: TagNode | null) => {
+		changeFocusedTag: async (tag: TagNode) => {
 			const {
 				focusedFile,
 				changeToTagMode,
 				setFocusedTagAndSave,
+				setFocusedFolderAndSave,
 				viewMode,
 				clearFocusedFile,
 				isFileHasTag,
 			} = get();
 
 			setFocusedTagAndSave(tag);
-			if (!tag) return;
-
+			setFocusedFolderAndSave(null);
 			if (viewMode !== VIEW_MODE.TAG) {
 				changeToTagMode();
 			}

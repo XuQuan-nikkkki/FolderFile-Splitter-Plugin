@@ -1,5 +1,5 @@
 import { Menu, TFolder } from "obsidian";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { useExplorer } from "src/hooks/useExplorer";
@@ -33,7 +33,6 @@ const FolderContent = ({ folder }: Props) => {
 	const { language } = plugin;
 
 	const {
-		focusedFolder,
 		changeFocusedFolder,
 		createNewFolderAndFocus,
 		createNewFileAndFocus,
@@ -45,7 +44,6 @@ const FolderContent = ({ folder }: Props) => {
 		isFocusedFolder,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			focusedFolder: store.focusedFolder,
 			changeFocusedFolder: store.changeFocusedFolder,
 			createNewFolderAndFocus: store.createNewFolderAndFocus,
 			createNewFileAndFocus: store.createNewFileAndFocus,
@@ -55,6 +53,8 @@ const FolderContent = ({ folder }: Props) => {
 			trashFolder: store.trashFolder,
 			toggleFolder: store.toggleFolder,
 			isFocusedFolder: store.isFocusedFolder,
+
+			focusedFolder: store.focusedFolder,
 		}))
 	);
 

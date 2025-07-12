@@ -20,6 +20,7 @@ export type ViewModeSlice = {
 
 	changeToTagMode: () => void;
 	changeToFolderMode: () => void;
+	changeToAllMode: () => void;
 };
 
 export const createViewModeSlice =
@@ -30,8 +31,7 @@ export const createViewModeSlice =
 		viewMode: DEFAULT_VIEW_MODE,
 
 		changeViewMode: (mode: ViewMode) => {
-			const { setValueAndSaveInLocalStorage } = get();
-			setValueAndSaveInLocalStorage({
+			get().setValueAndSaveInLocalStorage({
 				key: "viewMode",
 				value: mode,
 				localStorageKey: FFS_VIEW_MODE_KEY,
@@ -39,22 +39,19 @@ export const createViewModeSlice =
 			});
 		},
 		restoreViewMode: () => {
-			const { getDataFromLocalStorage } = get();
-			const viewMode = getDataFromLocalStorage(FFS_VIEW_MODE_KEY);
-			if (!viewMode) return;
-			set({
-				viewMode,
+			get().restoreDataFromLocalStorage({
+				localStorageKey: FFS_VIEW_MODE_KEY,
+				key: "viewMode",
 			});
 		},
 
 		changeToFolderMode: () => {
-			const { changeViewMode, changeFocusedTag } = get();
-			changeViewMode(VIEW_MODE.FOLDER);
-			changeFocusedTag(null);
+			get().changeViewMode(VIEW_MODE.FOLDER);
 		},
 		changeToTagMode: () => {
-			const { changeViewMode, setFocusedFileAndSave } = get();
-			changeViewMode(VIEW_MODE.TAG);
-			setFocusedFileAndSave(null);
+			get().changeViewMode(VIEW_MODE.TAG);
+		},
+		changeToAllMode: () => {
+			get().changeViewMode(VIEW_MODE.ALL);
 		},
 	});
