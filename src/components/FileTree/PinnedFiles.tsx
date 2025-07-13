@@ -8,7 +8,7 @@ import { ExplorerStore } from "src/store";
 import { PinContainer, PinContent, PinHeader } from "../Pin";
 
 type Props = {
-	renderFile: (file: TFile, disableDrag?: boolean) => ReactNode;
+	renderFile: (file: TFile, index: number, disableDrag?: boolean) => ReactNode;
 };
 const PinnedFiles = ({ renderFile }: Props) => {
 	const { useExplorerStore } = useExplorer();
@@ -26,8 +26,8 @@ const PinnedFiles = ({ renderFile }: Props) => {
 		<PinContainer>
 			<PinHeader />
 			<PinContent>
-				{getDisplayedPinnedFiles().map((file) =>
-					renderFile(file, true)
+				{getDisplayedPinnedFiles().map((file, index) =>
+					renderFile(file, index, true)
 				)}
 			</PinContent>
 		</PinContainer>

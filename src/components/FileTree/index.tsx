@@ -27,9 +27,9 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 	);
 	const { files } = useChangeFile();
 
-	const renderFile = (file: TFile, disableDrag?: boolean) => (
+	const renderFile = (file: TFile, index: number, disableDrag?: boolean) => (
 		<File
-			key={file.path}
+			key={file.path + index}
 			file={file}
 			disableDrag={disableDrag}
 			onOpenFoldersPane={onOpenFoldersPane}
@@ -48,7 +48,7 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 	return (
 		<div className="ffs__tree ffs__file-tree nav-files-container">
 			<PinnedFiles renderFile={renderFile} />
-			{sortedFiles.map((file) => renderFile(file))}
+			{sortedFiles.map((file, index) => renderFile(file, index))}
 		</div>
 	);
 };
