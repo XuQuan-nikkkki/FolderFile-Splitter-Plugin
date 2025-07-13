@@ -31,6 +31,7 @@ const TagContent = ({ tag }: Props) => {
 		unpinTag,
 		changeFocusedTag,
 		toggleTag,
+		deselectFocusedTag,
 	} = useExplorerStore(
 		useShallow((store) => ({
 			focusedTag: store.focusedTag,
@@ -39,13 +40,14 @@ const TagContent = ({ tag }: Props) => {
 			unpinTag: store.unpinTag,
 			changeFocusedTag: store.changeFocusedTag,
 			toggleTag: store.toggleTag,
+			deselectFocusedTag: store.deselectFocusedTag,
 		}))
 	);
 
 	const nameRef = useRef<NameRef>(null);
 	const contentRef = useRef<HTMLDivElement | null>(null);
 
-	const isFocused = tag.fullPath == focusedTag?.fullPath;
+	const isFocused = tag.fullPath === focusedTag?.fullPath;
 
 	const addPinInMenu = (menu: Menu) => {
 		const isPinned = isTagPinned(tag);
@@ -81,8 +83,9 @@ const TagContent = ({ tag }: Props) => {
 		<TogglableContainer
 			nameRef={nameRef}
 			isFocused={isFocused}
-			onFocus={async () => await changeFocusedTag(tag)}
-			onToggle={() => toggleTag(tag)}
+			onSelect={() => changeFocusedTag(tag)}
+			onDeselect={deselectFocusedTag}
+			onToggleExpand={() => toggleTag(tag)}
 			className="ffs__tag"
 			onContextMenu={onShowContextMenu}
 		>

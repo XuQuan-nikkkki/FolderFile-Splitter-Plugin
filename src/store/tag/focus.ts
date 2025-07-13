@@ -14,8 +14,11 @@ export interface FocusedTagSlice {
 	isFocusedTag: (tag: TagNode) => boolean;
 	setFocusedTagAndSave: (tag: TagNode | null) => void;
 
-	changeFocusedTag: (folder: TagNode | null) => Promise<void>;
+	changeFocusedTag: (folder: TagNode | null) => void;
 	restoreLastFocusedTag: () => void;
+
+	clearFocusedTag: () => void;
+	deselectFocusedTag: () => void;
 }
 
 export const createFocusedTagSlice =
@@ -39,7 +42,7 @@ export const createFocusedTagSlice =
 			});
 		},
 
-		changeFocusedTag: async (tag: TagNode) => {
+		changeFocusedTag: (tag: TagNode) => {
 			const {
 				focusedFile,
 				changeToTagMode,
@@ -68,5 +71,15 @@ export const createFocusedTagSlice =
 				transform: getTagByPath,
 				validate: (tag) => Boolean(tag),
 			});
+		},
+
+		clearFocusedTag: async () => {
+			get().setFocusedTagAndSave(null);
+		},
+
+		deselectFocusedTag: () => {
+			const { clearFocusedTag, changeToAllMode } = get();
+			clearFocusedTag();
+			changeToAllMode();
 		},
 	});

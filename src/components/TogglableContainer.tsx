@@ -10,17 +10,19 @@ import ScrollInToViewContainer from "./ScrollInToViewContainer";
 
 type Props = {
 	isFocused: boolean;
-	onFocus: AsyncNoop;
-	onToggle: Noop;
+	onSelect: AsyncNoop | Noop;
+	onToggleExpand: Noop;
 	nameRef: RefObject<NameRef | null>;
 	children: ReactNode;
+	onDeselect?: AsyncNoop | Noop;
 } & HTMLAttributes<HTMLDivElement>;
 const TogglableContainer = ({
 	nameRef,
 	isFocused,
-	onFocus,
-	onToggle,
+	onSelect,
+	onToggleExpand,
 	children,
+	onDeselect,
 	...props
 }: Props) => {
 	const { plugin } = useExplorer();
@@ -34,16 +36,22 @@ const TogglableContainer = ({
 		e.preventDefault();
 
 		if (!isFocused) {
-			await onFocus();
+			await onSelect();
+		} else if (onDeselect) {
+			onDeselect();
 		}
-		if (nameRef.current && !nameRef.current.isFocusing) {
-			nameRef.current.setIsFocusing(true);
+		if (nameRef.current) {
+			if (!nameRef.current.isFocusing) {
+				nameRef.current.setIsFocusing(true);
+			} else if (onDeselect) {
+				nameRef.current.setIsFocusing(false);
+			}
 		}
 		if (expandNodeByClick === EXPAND_NODE_ON_CLICK.LABEL) {
-			onToggle();
+			onToggleExpand();
 		} else if (expandNodeByClick === EXPAND_NODE_ON_CLICK.SELECTED_LABEL) {
 			if (nameRef.current?.isFocusing) {
-				onToggle();
+				onToggleExpand();
 			}
 		}
 	};

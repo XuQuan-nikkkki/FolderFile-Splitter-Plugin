@@ -119,8 +119,8 @@ const FolderContent = ({ folder }: Props) => {
 		<TogglableContainer
 			nameRef={nameRef}
 			isFocused={isFocused}
-			onFocus={async () => await changeFocusedFolder(folder)}
-			onToggle={() => toggleFolder(folder)}
+			onSelect={async () => await changeFocusedFolder(folder)}
+			onToggleExpand={() => toggleFolder(folder)}
 			className="ffs__folder"
 			onContextMenu={onShowContextMenu}
 		>
