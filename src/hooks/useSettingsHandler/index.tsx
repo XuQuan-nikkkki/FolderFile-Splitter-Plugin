@@ -1,5 +1,6 @@
 import { useAutoHideActionBar } from "./useAutoHideActionBar";
 import { useBoldFileTitle } from "./useBoldFileTitle";
+import { useDeduplicateTagFiles } from "./useDeduplicateTagFiles";
 import { useExpandNodeByClick } from "./useExpandNodeByClick";
 import { useFileCreationDateFormat } from "./useFileCreationDateFormat";
 import { useFileItemSpacing } from "./useFileItemSpacing";
@@ -43,5 +44,6 @@ export {
 	useIncludeSubTagFiles,
 	useShowTagIcon,
 	useShowFilesCount,
-	useExpandNodeByClick
+	useExpandNodeByClick,
+	useDeduplicateTagFiles
 };

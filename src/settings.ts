@@ -63,6 +63,7 @@ export type TagSettings = {
 	showTagView: boolean;
 	showTagIcon: boolean;
 	includeSubTagFiles: boolean;
+	deduplicateTagFiles: boolean;
 };
 export type FileDetailSettings = {
 	showFileDetail: boolean;
@@ -120,6 +121,7 @@ export const TAG_SETTINGS: TagSettings = {
 	showTagView: false,
 	showTagIcon: true,
 	includeSubTagFiles: false,
+	deduplicateTagFiles: true,
 };
 
 export const FILE_DETAIL_SETTINGS: FileDetailSettings = {

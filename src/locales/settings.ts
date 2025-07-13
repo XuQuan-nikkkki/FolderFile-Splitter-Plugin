@@ -280,6 +280,16 @@ export const TAG_SETTINGS_COPY: SettingsLocaleResource<TagSettings> = {
 			desc: "启用后，子标签中的文件将会显示在文件列表中，并计入所属标签的文件数量。",
 		},
 	},
+	deduplicateTagFiles: {
+		en: {
+			name: "Deduplicate files in tag view",
+			desc: "When enabled, files that appear under multiple sub-tags will only be shown once when viewing a parent tag. Note: the total file count may still include duplicates.",
+		},
+		zh: {
+			name: "标签视图去重文件",
+			desc: "启用后，在查看父标签时，若文件同时属于多个子标签，只会显示一次。但文件数量统计仍会包含重复项。",
+		},
+	},
 };
 
 export const FILE_DETAIL_SETTINGS_COPY: SettingsLocaleResource<FileDetailSettings> =

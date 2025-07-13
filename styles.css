@@ -319,6 +319,13 @@ div.ffs__name--bold {
 	margin-left: 4px;
 }
 
+.ffs__deduplicate-tips {
+	color: var(--nav-item-color);
+	font-size: 12px;
+	overflow: hidden;
+	padding: 0px 8px;
+}
+
 /* file */
 div.ffs__file-content {
 	padding-left: 8px;

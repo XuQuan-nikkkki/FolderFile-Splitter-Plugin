@@ -143,6 +143,7 @@ export class SettingTab extends PluginSettingTab {
 		this._initToggleSetting("showTagView");
 		this._initToggleSetting("showTagIcon");
 		this._initToggleSetting("includeSubTagFiles");
+		this._initToggleSetting("deduplicateTagFiles")
 	}
 
 	generateFileCreationDateFormatDesc(setting: Setting, format: string) {
