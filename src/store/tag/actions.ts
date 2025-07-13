@@ -6,8 +6,6 @@ import { Noop } from "src/utils";
 
 import { ExplorerStore } from "..";
 
-import { DEFAULT_TAG_TREE } from "./structure";
-
 import { TagNode, TagTree } from ".";
 
 export interface TagActionsSlice {
@@ -81,19 +79,13 @@ export const createTagActionsSlice =
 				getTagPathsOfFile,
 				addTagPathToTree,
 			} = get();
-			clearTagTree()
+			clearTagTree();
 
 			const markdownFiles = getMarkdownFiles();
 			if (!markdownFiles?.length) return tagTree;
 
-			console.log(markdownFiles.map(f => f.path).join("\n"))
-
 			for (const file of markdownFiles) {
-
 				const paths = getTagPathsOfFile(file);
-				if (file.path === "Z-🗄️ Archive/00-🐈 小卷友/20241226-插件库的遗留问题.md") {
-					console.log("paths", paths)
-				}
 				if (!paths?.length) continue;
 
 				for (const tag of paths) {
@@ -104,7 +96,7 @@ export const createTagActionsSlice =
 		},
 		clearTagTree: () => {
 			set({
-				tagTree: DEFAULT_TAG_TREE,
+				tagTree: new Map(),
 			});
 		},
 

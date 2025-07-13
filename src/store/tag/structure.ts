@@ -7,8 +7,6 @@ import { ExplorerStore } from "..";
 
 import { TagNode, TagTree } from ".";
 
-export const DEFAULT_TAG_TREE = new Map();
-
 export interface TagStructureSlice {
 	tagTree: TagTree;
 
@@ -36,7 +34,7 @@ export const createTagStructureSlice =
 		plugin: FolderFileSplitterPlugin
 	): StateCreator<ExplorerStore, [], [], TagStructureSlice> =>
 	(set, get) => ({
-		tagTree: DEFAULT_TAG_TREE,
+		tagTree: new Map(),
 
 		isTagValid: (tag: TagNode) => {
 			return Boolean(get().getTagByPath(tag.fullPath));
@@ -50,7 +48,6 @@ export const createTagStructureSlice =
 		},
 		getTopLevelTags: () => {
 			const { tagTree, isTopLevelTag } = get();
-			// console.log(tagTree)
 			return Array.from(tagTree.values()).filter(isTopLevelTag);
 		},
 

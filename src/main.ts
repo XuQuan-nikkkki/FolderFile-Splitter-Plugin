@@ -121,19 +121,19 @@ export default class FolderFileSplitterPlugin extends Plugin {
 		window.dispatchEvent(event);
 	};
 
+	private lastHandledFiles = new Set<string>();
+
 	onChangeMetadataCache: (
 		file: TFile,
 		data: string,
 		cache: CachedMetadata
 	) => void = (file, data, cache) => {
-		const lastHandledFiles = new Set<string>();
-
-		if (lastHandledFiles.has(file.path)) return;
-		lastHandledFiles.add(file.path);
+		if (this.lastHandledFiles.has(file.path)) return;
+		this.lastHandledFiles.add(file.path);
 
 		this.triggerMetadataCacheChangeEvent(file, data, cache);
 
-		setTimeout(() => lastHandledFiles.delete(file.path), 500);
+		setTimeout(() => this.lastHandledFiles.delete(file.path), 500);
 	};
 
 	triggerSettingsChangeEvent = <
