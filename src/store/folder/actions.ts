@@ -2,7 +2,7 @@ import { TFolder } from "obsidian";
 import { StateCreator } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
-import { getDefaultUntitledName } from "src/utils";
+import { getDefaultUntitledName, replaceNameInPath } from "src/utils";
 
 import { ExplorerStore } from "..";
 
@@ -113,7 +113,7 @@ export const createFolderActionsSlice =
 		},
 		renameFolder: async (folder: TFolder, newName: string) => {
 			const { moveFolder } = get();
-			const newPath = folder.path.replace(folder.name, newName);
+			const newPath = replaceNameInPath(folder, newName)
 			await moveFolder(folder, newPath);
 		},
 	});

@@ -2,7 +2,7 @@ import { TFile, TFolder } from "obsidian";
 import { StateCreator } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
-import { getCopyName, getDefaultUntitledName } from "src/utils";
+import { getCopyName, getDefaultUntitledName, replaceNameInPath } from "src/utils";
 
 import { ExplorerStore } from "..";
 
@@ -46,7 +46,7 @@ export const createFileActionsSlice =
 				files.map((f) => f.name),
 				defaultFileName
 			);
-			return file.path.replace(file.basename, copyName);
+			return replaceNameInPath(file, copyName)
 		},
 
 		openFile: (file: TFile, active = true): void => {
@@ -94,9 +94,7 @@ export const createFileActionsSlice =
 		},
 		renameFile: async (file: TFile, newName: string) => {
 			const { moveFile } = get();
-			const paths = file.path.split("/");
-			paths[paths.length - 1] = `${newName}.${file.extension}`;
-			const newPath = paths.join("/");
+			const newPath = replaceNameInPath(file, newName)
 			await moveFile(file, newPath);
 		},
 

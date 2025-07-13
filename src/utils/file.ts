@@ -23,3 +23,14 @@ export const isManualSortOrderRule = (rule: SortRule): boolean => {
 
 export const removeFrontMatter = (content: string): string =>
 	content.replace(/^---\n[\s\S]*?\n---\n/, "").trim();
+
+const SLASH = "/";
+export const replaceNameInPath = (
+	item: TAbstractFile,
+	newName: string
+): string => {
+	const pathParts = item.path.split(SLASH);
+	const extension = isFile(item) ? item.extension : "";
+	pathParts[pathParts.length - 1] = newName + "." + extension;
+	return pathParts.join(SLASH);
+};
