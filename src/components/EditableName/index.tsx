@@ -102,6 +102,8 @@ const EditableName = forwardRef(
 		const onKeyDownInInput = (
 			event: React.KeyboardEvent<HTMLDivElement>
 		): void => {
+			event.stopPropagation();
+
 			if (event.key === "Escape") {
 				event.preventDefault();
 				onCancelEditing();

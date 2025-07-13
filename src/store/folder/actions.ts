@@ -7,7 +7,7 @@ import { getDefaultUntitledName } from "src/utils";
 import { ExplorerStore } from "..";
 
 export interface FolderActionsSlice {
-	latestCreatedFolder: TFolder | null;
+	latestCreatedFolderPath: string | null;
 	latestFolderCreatedTime: number | null;
 
 	getNewFolderDefaultName: (parentFolder: TFolder) => string;
@@ -29,7 +29,7 @@ export const createFolderActionsSlice =
 		plugin: FolderFileSplitterPlugin
 	): StateCreator<ExplorerStore, [], [], FolderActionsSlice> =>
 	(set, get) => ({
-		latestCreatedFolder: null,
+		latestCreatedFolderPath: null,
 		latestFolderCreatedTime: null,
 
 		getNewFolderDefaultName: (parentFolder: TFolder): string => {
@@ -44,10 +44,10 @@ export const createFolderActionsSlice =
 		},
 
 		isLastCreatedFolder: (folder: TFolder): boolean => {
-			const { latestCreatedFolder, latestFolderCreatedTime } = get();
+			const { latestCreatedFolderPath, latestFolderCreatedTime } = get();
 			const now = Date.now();
 			return Boolean(
-				folder.path === latestCreatedFolder?.path &&
+				folder.path === latestCreatedFolderPath &&
 					latestFolderCreatedTime &&
 					now - latestFolderCreatedTime < 3000
 			);
@@ -63,7 +63,7 @@ export const createFolderActionsSlice =
 				`${parentFolder.path}/${newFolderName}`
 			);
 			set({
-				latestCreatedFolder: newFolder,
+				latestCreatedFolderPath: newFolder.path,
 				latestFolderCreatedTime: Date.now(),
 			});
 			return newFolder;
