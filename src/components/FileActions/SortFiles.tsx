@@ -19,6 +19,7 @@ const SortFiles = () => {
 		filesSortRulesGroup,
 		changeFileSortRuleAndUpdateOrder,
 		isFileSortRuleAbled,
+		isFileSortDisabled
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			fileSortRule: store.fileSortRule,
@@ -27,6 +28,7 @@ const SortFiles = () => {
 			changeFileSortRuleAndUpdateOrder:
 				store.changeFileSortRuleAndUpdateOrder,
 			isFileSortRuleAbled: store.isFileSortRuleAbled,
+			isFileSortDisabled: store.isFileSortDisabled
 		}))
 	);
 
@@ -59,6 +61,7 @@ const SortFiles = () => {
 			currentSortRule={fileSortRule}
 			data-tooltip-position="bottom"
 			aria-label={SORT_TIPS_COPY.sortFiles[language]}
+			disabled={isFileSortDisabled()}
 		/>
 	);
 };

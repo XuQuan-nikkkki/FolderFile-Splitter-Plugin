@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import { Menu } from "obsidian";
 
 import {
@@ -26,17 +27,21 @@ type Props = {
 	menuName: string;
 	changeSortRule: (rule: string) => void;
 	currentSortRule: SortRule;
+	disabled?: boolean;
 };
 const SortAction = ({
 	ruleGroups,
 	menuName,
 	changeSortRule,
 	currentSortRule,
+	disabled = false,
 	...props
 }: Props) => {
 	const { plugin } = useExplorer();
 
 	const onChangeSortRule = (e: React.MouseEvent<HTMLDivElement>) => {
+		if (disabled) return;
+
 		const menu = new Menu();
 		ruleGroups.forEach((rules) => {
 			rules.forEach(({ text, rule, disabled }) => {
@@ -64,12 +69,17 @@ const SortAction = ({
 		);
 	};
 
+	const getClassNames = () => {
+		return classNames(
+			"ffs__action-button-wrapper clickable-icon nav-action-button",
+			{
+				"ffs__action-button-wrapper--disabled": disabled,
+			}
+		);
+	};
+
 	return (
-		<div
-			className="ffs__action-button-wrapper clickable-icon nav-action-button"
-			onClick={onChangeSortRule}
-			{...props}
-		>
+		<div className={getClassNames()} onClick={onChangeSortRule} {...props}>
 			{renderIcon()}
 		</div>
 	);

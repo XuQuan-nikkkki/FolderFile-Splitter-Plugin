@@ -33,7 +33,9 @@ export interface SortFileSlice {
 
 	filesSortRulesGroup: FileSortRule[][];
 	canManualSortViewModes: ViewMode[];
+	sortDisabledViewModes: ViewMode[];
 
+	isFileSortDisabled: () => boolean;
 	isFileSortRuleAbled: (rule: FileSortRule) => boolean;
 	sortFiles: (files: TFile[]) => TFile[];
 	restoreFileSortRule: () => Promise<void>;
@@ -59,6 +61,15 @@ export const createSortFileSlice =
 
 		get canManualSortViewModes(): ViewMode[] {
 			return [VIEW_MODE.FOLDER];
+		},
+
+		get sortDisabledViewModes(): ViewMode[] {
+			return [VIEW_MODE.SEARCH];
+		},
+
+		isFileSortDisabled(): boolean {
+			const { sortDisabledViewModes, viewMode } = get();
+			return sortDisabledViewModes.includes(viewMode);
 		},
 
 		isFileSortRuleAbled: (rule: FileSortRule) => {
