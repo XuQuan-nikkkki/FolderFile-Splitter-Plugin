@@ -17,6 +17,7 @@ import {
 type RuleCopy = {
 	text: string;
 	rule: string;
+	disabled?: boolean;
 };
 type SortRuleGroup = RuleCopy[];
 
@@ -38,10 +39,11 @@ const SortAction = ({
 	const onChangeSortRule = (e: React.MouseEvent<HTMLDivElement>) => {
 		const menu = new Menu();
 		ruleGroups.forEach((rules) => {
-			rules.forEach(({ text, rule }) => {
+			rules.forEach(({ text, rule, disabled }) => {
 				addMenuItem(menu, {
 					title: text,
 					checked: rule === currentSortRule,
+					disabled,
 					action: () => changeSortRule(rule),
 				});
 			});

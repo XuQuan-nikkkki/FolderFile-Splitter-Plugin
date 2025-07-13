@@ -15,10 +15,11 @@ type MenuRule = {
 	title: string;
 	icon?: string;
 	checked?: boolean;
+	disabled?: boolean;
 	action: () => void;
 };
 export const addMenuItem = (menu: Menu, rule: MenuRule): void => {
-	const { title, icon, checked, action } = rule;
+	const { title, icon, checked, disabled = false, action } = rule;
 	menu.addItem((item) => {
 		item.setTitle(title);
 		if (icon) {
@@ -27,6 +28,7 @@ export const addMenuItem = (menu: Menu, rule: MenuRule): void => {
 		if (checked) {
 			item.setChecked(checked);
 		}
+		item.setDisabled(disabled);
 		item.onClick(action);
 	});
 };

@@ -5,6 +5,7 @@ import { FFS_FILE_SORT_RULE_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
 
 import { ExplorerStore } from "..";
+import { VIEW_MODE, ViewMode } from "../common";
 
 export type FileSortRule =
 	| "FileNameAscending"
@@ -31,7 +32,9 @@ export interface SortFileSlice {
 	fileSortRule: FileSortRule;
 
 	filesSortRulesGroup: FileSortRule[][];
+	canManualSortViewModes: ViewMode[];
 
+	isFileSortRuleAbled: (rule: FileSortRule) => boolean;
 	sortFiles: (files: TFile[]) => TFile[];
 	restoreFileSortRule: () => Promise<void>;
 	changeFileSortRule: (rule: FileSortRule) => Promise<void>;
@@ -52,6 +55,17 @@ export const createSortFileSlice =
 				["FileCreatedTimeAscending", "FileCreatedTimeDescending"],
 				["FileManualOrder"],
 			];
+		},
+
+		get canManualSortViewModes(): ViewMode[] {
+			return [VIEW_MODE.FOLDER];
+		},
+
+		isFileSortRuleAbled: (rule: FileSortRule) => {
+			const { canManualSortViewModes, viewMode } = get();
+			return rule === FILE_MANUAL_SORT_RULE
+				? canManualSortViewModes.includes(viewMode)
+				: true;
 		},
 
 		sortFiles: (files: TFile[]): TFile[] => {

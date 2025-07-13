@@ -18,6 +18,7 @@ const SortFiles = () => {
 		focusedFolder,
 		filesSortRulesGroup,
 		changeFileSortRuleAndUpdateOrder,
+		isFileSortRuleAbled,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			fileSortRule: store.fileSortRule,
@@ -25,6 +26,7 @@ const SortFiles = () => {
 			filesSortRulesGroup: store.filesSortRulesGroup,
 			changeFileSortRuleAndUpdateOrder:
 				store.changeFileSortRuleAndUpdateOrder,
+			isFileSortRuleAbled: store.isFileSortRuleAbled,
 		}))
 	);
 
@@ -33,6 +35,7 @@ const SortFiles = () => {
 			rules.map((rule) => ({
 				rule,
 				text: FILE_SORT_RULES_COPY[rule][language],
+				disabled: !isFileSortRuleAbled(rule),
 			}))
 		);
 
