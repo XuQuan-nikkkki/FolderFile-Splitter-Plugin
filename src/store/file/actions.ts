@@ -62,7 +62,6 @@ export const createFileActionsSlice =
 			return await plugin.app.vault.read(file);
 		},
 		modifyFile: async (file: TFile, content: string) => {
-			// TODO: 对 markdown 是否有效
 			await plugin.app.vault.modify(file, content);
 		},
 
