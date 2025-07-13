@@ -57,7 +57,7 @@ const ViewModeDisplay = () => {
 			return renderPathContent(name, path);
 		} else if (viewMode === "tag") {
 			if (!focusedTag) return "";
-			return renderPathContent(focusedTag.name, focusedTag.fullPath);
+			return renderPathContent(focusedTag.fullPath, focusedTag.fullPath);
 		}
 	};
 
