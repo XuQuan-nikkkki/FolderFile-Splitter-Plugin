@@ -17,28 +17,29 @@ const useChangeFile = () => {
 	const { useExplorerStore, plugin } = useExplorer();
 
 	const {
+		fileSortRule,
 		focusedFolder,
 		focusedTag,
 		updatePinnedFilePath,
-		updateFilePathInManualOrder,
-		fileSortRule,
-		initOrder,
 		isFilePinned,
 		unpinFile,
 		getVisibleFiles,
 		viewMode,
+		initOrder,
+		updateOrder,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			focusedFolder: store.focusedFolder,
 			focusedTag: store.focusedTag,
 			updatePinnedFilePath: store.updatePinnedFilePath,
-			updateFilePathInManualOrder: store.updateFilePathInManualOrder,
-			fileSortRule: store.fileSortRule,
-			initOrder: store.initFilesManualSortOrder,
 			isFilePinned: store.isFilePinned,
 			unpinFile: store.unpinFile,
 			getVisibleFiles: store.getVisibleFiles,
 			viewMode: store.viewMode,
+			fileSortRule: store.fileSortRule,
+			order: store.filesManualSortOrder,
+			initOrder: store.initFilesManualSortOrder,
+			updateOrder: store.updateFilePathInManualOrder,
 		}))
 	);
 
@@ -70,50 +71,27 @@ const useChangeFile = () => {
 	]);
 
 	const maybeInitOrder = async () => {
-		if (fileSortRule !== FILE_MANUAL_SORT_RULE) return;
-		await initOrder();
-	};
-
-	const updateFileList = async () => {
-		setFiles(getVisibleFiles());
-	};
-
-	const updateFileListAndOrder = async () => {
-		await maybeInitOrder();
-		updateFileList();
+		if (fileSortRule === FILE_MANUAL_SORT_RULE) {
+			await initOrder();
+		}
 	};
 
 	const onHandleVaultChange = async (event: VaultChangeEvent) => {
 		const { file, changeType, oldPath } = event.detail;
-		if (!isFile(file)) return;
+		if (!isFile(file) || changeType === "modify") return;
 
-		switch (changeType) {
-			case "create":
-				await updateFileListAndOrder();
-				break;
-			case "delete":
-				await updateFileListAndOrder();
-				if (isFilePinned(file)) {
-					await unpinFile(file);
-				}
-				break;
-			case "rename":
-				updateFileList();
-				if (oldPath) {
-					const parentPath = file.parent?.path;
-					await updatePinnedFilePath(oldPath, file.path);
-					if (parentPath && fileSortRule === FILE_MANUAL_SORT_RULE) {
-						await updateFilePathInManualOrder(
-							parentPath,
-							oldPath,
-							file.path
-						);
-					}
-				}
-				break;
-			case "modify":
-				updateFileList();
-				break;
+		setFiles(getVisibleFiles());
+		if (changeType === "create") {
+			await maybeInitOrder();
+		} else if (changeType === "delete" && isFilePinned(file)) {
+			await maybeInitOrder();
+			await unpinFile(file);
+		} else if (changeType === "rename" && oldPath) {
+			await updatePinnedFilePath(oldPath, file.path);
+			const parentPath = file.parent?.path;
+			if (parentPath) {
+				await updateOrder(parentPath, oldPath, file.path);
+			}
 		}
 	};
 

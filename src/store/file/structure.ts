@@ -7,7 +7,7 @@ import { ExplorerStore } from "..";
 import { VIEW_MODE } from "../common";
 
 export interface FileStructureSlice {
-	files: TFile[];
+	getFiles: () => TFile[];
 	getMarkdownFiles: () => TFile[];
 	getVisibleFiles: () => TFile[];
 
@@ -22,7 +22,7 @@ export const createFileStructureSlice =
 		plugin: FolderFileSplitterPlugin
 	): StateCreator<ExplorerStore, [], [], FileStructureSlice> =>
 	(set, get) => ({
-		files: plugin.app.vault.getFiles() || [],
+		getFiles: () => plugin.app.vault.getFiles() || [],
 
 		getMarkdownFiles: () => {
 			return plugin.app.vault.getMarkdownFiles();

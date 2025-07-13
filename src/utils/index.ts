@@ -35,3 +35,4 @@ export * from "./string";
 export * from "./menu";
 export * from "./function"
 export * from './style'
+export * from './object'

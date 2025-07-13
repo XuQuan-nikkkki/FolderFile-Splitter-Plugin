@@ -94,7 +94,9 @@ export const createFileActionsSlice =
 		},
 		renameFile: async (file: TFile, newName: string) => {
 			const { moveFile } = get();
-			const newPath = file.path.replace(file.basename, newName);
+			const paths = file.path.split("/");
+			paths[paths.length - 1] = `${newName}.${file.extension}`;
+			const newPath = paths.join("/");
 			await moveFile(file, newPath);
 		},
 

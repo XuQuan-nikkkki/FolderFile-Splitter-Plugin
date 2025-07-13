@@ -16,16 +16,19 @@ const TagName = forwardRef(
 	({ tag, contentRef }: Props, ref: RefObject<NameRef>) => {
 		const { useExplorerStore } = useExplorer();
 
-		const { renameTag, isFocusedTag } = useExplorerStore(
+		const { renameTag, isFocusedTag, getSubTags } = useExplorerStore(
 			useShallow((store: ExplorerStore) => ({
 				renameTag: store.renameTag,
 				isFocusedTag: store.isFocusedTag,
+				getSubTags: store.getTagsByParent,
 			}))
 		);
 
+		const tags = tag.parentPath ? getSubTags(tag.parentPath) : [];
 		return (
 			<EditableName
 				ref={ref}
+				names={tags.map((t) => t.name)}
 				isFocused={isFocusedTag(tag)}
 				contentRef={contentRef}
 				defaultName={tag.name}

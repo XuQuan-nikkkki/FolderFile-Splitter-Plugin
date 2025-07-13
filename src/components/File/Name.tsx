@@ -4,15 +4,16 @@ import { useShallow } from "zustand/react/shallow";
 
 import { useExplorer } from "src/hooks/useExplorer";
 import { useBoldFileTitle } from "src/hooks/useSettingsHandler";
+import { useChangeFile } from "src/hooks/useVaultChangeHandler";
 import { ExplorerStore } from "src/store";
 import { UNTITLED_NAME } from "src/utils";
 
 import EditableName, { NameRef } from "../EditableName";
 
 type Props = {
-	file: TFile
-	contentRef: RefObject<HTMLDivElement | null>
-}
+	file: TFile;
+	contentRef: RefObject<HTMLDivElement | null>;
+};
 const FileName = forwardRef(
 	({ file, contentRef }: Props, ref: RefObject<NameRef>) => {
 		const { useExplorerStore, plugin } = useExplorer();
@@ -26,6 +27,7 @@ const FileName = forwardRef(
 		);
 
 		const { boldFileTitle } = useBoldFileTitle(settings.boldFileTitle);
+		const { files } = useChangeFile();
 
 		useEffect(() => {
 			const now = Date.now();
@@ -41,6 +43,7 @@ const FileName = forwardRef(
 		return (
 			<EditableName
 				ref={ref}
+				names={files.map((f) => f.basename)}
 				contentRef={contentRef}
 				defaultName={file.basename}
 				onSaveName={async (name: string) =>

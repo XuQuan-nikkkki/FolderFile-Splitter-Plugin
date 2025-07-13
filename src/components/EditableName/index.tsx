@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import { Notice } from "obsidian";
 import {
 	forwardRef,
 	RefObject,
@@ -8,7 +9,7 @@ import {
 	useState,
 } from "react";
 
-import { Noop } from "src/utils";
+import { isZh, Noop } from "src/utils";
 
 export type NameRef = {
 	isFocusing: boolean;
@@ -17,6 +18,7 @@ export type NameRef = {
 };
 
 type Props = {
+	names: string[];
 	defaultName: string;
 	onSaveName: (name: string) => Promise<void>;
 	contentRef: RefObject<HTMLDivElement | null>;
@@ -27,6 +29,7 @@ type Props = {
 const EditableName = forwardRef(
 	(
 		{
+			names,
 			defaultName,
 			onSaveName,
 			isFocused,
@@ -77,8 +80,18 @@ const EditableName = forwardRef(
 		};
 
 		const onSaveNewName = async () => {
+			const newName = name.trim();
+			const sameNames = names.filter((n) => n === newName);
+			if (sameNames.length > 1) {
+				const tips = isZh
+					? "❌ 名称已被使用，请尝试其他名称。"
+					: "❌ Name already exists. Choose a different one.";
+				new Notice(tips);
+				return;
+			}
+
 			try {
-				await onSaveName(name.trim());
+				await onSaveName(newName);
 				setIsEditing(false);
 			} catch (error) {
 				onCancelEditing();

@@ -21,12 +21,14 @@ const FolderName = forwardRef(
 			getNameOfFolder,
 			isLastCreatedFolder,
 			isFocusedFolder,
+			getSubFolders,
 		} = useExplorerStore(
 			useShallow((store: ExplorerStore) => ({
 				renameFolder: store.renameFolder,
 				getNameOfFolder: store.getNameOfFolder,
 				isLastCreatedFolder: store.isLastCreatedFolder,
 				isFocusedFolder: store.isFocusedFolder,
+				getSubFolders: store.getSubFolders,
 			}))
 		);
 
@@ -36,9 +38,11 @@ const FolderName = forwardRef(
 			}
 		}, []);
 
+		const folders = folder.parent ? getSubFolders(folder.parent) : [];
 		return (
 			<EditableName
 				ref={ref}
+				names={folders.map((f) => f.name)}
 				isFocused={isFocusedFolder(folder)}
 				contentRef={contentRef}
 				defaultName={getNameOfFolder(folder)}

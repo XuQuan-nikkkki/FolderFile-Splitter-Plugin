@@ -28,7 +28,7 @@ const FileContentInner = forwardRef(
 		const { showFileDetail } = useShowFileDetail(showDetail);
 		const { fileItemSpacing } = useFileItemSpacing(spacing);
 
-		const contentRef = useRef<HTMLDivElement>(null)
+		const contentRef = useRef<HTMLDivElement>(null);
 
 		const maybeRenderFileDetail = () => {
 			if (!showFileDetail) return null;

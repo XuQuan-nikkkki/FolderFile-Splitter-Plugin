@@ -3,6 +3,7 @@ import { StateCreator } from "zustand";
 
 import { FFS_FILE_MANUAL_SORT_ORDER_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
+import { removeDuplicateFromObjValues } from "src/utils";
 
 import { ExplorerStore } from "..";
 import { DEFAULT_MANUAL_SORT_ORDER, ManualSortOrder } from "../common";
@@ -57,11 +58,12 @@ export const createManualSortFileSlice =
 
 		setFilesManualOrderAndSave: async (updatedOrder: ManualSortOrder) => {
 			const { setValueAndSaveInPlugin } = get();
+			const order = removeDuplicateFromObjValues(updatedOrder);
 			await setValueAndSaveInPlugin({
 				key: "filesManualSortOrder",
-				value: updatedOrder,
+				value: order,
 				pluginKey: FFS_FILE_MANUAL_SORT_ORDER_KEY,
-				pluginValue: updatedOrder,
+				pluginValue: order,
 			});
 		},
 

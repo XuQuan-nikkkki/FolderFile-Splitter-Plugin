@@ -31,9 +31,9 @@ export const createPinnedFileSlice =
 		pinnedFilePaths: [],
 
 		getPinnedFiles: () => {
-			const { files, pinnedFilePaths, getPinnedItems } = get();
+			const { getFiles, pinnedFilePaths, getPinnedItems } = get();
 			return getPinnedItems<TFile>(pinnedFilePaths, (path) =>
-				files.find((file) => file.path === path)
+				getFiles().find((file) => file.path === path)
 			);
 		},
 		getDisplayedPinnedFiles: () => {

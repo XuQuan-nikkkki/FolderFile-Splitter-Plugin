@@ -21,7 +21,6 @@ import {
 	ExpandFolderByClickingOnElement,
 	ExpandNodeOnClick,
 	FolderFileSplitterPluginSettings,
-	LegacySettings,
 } from "./settings";
 import { SettingTab } from "./SettingTab";
 

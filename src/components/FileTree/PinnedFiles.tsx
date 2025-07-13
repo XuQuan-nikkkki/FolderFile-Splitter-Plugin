@@ -16,6 +16,7 @@ const PinnedFiles = ({ renderFile }: Props) => {
 	const { getDisplayedPinnedFiles } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			getDisplayedPinnedFiles: store.getDisplayedPinnedFiles,
+			pinnedFilePaths: store.pinnedFilePaths,
 		}))
 	);
 
@@ -25,7 +26,9 @@ const PinnedFiles = ({ renderFile }: Props) => {
 		<PinContainer>
 			<PinHeader />
 			<PinContent>
-				{getDisplayedPinnedFiles().map((file) => renderFile(file, true))}
+				{getDisplayedPinnedFiles().map((file) =>
+					renderFile(file, true)
+				)}
 			</PinContent>
 		</PinContainer>
 	);
