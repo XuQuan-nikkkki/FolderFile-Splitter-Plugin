@@ -9,18 +9,25 @@ export const VIEW_MODE = {
 	ALL: "all",
 	TAG: "tag",
 	FOLDER: "folder",
+	SEARCH: "search",
 };
 export type ViewMode = ValueOf<typeof VIEW_MODE>;
 export const DEFAULT_VIEW_MODE: ViewMode = VIEW_MODE.FOLDER;
 
 export type ViewModeSlice = {
 	viewMode: ViewMode;
+
+	canFilesManualSortViewModes: ViewMode[];
+	canFilesSortViewModes: ViewMode[];
+	canCreateFilesViewModes: ViewMode[]
+
 	changeViewMode: (mode: ViewMode) => void;
 	restoreViewMode: () => void;
 
 	changeToTagMode: () => void;
 	changeToFolderMode: () => void;
 	changeToAllMode: () => void;
+	changeToSearchMode: () => void;
 };
 
 export const createViewModeSlice =
@@ -29,6 +36,18 @@ export const createViewModeSlice =
 	): StateCreator<ExplorerStore, [], [], ViewModeSlice> =>
 	(set, get) => ({
 		viewMode: DEFAULT_VIEW_MODE,
+
+		get canFilesManualSortViewModes(): ViewMode[] {
+			return [VIEW_MODE.FOLDER];
+		},
+
+		get canFilesSortViewModes(): ViewMode[] {
+			return [VIEW_MODE.FOLDER, VIEW_MODE.TAG, VIEW_MODE.ALL];
+		},
+
+		get canCreateFilesViewModes(): ViewMode[] {
+			return [VIEW_MODE.FOLDER];
+		},
 
 		changeViewMode: (mode: ViewMode) => {
 			get().setValueAndSaveInLocalStorage({
@@ -53,5 +72,8 @@ export const createViewModeSlice =
 		},
 		changeToAllMode: () => {
 			get().changeViewMode(VIEW_MODE.ALL);
+		},
+		changeToSearchMode: () => {
+			get().changeViewMode(VIEW_MODE.SEARCH);
 		},
 	});

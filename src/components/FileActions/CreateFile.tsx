@@ -9,17 +9,22 @@ const CreateFile = () => {
 	const { useExplorerStore, plugin } = useExplorer();
 	const { language } = plugin;
 
-	const { createFileWithDefaultName, getNameOfFolder, focusedFolder } =
-		useExplorerStore(
-			useShallow((store: ExplorerStore) => ({
-				createFileWithDefaultName: store.createFileWithDefaultName,
-				getNameOfFolder: store.getNameOfFolder,
-				focusedFolder: store.focusedFolder,
-			}))
-		);
+	const {
+		createFileWithDefaultName,
+		getNameOfFolder,
+		focusedFolder,
+		isCreateFileAbled,
+	} = useExplorerStore(
+		useShallow((store: ExplorerStore) => ({
+			createFileWithDefaultName: store.createFileWithDefaultName,
+			getNameOfFolder: store.getNameOfFolder,
+			focusedFolder: store.focusedFolder,
+			isCreateFileAbled: store.isCreateFileAbled,
+		}))
+	);
 
 	const onCreateNewFile = async () => {
-		if (!focusedFolder) return;
+		if (!isCreateFileAbled() || !focusedFolder) return;
 		await createFileWithDefaultName(focusedFolder);
 	};
 
@@ -27,7 +32,7 @@ const CreateFile = () => {
 		return classNames(
 			"ffs__action-button-wrapper clickable-icon nav-action-button",
 			{
-				"ffs__action-button-wrapper--disabled": !focusedFolder,
+				"ffs__action-button-wrapper--disabled": !isCreateFileAbled(),
 			}
 		);
 	};

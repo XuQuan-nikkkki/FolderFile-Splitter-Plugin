@@ -2,7 +2,11 @@ import { TFile, TFolder } from "obsidian";
 import { StateCreator } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
-import { getCopyName, getDefaultUntitledName, replaceNameInPath } from "src/utils";
+import {
+	getCopyName,
+	getDefaultUntitledName,
+	replaceNameInPath,
+} from "src/utils";
 
 import { ExplorerStore } from "..";
 
@@ -21,6 +25,7 @@ export interface FileActionsSlice {
 	createFileAndOpen: (path: string, focus?: boolean) => Promise<TFile>;
 	createFileWithDefaultName: (folder: TFolder) => Promise<TFile | undefined>;
 	duplicateFile: (file: TFile) => Promise<TFile>;
+	isCreateFileAbled: () => boolean;
 
 	moveFile: (file: TFile, newPath: string) => Promise<void>;
 	renameFile: (file: TFile, newName: string) => Promise<void>;
@@ -46,7 +51,7 @@ export const createFileActionsSlice =
 				files.map((f) => f.name),
 				defaultFileName
 			);
-			return replaceNameInPath(file, copyName)
+			return replaceNameInPath(file, copyName);
 		},
 
 		openFile: (file: TFile, active = true): void => {
@@ -87,13 +92,17 @@ export const createFileActionsSlice =
 			selectFileAndOpen(newFile, false);
 			return newFile;
 		},
+		isCreateFileAbled: () => {
+			const { canCreateFilesViewModes, viewMode } = get();
+			return canCreateFilesViewModes.includes(viewMode);
+		},
 
 		moveFile: async (file: TFile, newPath: string) => {
 			await plugin.app.fileManager.renameFile(file, newPath);
 		},
 		renameFile: async (file: TFile, newName: string) => {
 			const { moveFile } = get();
-			const newPath = replaceNameInPath(file, newName)
+			const newPath = replaceNameInPath(file, newName);
 			await moveFile(file, newPath);
 		},
 
