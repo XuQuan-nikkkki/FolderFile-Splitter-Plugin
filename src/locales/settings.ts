@@ -88,16 +88,16 @@ export const LAYOUT_SETTINGS_COPY: SettingsLocaleResource<LayoutSettings> = {
 			],
 		},
 		zh: {
-			name: "Layout mode",
-			desc: "Choose how to display folders and files in the plugin view. You can arrange them side-by-side, stacked vertically, or use a toggle view that switches between folders and files.",
+			name: "布局模式",
+			desc: "选择插件视图中文件夹和文件的显示方式：水平分割（文件夹和文件两列并排）、垂直分割（文件夹和文件列垂直堆叠），或切换视图（通过切换视图在两者间转换）。",
 			options: [
 				{
 					value: LAYOUT_MODE.HORIZONTAL_SPLIT,
-					text: "Horizontal split",
+					text: "水平分割",
 				},
 				{
 					value: LAYOUT_MODE.VERTICAL_SPLIT,
-					text: "Vertical split",
+					text: "垂直分割",
 				},
 			],
 		},
