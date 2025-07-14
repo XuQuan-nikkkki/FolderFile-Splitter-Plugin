@@ -7,6 +7,7 @@ import {
 } from "src/hooks/useSettingsHandler";
 
 import CreateFile from "../FileActions/CreateFile";
+import SearchFiles from "../FileActions/SearchFiles";
 import SortFiles from "../FileActions/SortFiles";
 import CreateFolder from "../FolderAndTagActions/CreateFolder";
 import SortFolders from "../FolderAndTagActions/SortFoldersAndTags";
@@ -25,6 +26,7 @@ export const FileActionSection = () => (
 	<div className="ffs__actions-section nav-buttons-container">
 		<CreateFile />
 		<SortFiles />
+		<SearchFiles />
 	</div>
 );
 

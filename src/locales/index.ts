@@ -145,3 +145,30 @@ export const SORT_TIPS_COPY: Copy = {
 		zh: "对文件夹和标签排序",
 	},
 };
+
+export const SEARCH_TIPS_COPY: Copy = {
+	searchTitleOnly: {
+		en: "Click to search title only",
+		zh: "点击切换为仅搜索标题",
+	},
+	searchFullText: {
+		en: "Click to switch to full text search",
+		zh: "点击切换为搜索全文",
+	},
+	allNotes: {
+		en: "Across all notes",
+		zh: "全部笔记",
+	},
+	titleOnly: {
+		en: "Title only",
+		zh: "仅标题",
+	},
+	fullText: {
+		en: "Full text",
+		zh: "全文搜索",
+	},
+	inputToSearch: {
+		en: "Searching...",
+		zh: "输入并搜索...",
+	},
+};

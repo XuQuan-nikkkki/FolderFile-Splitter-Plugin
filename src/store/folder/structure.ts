@@ -15,7 +15,6 @@ export interface FolderStructureSlice {
 
 	getNameOfFolder: (folder: TFolder) => string;
 
-	getFolderAncestors: (folder: TFolder, includeRoot?: boolean) => TFolder[];
 	isAnscestorOf: (ancestor: TFolder, folder: TFolder) => boolean;
 	getFolderLevel: (folder: TFolder) => number;
 
@@ -46,22 +45,9 @@ export const createFolderStructureSlice =
 		getNameOfFolder: (folder: TFolder) => {
 			return folder.isRoot() ? plugin.app.vault.getName() : folder.name;
 		},
-		getFolderAncestors: (
-			folder: TFolder,
-			includeRoot = false
-		): TFolder[] => {
-			const ancestors: TFolder[] = [];
-			let current = folder.parent;
 
-			while (current && !current.isRoot()) {
-				ancestors.unshift(current);
-				current = current.parent;
-			}
-
-			return includeRoot ? [get().rootFolder, ...ancestors] : ancestors;
-		},
 		isAnscestorOf: (ancestor: TFolder, folder: TFolder): boolean => {
-			const ancestors = get().getFolderAncestors(folder);
+			const ancestors = get().getAncestors(folder);
 			return ancestors.some((f) => f.path === ancestor.path);
 		},
 		getFolderLevel: (folder: TFolder) => {

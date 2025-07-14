@@ -8,6 +8,7 @@ import { createLocalStorageSlice, LocalStorageSlice } from "./localStorage";
 import { createManualSortSlice, ManualSortSlice } from "./manualSort";
 import { createPinSlice, PinSlice } from "./pin";
 import { createPluginSlice, PluginSlice } from "./plugin";
+import { createStructureSlice, StructureSlice } from "./structure";
 import { createViewModeSlice, ViewModeSlice } from "./viewMode";
 
 type FolderPath = string;
@@ -19,7 +20,7 @@ export type CommonExplorerStore = ViewModeSlice &
 	LocalStorageSlice &
 	PluginSlice &
 	ManualSortSlice &
-	PinSlice;
+	PinSlice & StructureSlice;
 
 export const createCommonExplorerStore =
 	(
@@ -31,6 +32,7 @@ export const createCommonExplorerStore =
 		...createPluginSlice(plugin)(set, get, store),
 		...createManualSortSlice(plugin)(set, get, store),
 		...createPinSlice(plugin)(set, get, store),
+		...createStructureSlice(plugin)(set, get, store),
 	});
 
 export * from "./viewMode";

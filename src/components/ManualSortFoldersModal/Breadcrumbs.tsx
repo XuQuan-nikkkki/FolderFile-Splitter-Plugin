@@ -14,9 +14,9 @@ type Props = {
 const FoldersBreadcrumbs = ({ folder, setFolder }: Props) => {
 	const { useExplorerStore } = useExplorer();
 
-	const { getFolderAncestors } = useExplorerStore(
+	const { getAncestors  } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
-			getFolderAncestors: store.getFolderAncestors,
+			getAncestors: store.getAncestors,
 		}))
 	);
 
@@ -26,7 +26,7 @@ const FoldersBreadcrumbs = ({ folder, setFolder }: Props) => {
 
 	const folders = folder.isRoot()
 		? [folder]
-		: getFolderAncestors(folder, true);
+		: getAncestors(folder, true);
 	return (
 		<>
 			{folders.map((f, index) => {

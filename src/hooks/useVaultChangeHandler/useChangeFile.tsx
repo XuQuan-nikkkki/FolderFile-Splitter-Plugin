@@ -4,6 +4,7 @@ import { useShallow } from "zustand/react/shallow";
 
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { ExplorerStore } from "src/store";
+import { VIEW_MODE } from "src/store/common";
 import { FILE_MANUAL_SORT_RULE } from "src/store/file/sort";
 import { isFile } from "src/utils";
 
@@ -27,6 +28,9 @@ const useChangeFile = () => {
 		viewMode,
 		initOrder,
 		updateOrder,
+		generateTagTree,
+		searchResults,
+		searchScope,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			focusedFolder: store.focusedFolder,
@@ -40,6 +44,10 @@ const useChangeFile = () => {
 			order: store.filesManualSortOrder,
 			initOrder: store.initFilesManualSortOrder,
 			updateOrder: store.updateFilePathInManualOrder,
+			generateTagTree: store.generateTagTree,
+			tagTree: store.tagTree,
+			searchResults: store.searchResults,
+			searchScope: store.searchScope,
 		}))
 	);
 
@@ -68,6 +76,7 @@ const useChangeFile = () => {
 		focusedTag,
 		includeSubTagFiles,
 		viewMode,
+		searchResults,
 	]);
 
 	const maybeInitOrder = async () => {
@@ -78,9 +87,16 @@ const useChangeFile = () => {
 
 	const onHandleVaultChange = async (event: VaultChangeEvent) => {
 		const { file, changeType, oldPath } = event.detail;
-		if (!isFile(file) || changeType === "modify") return;
+		if (!isFile(file)) return;
 
-		setFiles(getVisibleFiles());
+		if (changeType === "modify" && viewMode === VIEW_MODE.TAG) {
+			setTimeout(() => {
+				generateTagTree();
+				setFiles(getVisibleFiles());
+			}, 100);
+		} else {
+			setFiles(getVisibleFiles());
+		}
 		if (changeType === "create") {
 			await maybeInitOrder();
 		} else if (changeType === "delete" && isFilePinned(file)) {

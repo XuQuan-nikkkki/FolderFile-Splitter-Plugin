@@ -1,10 +1,13 @@
+import classNames from "classnames";
 import { ReactNode } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { FolderIcon, TagIcon } from "src/assets/icons";
 import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
-import { ViewMode } from "src/store/common";
+import { VIEW_MODE, ViewMode } from "src/store/common";
+
+import Search from "../Search";
 
 const ViewModeDisplay = () => {
 	const { useExplorerStore, plugin } = useExplorer();
@@ -20,18 +23,6 @@ const ViewModeDisplay = () => {
 				getNameOfFolder: store.getNameOfFolder,
 			}))
 		);
-
-	const labelMap: Record<ViewMode, string> = {
-		folder: isZh ? "文件夹：" : "Folder: ",
-		tag: isZh ? "标签：" : "Tag: ",
-		all: isZh ? "全部文件" : "All Files",
-	};
-	const iconClassName = "ffs__view-mode-icon";
-	const iconMap: Record<ViewMode, ReactNode> = {
-		folder: <FolderIcon className={iconClassName} />,
-		tag: <TagIcon className={iconClassName} />,
-		all: <FolderIcon className={iconClassName} />,
-	};
 
 	const getFolderPath = () => {
 		if (!focusedFolder) return "";
@@ -49,24 +40,59 @@ const ViewModeDisplay = () => {
 		</span>
 	);
 
-	const renderPath = () => {
-		if (viewMode === "folder") {
+	const renderViewModeTipsHeader = () => {
+		const iconClassName = "ffs__view-mode-icon";
+		const iconMap: Record<ViewMode, ReactNode> = {
+			folder: <FolderIcon className={iconClassName} />,
+			tag: <TagIcon className={iconClassName} />,
+			all: <FolderIcon className={iconClassName} />,
+		};
+		const labelMap: Record<ViewMode, string> = {
+			folder: isZh ? "文件夹：" : "Folder: ",
+			tag: isZh ? "标签：" : "Tag: ",
+			all: isZh ? "全部文件" : "All Files",
+		};
+		return (
+			<>
+				{iconMap[viewMode]} {labelMap[viewMode]}
+			</>
+		);
+	};
+
+	const maybeRenderPath = () => {
+		if (viewMode === VIEW_MODE.FOLDER) {
 			if (!focusedFolder) return "";
 			const name = getNameOfFolder(focusedFolder);
 			const path = getFolderPath();
 			return renderPathContent(name, path);
-		} else if (viewMode === "tag") {
+		}
+
+		if (viewMode === VIEW_MODE.TAG) {
 			if (!focusedTag) return "";
 			return renderPathContent(focusedTag.fullPath, focusedTag.fullPath);
 		}
 	};
 
+	const maybeRenderViewModeTips = () => (
+		<div className="ffs__view-mode--main">
+			{renderViewModeTipsHeader()}
+			{maybeRenderPath()}
+		</div>
+	);
+
+	const maybeRenderSearch = () => {
+		if (viewMode !== VIEW_MODE.SEARCH) return null;
+		return <Search />;
+	};
+
 	return (
-		<div className="ffs__view-mode">
-			<div className="ffs__view-mode--main">
-				{iconMap[viewMode]} {labelMap[viewMode]}
-				{renderPath()}
-			</div>
+		<div
+			className={classNames("ffs__view-mode", {
+				"ffs__view-mode--search": viewMode === VIEW_MODE.SEARCH,
+			})}
+		>
+			{maybeRenderViewModeTips()}
+			{maybeRenderSearch()}
 		</div>
 	);
 };

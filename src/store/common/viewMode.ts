@@ -19,7 +19,7 @@ export type ViewModeSlice = {
 
 	canFilesManualSortViewModes: ViewMode[];
 	canFilesSortViewModes: ViewMode[];
-	canCreateFilesViewModes: ViewMode[]
+	canCreateFilesViewModes: ViewMode[];
 
 	changeViewMode: (mode: ViewMode) => void;
 	restoreViewMode: () => void;
@@ -58,9 +58,23 @@ export const createViewModeSlice =
 			});
 		},
 		restoreViewMode: () => {
-			get().restoreDataFromLocalStorage({
+			const { restoreDataFromLocalStorage, focusedFolder, focusedTag } =
+				get();
+			restoreDataFromLocalStorage({
 				localStorageKey: FFS_VIEW_MODE_KEY,
 				key: "viewMode",
+				transform: (mode: ViewMode) => {
+					const { FOLDER, TAG } = VIEW_MODE;
+					if (![FOLDER, TAG].includes(mode)) {
+						if (focusedFolder) {
+							return FOLDER;
+						}
+						if (focusedTag) {
+							return TAG;
+						}
+						return FOLDER;
+					}
+				},
 			});
 		},
 

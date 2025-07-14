@@ -93,8 +93,8 @@ export const createToggleFolderSlice =
 			}
 		},
 		expandAncestors: (folder: TFolder) => {
-			const { getFolderAncestors, expandFolder } = get();
-			const ancestors = getFolderAncestors(folder);
+			const { getAncestors, expandFolder } = get();
+			const ancestors = getAncestors(folder);
 			ancestors.forEach(expandFolder);
 		},
 

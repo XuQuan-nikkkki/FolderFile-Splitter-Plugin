@@ -35,6 +35,7 @@ export const createFileStructureSlice =
 				getFilesInFolder,
 				getFilesInTag,
 				viewMode,
+				searchResults,
 			} = get();
 			switch (viewMode) {
 				case VIEW_MODE.ALL:
@@ -43,6 +44,8 @@ export const createFileStructureSlice =
 					return focusedFolder ? getFilesInFolder(focusedFolder) : [];
 				case VIEW_MODE.TAG:
 					return focusedTag ? getFilesInTag(focusedTag) : [];
+				case VIEW_MODE.SEARCH:
+					return searchResults;
 				default:
 					return [];
 			}

@@ -13,6 +13,7 @@ import GripIcon from "./GripIcon";
 import LoadingIcon from "./LoadingIcon";
 import PinIcon from "./PinIcon";
 import StarIcon from "./RootFolderIcon";
+import SearchIcon from "./SearchIcon";
 import TagIcon from "./TagIcon";
 
 export {
@@ -32,4 +33,5 @@ export {
 	ChevronDown,
 	ChevronRight,
 	TagIcon,
+	SearchIcon
 };

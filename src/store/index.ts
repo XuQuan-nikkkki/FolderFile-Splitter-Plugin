@@ -38,12 +38,12 @@ export const createExplorerStore = (plugin: FolderFileSplitterPlugin) =>
 			} = get();
 
 			generateTagTree();
-			restoreViewMode();
 			restoreLastFocusedFolder();
 			restoreLastFocusedFile();
-			restoreExpandedFolderPaths();
 			restoreLastFocusedTag();
+			restoreExpandedFolderPaths();
 			restoreExpandedTagPaths();
+			restoreViewMode();
 
 			await Promise.all([
 				restoreFolderSortRule(),

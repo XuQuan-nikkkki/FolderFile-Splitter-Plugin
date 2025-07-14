@@ -23,11 +23,9 @@ const FilesCount = ({
 	const [count, setCount] = useState<number | null>(null);
 
 	const onHandleVaultChange = (event: VaultChangeEvent) => {
-		const { file, changeType } = event.detail;
+		const { file } = event.detail;
 		if (!isFile(file)) return;
-		if (["create", "delete", "rename"].includes(changeType)) {
-			setCount(getFilesCount());
-		}
+		setCount(getFilesCount());
 	};
 
 	useEffect(() => {
@@ -43,7 +41,7 @@ const FilesCount = ({
 
 	useEffect(() => {
 		setCount(getFilesCount());
-	}, [childrenLen, includeSubItemFiles]);
+	}, [childrenLen, includeSubItemFiles, getFilesCount()]);
 
 	return (
 		<div className="ffs__files-count">{showFilesCount ? count : ""}</div>

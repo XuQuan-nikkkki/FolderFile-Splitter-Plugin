@@ -5,6 +5,7 @@ import FileTree from "../FileTree";
 
 import { ActionsContainer, FileActionSection } from "./Actions";
 import { ClosePaneButton, OpenPaneButton } from "./TogglePaneButton";
+import ViewModeDisplay from "./ViewModeDisplay";
 
 type Props = {
 	isFilesCollapsed: boolean;
@@ -45,6 +46,7 @@ const VerticalSplitFilesPane = ({
 					/>
 				</div>
 			</ActionsContainer>
+			<ViewModeDisplay />
 			<FileTree />
 		</div>
 	);
