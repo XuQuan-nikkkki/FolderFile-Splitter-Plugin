@@ -43,6 +43,14 @@ const usePreviewFile = (file: TFile) => {
 	const [preview, setPreview] = useState(() => getFilePreview(file) ?? "");
 	const [isLoading, setIsLoading] = useState(false);
 
+	const getPreviewContent = (
+		cleanContent: string,
+		maxChars = 100
+	): string => {
+		const normalized = cleanContent.replace(/\s+/g, " ").trim();
+		return normalized.slice(0, maxChars);
+	};
+
 	const onBuildPreview = async () => {
 		if (file.extension !== "md") return;
 
@@ -57,8 +65,14 @@ const usePreviewFile = (file: TFile) => {
 			content = await stripMarkdownSyntax(plugin, content);
 		}
 
-		setFilePreview(file, content);
-		setPreview(content);
+		const visible = getPreviewContent(content);
+		if (getFilePreview(file) === visible) {
+			setIsLoading(false);
+			return;
+		}
+
+		setFilePreview(file, visible);
+		setPreview(visible);
 		setIsLoading(false);
 	};
 
