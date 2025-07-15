@@ -476,7 +476,7 @@ div.ffs__file-content {
 	margin: 4px 12px;
 	display: flex;
 	flex-direction: column;
-	align-items: center;
+	justify-content: center;
 }
 .ffs__view-mode:not(.ffs__view-mode--search) {
 	padding: 4px 8px;
