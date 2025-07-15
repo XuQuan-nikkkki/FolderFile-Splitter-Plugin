@@ -3,6 +3,7 @@ import { Menu, TFile } from "obsidian";
 import { useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 
+import { CLICKABLE_TREE_ITEM_CLASS_NAME } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
 import { useShowFileItemDivider } from "src/hooks/useSettingsHandler";
 import { FILE_OPERATION_COPY } from "src/locales";
@@ -137,7 +138,8 @@ const FileContent = ({ file }: FileProps) => {
 
 	const getClassNames = () => {
 		return classNames(
-			"ffs__file-content tree-item-self nav-file-title tappable is-clickable",
+			"ffs__file-content nav-file-title tappable",
+			CLICKABLE_TREE_ITEM_CLASS_NAME,
 			{
 				"is-active": isFocused,
 				"ffs__file-content--divider": showFileItemDivider,

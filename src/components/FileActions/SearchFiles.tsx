@@ -1,6 +1,6 @@
-import classNames from "classnames";
 import { useShallow } from "zustand/react/shallow";
 
+import { ACTION_BUTTON_WRAPPER_CLASS_NAME } from "src/assets/constants";
 import { SearchIcon } from "src/assets/icons";
 import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
@@ -19,12 +19,6 @@ const SearchFiles = () => {
 			}))
 		);
 
-	const getClassNames = () => {
-		return classNames(
-			"ffs__action-button-wrapper clickable-icon nav-action-button"
-		);
-	};
-
 	const onBeginSearch = () => {
 		changeToSearchMode();
 		if (focusedFolder) {
@@ -41,7 +35,10 @@ const SearchFiles = () => {
 	};
 
 	return (
-		<div className={getClassNames()} onClick={onBeginSearch}>
+		<div
+			className={ACTION_BUTTON_WRAPPER_CLASS_NAME}
+			onClick={onBeginSearch}
+		>
 			<SearchIcon className="ffs__action-button svg-icon" />
 		</div>
 	);

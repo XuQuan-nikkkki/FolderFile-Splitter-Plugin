@@ -1,3 +1,6 @@
+import classNames from "classnames";
+
+import { ACTIONS_SECTION_CLASS_NAME } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
 import {
 	useShowFolderView,
@@ -39,10 +42,10 @@ const VerticalSplitFoldersAndTagsPane = ({
 	if (isFoldersCollapsed) {
 		return (
 			<ActionsContainer>
-				<div className="ffs__actions-section ffs__collapsed-folders nav-buttons-container">
+				<div className={classNames("ffs__collapsed-folders", ACTIONS_SECTION_CLASS_NAME)}>
 					{copy}
 				</div>
-				<div className="ffs__actions-section nav-buttons-container">
+				<div className={ACTIONS_SECTION_CLASS_NAME}>
 					<OpenPaneButton
 						onOpen={() => setIsFoldersCollapsed(false)}
 						label={openFoldersAndTags[language]}
@@ -61,7 +64,7 @@ const VerticalSplitFoldersAndTagsPane = ({
 		>
 			<ActionsContainer>
 				<FolderAndTagActionSection />
-				<div className="ffs__actions-section nav-buttons-container">
+				<div className={ACTIONS_SECTION_CLASS_NAME}>
 					<ToggleFolderAndTagMode />
 					<ClosePaneButton
 						onClose={() => setIsFoldersCollapsed(true)}

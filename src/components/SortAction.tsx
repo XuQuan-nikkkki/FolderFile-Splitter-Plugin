@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { Menu } from "obsidian";
 
+import { ACTION_BUTTON_WRAPPER_CLASS_NAME } from "src/assets/constants";
 import {
 	ArrowUpDownIcon,
 	AscendingSortIcon,
@@ -70,12 +71,9 @@ const SortAction = ({
 	};
 
 	const getClassNames = () => {
-		return classNames(
-			"ffs__action-button-wrapper clickable-icon nav-action-button",
-			{
-				"ffs__action-button-wrapper--disabled": disabled,
-			}
-		);
+		return classNames(ACTION_BUTTON_WRAPPER_CLASS_NAME, {
+			"ffs__action-button-wrapper--disabled": disabled,
+		});
 	};
 
 	return (

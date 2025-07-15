@@ -1,5 +1,6 @@
 import classNames from "classnames";
 
+import { ACTIONS_SECTION_CLASS_NAME } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
 import {
 	useAutoHideActionBar,
@@ -15,7 +16,7 @@ import ToggleFolders from "../FolderAndTagActions/ToggleFoldersAndTags";
 
 
 export const FolderAndTagActionSection = () => (
-	<div className="ffs__actions-section nav-buttons-container">
+	<div className={ACTIONS_SECTION_CLASS_NAME}>
 		<CreateFolder />
 		<SortFolders />
 		<ToggleFolders />
@@ -23,7 +24,7 @@ export const FolderAndTagActionSection = () => (
 );
 
 export const FileActionSection = () => (
-	<div className="ffs__actions-section nav-buttons-container">
+	<div className={ACTIONS_SECTION_CLASS_NAME}>
 		<CreateFile />
 		<SortFiles />
 		<SearchFiles />

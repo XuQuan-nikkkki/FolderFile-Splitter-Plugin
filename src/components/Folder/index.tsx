@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
-import { FFS_DRAG_FILE, FFS_DRAG_FOLDER } from "src/assets/constants";
+import { CLICKABLE_TREE_ITEM_CLASS_NAME, FFS_DRAG_FILE, FFS_DRAG_FOLDER } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
 import { getIndentStyle } from "src/utils";
@@ -80,7 +80,8 @@ const Folder = ({
 
 	const getClassNames = () => {
 		return classNames(
-			"ffs__folder-container tree-item-self nav-folder-title is-clickable",
+			"ffs__folder-container nav-folder-title",
+			CLICKABLE_TREE_ITEM_CLASS_NAME,
 			{
 				"mod-collapsible": hasSubFolder(folder),
 				"is-active": isFocused,

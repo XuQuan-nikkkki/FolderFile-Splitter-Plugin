@@ -1,3 +1,6 @@
+import classNames from "classnames";
+
+import { ACTIONS_SECTION_CLASS_NAME } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
 import { VERTICAL_SPLIT_LAYOUT_OPERATION_COPY } from "src/locales";
 
@@ -22,10 +25,15 @@ const VerticalSplitFilesPane = ({
 	if (isFilesCollapsed) {
 		return (
 			<ActionsContainer>
-				<div className="ffs__actions-section ffs__collapsed-files nav-buttons-container">
+				<div
+					className={classNames(
+						"ffs__collapsed-files",
+						ACTIONS_SECTION_CLASS_NAME
+					)}
+				>
 					Files
 				</div>
-				<div className="ffs__actions-section nav-buttons-container">
+				<div className={ACTIONS_SECTION_CLASS_NAME}>
 					<OpenPaneButton
 						onOpen={() => setIsFilesCollapsed(false)}
 						label={openFiles[language]}
@@ -39,7 +47,7 @@ const VerticalSplitFilesPane = ({
 		<div className="ffs__layout-pane ffs__files-pane--vertical">
 			<ActionsContainer>
 				<FileActionSection />
-				<div className="ffs__actions-section nav-buttons-container">
+				<div className={ACTIONS_SECTION_CLASS_NAME}>
 					<ClosePaneButton
 						onClose={() => setIsFilesCollapsed(true)}
 						label={closeFiles[language]}

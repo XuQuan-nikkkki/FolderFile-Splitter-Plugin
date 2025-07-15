@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { useShallow } from "zustand/react/shallow";
 
+import { CLICKABLE_TREE_ITEM_CLASS_NAME } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
 import { TagNode } from "src/store/tag";
@@ -58,7 +59,8 @@ const Tag = ({
 
 	const getClassNames = () => {
 		return classNames(
-			"ffs__folder-container tree-item-self nav-folder-title is-clickable",
+			"ffs__folder-container nav-folder-title",
+			CLICKABLE_TREE_ITEM_CLASS_NAME,
 			{
 				"mod-collapsible": hasSubTag(tag),
 				"is-active": isFocused,

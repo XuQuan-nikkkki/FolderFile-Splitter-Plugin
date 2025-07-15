@@ -1,6 +1,10 @@
 import { useDraggable } from "@dnd-kit/core";
+import classNames from "classnames";
 
-import { FFS_DRAG_FOLDER } from "src/assets/constants";
+import {
+	FFS_DRAG_FOLDER,
+	TREE_ITEM_INNER_CLASS_NAME,
+} from "src/assets/constants";
 
 import FolderContent, { FolderProps } from "./Content";
 
@@ -21,7 +25,10 @@ const FolderDraggableContent = ({ folder, disableDrag = false }: Props) => {
 
 	return (
 		<div
-			className="ffs__draggable-container tree-item-inner nav-folder-title-content"
+			className={classNames(
+				"ffs__draggable-container",
+				TREE_ITEM_INNER_CLASS_NAME
+			)}
 			style={{ opacity: isDragging ? 0.5 : 1 }}
 			ref={setDragRef}
 			{...attributes}
