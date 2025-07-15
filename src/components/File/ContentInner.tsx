@@ -2,6 +2,7 @@ import classNames from "classnames";
 import { TFile } from "obsidian";
 import { forwardRef, RefObject, useRef } from "react";
 
+import { TREE_ITEM_INNER_CLASS_NAME } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
 import {
 	useFileItemSpacing,
@@ -37,7 +38,8 @@ const FileContentInner = forwardRef(
 
 		const getClassNames = () => {
 			return classNames(
-				"ffs__file-content-header tree-item-inner nav-file-title-content",
+				"ffs__file-content-header",
+				TREE_ITEM_INNER_CLASS_NAME,
 				{
 					"ffs__file-content-header--comfortable":
 						fileItemSpacing === FILE_ITEM_SPACING.COMFORTABLE,

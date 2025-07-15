@@ -65,7 +65,11 @@ export const createViewModeSlice =
 				key: "viewMode",
 				transform: (mode: ViewMode) => {
 					const { FOLDER, TAG } = VIEW_MODE;
-					if (![FOLDER, TAG].includes(mode as typeof FOLDER | typeof TAG)) {
+					if (
+						![FOLDER, TAG].includes(
+							mode as typeof FOLDER | typeof TAG
+						)
+					) {
 						if (focusedFolder) {
 							return FOLDER;
 						}
@@ -74,7 +78,7 @@ export const createViewModeSlice =
 						}
 						return FOLDER;
 					}
-					return mode
+					return mode;
 				},
 			});
 		},

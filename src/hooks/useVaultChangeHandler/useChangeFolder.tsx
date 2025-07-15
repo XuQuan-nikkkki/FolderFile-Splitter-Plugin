@@ -20,7 +20,7 @@ const useChangeFolder = () => {
 		unpinFolder,
 		updatePinnedFolderPath,
 		updateFolderPathInManualOrder,
-		sortFolders
+		sortFolders,
 	} = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			getTopLevelFolders: store.getTopLevelFolders,
@@ -30,7 +30,7 @@ const useChangeFolder = () => {
 			unpinFolder: store.unpinFolder,
 			updatePinnedFolderPath: store.updatePinnedFolderPath,
 			updateFolderPathInManualOrder: store.updateFolderPathInManualOrder,
-			sortFolders: store.sortFolders
+			sortFolders: store.sortFolders,
 		}))
 	);
 

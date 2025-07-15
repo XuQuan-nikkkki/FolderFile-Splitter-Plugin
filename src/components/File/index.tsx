@@ -10,8 +10,8 @@ import { ExplorerStore } from "src/store";
 import FileContent from "./Content";
 import { getPopupInfo } from "./popupInfo";
 
-type Props =  {
-	file: TFile
+type Props = {
+	file: TFile;
 	onOpenFoldersPane: () => void;
 	disableDrag?: boolean;
 };

@@ -13,10 +13,7 @@ import { useExplorer } from "../useExplorer";
 const useChangeTag = () => {
 	const { useExplorerStore } = useExplorer();
 
-	const {
-		getTopLevelTags,
-		generateTagTree,
-	} = useExplorerStore(
+	const { getTopLevelTags, generateTagTree } = useExplorerStore(
 		useShallow((store: ExplorerStore) => ({
 			getTopLevelTags: store.getTopLevelTags,
 			generateTagTree: store.generateTagTree,

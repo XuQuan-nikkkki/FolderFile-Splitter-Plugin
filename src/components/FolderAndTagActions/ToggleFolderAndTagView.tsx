@@ -1,5 +1,9 @@
 import classNames from "classnames";
 
+import {
+	ACTION_BUTTON_WRAPPER_CLASS_NAME,
+	ACTIONS_SECTION_CLASS_NAME,
+} from "src/assets/constants";
 import { FolderIcon, TagIcon } from "src/assets/icons";
 import { useExplorer } from "src/hooks/useExplorer";
 import {
@@ -20,12 +24,9 @@ const ToggleFolderAndTagMode = () => {
 	const copy_lang = language === "zh" ? "zh" : "en";
 
 	const getButtonClassNames = (disabled: boolean) =>
-		classNames(
-			"ffs__action-button-wrapper clickable-icon nav-action-button",
-			{
-				"ffs__action-button-wrapper--inactive": disabled,
-			}
-		);
+		classNames(ACTION_BUTTON_WRAPPER_CLASS_NAME, {
+			"ffs__action-button-wrapper--inactive": disabled,
+		});
 
 	const renderFolderButton = () => {
 		const copy = !showFolderView
@@ -65,7 +66,7 @@ const ToggleFolderAndTagMode = () => {
 	};
 
 	return (
-		<div className="ffs__actions-section nav-buttons-container">
+		<div className={ACTIONS_SECTION_CLASS_NAME}>
 			{renderFolderButton()}
 			{renderTagButton()}
 		</div>

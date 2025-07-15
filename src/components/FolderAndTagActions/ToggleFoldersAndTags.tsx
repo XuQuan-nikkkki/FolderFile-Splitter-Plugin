@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
+import { ACTION_BUTTON_WRAPPER_CLASS_NAME } from "src/assets/constants";
 import { ExpandIcon, CollapseIcon } from "src/assets/icons";
 import { useExplorer } from "src/hooks/useExplorer";
 import { TIPS_COPY } from "src/locales";
@@ -62,7 +63,7 @@ const ToggleFolders = () => {
 
 	return (
 		<div
-			className="ffs__action-button-wrapper clickable-icon nav-action-button"
+			className={ACTION_BUTTON_WRAPPER_CLASS_NAME}
 			onClick={onToggleAllFolders}
 			aria-label={getAriaLabel()}
 			data-tooltip-position="bottom"

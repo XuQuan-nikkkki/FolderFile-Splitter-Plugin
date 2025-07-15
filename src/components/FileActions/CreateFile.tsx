@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { useShallow } from "zustand/react/shallow";
 
+import { ACTION_BUTTON_WRAPPER_CLASS_NAME } from "src/assets/constants";
 import { AddFileIcon } from "src/assets/icons";
 import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
@@ -29,12 +30,9 @@ const CreateFile = () => {
 	};
 
 	const getClassNames = () => {
-		return classNames(
-			"ffs__action-button-wrapper clickable-icon nav-action-button",
-			{
-				"ffs__action-button-wrapper--disabled": !isCreateFileAbled(),
-			}
-		);
+		return classNames(ACTION_BUTTON_WRAPPER_CLASS_NAME, {
+			"ffs__action-button-wrapper--disabled": !isCreateFileAbled(),
+		});
 	};
 
 	const getAriaLabel = () => {

@@ -48,7 +48,10 @@ const FolderTreeItem = ({ folder }: Props) => {
 		if (!showSubfolders) return null;
 		return (
 			<div
-				className={`ffs__subfolders-group ${SUB_ITEMS_CLASSNAMES}`}
+				className={classNames(
+					"ffs__subfolders-group",
+					SUB_ITEMS_CLASSNAMES
+				)}
 				style={getSubItemsStyle(showHierarchyLines)}
 			>
 				{subFolders.map((folder) => (

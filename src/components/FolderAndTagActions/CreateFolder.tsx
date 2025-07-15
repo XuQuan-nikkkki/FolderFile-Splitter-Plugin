@@ -1,6 +1,7 @@
 import classNames from "classnames";
 import { useShallow } from "zustand/react/shallow";
 
+import { ACTION_BUTTON_WRAPPER_CLASS_NAME } from "src/assets/constants";
 import { AddFolderIcon } from "src/assets/icons";
 import { useExplorer } from "src/hooks/useExplorer";
 import { useShowFolderView } from "src/hooks/useSettingsHandler";
@@ -35,12 +36,9 @@ const CreateFolder = () => {
 	};
 
 	const getClassNames = () => {
-		return classNames(
-			"ffs__action-button-wrapper clickable-icon nav-action-button",
-			{
-				"ffs__action-button-wrapper--disabled": !showFolderView,
-			}
-		);
+		return classNames(ACTION_BUTTON_WRAPPER_CLASS_NAME, {
+			"ffs__action-button-wrapper--disabled": !showFolderView,
+		});
 	};
 
 	const getAriaLabel = () => {
