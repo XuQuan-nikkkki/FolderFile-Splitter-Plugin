@@ -4,6 +4,7 @@ import { useShallow } from "zustand/react/shallow";
 
 import { FolderIcon, TagIcon } from "src/assets/icons";
 import { useExplorer } from "src/hooks/useExplorer";
+import { useShowViewModeDisplay } from "src/hooks/useSettingsHandler";
 import { ExplorerStore } from "src/store";
 import { VIEW_MODE, ViewMode } from "src/store/common";
 
@@ -11,7 +12,7 @@ import Search from "../Search";
 
 const ViewModeDisplay = () => {
 	const { useExplorerStore, plugin } = useExplorer();
-	const { language } = plugin;
+	const { language, settings } = plugin;
 	const isZh = language === "zh";
 
 	const { viewMode, focusedFolder, focusedTag, getNameOfFolder } =
@@ -23,6 +24,12 @@ const ViewModeDisplay = () => {
 				getNameOfFolder: store.getNameOfFolder,
 			}))
 		);
+
+	const { showViewModeDisplay } = useShowViewModeDisplay(
+		settings.showViewModeDisplay
+	);
+
+	const isSearchMode = viewMode === VIEW_MODE.SEARCH;
 
 	const getFolderPath = () => {
 		if (!focusedFolder) return "";
@@ -42,12 +49,12 @@ const ViewModeDisplay = () => {
 
 	const renderViewModeTipsHeader = () => {
 		const iconClassName = "ffs__view-mode-icon";
-		const iconMap: Record<ViewMode, ReactNode> = {
+		const iconMap: Partial<Record<ViewMode, ReactNode>> = {
 			folder: <FolderIcon className={iconClassName} />,
 			tag: <TagIcon className={iconClassName} />,
 			all: <FolderIcon className={iconClassName} />,
 		};
-		const labelMap: Record<ViewMode, string> = {
+		const labelMap: Partial<Record<ViewMode, string>> = {
 			folder: isZh ? "文件夹：" : "Folder: ",
 			tag: isZh ? "标签：" : "Tag: ",
 			all: isZh ? "全部文件" : "All Files",
@@ -73,17 +80,22 @@ const ViewModeDisplay = () => {
 		}
 	};
 
-	const maybeRenderViewModeTips = () => (
-		<div className="ffs__view-mode--main">
-			{renderViewModeTipsHeader()}
-			{maybeRenderPath()}
-		</div>
-	);
+	const maybeRenderViewModeTips = () => {
+		if (!showViewModeDisplay) return null;
+		return (
+			<div className="ffs__view-mode--main">
+				{renderViewModeTipsHeader()}
+				{maybeRenderPath()}
+			</div>
+		);
+	};
 
 	const maybeRenderSearch = () => {
-		if (viewMode !== VIEW_MODE.SEARCH) return null;
+		if (!isSearchMode) return null;
 		return <Search />;
 	};
+
+	if (!isSearchMode && !showViewModeDisplay) return null;
 
 	return (
 		<div

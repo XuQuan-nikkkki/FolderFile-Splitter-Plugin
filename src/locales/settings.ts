@@ -102,6 +102,16 @@ export const LAYOUT_SETTINGS_COPY: SettingsLocaleResource<LayoutSettings> = {
 			],
 		},
 	},
+	showViewModeDisplay: {
+		en: {
+			name: "Show view context",
+			desc: "When enabled, a label will be displayed above the file list to indicate the current view mode, such as the selected folder, tag, or 'All files'.",
+		},
+		zh: {
+			name: "显示视图上下文",
+			desc: "启用后，会在文件列表上方显示当前视图的上下文信息，例如选中的文件夹、标签，或“全部文件”等提示。",
+		},
+	},
 	highlightActionBar: {
 		en: {
 			name: "Highlight action bar",

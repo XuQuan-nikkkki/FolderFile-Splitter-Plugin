@@ -20,6 +20,7 @@ import { useShowFolderView } from "./useShowFolderView";
 import { useShowHierarchyLines } from "./useShowHierarchyLines";
 import { useShowTagIcon } from "./useShowTagIcon";
 import { useShowTagView } from "./useShowTagView";
+import { useShowViewModeDisplay } from "./useShowViewModeDisplay";
 import { useStripMarkdownSyntaxInPreview } from "./useStripMarkdownSyntax";
 
 export {
@@ -45,5 +46,6 @@ export {
 	useShowTagIcon,
 	useShowFilesCount,
 	useExpandNodeByClick,
-	useDeduplicateTagFiles
+	useDeduplicateTagFiles,
+	useShowViewModeDisplay
 };

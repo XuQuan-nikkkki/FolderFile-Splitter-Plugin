@@ -43,6 +43,7 @@ export type StartupSettings = {
 };
 export type LayoutSettings = {
 	layoutMode: LayoutMode;
+	showViewModeDisplay: boolean;
 	highlightActionBar: boolean;
 	autoHideActionBar: boolean;
 };
@@ -98,6 +99,7 @@ export const STARTUP_SETTINGS: StartupSettings = {
 
 export const LAYOUT_SETTINGS: LayoutSettings = {
 	layoutMode: LAYOUT_MODE.HORIZONTAL_SPLIT,
+	showViewModeDisplay: true,
 	highlightActionBar: false,
 	autoHideActionBar: false,
 };

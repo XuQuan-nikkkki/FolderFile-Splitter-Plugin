@@ -117,6 +117,7 @@ export class SettingTab extends PluginSettingTab {
 	initLayoutSettings() {
 		this.createHeader2(this.headersCopy.layout);
 		this._initDropdownSetting("layoutMode");
+		this._initToggleSetting("showViewModeDisplay")
 		this._initToggleSetting("highlightActionBar");
 		this._initToggleSetting("autoHideActionBar");
 	}
