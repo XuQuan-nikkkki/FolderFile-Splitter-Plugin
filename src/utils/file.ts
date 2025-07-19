@@ -30,7 +30,7 @@ export const replaceNameInPath = (
 	newName: string
 ): string => {
 	const pathParts = item.path.split(SLASH);
-	const extension = isFile(item) ? item.extension : "";
-	pathParts[pathParts.length - 1] = newName + "." + extension;
+	const extension = isFile(item) ? `.${item.extension}` : "";
+	pathParts[pathParts.length - 1] = newName + extension;
 	return pathParts.join(SLASH);
 };
