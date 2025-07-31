@@ -5,16 +5,13 @@ import { useExplorer } from "src/hooks/useExplorer";
 import { useDeduplicateTagFiles } from "src/hooks/useSettingsHandler";
 import { useChangeFile } from "src/hooks/useVaultChangeHandler";
 import { ExplorerStore } from "src/store";
-import { isZh, Noop, uniq } from "src/utils";
+import { isZh, uniq } from "src/utils";
 
 import File from "../File";
 
 import PinnedFiles from "./PinnedFiles";
 
-type Props = {
-	onOpenFoldersPane?: Noop;
-};
-const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
+const FileTree = () => {
 	const { useExplorerStore, plugin } = useExplorer();
 
 	const { sortFiles } = useExplorerStore(
@@ -59,14 +56,10 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 
 	return (
 		<div className="ffs__tree ffs__file-tree nav-files-container">
-			<PinnedFiles onOpenFoldersPane={onOpenFoldersPane} />
+			<PinnedFiles />
 			{renderDeduplicateTips()}
 			{displayedFiles.map((file, index) => (
-				<File
-					key={file.path + index}
-					file={file}
-					onOpenFoldersPane={onOpenFoldersPane}
-				/>
+				<File key={file.path + index} file={file} />
 			))}
 		</div>
 	);
