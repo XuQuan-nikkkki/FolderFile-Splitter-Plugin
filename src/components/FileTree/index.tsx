@@ -1,4 +1,3 @@
-import { TFile } from "obsidian";
 import { useShallow } from "zustand/react/shallow";
 
 import { EmptyFolderIcon } from "src/assets/icons";
@@ -6,14 +5,14 @@ import { useExplorer } from "src/hooks/useExplorer";
 import { useDeduplicateTagFiles } from "src/hooks/useSettingsHandler";
 import { useChangeFile } from "src/hooks/useVaultChangeHandler";
 import { ExplorerStore } from "src/store";
-import { isZh, uniq } from "src/utils";
+import { isZh, Noop, uniq } from "src/utils";
 
 import File from "../File";
 
 import PinnedFiles from "./PinnedFiles";
 
 type Props = {
-	onOpenFoldersPane?: () => void;
+	onOpenFoldersPane?: Noop;
 };
 const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 	const { useExplorerStore, plugin } = useExplorer();
@@ -32,15 +31,6 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 		plugin.settings.deduplicateTagFiles
 	);
 
-	const renderFile = (file: TFile, index: number, disableDrag?: boolean) => (
-		<File
-			key={file.path + index}
-			file={file}
-			disableDrag={disableDrag}
-			onOpenFoldersPane={onOpenFoldersPane}
-		/>
-	);
-
 	if (!files.length) {
 		return (
 			<div className="ffs__file-tree--empty">
@@ -52,7 +42,7 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 	const sortedFiles = sortFiles(files);
 	const deduplicatedFiles = uniq(sortedFiles);
 	const hasDuplicateFiles = sortedFiles.length > deduplicatedFiles.length;
-	const needToShowDeduplicate = deduplicateTagFiles && hasDuplicateFiles
+	const needToShowDeduplicate = deduplicateTagFiles && hasDuplicateFiles;
 
 	let displayedFiles = sortedFiles;
 	if (needToShowDeduplicate) {
@@ -69,9 +59,15 @@ const FileTree = ({ onOpenFoldersPane = () => {} }: Props) => {
 
 	return (
 		<div className="ffs__tree ffs__file-tree nav-files-container">
-			<PinnedFiles renderFile={renderFile} />
+			<PinnedFiles onOpenFoldersPane={onOpenFoldersPane} />
 			{renderDeduplicateTips()}
-			{displayedFiles.map((file, index) => renderFile(file, index))}
+			{displayedFiles.map((file, index) => (
+				<File
+					key={file.path + index}
+					file={file}
+					onOpenFoldersPane={onOpenFoldersPane}
+				/>
+			))}
 		</div>
 	);
 };
