@@ -1,6 +1,5 @@
 import { useDraggable } from "@dnd-kit/core";
 import { TFile } from "obsidian";
-import { useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { FFS_DRAG_FILE } from "src/assets/constants";
@@ -12,10 +11,9 @@ import { getPopupInfo } from "./popupInfo";
 
 type Props = {
 	file: TFile;
-	onOpenFoldersPane: () => void;
 	disableDrag?: boolean;
 };
-const File = ({ file, disableDrag, onOpenFoldersPane }: Props) => {
+const File = ({ file, disableDrag }: Props) => {
 	const { useExplorerStore } = useExplorer();
 
 	const { selectFileAndOpen } = useExplorerStore(
@@ -29,13 +27,6 @@ const File = ({ file, disableDrag, onOpenFoldersPane }: Props) => {
 		data: { type: FFS_DRAG_FILE, item: file },
 		disabled: disableDrag,
 	});
-
-	useEffect(() => {
-		window.addEventListener("dblclick", onOpenFoldersPane);
-		return () => {
-			window.removeEventListener("dblclick", onOpenFoldersPane);
-		};
-	}, [onOpenFoldersPane]);
 
 	return (
 		<div
