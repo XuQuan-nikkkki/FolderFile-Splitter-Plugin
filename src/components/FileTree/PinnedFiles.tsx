@@ -1,16 +1,15 @@
-import { TFile } from "obsidian";
-import { ReactNode } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { useExplorer } from "src/hooks/useExplorer";
 import { ExplorerStore } from "src/store";
 
+import File from "../File";
 import { PinContainer, PinContent, PinHeader } from "../Pin";
 
 type Props = {
-	renderFile: (file: TFile, index: number, disableDrag?: boolean) => ReactNode;
+	onOpenFoldersPane?: () => void;
 };
-const PinnedFiles = ({ renderFile }: Props) => {
+const PinnedFiles = ({ onOpenFoldersPane = () => {} }: Props) => {
 	const { useExplorerStore } = useExplorer();
 
 	const { getDisplayedPinnedFiles } = useExplorerStore(
@@ -20,15 +19,22 @@ const PinnedFiles = ({ renderFile }: Props) => {
 		}))
 	);
 
-	if (!getDisplayedPinnedFiles().length) return null;
+	const pinnedFiles = getDisplayedPinnedFiles();
+
+	if (!pinnedFiles.length) return null;
 
 	return (
 		<PinContainer>
 			<PinHeader />
 			<PinContent>
-				{getDisplayedPinnedFiles().map((file, index) =>
-					renderFile(file, index, true)
-				)}
+				{pinnedFiles.map((file, index) => (
+					<File
+						key={file.path + index}
+						file={file}
+						disableDrag
+						onOpenFoldersPane={onOpenFoldersPane}
+					/>
+				))}
 			</PinContent>
 		</PinContainer>
 	);
