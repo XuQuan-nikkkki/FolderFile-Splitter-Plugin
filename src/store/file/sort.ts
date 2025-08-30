@@ -3,9 +3,9 @@ import { StateCreator } from "zustand";
 
 import { FFS_FILE_SORT_RULE_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
+import { compareNaturalName } from "src/utils";
 
 import { ExplorerStore } from "..";
-import { VIEW_MODE, ViewMode } from "../common";
 
 export type FileSortRule =
 	| "FileNameAscending"
@@ -19,8 +19,8 @@ export const DEFAULT_FILE_SORT_RULE: FileSortRule = "FileNameAscending";
 export const FILE_MANUAL_SORT_RULE: FileSortRule = "FileManualOrder";
 
 const FILES_SORTERS: Record<FileSortRule, (a: TFile, b: TFile) => number> = {
-	FileNameAscending: (a, b) => a.name.localeCompare(b.name),
-	FileNameDescending: (a, b) => b.name.localeCompare(a.name),
+	FileNameAscending: (a, b) => compareNaturalName(a.name, b.name),
+	FileNameDescending: (a, b) => compareNaturalName(b.name, a.name),
 	FileCreatedTimeAscending: (a, b) => a.stat.ctime - b.stat.ctime,
 	FileCreatedTimeDescending: (a, b) => b.stat.ctime - a.stat.ctime,
 	FileModifiedTimeAscending: (a, b) => a.stat.mtime - b.stat.mtime,

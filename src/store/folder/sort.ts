@@ -3,6 +3,7 @@ import { StateCreator } from "zustand";
 
 import { FFS_FOLDER_SORT_RULE_KEY } from "src/assets/constants";
 import FolderFileSplitterPlugin from "src/main";
+import { compareNaturalName } from "src/utils";
 
 import { ExplorerStore } from "..";
 
@@ -18,8 +19,8 @@ export const FOLDER_MANUAL_SORT_RULE: FolderSortRule = "FolderManualOrder";
 export const createFolderSorters = (
 	getFilesCountInFolder: (folder: TFolder) => number
 ): Record<FolderSortRule, (a: TFolder, b: TFolder) => number> => ({
-	FolderNameAscending: (a, b) => a.name.localeCompare(b.name),
-	FolderNameDescending: (a, b) => b.name.localeCompare(a.name),
+	FolderNameAscending: (a, b) => compareNaturalName(a.name, b.name),
+	FolderNameDescending: (a, b) => compareNaturalName(b.name, a.name),
 	FilesCountAscending: (a, b) =>
 		getFilesCountInFolder(a) - getFilesCountInFolder(b),
 	FilesCountDescending: (a, b) =>

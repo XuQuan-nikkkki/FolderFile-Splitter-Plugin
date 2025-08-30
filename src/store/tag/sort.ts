@@ -1,6 +1,7 @@
 import { StateCreator } from "zustand";
 
 import FolderFileSplitterPlugin from "src/main";
+import { compareNaturalName } from "src/utils";
 
 import { ExplorerStore } from "..";
 import { FolderSortRule } from "../folder/sort";
@@ -10,8 +11,8 @@ import { TagNode } from ".";
 export const createTagSorters = (
 	getFilesCountInTag: (tag: TagNode) => number
 ): Record<FolderSortRule, (a: TagNode, b: TagNode) => number> => ({
-	FolderNameAscending: (a, b) => a.name.localeCompare(b.name),
-	FolderNameDescending: (a, b) => b.name.localeCompare(a.name),
+	FolderNameAscending: (a, b) => compareNaturalName(a.name, b.name),
+	FolderNameDescending: (a, b) => compareNaturalName(b.name, a.name),
 	FilesCountAscending: (a, b) =>
 		getFilesCountInTag(a) - getFilesCountInTag(b),
 	FilesCountDescending: (a, b) =>
