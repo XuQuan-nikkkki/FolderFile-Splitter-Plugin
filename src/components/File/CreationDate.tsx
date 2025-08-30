@@ -23,9 +23,9 @@ const FileCreationDate = ({ file }: Props) => {
 
 	if (!showFileCreationDate) return null;
 	return (
-		<div className="ffs__file-created-time">
+		<span className="ffs__file-created-time">
 			{dayjs(file.stat.ctime).format(fileCreationDateFormat)}
-		</div>
+		</span>
 	);
 };
 

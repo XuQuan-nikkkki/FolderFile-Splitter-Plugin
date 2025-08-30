@@ -66,7 +66,12 @@ const usePreviewFile = (file: TFile) => {
 		if (!hasCachedFilePreview(file)) {
 			onBuildPreview();
 		}
-	}, [file.path, removeFirstHeadingInPreview, stripMarkdownSyntaxInPreview]);
+	}, [
+		file.path,
+		removeFirstHeadingInPreview,
+		stripMarkdownSyntaxInPreview,
+		settings.filePreviewLinesCount,
+	]);
 
 	useEffect(() => {
 		const handler = (e: VaultChangeEvent) => {
@@ -80,6 +85,13 @@ const usePreviewFile = (file: TFile) => {
 			window.removeEventListener(VaultChangeEventName, handler);
 		};
 	}, [file.path, removeFirstHeadingInPreview, stripMarkdownSyntaxInPreview]);
+
+	useEffect(() => {
+		document.documentElement.style.setProperty(
+			"--file-preview-lines",
+			String(settings.filePreviewLinesCount)
+		);
+	}, [settings.filePreviewLinesCount]);
 
 	return { preview, isLoading };
 };

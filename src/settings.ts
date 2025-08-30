@@ -72,6 +72,7 @@ export type FileDetailSettings = {
 	removeFirstHeadingInPreview: boolean;
 	showFileCreationDate: boolean;
 	fileCreationDateFormat: string;
+	filePreviewLinesCount: number;
 };
 export type FileDisplaySettings = {
 	boldFileTitle: boolean;
@@ -132,6 +133,7 @@ export const FILE_DETAIL_SETTINGS: FileDetailSettings = {
 	removeFirstHeadingInPreview: false,
 	showFileCreationDate: true,
 	fileCreationDateFormat: DEFAULT_FILE_CREATION_DATE_FORMAT,
+	filePreviewLinesCount: 1,
 };
 
 export const FILE_DISPLAY_SETTINGS: FileDisplaySettings = {

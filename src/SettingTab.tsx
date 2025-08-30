@@ -117,7 +117,7 @@ export class SettingTab extends PluginSettingTab {
 	initLayoutSettings() {
 		this.createHeader2(this.headersCopy.layout);
 		this._initDropdownSetting("layoutMode");
-		this._initToggleSetting("showViewModeDisplay")
+		this._initToggleSetting("showViewModeDisplay");
 		this._initToggleSetting("highlightActionBar");
 		this._initToggleSetting("autoHideActionBar");
 	}
@@ -126,7 +126,7 @@ export class SettingTab extends PluginSettingTab {
 		this.createHeader2(this.headersCopy.folderAndTagBehavior);
 		this._initToggleSetting("showFolderHierarchyLines");
 		this._initToggleSetting("showFilesCount");
-		this._initDropdownSetting("expandNodeOnClick")
+		this._initDropdownSetting("expandNodeOnClick");
 		this._initToggleSetting("openDestinationFolderAfterMove");
 		this._initToggleSetting("revealFileInExplorer");
 	}
@@ -144,7 +144,7 @@ export class SettingTab extends PluginSettingTab {
 		this._initToggleSetting("showTagView");
 		this._initToggleSetting("showTagIcon");
 		this._initToggleSetting("includeSubTagFiles");
-		this._initToggleSetting("deduplicateTagFiles")
+		this._initToggleSetting("deduplicateTagFiles");
 	}
 
 	generateFileCreationDateFormatDesc(setting: Setting, format: string) {
@@ -192,6 +192,24 @@ export class SettingTab extends PluginSettingTab {
 		});
 	}
 
+	_initFilePreviewLinesCountSetting() {
+		const { containerEl, plugin } = this;
+		const { language } = plugin;
+		const setting = new Setting(containerEl)
+			.setName(SETTINGS_COPY.filePreviewLinesCount[language].name)
+			.setDesc(SETTINGS_COPY.filePreviewLinesCount[language].desc);
+
+		setting.addSlider((slider) => {
+			slider
+				.setLimits(0, 5, 1)
+				.setValue(this.plugin.settings.filePreviewLinesCount)
+				.setDynamicTooltip();
+			slider.onChange(async (val) => {
+				this.plugin.changeSetting("filePreviewLinesCount", val);
+			});
+		});
+	}
+
 	initFileDetailSettings() {
 		this.createHeader2(this.headersCopy.fileDetail);
 		this._initToggleSetting("showFileDetail");
@@ -199,6 +217,7 @@ export class SettingTab extends PluginSettingTab {
 		this._initToggleSetting("removeFirstHeadingInPreview");
 		this._initToggleSetting("showFileCreationDate");
 		this._initFileCreationDateFormatSetting();
+		this._initFilePreviewLinesCountSetting();
 	}
 
 	initFileDisplaySettings() {

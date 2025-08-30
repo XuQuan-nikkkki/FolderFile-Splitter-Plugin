@@ -354,6 +354,16 @@ export const FILE_DETAIL_SETTINGS_COPY: SettingsLocaleResource<FileDetailSetting
 				desc: "自定义文件创建日期的显示格式。使用 dayjs 库的格式化语法。默认格式为 YYYY/MM/DD。格式参考文档：",
 			},
 		},
+		filePreviewLinesCount: {
+			en: {
+				name: "File preview lines",
+				desc: "Set how many lines of content are displayed in the file preview below the file name. Use 0 to hide the preview completely.",
+			},
+			zh: {
+				name: "文件预览行数",
+				desc: "设置在文件名下方的文件内容预览显示多少行。设为 0 表示不显示预览。",
+			},
+		},
 	};
 
 export const FILE_DISPLAY_SETTINGS_COPY: SettingsLocaleResource<FileDisplaySettings> =

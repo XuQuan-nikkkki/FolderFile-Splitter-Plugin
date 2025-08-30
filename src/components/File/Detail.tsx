@@ -10,13 +10,10 @@ type Props = {
 const FileDetail = ({ file }: Props) => {
 	const { preview, isLoading } = usePreviewFile(file);
 
-	
 	return (
 		<div className="ffs__file-detail">
 			<FileCreationDate file={file} />
-			<div className="ffs__file-content-preview">
-				{isLoading ? "..." : preview}
-			</div>
+			{isLoading ? "..." : preview}
 		</div>
 	);
 };

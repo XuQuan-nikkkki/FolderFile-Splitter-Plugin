@@ -361,21 +361,27 @@ div.ffs__file-content {
 }
 
 .ffs__file-detail {
-	display: grid;
-	grid-template-columns: auto 1fr;
-	gap: 10px;
 	font-size: 12px;
-}
 
-.ffs__file-content-preview {
-	white-space: nowrap;
+	display: -webkit-box;
+	-webkit-line-clamp: var(--file-preview-lines, 1);
+	line-clamp: 3;
+	-webkit-box-orient: vertical;
 	overflow: hidden;
 	text-overflow: ellipsis;
+
+	white-space: normal;
+	word-wrap: break-word;
+	word-break: normal;
+
+	width: 100%;
+	line-height: 1.5;
 }
 
 .ffs__file-created-time {
 	letter-spacing: -0.6px;
 	font-weight: 450;
+	margin-right: 10px;
 }
 
 .ffs__file-tree .nav-file-title .nav-file-title-content::before {
