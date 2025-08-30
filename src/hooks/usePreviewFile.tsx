@@ -1,10 +1,11 @@
 import { TFile } from "obsidian";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
 import { VaultChangeEvent, VaultChangeEventName } from "src/assets/constants";
 import { ExplorerStore } from "src/store";
 import {
+	buildPreviewSignature,
 	removeFirstHeading,
 	removeFrontMatter,
 	stripMarkdownSyntax,
@@ -20,13 +21,14 @@ const usePreviewFile = (file: TFile) => {
 	const { useExplorerStore, plugin } = useExplorer();
 	const { settings } = plugin;
 
-	const { readFile, getFilePreview, hasCachedFilePreview, setFilePreview } =
+	const { readFile, getFileRaw, setFileRaw, getFilePreview, setFilePreview } =
 		useExplorerStore(
 			useShallow((store: ExplorerStore) => ({
 				readFile: store.readFile,
+				getFileRaw: store.getFileRaw,
+				setFileRaw: store.setFileRaw,
 				getFilePreview: store.getFilePreview,
 				setFilePreview: store.setFilePreview,
-				hasCachedFilePreview: store.hasCachedFilePreview,
 			}))
 		);
 
@@ -40,14 +42,31 @@ const usePreviewFile = (file: TFile) => {
 	const { removeFirstHeadingInPreview } =
 		useRemoveFirstHeadingInPreview(removeHeadingSetting);
 
-	const [preview, setPreview] = useState(() => getFilePreview(file) ?? "");
+	const signature = useMemo(
+		() =>
+			buildPreviewSignature({
+				stripMarkdownSyntaxInPreview,
+				removeFirstHeadingInPreview,
+			}),
+		[stripMarkdownSyntaxInPreview, removeFirstHeadingInPreview]
+	);
+
+	const [preview, setPreview] = useState(
+		() => getFilePreview(file, signature) ?? ""
+	);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const onBuildPreview = async () => {
+	const buildPreview = async () => {
 		if (file.extension !== "md") return;
 
 		setIsLoading(true);
-		const raw = await readFile(file);
+
+		let raw: string | undefined = getFileRaw(file);
+		if (!raw) {
+			raw = await readFile(file);
+			setFileRaw(file, raw);
+		}
+
 		let content = removeFrontMatter(raw);
 
 		if (removeFirstHeadingInPreview) {
@@ -57,34 +76,32 @@ const usePreviewFile = (file: TFile) => {
 			content = await stripMarkdownSyntax(plugin, content);
 		}
 
-		setFilePreview(file, content);
+		setFilePreview(file, content, signature);
 		setPreview(content);
 		setIsLoading(false);
 	};
 
 	useEffect(() => {
-		if (!hasCachedFilePreview(file)) {
-			onBuildPreview();
+		const cached = getFilePreview(file, signature);
+		if (cached !== undefined) {
+			setPreview(cached);
+		} else {
+			// 兼容老 API：如果 hasCached 只按 path 判断，签名变化会返回 true，
+			// 因此还是走 getFilePreview(file, signature) 的分支更可靠
+			buildPreview();
 		}
-	}, [
-		file.path,
-		removeFirstHeadingInPreview,
-		stripMarkdownSyntaxInPreview,
-		settings.filePreviewLinesCount,
-	]);
+	}, [file.path, signature]);
 
 	useEffect(() => {
 		const handler = (e: VaultChangeEvent) => {
 			const { file: changedFile, changeType } = e.detail;
 			if (changedFile.path === file.path && changeType === "modify") {
-				onBuildPreview();
+				buildPreview();
 			}
 		};
 		window.addEventListener(VaultChangeEventName, handler);
-		return () => {
-			window.removeEventListener(VaultChangeEventName, handler);
-		};
-	}, [file.path, removeFirstHeadingInPreview, stripMarkdownSyntaxInPreview]);
+		return () => window.removeEventListener(VaultChangeEventName, handler);
+	}, [file.path, signature]);
 
 	useEffect(() => {
 		document.documentElement.style.setProperty(

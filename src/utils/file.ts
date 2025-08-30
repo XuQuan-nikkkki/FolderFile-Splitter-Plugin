@@ -34,3 +34,13 @@ export const replaceNameInPath = (
 	pathParts[pathParts.length - 1] = newName + extension;
 	return pathParts.join(SLASH);
 };
+
+export const buildPreviewSignature = (opts: {
+	stripMarkdownSyntaxInPreview: boolean;
+	removeFirstHeadingInPreview: boolean;
+}): string => {
+	const { stripMarkdownSyntaxInPreview, removeFirstHeadingInPreview } = opts;
+	const stripSyntaxValue = stripMarkdownSyntaxInPreview ? "1" : "0";
+	const removeHeadingValue = removeFirstHeadingInPreview ? "1" : "0";
+	return `stripSyntax:${stripSyntaxValue}|removeHeading:${removeHeadingValue}`;
+};
