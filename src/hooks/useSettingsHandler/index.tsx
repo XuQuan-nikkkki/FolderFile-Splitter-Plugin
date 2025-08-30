@@ -4,6 +4,7 @@ import { useDeduplicateTagFiles } from "./useDeduplicateTagFiles";
 import { useExpandNodeByClick } from "./useExpandNodeByClick";
 import { useFileCreationDateFormat } from "./useFileCreationDateFormat";
 import { useFileItemSpacing } from "./useFileItemSpacing";
+import { useFilePreviewLinesCount } from "./useFilePreviewLinesCount";
 import { useHideRootFolder } from "./useHideRootFolder";
 import { useHighlightActionBar } from "./useHighlightActionBar";
 import { useIncludeSubfolderFiles } from "./useIncludeSubfolderFiles";
@@ -47,5 +48,6 @@ export {
 	useShowFilesCount,
 	useExpandNodeByClick,
 	useDeduplicateTagFiles,
-	useShowViewModeDisplay
+	useShowViewModeDisplay,
+	useFilePreviewLinesCount
 };

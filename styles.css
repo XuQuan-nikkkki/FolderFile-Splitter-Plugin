@@ -364,8 +364,8 @@ div.ffs__file-content {
 	font-size: 12px;
 
 	display: -webkit-box;
-	-webkit-line-clamp: var(--file-preview-lines, 1);
-	line-clamp: 3;
+	-webkit-line-clamp: 1;
+	line-clamp: 1;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
 	text-overflow: ellipsis;
