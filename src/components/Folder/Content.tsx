@@ -1,4 +1,5 @@
-import { Menu, TFolder } from "obsidian";
+import { shell } from "electron";
+import { FileSystemAdapter, Menu, normalizePath, TFolder } from "obsidian";
 import { useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -85,6 +86,30 @@ const FolderContent = ({ folder }: Props) => {
 		});
 	};
 
+	const _getOpenInFileManagerTitle = () => {
+		const isEn = language == "en";
+		const isWin = process.platform === "win32";
+		if (isEn) {
+			return isWin ? "Show in Explorer" : "Reveal in Finder";
+		} else {
+			return isWin ? "在资源管理器中显示" : "在访达中显示";
+		}
+	};
+
+	const openFolderInFileManager = (menu: Menu) => {
+		addMenuItem(menu, {
+			title: _getOpenInFileManagerTitle(),
+			icon: "move-up-right",
+			action: () => {
+				const vaultPath = (
+					plugin.app.vault.adapter as FileSystemAdapter
+				).getBasePath();
+				const abs = normalizePath(`${vaultPath}/${folder.path}`);
+				shell.showItemInFolder(abs);
+			},
+		});
+	};
+
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
 		e.stopPropagation();
@@ -103,6 +128,9 @@ const FolderContent = ({ folder }: Props) => {
 		menu.addSeparator();
 
 		addMoveMenuItem(menu, onShowTargetFoldersList, isRootFolder);
+		menu.addSeparator();
+
+		openFolderInFileManager(menu);
 		menu.addSeparator();
 
 		addRenameMenuItem(

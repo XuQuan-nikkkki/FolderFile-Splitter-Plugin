@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { shell } from "electron";
-import { Menu, normalizePath, TFile } from "obsidian";
+import { FileSystemAdapter, Menu, normalizePath, TFile } from "obsidian";
 import { useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -129,14 +129,16 @@ const FileContent = ({ file }: FileProps) => {
 		} else {
 			return isWin ? "在资源管理器中显示" : "在访达中显示";
 		}
-	}
+	};
 
 	const openInFileManager = (menu: Menu) => {
 		addMenuItem(menu, {
 			title: _getOpenInFileManagerTitle(),
 			icon: "move-up-right",
 			action: () => {
-				const vaultPath = plugin.app.vault.adapter.getBasePath();
+				const vaultPath = (
+					plugin.app.vault.adapter as FileSystemAdapter
+				).getBasePath();
 				const abs = normalizePath(`${vaultPath}/${file.path}`);
 				shell.showItemInFolder(abs);
 			},
