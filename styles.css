@@ -388,6 +388,10 @@ div.ffs__file-content {
 	display: none !important;
 }
 
+.ffs__folder-tree .nav-file-title-content {
+	flex-grow: 1;
+}
+
 /* Manual sort */
 .ffs__manual-sort-container {
 	display: flex;
