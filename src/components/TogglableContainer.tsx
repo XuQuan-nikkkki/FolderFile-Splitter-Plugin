@@ -1,7 +1,10 @@
 import { HTMLAttributes, MouseEvent, ReactNode, RefObject } from "react";
 
 import { useExplorer } from "src/hooks/useExplorer";
-import { useExpandNodeByClick } from "src/hooks/useSettingsHandler";
+import {
+	useAutoScrollToCenter,
+	useExpandNodeByClick,
+} from "src/hooks/useSettingsHandler";
 import { EXPAND_NODE_ON_CLICK } from "src/settings";
 import { AsyncNoop, Noop } from "src/utils";
 
@@ -26,9 +29,13 @@ const TogglableContainer = ({
 	...props
 }: Props) => {
 	const { plugin } = useExplorer();
+	const { settings } = plugin;
 
 	const { expandNodeByClick } = useExpandNodeByClick(
-		plugin.settings.expandNodeOnClick
+		settings.expandNodeOnClick
+	);
+	const { autoScrollToCenter } = useAutoScrollToCenter(
+		settings.autoScrollToCenter
 	);
 
 	const onClickContent = async (e: MouseEvent) => {
@@ -58,7 +65,7 @@ const TogglableContainer = ({
 
 	return (
 		<ScrollInToViewContainer
-			needToScroll={isFocused}
+			needToScroll={isFocused && autoScrollToCenter}
 			onClick={onClickContent}
 			{...props}
 		>

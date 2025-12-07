@@ -5,7 +5,10 @@ import { useShallow } from "zustand/react/shallow";
 
 import { CLICKABLE_TREE_ITEM_CLASS_NAME } from "src/assets/constants";
 import { useExplorer } from "src/hooks/useExplorer";
-import { useShowFileItemDivider } from "src/hooks/useSettingsHandler";
+import {
+	useAutoScrollToCenter,
+	useShowFileItemDivider,
+} from "src/hooks/useSettingsHandler";
 import { FILE_OPERATION_COPY } from "src/locales";
 import { ExplorerStore } from "src/store";
 import {
@@ -64,6 +67,9 @@ const FileContent = ({ file }: FileProps) => {
 
 	const { showFileItemDivider } = useShowFileItemDivider(
 		settings.showFileItemDivider
+	);
+	const { autoScrollToCenter } = useAutoScrollToCenter(
+		settings.autoScrollToCenter
 	);
 
 	const nameRef = useRef<NameRef>(null);
@@ -158,7 +164,7 @@ const FileContent = ({ file }: FileProps) => {
 
 	return (
 		<ScrollInToViewContainer
-			needToScroll={isFocused}
+			needToScroll={isFocused && autoScrollToCenter}
 			className={getClassNames()}
 			onContextMenu={onShowContextMenu}
 			onClick={onClickFile}

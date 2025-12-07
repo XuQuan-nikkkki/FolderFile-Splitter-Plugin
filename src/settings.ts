@@ -46,6 +46,7 @@ export type LayoutSettings = {
 	showViewModeDisplay: boolean;
 	highlightActionBar: boolean;
 	autoHideActionBar: boolean;
+	autoScrollToCenter: boolean;
 };
 export type FolderAndTagBehaviorSettings = {
 	showFolderHierarchyLines: boolean;
@@ -103,6 +104,7 @@ export const LAYOUT_SETTINGS: LayoutSettings = {
 	showViewModeDisplay: true,
 	highlightActionBar: false,
 	autoHideActionBar: false,
+	autoScrollToCenter: true,
 };
 
 export const FOLDER_AND_TAG_BEHAVIOR_SETTINGS: FolderAndTagBehaviorSettings = {

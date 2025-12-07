@@ -120,6 +120,7 @@ export class SettingTab extends PluginSettingTab {
 		this._initToggleSetting("showViewModeDisplay");
 		this._initToggleSetting("highlightActionBar");
 		this._initToggleSetting("autoHideActionBar");
+		this._initToggleSetting("autoScrollToCenter");
 	}
 
 	initFolderAndFileBehaviorSettings() {

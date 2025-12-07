@@ -132,6 +132,16 @@ export const LAYOUT_SETTINGS_COPY: SettingsLocaleResource<LayoutSettings> = {
 			desc: "启用后，顶部操作栏默认隐藏，鼠标悬停时才会显示。",
 		},
 	},
+	autoScrollToCenter: {
+		en: {
+			name: "Auto scroll selected item into center",
+			desc: "When enabled, clicking a folder, tag, or file will automatically scroll the selected item into the center of the view. Disable this to prevent automatic repositioning.",
+		},
+		zh: {
+			name: "自动滚动到视图中心",
+			desc: "启用后，在文件夹、标签或文件列表中点击项目时，会自动将该项目滚动到视图中间。关闭此选项可禁止该自动滚动行为。",
+		},
+	},
 };
 
 export const FOLDER_AND_TAG_BEHAVIOR_SETTINGS_COPY: SettingsLocaleResource<FolderAndTagBehaviorSettings> =

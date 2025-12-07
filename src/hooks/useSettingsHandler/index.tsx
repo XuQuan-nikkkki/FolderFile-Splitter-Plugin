@@ -1,4 +1,5 @@
 import { useAutoHideActionBar } from "./useAutoHideActionBar";
+import { useAutoScrollToCenter } from "./useAutoScrollToCenter";
 import { useBoldFileTitle } from "./useBoldFileTitle";
 import { useDeduplicateTagFiles } from "./useDeduplicateTagFiles";
 import { useExpandNodeByClick } from "./useExpandNodeByClick";
@@ -49,5 +50,6 @@ export {
 	useExpandNodeByClick,
 	useDeduplicateTagFiles,
 	useShowViewModeDisplay,
-	useFilePreviewLinesCount
+	useFilePreviewLinesCount,
+	useAutoScrollToCenter,
 };
