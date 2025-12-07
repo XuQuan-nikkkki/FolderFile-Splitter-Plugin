@@ -1,5 +1,6 @@
 import classNames from "classnames";
-import { Menu, TFile } from "obsidian";
+import { shell } from "electron";
+import { Menu, normalizePath, TFile } from "obsidian";
 import { useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 
@@ -120,6 +121,28 @@ const FileContent = ({ file }: FileProps) => {
 		await createFileWithDefaultName(folder);
 	};
 
+	const _getOpenInFileManagerTitle = () => {
+		const isEn = language == "en";
+		const isWin = process.platform === "win32";
+		if (isEn) {
+			return isWin ? "Show in Explorer" : "Reveal in Finder";
+		} else {
+			return isWin ? "在资源管理器中显示" : "在访达中显示";
+		}
+	}
+
+	const openInFileManager = (menu: Menu) => {
+		addMenuItem(menu, {
+			title: _getOpenInFileManagerTitle(),
+			icon: "move-up-right",
+			action: () => {
+				const vaultPath = plugin.app.vault.adapter.getBasePath();
+				const abs = normalizePath(`${vaultPath}/${file.path}`);
+				shell.showItemInFolder(abs);
+			},
+		});
+	};
+
 	const onShowContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
 		e.preventDefault();
 		e.stopPropagation();
@@ -134,6 +157,9 @@ const FileContent = ({ file }: FileProps) => {
 		addCreateFileMenuItem(menu, onCreateFile);
 		addDuplicateFileMenuItem(menu);
 		addMoveMenuItem(menu, onShowTargetFoldersList);
+		menu.addSeparator();
+
+		openInFileManager(menu);
 		menu.addSeparator();
 
 		addRenameMenuItem(menu, nameRef.current?.onStartEditingName ?? noop);
